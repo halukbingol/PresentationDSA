@@ -1,0 +1,268 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+% =====================================================================
+%  codeoutput.sty  --  show program code and its output, read from files
+%  ---------------------------------------------------------------------
+%  Use in a beamer presentation:   \usepackage{codeoutput}
+%  Put this file next to your .tex file, or in your personal texmf tree
+%  (e.g. ~/texmf/tex/latex/codeoutput/codeoutput.sty) to share it
+%  between all your presentations.
+%
+%  Every macro takes RELATIVE PATHS (relative to the .tex file) to the
+%  code file and to the output file. Nothing is copied into the .tex.
+%  Frames that use these macros must be [fragile].
+%
+%  One slide
+%    \lstcode            [code opts]{code path}{Language}       code only
+%    \lstoutput          [output opts]{output path}             output only
+%    \lstcodedown        [code opts][output opts]
+%                        {code path}{Language}{output path}     code, output below
+%    \lstcoderight       [code width][code opts][output opts]
+%                        {code path}{Language}{output path}     code left, output right
+%
+%  Two slides: code on the first slide, output added on the second
+%    \lstcodedownstep    [code opts][output opts]
+%                        {code path}{Language}{output path}     output below
+%    \lstcoderightstep   [code width][code opts][output opts]
+%                        {code path}{Language}{output path}     output on the right
+%    \lstcodeoverlaystep [code opts][output opts][output width]{x,y}
+%                        {code path}{Language}{output path}     output floats on top,
+%                        upper-left corner at (x,y) from the slide's upper-left corner
+%
+%  Helper
+%    \slidegrid     1 cm grid over the slide, to find x,y (remove when done)
+%
+%  "opts" are ordinary listings options, e.g.
+%    firstline=4, lastline=9, firstnumber=4, basicstyle=\ttfamily\scriptsize
+%  "code width" is a fraction of \textwidth (default 0.56).
+%
+%  Colors can be changed after \usepackage{codeoutput} with \definecolor:
+%    codebg codeframe codekw codestr codecmt termbg termfg termframe
+% =====================================================================
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{hblibCodeoutput}[2026/09/30 v1.3 Code and output from files for beamer]
+
+\RequirePackage{xcolor}
+\RequirePackage{listings}
+\RequirePackage{tcolorbox}
+\tcbuselibrary{listings,skins}
+\RequirePackage{tikz}
+\RequirePackage[absolute,overlay]{textpos}
+
+\@ifclassloaded{beamer}{}{%
+  \PackageWarningNoLine{codeoutput}{This package is made for beamer.
+    The *step and overlay macros need beamer's overlays}}
+
+% ---------------------------------------------------------------------
+%  Colors
+% ---------------------------------------------------------------------
+\definecolor{codebg}{RGB}{248,248,248}
+\definecolor{codeframe}{RGB}{40,90,160}
+\definecolor{codekw}{RGB}{0,70,160}
+\definecolor{codestr}{RGB}{30,130,60}
+\definecolor{codecmt}{RGB}{120,120,120}
+\definecolor{termbg}{RGB}{35,38,45}
+\definecolor{termfg}{RGB}{225,230,235}
+\definecolor{termframe}{RGB}{70,75,85}
+
+% ---------------------------------------------------------------------
+%  listings styles
+% ---------------------------------------------------------------------
+% Undo settings that other packages may have made globally with \lstset
+% (e.g. a light backgroundcolor, which hides the light text of the output box).
+% Both styles below start from this, so they look the same whatever is loaded.
+\lstdefinestyle{codeoutreset}{
+  backgroundcolor={},
+  frame=none,
+  frameround=ffff,
+  captionpos=t,
+  showspaces=false,
+  showtabs=false,
+  breakatwhitespace=false,
+  morekeywords={}
+}
+
+% Turkish (and a few other) UTF-8 letters, so they print in code and output
+\lstdefinestyle{utf8letters}{
+  literate=
+    {ç}{{\c{c}}}1 {Ç}{{\c{C}}}1 {ğ}{{\u{g}}}1 {Ğ}{{\u{G}}}1
+    {ı}{{\i}}1    {İ}{{\.I}}1   {ö}{{\"o}}1   {Ö}{{\"O}}1
+    {ş}{{\c{s}}}1 {Ş}{{\c{S}}}1 {ü}{{\"u}}1   {Ü}{{\"U}}1
+    {é}{{\'e}}1   {à}{{\`a}}1   {â}{{\^a}}1   {î}{{\^i}}1
+}
+
+\lstdefinestyle{codestyle}{
+  style=codeoutreset,
+  style=utf8letters,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{codekw}\bfseries,
+  stringstyle=\color{codestr},
+  commentstyle=\color{codecmt}\itshape,
+  numbers=left,
+  numberstyle=\tiny\color{codecmt},
+  numbersep=5pt,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  upquote=true,
+  tabsize=4,
+  breaklines=true,
+  aboveskip=0pt,
+  belowskip=0pt
+}
+
+\lstdefinestyle{outputstyle}{
+  style=codeoutreset,
+  style=utf8letters,
+  language={},
+  basicstyle=\ttfamily\footnotesize,
+  numbers=none,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  upquote=true,
+  tabsize=8,
+  breaklines=true,
+  aboveskip=0pt,
+  belowskip=0pt
+}
+
+% ---------------------------------------------------------------------
+%  Boxes
+% ---------------------------------------------------------------------
+\tcbset{
+  codebox/.style={enhanced, listing only, colback=codebg, colframe=codeframe,
+    before skip=2pt, after skip=2pt,
+    boxrule=0.6pt, arc=2pt, left=5mm, right=1mm, top=0.3mm, bottom=0.3mm,
+    colbacktitle=codeframe, coltitle=white, fonttitle=\ttfamily\scriptsize\bfseries,
+    toptitle=0.2mm, bottomtitle=0.2mm},
+  outbox/.style={enhanced, listing only, colback=termbg, colupper=termfg, colframe=termframe,
+    before skip=2pt, after skip=4pt,
+    boxrule=0.6pt, arc=2pt, left=2mm, right=1mm, top=0.3mm, bottom=0.3mm,
+    colbacktitle=termframe, coltitle=termfg, fonttitle=\sffamily\scriptsize\bfseries,
+    toptitle=0.2mm, bottomtitle=0.2mm},
+  overlaybox/.style={before skip=0pt, after skip=0pt, drop fuzzy shadow=black!60},
+  missingbox/.style={colback=red!8, colframe=red!70!black, boxrule=0.6pt, arc=2pt,
+    fontupper=\ttfamily\scriptsize, top=0.5mm, bottom=0.5mm}
+}
+
+% print a path as typed, after expanding macros in it (e.g. \lecdir/sort.c)
+\newcommand{\codeout@path}[1]{%
+  \edef\codeout@tmp{#1}\expandafter\detokenize\expandafter{\codeout@tmp}}
+
+% a red box instead of an error when a file does not exist (yet)
+\newcommand{\codeout@missing}[1]{%
+  \begin{tcolorbox}[missingbox]
+    missing file: \codeout@path{#1}
+  \end{tcolorbox}}
+
+% ---------------------------------------------------------------------
+%  Building blocks
+% ---------------------------------------------------------------------
+% \lstcode[listings options]{code path}{Language}
+\NewDocumentCommand{\lstcode}{O{} m m}{%
+  \IfFileExists{#2}{%
+    \tcbinputlisting{codebox, listing file={#2},
+      title={\codeout@path{#2}}, after title={\hfill\sffamily #3},
+      listing options={style=codestyle, language=#3, #1}}%
+  }{\codeout@missing{#2}}}
+
+% internal: \codeout@output{extra tcolorbox options}{listings options}{output path}
+\newcommand{\codeout@output}[3]{%
+  \IfFileExists{#3}{%
+    \tcbinputlisting{outbox, #1, listing file={#3},
+      title={Output}, after title={\hfill\ttfamily\mdseries\codeout@path{#3}},
+      listing options={style=outputstyle, #2}}%
+  }{\codeout@missing{#3}}}
+
+% \lstoutput[listings options]{output path}
+\NewDocumentCommand{\lstoutput}{O{} m}{\codeout@output{}{#1}{#2}}
+
+% internal: code and output side by side; #1 = overlay spec for the output
+% \codeout@side{overlay}{code width}{code opts}{output opts}{code}{Language}{output}
+\newcommand{\codeout@side}[7]{%
+  \begin{columns}[T]
+    \begin{column}{#2\textwidth}
+      \lstcode[#3]{#5}{#6}
+    \end{column}
+    \begin{column}{\dimexpr0.98\textwidth-#2\textwidth\relax}
+      \uncover<#1>{\lstoutput[#4]{#7}}
+    \end{column}
+  \end{columns}}
+
+% ---------------------------------------------------------------------
+%  One slide
+% ---------------------------------------------------------------------
+% \lstcodedown[code opts][output opts]{code path}{Language}{output path}
+\NewDocumentCommand{\lstcodedown}{O{} O{} m m m}{%
+  \lstcode[#1]{#3}{#4}%
+  \vspace{1pt}%
+  \lstoutput[#2]{#5}}
+
+% \lstcoderight[code width][code opts][output opts]{code path}{Language}{output path}
+\NewDocumentCommand{\lstcoderight}{O{0.56} O{} O{} m m m}{%
+  \codeout@side{1-}{#1}{#2}{#3}{#4}{#5}{#6}}
+
+% ---------------------------------------------------------------------
+%  Two slides: code on slide 1, output added on slide 2
+%  (\uncover keeps the output's space reserved, so nothing jumps, and
+%   the rest of the frame is not delayed)
+% ---------------------------------------------------------------------
+% \lstcodedownstep[code opts][output opts]{code path}{Language}{output path}
+\NewDocumentCommand{\lstcodedownstep}{O{} O{} m m m}{%
+  \lstcode[#1]{#3}{#4}%
+  \vspace{1pt}%
+  \uncover<2->{\lstoutput[#2]{#5}}}
+
+% \lstcoderightstep[code width][code opts][output opts]{code path}{Language}{output path}
+\NewDocumentCommand{\lstcoderightstep}{O{0.56} O{} O{} m m m}{%
+  \codeout@side{2-}{#1}{#2}{#3}{#4}{#5}{#6}}
+
+% \lstcodeoverlaystep[code opts][output opts][output width]{x,y}{code path}{Language}{output path}
+%   slide 1: the code.
+%   slide 2: the output, floating on top, upper-left corner at (x,y)
+%            measured from the upper-left corner of the slide (x right, y down).
+\def\codeout@splitxy#1,#2\@nil{\def\codeout@x{#1}\def\codeout@y{#2}}
+\NewDocumentCommand{\lstcodeoverlaystep}{O{} O{} O{0.45\textwidth} m m m m}{%
+  \codeout@splitxy#4\@nil
+  \lstcode[#1]{#5}{#6}%
+  \only<2->{%
+    \begin{textblock*}{#3}(\codeout@x,\codeout@y)
+      \codeout@output{overlaybox}{#2}{#7}%
+    \end{textblock*}}}
+
+% ---------------------------------------------------------------------
+%  Helper: \slidegrid draws a labeled 1 cm grid over the whole slide
+%  (works for any slide size, e.g. 16 x 9 cm or 12.8 x 9.6 cm)
+% ---------------------------------------------------------------------
+\newcommand{\slidegrid}{%
+  \pgfmathsetmacro{\codeout@W}{\paperwidth/1cm}%
+  \pgfmathsetmacro{\codeout@H}{\paperheight/1cm}%
+  \pgfmathtruncatemacro{\codeout@nx}{\codeout@W-0.5}%
+  \pgfmathtruncatemacro{\codeout@ny}{\codeout@H-0.5}%
+  \begin{textblock*}{\paperwidth}(0cm,0cm)
+    \begin{tikzpicture}[x=1cm, y=-1cm]
+      \useasboundingbox (0,0) rectangle (\codeout@W,\codeout@H);
+      \draw[red!55, thin] (0,0) grid (\codeout@W,\codeout@H);
+      \foreach \i in {1,...,\codeout@nx}
+        \node[font=\scriptsize\bfseries, text=red!80!black, fill=white, fill opacity=0.8,
+              text opacity=1, inner sep=1pt] at (\i,0.55) {\i};
+      \foreach \j in {1,...,\codeout@ny}
+        \node[font=\scriptsize\bfseries, text=red!80!black, fill=white, fill opacity=0.8,
+              text opacity=1, inner sep=1pt] at (0.3,\j) {\j};
+    \end{tikzpicture}
+  \end{textblock*}}
+
+\endinput

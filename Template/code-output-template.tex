@@ -1,0 +1,522 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+% =====================================================================
+%  Code + Output presentation template
+%  ---------------------------------------------------------------------
+%  The macros live in the shared library  codeoutput.sty  (see its header
+%  for the full list). This file only loads it and shows examples.
+%  run_examples.sh runs codeoutput/<name>.<ext> and writes codeoutput/<name>.txt.
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+\useoutertheme{split}
+\useinnertheme{rounded}
+\usecolortheme{whale}
+\usecolortheme{orchid}
+\setbeamertemplate{blocks}[rounded]
+\setbeamertemplate{navigation symbols}{}
+% "i / N" on every frame comes from hblibPresentation.sty (\insertshorttitle)
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+
+
+\usepackage{hblibCodeoutput}   % lib code + output macros: \lstcode, \lstcodedown, ...
+\usepackage{hblibPresentation}   % lib pesentation libray 
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\definecolor{gitred}{RGB}{240,80,50}
+\newcommand{\cmd}[1]{\texttt{\color{gitred}#1}}
+
+% ---------------------------------------------------------------------
+\title{Code and Output}
+\subtitle{A Template That Reads Both from Files}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \tableofcontents
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section[Usage]{How to Use This Template}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Project layout and workflow}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[language={}, basicstyle=\ttfamily\footnotesize, frame=single,
+                   backgroundcolor=\color{codebg}, rulecolor=\color{gray!40}]
+project/
+|-- code-output-template.tex
+|-- hblibCodeoutput.sty
+|-- hblibPresentation.sty
+|-- run_examples.sh
+|-- codeoutput/
+|   |-- fibonacci.py
+|   |-- fibonacci.txt
+|   |-- factorial.c
+|   |-- factorial.txt
+|   |-- Hello.java
+|   `-- Hello.txt
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \begin{enumerate}\small
+        \item Load the library: \verb|\usepackage{codeoutput}|
+        \item Put each program in \texttt{code/}
+        \item Run \cmd{sh run\_examples.sh}. It runs every program and saves what it prints
+              (stdout \emph{and} stderr) to \texttt{codeoutput/<name>.txt}
+        \item Compile the slides: \cmd{pdflatex code-output-template.tex}
+      \end{enumerate}
+
+      \begin{block}{One source of truth}
+        \small Edit the program, re-run the script, recompile. The code and its output on
+        the slides can never disagree, because neither is copied into the \texttt{.tex}.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The macros}
+  \footnotesize
+  \begin{tabular}{@{}L{0.28\textwidth}L{0.66\textwidth}@{}}
+    \toprule
+    \textbf{Macro} & \textbf{Shows} \\
+    \midrule
+    \texttt{\textbackslash lstcode}        & code only \\
+    \texttt{\textbackslash lstoutput}      & output only \\
+    \texttt{\textbackslash lstcodedown}         & code, then output below \\
+    \texttt{\textbackslash lstcoderight}     & code left, output right \\
+    \midrule
+    \multicolumn{2}{@{}l}{\emph{Code on the first slide, output added on the second:}} \\
+    \texttt{\textbackslash lstcodedownstep}     & output below the code \\
+    \texttt{\textbackslash lstcoderightstep} & output to the right of the code \\
+    \texttt{\textbackslash lstcodeoverlaystep}  & output floats on top, upper-left corner at $(x,y)$ \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.2em}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[language={[LaTeX]TeX}, basicstyle=\ttfamily\scriptsize, frame=single,
+                   backgroundcolor=\color{codebg}, rulecolor=\color{gray!40}]
+\lstcode           [code opts]{code path}{Language}
+\lstoutput         [output opts]{output path}
+\lstcodedown       [code opts][output opts]{code path}{Language}{output path}
+\lstcoderight      [code width][code opts][output opts]{code path}{Language}{output path}
+\lstcodedownstep   [code opts][output opts]{code path}{Language}{output path}
+\lstcoderightstep  [code width][code opts][output opts]{code path}{Language}{output path}
+\lstcodeoverlaystep[code opts][output opts][output width]{x,y}
+                   {code path}{Language}{output path}
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Paths and options}
+  \begin{itemize}\small
+    \item Paths are \textbf{relative to the \texttt{.tex} file}, so code and output can live
+          anywhere: \texttt{code/primes.py}, \texttt{../week3/sort.c}, \texttt{lab2/out.txt}
+    \item The code and output paths are given separately, so one program can have
+          several outputs (e.g.\ \texttt{codeoutput/run1.txt}, \texttt{codeoutput/run2.txt})
+    \item Optional arguments take ordinary \texttt{listings} options:
+  \end{itemize}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[language={[LaTeX]TeX}, basicstyle=\ttfamily\scriptsize, frame=single,
+                   backgroundcolor=\color{codebg}, rulecolor=\color{gray!40}]
+\lstcode[firstline=4, lastline=9, firstnumber=4]{code/factorial.c}{C}  % excerpt
+\lstcodedown[][lastline=5]{code/primes.py}{Python}{codeoutput/primes.txt}  % 5 output lines
+\lstcoderight[0.6][basicstyle=\ttfamily\scriptsize]
+   {code/git-demo.sh}{bash}{codeoutput/git-demo.txt}                       % smaller code
+\lstcodeoverlaystep[][][0.4\textwidth]{8.6cm,2.3cm}
+   {code/primes.py}{Python}{codeoutput/primes.txt}                         % at (8.6,2.3)
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Sharing the library}
+  All macros live in \texttt{codeoutput.sty}. Load it in any beamer presentation:
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[
+		language={[LaTeX]TeX}, basicstyle=\ttfamily\scriptsize, frame=single,
+		backgroundcolor=\color{codebg}, rulecolor=\color{gray!40}
+		]
+	\usepackage{codeoutput}
+	\definecolor{codeframe}{RGB}{120,40,120}   % optional: recolor after loading
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \textbf{Where to put the file}
+      \begin{itemize}\small
+        \item \textbf{One project:} next to the \texttt{.tex} file
+        \item \textbf{All projects:} in your personal texmf tree, e.g.\\
+              \texttt{\textasciitilde/texmf/tex/latex/codeoutput/} (Linux),\\
+              \texttt{\textasciitilde/Library/texmf/tex/latex/codeoutput/} (macOS)
+        \item Check with \cmd{kpsewhich codeoutput.sty}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \textbf{Colors you can change}
+      \begin{itemize}\small
+        \item code: \texttt{codebg}, \texttt{codeframe}, \texttt{codekw}, \texttt{codestr}, \texttt{codecmt}
+        \item output: \texttt{termbg}, \texttt{termfg}, \texttt{termframe}
+      \end{itemize}
+      \small The full macro list is in the header of \texttt{codeoutput.sty}.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+%\section[Python]{Python Examples}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[CodeLocation]{Code location}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[down]{Output at below}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Code, then output: \texttt{\textbackslash lstcodedown}}
+  \lstcodedown{codeoutput/fibonacci.py}{Python}{codeoutput/fibonacci.txt}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[right]{Output at right}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Side by side: \texttt{\textbackslash lstcoderight}}
+  \lstcoderight{codeoutput/primes.py}{Python}{codeoutput/primes.txt}
+
+  \vspace{0.5em}
+  \small The code box takes 56\% of the width by default; change it with the first optional
+  argument, e.g.\ \verb|\lstcoderight[0.65]{...}{...}{...}|.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[downStep]{Output at below with step}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Output on the next click: \texttt{\textbackslash lstcodedownstep}}
+  \lstcodedownstep{codeoutput/grades.py}{Python}{codeoutput/grades.txt}
+
+  \small Slide 1 shows the code; slide 2 adds the output. Turkish letters work in both.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[rightStep]{Output at right with step}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Side by side, output on the next click: \texttt{\textbackslash lstcoderightstep}}
+  \lstcoderightstep{codeoutput/fibonacci.py}{Python}{codeoutput/fibonacci.txt}
+
+  \vspace{0.5em}
+  \small The output's space is reserved on slide 1, so nothing moves when it appears.
+  Text after the macro (like this line) is shown on both slides.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[error]{Errors as output}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Errors are output too}
+  \lstcodedown[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/divide.py}{Python}{codeoutput/divide.txt}
+
+  \small The runner also captures stderr, so tracebacks appear exactly as students see them.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Overlay]{Output as an Overlay}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[onTop]{Output on top of the code}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Output on top of the code: \texttt{\textbackslash lstcodeoverlaystep}}
+  \lstcodeoverlaystep[][][0.4\textwidth]{8.9cm,2.1cm}{codeoutput/primes.py}{Python}{codeoutput/primes.txt}
+
+  \small \only<1>{Slide 1: only the code. Ask what it prints, then go to the next slide.}%
+  \only<2>{Slide 2: the output floats on top, its upper-left corner at \texttt{(8.9cm,2.1cm)}.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[cover]{Output covers the code}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The overlay can cover part of the code}
+  \lstcodeoverlaystep[basicstyle=\ttfamily\small][basicstyle=\ttfamily\scriptsize][0.72\textwidth]%
+    {3.5cm,3.6cm}{codeoutput/divide.py}{Python}{codeoutput/divide.txt}
+
+  \vspace{0.3em}
+  \small \only<1>{What happens on line 6?}\only<2>{The traceback appears over the code, like a
+  terminal window popping up.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+%\section[C, Java]{C and Java Examples}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Part]{Showing a part of a program}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[allCode]{The code}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A C program}
+  \lstcoderight[0.6][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/factorial.c}{C}{codeoutput/factorial.txt}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[segment]{A segment of the code}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Showing only part of a file}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstcode[firstline=4, lastline=9, firstnumber=4]{codeoutput/factorial.c}{C}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \lstoutput[firstline=5, lastline=7]{codeoutput/factorial.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.5em}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[language={[LaTeX]TeX}, basicstyle=\ttfamily\scriptsize, frame=single,
+                   backgroundcolor=\color{codebg}, rulecolor=\color{gray!40}]
+\lstcode[firstline=4, lastline=9, firstnumber=4]{codeoutput/factorial.c}{C}
+\lstoutput[firstline=5, lastline=7]{codeoutput/factorial.txt}
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+  \small \texttt{firstnumber} keeps the line numbers the same as in the real file.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Languages]{Some languages}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Java]{Java Example}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A Java program}
+  \lstcodedown[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Hello.java}{Java}{codeoutput/Hello.txt}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Shell]{Shell Example}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A shell script: Git in action}
+  \lstcoderight[0.54][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/git-demo.sh}{bash}{codeoutput/git-demo.txt}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection{Help}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Tips]{Tips}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Tips}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}\small
+        \item \textbf{Too long?} Show an excerpt with \texttt{firstline}/\texttt{lastline},
+              or shrink the font with \texttt{basicstyle=\textbackslash ttfamily\textbackslash scriptsize}
+        \item \textbf{New language?} Add a line to \texttt{run\_examples.sh}, and use any
+              \texttt{listings} language name (\texttt{Python}, \texttt{C}, \texttt{Java},
+              \texttt{bash}, \texttt{SQL}, \texttt{Haskell}, \dots)
+        \item \textbf{Run one program:} \cmd{sh run\_examples.sh primes.py}
+        \item \textbf{Frames} must be \texttt{[fragile]} (they already are in this template)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \small \textbf{A missing file does not stop the build.}
+      \verb|\lstcode{codeoutput/nothere.py}{Python}| gives:
+      \vspace{0.3em}
+
+      \lstcode{codeoutput/nothere.py}{Python}
+
+      \small so you can see at a glance which program still has to be written or run.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[slidegrid]{slidegrid}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Finding $x,y$: \texttt{\textbackslash slidegrid}}
+  \slidegrid
+  \lstcodeoverlaystep[basicstyle=\ttfamily\scriptsize][][0.4\textwidth]{8.9cm,2.1cm}%
+    {codeoutput/primes.py}{Python}{codeoutput/primes.txt}
+
+  \small Put \verb|\slidegrid| in a frame to draw a 1\,cm grid, read off $(x,y)$ for the
+  overlay's upper-left corner, then remove it. The slide is 16\,cm $\times$ 9\,cm.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+\end{document}
