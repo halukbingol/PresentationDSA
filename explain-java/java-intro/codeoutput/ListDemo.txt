@@ -1,0 +1,6 @@
+[CSE 101, CSE 211, MATH 151] size=3
+[CSE 101, CSE 112, CSE 211]
+true
+- CSE 101
+- CSE 112
+- CSE 211

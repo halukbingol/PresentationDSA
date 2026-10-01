@@ -1,13 +1,26 @@
+% !TEX spellcheck = en_US
+
 \documentclass[aspectratio=169,10pt,compress]{beamer}
 
-\useoutertheme{split}
-\useinnertheme{rounded}
-\usecolortheme{whale}
-\usecolortheme{orchid}
-\setbeamertemplate{blocks}[rounded]
-\setbeamertemplate{navigation symbols}{}
-\setbeamertemplate{page number in head/foot}[totalframenumber]
-% split footline shows "i / N" (frame number / total frames) on every frame
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V beamer
+	\useoutertheme{split}
+	\useinnertheme{rounded}
+	\usecolortheme{whale}
+	\usecolortheme{orchid}
+	\setbeamertemplate{blocks}[rounded]
+	\setbeamertemplate{navigation symbols}{}
+	\setbeamertemplate{page number in head/foot}[totalframenumber]
+	% "i / N" on every frame comes from hblibPresentation.sty (\insertshorttitle)
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V beamer
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation 
+	\usepackage{../../hblib/hblibCodeoutput} % lib code listing
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
 
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
@@ -67,7 +80,9 @@
     Faculty of Computer and Information Sciences\\
     Yeditepe University
 }
-\date{}
+\date{
+	{\tiny \hbTimeStamp}
+}
 
 \begin{document}
 

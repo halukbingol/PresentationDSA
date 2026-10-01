@@ -1,0 +1,720 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+% =====================================================================
+%  Introduction to Java
+%  ---------------------------------------------------------------------
+%  Built on hbCisLaTeXTemplate.tex. Every program and its output are read
+%  from codeoutput/ (nothing is copied into this .tex):
+%     codeoutput/<Name>.java   the program
+%     codeoutput/<Name>.in     keyboard input (optional)
+%     codeoutput/<Name>.txt    what it printed, made by:  sh run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+\useoutertheme{split}
+\useinnertheme{rounded}
+\usecolortheme{whale}
+\usecolortheme{orchid}
+\setbeamertemplate{blocks}[rounded]
+\setbeamertemplate{navigation symbols}{}
+% "i / N" on every frame comes from hblibPresentation.sty (\insertshorttitle)
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+
+
+\usepackage{hblibCodeoutput}   % lib code + output macros: \lstcode, \lstcodedown, ...
+\usepackage{hblibPresentation}   % lib pesentation libray
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\definecolor{gitred}{RGB}{240,80,50}
+\newcommand{\cmd}[1]{\texttt{\color{gitred}#1}}
+
+% ---------------------------------------------------------------------
+\title{Introduction to Java}
+\subtitle{A First Tutorial with Runnable Examples}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \tableofcontents[sections={1-5}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \tableofcontents[sections={6-9}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Intro]{What Is Java?}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Overview]{Java at a glance}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Java at a glance}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \begin{itemize}\small
+        \item Created at Sun Microsystems (James Gosling), released in 1995; now developed by Oracle and the OpenJDK community
+        \item \textbf{Object-oriented}: programs are built from classes and objects
+        \item \textbf{Statically typed}: every variable has a type, checked before the program runs
+        \item \textbf{Garbage collected}: no manual memory management
+        \item \textbf{Portable}: ``write once, run anywhere''
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{block}{Where Java is used}
+        \small
+        \begin{itemize}
+          \item Server and enterprise software
+          \item Android apps (with Kotlin)
+          \item Big-data tools such as Hadoop
+          \item Teaching: a common first ``serious'' language
+        \end{itemize}
+      \end{block}
+      \begin{alertblock}{What you need}
+        \small A \textbf{JDK} (Java Development Kit), e.g.\ a current LTS release such as Java 21 or 25.
+        The examples in these slides were run with Java 21.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[JVM]{From source code to a running program}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{From source code to a running program}
+  \begin{center}
+  \begin{tikzpicture}[
+      box/.style={draw, thick, rounded corners, minimum width=2.9cm, minimum height=1.1cm,
+                  align=center, font=\small},
+      os/.style={draw, rounded corners, fill=gray!10, minimum width=1.9cm, minimum height=0.6cm,
+                 font=\scriptsize},
+      arr/.style={-{Stealth[length=3mm]}, thick}]
+    \node[box, fill=blue!8] (src) at (0,0) {\texttt{HelloWorld.java}\\ \scriptsize source code};
+    \node[box, fill=orange!12] (cls) at (5,0) {\texttt{HelloWorld.class}\\ \scriptsize bytecode};
+    \node[box, fill=green!10] (jvm) at (10,0) {\textbf{JVM}\\ \scriptsize Java Virtual Machine};
+    \draw[arr] (src) -- node[above, font=\ttfamily\small]{javac} node[below, font=\scriptsize]{compile} (cls);
+    \draw[arr] (cls) -- node[above, font=\ttfamily\small]{java} node[below, font=\scriptsize]{run} (jvm);
+    \node[os] (w) at (8,-1.6) {Windows};
+    \node[os] (m) at (10,-1.6) {macOS};
+    \node[os] (l) at (12,-1.6) {Linux};
+    \foreach \o in {w,m,l} \draw[thick, gray] (jvm.south) -- (\o.north);
+  \end{tikzpicture}
+  \end{center}
+
+  \begin{columns}[T]
+    \begin{column}{0.58\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[language=bash, basicstyle=\ttfamily\scriptsize, frame=single,
+                   backgroundcolor=\color{codebg}, rulecolor=\color{gray!40}, numbers=none]
+javac HelloWorld.java   # compile: makes .class
+java HelloWorld         # run (no .class at the end!)
+java HelloWorld.java    # Java 11+: compile and run
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+    \end{column}
+    \begin{column}{0.38\textwidth}
+      \small The same \texttt{.class} file runs on every operating system that has a JVM.
+      That is what ``write once, run anywhere'' means.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[First]{Your First Program}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Hello]{Hello, World!}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Hello, World!}
+  \lstcodedown{codeoutput/HelloWorld.java}{Java}{codeoutput/HelloWorld.txt}
+
+  \begin{itemize}\small
+    \item \texttt{public class HelloWorld}: the class name must match the file name \texttt{HelloWorld.java}
+    \item \texttt{public static void main(String[] args)}: where every program starts
+    \item \texttt{System.out.println(...)}: prints a line; \texttt{System.out.print(...)} prints without a newline
+    \item Every statement ends with \texttt{;} and blocks are enclosed in \texttt{\{ \}}
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Basics]{Variables, Types and Operators}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Types]{Primitive types}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Primitive types}
+  \small
+  \begin{tabular}{@{}L{0.13\textwidth}L{0.1\textwidth}L{0.33\textwidth}L{0.36\textwidth}@{}}
+    \toprule
+    \textbf{Type} & \textbf{Bits} & \textbf{Values} & \textbf{Example} \\
+    \midrule
+    \texttt{byte}    & 8  & $-128$ to $127$                  & \texttt{byte b = 100;} \\
+    \texttt{short}   & 16 & $-32\,768$ to $32\,767$          & \texttt{short s = 2000;} \\
+    \texttt{int}     & 32 & about $\pm 2.1$ billion          & \texttt{int count = 42;} \\
+    \texttt{long}    & 64 & about $\pm 9.2 \times 10^{18}$   & \texttt{long big = 9\_000\_000\_000L;} \\
+    \texttt{float}   & 32 & about 7 significant digits       & \texttt{float f = 3.14f;} \\
+    \texttt{double}  & 64 & about 15 significant digits      & \texttt{double d = 3.14;} \\
+    \texttt{char}    & 16 & one Unicode character            & \texttt{char c = 'A';} \\
+    \texttt{boolean} & -- & \texttt{true} or \texttt{false}  & \texttt{boolean ok = true;} \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.6em}
+  \begin{itemize}
+    \item \texttt{String} is \textbf{not} a primitive type: it is a class (note the capital \texttt{S})
+    \item Use \texttt{int} and \texttt{double} unless you have a reason not to
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Variables]{Variables}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Variables: predict the output}
+  \lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Variables.java}{Java}{codeoutput/Variables.txt}
+
+  \small \texttt{+} with a \texttt{String} joins text. \texttt{final} makes a constant; by convention its name is in \texttt{UPPER\_CASE}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Operators]{Operators}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Operators and integer division}
+  \lstcodeoverlaystep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize][0.27\textwidth]{11.6cm,2.2cm}%
+    {codeoutput/Operators.java}{Java}{codeoutput/Operators.txt}
+
+  \small \hRemark{Pitfall:} \texttt{17 / 5} is \texttt{3}, not \texttt{3.4}. If both operands are \texttt{int}, the result is
+  an \texttt{int}. Cast one of them: \texttt{(double) a / b}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Strings]{Strings}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Strings}
+  \lstcodeoverlaystep[basicstyle=\ttfamily\scriptsize][][0.3\textwidth]{11.0cm,2.2cm}%
+    {codeoutput/Strings.java}{Java}{codeoutput/Strings.txt}
+
+  \small \only<1>{Why might \texttt{a == b} and \texttt{a.equals(b)} give different answers?}%
+  \only<2>{\texttt{==} asks ``same object?''; \texttt{.equals} asks ``same characters?''.
+  Always compare strings with \texttt{.equals}.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Input]{Reading input}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reading input with \texttt{Scanner}}
+  \begin{columns}[T]
+    \begin{column}{0.66\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Greet.java}{Java}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize, numbers=none]{codeoutput/Greet.in}{}
+      \lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Greet.txt}
+    \end{column}
+  \end{columns}
+
+  \small \texttt{nextLine()} reads a line, \texttt{nextInt()} a number. The input came from \texttt{Greet.in}, so it is not echoed.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Control]{Making Decisions and Repeating}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[if]{if / else}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Decisions: \texttt{if} / \texttt{else} (first true condition wins)}
+  \lstcoderightstep[0.62][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/LetterGrade.java}{Java}{codeoutput/LetterGrade.txt}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[switch]{switch}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Choosing among many values: \texttt{switch}}
+  \lstcoderight[0.71][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/DayType.java}{Java}{codeoutput/DayType.txt}
+
+  \begin{itemize}\small
+    \item The arrow form \texttt{case ... ->} (Java 14+) needs no \texttt{break} and can return a value
+    \item \texttt{default} handles every value not listed
+    \item Older code uses \texttt{case X:} with \texttt{break;}. Forgetting \texttt{break} falls through to the next case
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Loops]{Loops}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Repeating: \texttt{for} and \texttt{while}}
+  \lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Loops.java}{Java}{codeoutput/Loops.txt}
+
+  \small \texttt{for (start; condition; update)}: the condition is checked \emph{before} every round.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Changing the flow: \texttt{break} and \texttt{continue}}
+  \lstcoderightstep[0.64][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/BreakContinue.java}{Java}{codeoutput/BreakContinue.txt}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Methods]{Methods}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Methods]{Defining and calling methods}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Defining and calling methods}
+  \lstcodeoverlaystep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize][0.3\textwidth]{11.3cm,4.4cm}%
+    {codeoutput/Methods.java}{Java}{codeoutput/Methods.txt}
+
+  \small A method has a return type, a name and parameters. \hRemark{Overloading}: two methods may share a name if their parameter types differ.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Recursion]{Recursion}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Recursion: a method that calls itself}
+  \lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Factorial.java}{Java}{codeoutput/Factorial.txt}
+
+  \begin{itemize}\small
+    \item Every recursive method needs a \textbf{base case} that stops the recursion
+    \item \texttt{long} holds up to $20!$; $21!$ is too large and would silently overflow
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Arrays]{Arrays and Lists}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Arrays]{Arrays}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Arrays: a fixed number of values}
+  \lstcoderight[0.68][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/ArraysDemo.java}{Java}{codeoutput/ArraysDemo.txt}
+
+  \small Indices start at \texttt{0}, so the last element is \texttt{a[a.length - 1]}. The size of an array cannot change.
+  A 2D array is an array of arrays: \texttt{int[][] t = new int[3][4];}, then \texttt{t[1][2] = 7;}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[ArrayList]{ArrayList}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{ArrayList}: a list that can grow}
+  \lstcodeoverlaystep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize][0.41\textwidth]{9.9cm,2.2cm}%
+    {codeoutput/ListDemo.java}{Java}{codeoutput/ListDemo.txt}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Array or \texttt{ArrayList}?}
+  \small
+  \begin{tabular}{@{}L{0.24\textwidth}L{0.33\textwidth}L{0.35\textwidth}@{}}
+    \toprule
+    & \textbf{Array} & \textbf{\texttt{ArrayList}} \\
+    \midrule
+    Size              & fixed when created            & grows and shrinks \\
+    Create            & \texttt{int[] a = new int[5];} & \texttt{new ArrayList<Integer>()} \\
+    Element types     & primitives or objects         & objects only (\texttt{Integer}, not \texttt{int}) \\
+    Read / write      & \texttt{a[i]}, \texttt{a[i] = x} & \texttt{list.get(i)}, \texttt{list.set(i, x)} \\
+    Size              & \texttt{a.length}             & \texttt{list.size()} \\
+    Print             & \texttt{Arrays.toString(a)}   & \texttt{System.out.println(list)} \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.8em}
+  \begin{block}{Rule of thumb}
+    Use an array when the size is known and fixed; otherwise use an \texttt{ArrayList}.
+  \end{block}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Objects]{Classes and Objects}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Idea]{Class and object}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A class is a blueprint, an object is a thing built from it}
+  \begin{center}
+  \begin{tikzpicture}[
+      cls/.style={draw=blue!60, thick, fill=blue!6, rounded corners, align=left,
+                  font=\ttfamily\scriptsize, inner sep=5pt},
+      obj/.style={draw=orange!80!black, thick, fill=orange!8, rounded corners, align=left,
+                  font=\ttfamily\scriptsize, inner sep=5pt},
+      arr/.style={-{Stealth[length=2.5mm]}, thick, dashed, gray}]
+    \node[cls] (c) at (0,0) {\textbf{class Student}\\[2pt]
+      \textit{fields:}\ \ name, credits\\
+      \textit{constructor:}\ Student(name)\\
+      \textit{methods:}\ enroll(c), toString()};
+    \node[obj] (a) at (6.5,0.9) {\textbf{a}: Student\\ name = "Zeynep"\\ credits = 10};
+    \node[obj] (b) at (6.5,-0.9) {\textbf{b}: Student\\ name = "Can"\\ credits = 5};
+    \draw[arr] (c.east) -- node[above, font=\scriptsize, sloped]{new} (a.west);
+    \draw[arr] (c.east) -- node[below, font=\scriptsize, sloped]{new} (b.west);
+  \end{tikzpicture}
+  \end{center}
+
+  \begin{itemize}\small
+    \item \textbf{Fields} store each object's data; every object has its own copy
+    \item The \textbf{constructor} runs when \texttt{new} creates an object
+    \item \textbf{Methods} are what an object can do; \texttt{this} means ``the current object''
+    \item \texttt{private} hides a field from other classes: change it only through methods
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Student]{The Student class}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The \texttt{Student} class in code}
+  \begin{columns}[T]
+    \begin{column}{0.51\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize, firstline=1, lastline=18]{codeoutput/StudentDemo.java}{Java}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize, firstline=20, lastline=30, firstnumber=20]{codeoutput/StudentDemo.java}{Java}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/StudentDemo.txt}}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Errors]{When Things Go Wrong}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Compile]{Compile-time errors}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Compile-time errors: found by \texttt{javac}}
+  \lstcodedown{codeoutput/CompileError.java}{Java}{codeoutput/CompileError.txt}
+
+  \small \texttt{javac} refuses to create a \texttt{.class} file, so the program never runs.
+  The message gives the file, the line (\texttt{3}) and a \texttt{\^{}} under the problem.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Runtime]{Run-time errors}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Run-time errors: exceptions}
+  \lstcodedownstep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/RuntimeError.java}{Java}{codeoutput/RuntimeError.txt}
+
+  \small \only<1>{The program compiles. What happens when it runs?}%
+  \only<2>{The loop runs one step too far: \texttt{<=} should be \texttt{<}. The last line of the message names the method and line.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reading error messages}
+  \small
+  \begin{tabular}{@{}L{0.2\textwidth}L{0.36\textwidth}L{0.36\textwidth}@{}}
+    \toprule
+    & \textbf{Compile-time error} & \textbf{Run-time error (exception)} \\
+    \midrule
+    Found by        & \texttt{javac}, before running   & the JVM, while running \\
+    Typical causes  & missing \texttt{;}, wrong type, misspelled name & index out of range, \texttt{null}, divide by zero \\
+    Message         & \texttt{File.java:3: error: ...}  & \texttt{Exception in thread "main" ...} \\
+    Where to look   & the line number and the \texttt{\^{}} mark & the \texttt{at Class.method(File.java:5)} lines \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.8em}
+  \begin{block}{Tip}
+    Fix the \textbf{first} error first: one mistake can cause several messages.
+  \end{block}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Cheat]{Cheat sheet}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[language=Java, basicstyle=\ttfamily\scriptsize, frame=single,
+                   backgroundcolor=\color{codebg}, rulecolor=\color{gray!40}, numbers=none]
+int n = 5;  double x = 2.5;
+String s = "hi";  boolean ok = true;
+final int MAX = 10;
+
+if (n > 0) { ... } else { ... }
+for (int i = 0; i < n; i++) { ... }
+while (n > 0) { n--; }
+for (int v : array) { ... }
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+    \end{column}
+    \begin{column}{0.49\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[language=Java, basicstyle=\ttfamily\scriptsize, frame=single,
+                   backgroundcolor=\color{codebg}, rulecolor=\color{gray!40}, numbers=none]
+static int square(int x) { return x * x; }
+
+int[] a = {3, 1, 2};   a.length
+ArrayList<String> list = new ArrayList<>();
+list.add("x");  list.get(0);  list.size()
+
+Scanner in = new Scanner(System.in);
+s1.equals(s2)          // not ==
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Exercises]{Exercises}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Change \texttt{HelloWorld} to print your name and student number on two lines.
+    \item Read two integers with \texttt{Scanner} and print their sum, difference, product, integer quotient and remainder.
+    \item Read a year and print whether it is a leap year (divisible by 4, but not by 100 unless also by 400).
+    \item Print the multiplication table from $1 \times 1$ to $9 \times 9$ using nested \texttt{for} loops.
+    \item Write \texttt{static boolean isPrime(int n)} and use it to print all primes below 100.
+    \item Store 10 grades in an array; print the average, the highest and the lowest.
+    \item Write a class \texttt{Course} with a name, credits and a list of students; add a method that prints the class list.
+    \item Make each error from the ``When Things Go Wrong'' section on purpose, and read the message.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Next]{Next steps}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Next steps}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \textbf{Topics to learn next}
+      \begin{itemize}\small
+        \item Inheritance, interfaces, polymorphism
+        \item Exception handling: \texttt{try} / \texttt{catch}
+        \item Collections: \texttt{HashMap}, \texttt{HashSet}
+        \item Reading and writing files
+        \item Unit testing with JUnit
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \textbf{Tools}
+      \begin{itemize}\small
+        \item An IDE: IntelliJ IDEA, VS Code, Eclipse
+        \item A build tool: Maven or Gradle
+        \item Git for version control
+      \end{itemize}
+      \vspace{0.5em}
+      \textbf{Reference}
+      \begin{itemize}\small
+        \item The official Java Tutorials (\texttt{dev.java/learn})
+        \item The Java API documentation
+      \end{itemize}
+    \end{column}
+  \end{columns}
+
+  \vspace{1em}
+  \begin{center}
+    {\Large \textbf{Questions?}}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+\end{document}

@@ -1,0 +1,549 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+% =====================================================================
+%  Dijkstra's shortest path algorithm
+%  ---------------------------------------------------------------------
+%  Pseudo code with algorithm2e (loaded by hblibPresentation.sty with the
+%  options ruled, vlined, linesnumbered). The example trace was produced
+%  by running the algorithm on the example graph.
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V beamer
+	\useoutertheme{split}
+	\useinnertheme{rounded}
+	\usecolortheme{whale}
+	\usecolortheme{orchid}
+	\setbeamertemplate{blocks}[rounded]
+	\setbeamertemplate{navigation symbols}{}
+	\setbeamertemplate{page number in head/foot}[totalframenumber]
+	% "i / N" on every frame comes from hblibPresentation.sty (\insertshorttitle)
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V beamer
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation 
+	\usepackage{../../hblib/hblibCodeoutput} % lib code listing
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array, tikz (arrows.meta) and algorithm2e come from the hblib libraries;
+% amsmath and amssymb come from beamer
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+% ---------------------------------------------------------------------
+%  algorithm2e set-up
+% ---------------------------------------------------------------------
+\SetAlFnt{\small}
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\DontPrintSemicolon
+
+\SetKwFunction{FDijkstra}{Dijkstra}
+\SetKwFunction{FPath}{GetPath}
+\SetKwFunction{FExtractMin}{ExtractMin}
+\SetKwFunction{FDecreaseKey}{DecreaseKey}
+\SetKwProg{Fn}{function}{}{end}
+\SetKw{KwNil}{nil}
+
+% ---------------------------------------------------------------------
+%  graph drawing
+% ---------------------------------------------------------------------
+\definecolor{tree}{RGB}{220,90,20}
+\tikzset{
+  vtx/.style={circle, draw=blue!60!black, thick, fill=blue!8, minimum size=7mm,
+              inner sep=0pt, font=\small\ttfamily},
+  src/.style={vtx, fill=green!20, draw=green!50!black},
+  arc/.style={-{Stealth[length=2.5mm]}, thick, black!55},
+  treearc/.style={-{Stealth[length=2.5mm]}, very thick, tree},
+  wt/.style={font=\small\bfseries, fill=white, inner sep=1pt}
+}
+% the example graph; #1 = style list for the edges of the shortest-path tree
+\newcommand{\examplegraph}[1]{%
+  \begin{tikzpicture}[x=1cm, y=1cm]
+    \node[src] (s) at (0,0)    {s};
+    \node[vtx] (a) at (2,1.3)  {a};
+    \node[vtx] (b) at (2,-1.3) {b};
+    \node[vtx] (c) at (4.6,1.3)  {c};
+    \node[vtx] (d) at (4.6,-1.3) {d};
+    \node[vtx] (t) at (6.8,0)  {t};
+    \draw[arc] (s) -- node[wt]{4} (a);
+    \draw[arc, #1] (s) -- node[wt]{1} (b);
+    \draw[arc, #1] (b) -- node[wt]{2} (a);
+    \draw[arc] (b) -- node[wt, pos=0.25]{5} (c);
+    \draw[arc, #1] (a) -- node[wt]{1} (c);
+    \draw[arc] (a) -- node[wt, pos=0.25]{7} (d);
+    \draw[arc, #1] (c) -- node[wt]{3} (d);
+    \draw[arc] (c) -- node[wt]{6} (t);
+    \draw[arc, #1] (d) -- node[wt]{2} (t);
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------------
+\title{Dijkstra's Shortest Path Algorithm}
+\subtitle{Pseudo Code, Example and Analysis}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Problem]{The Shortest Path Problem}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Definition]{Single-source shortest paths}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Single-source shortest paths}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \textbf{Given}
+      \begin{itemize}\small
+        \item a directed graph $G = (V, E)$
+        \item a weight $w(u, v) \ge 0$ for every edge $(u, v) \in E$
+        \item a source vertex $s \in V$
+      \end{itemize}
+      \textbf{Find}, for every $v \in V$,
+      \begin{itemize}\small
+        \item $\delta(s, v)$: the length of a shortest path from $s$ to $v$
+        \item the path itself
+      \end{itemize}
+      The length of a path $v_{0}, v_{1}, \dots, v_{k}$ is
+      \[
+      	\sum_{i=1}^{k} w(v_{i-1}, v_{i})
+      \]
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{center}
+        \scalebox{0.8}{\examplegraph{}}
+      \end{center}
+      \small Example: the shortest path from \texttt{s} to \texttt{t} has length 9,
+      although the direct-looking route \texttt{s}, \texttt{a}, \texttt{d}, \texttt{t} has length 13.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Algorithm]{The Algorithm}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Idea]{Idea}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Idea: grow a set of finished vertices}
+  \begin{itemize}
+    \item Keep an estimate $d[v]$ of the distance from $s$ to every vertex: $d[s] = 0$, all others $\infty$
+    \item \textbf{Greedy step}: among the vertices not yet finished, pick the one with the smallest $d[u]$.
+          Its estimate is now final: $d[u] = \delta(s, u)$
+    \item \textbf{Relax} every edge $(u, v)$ leaving $u$:
+          \[
+          	\text{if } d[u] + w(u, v) < d[v] \text{ then } d[v] \leftarrow d[u] + w(u, v), \quad \pi[v] \leftarrow u
+          \]
+    \item Repeat until every vertex is finished
+  \end{itemize}
+
+  \vspace{0.4em}
+  \begin{block}{Two arrays}
+    \small $d[v]$: best distance found so far. \quad
+    $\pi[v]$: the vertex before $v$ on that path (its \emph{predecessor}).
+    Following $\pi$ backwards from $v$ gives the path.
+  \end{block}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Pseudo code]{Pseudo code}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Pseudo code}
+  \begin{columns}[T]
+    \begin{column}{0.62\textwidth}
+      \SetAlFnt{\scriptsize}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V alg
+%: -Alg. 
+\begin{algorithm}[H]
+  \caption{Dijkstra's algorithm}
+  \KwIn{graph $G = (V, E)$, weights $w(u, v) \ge 0$, source $s$}
+  \KwOut{distances $d[\,]$ and predecessors $\pi[\,]$}
+  \Fn{\FDijkstra{$G, w, s$}}{
+    \ForEach{$v \in V$}{
+      $d[v] \leftarrow \infty$\;
+      $\pi[v] \leftarrow$ \KwNil\;
+    }
+    $d[s] \leftarrow 0$\;
+    $Q \leftarrow$ priority queue of all $v \in V$, keyed by $d[v]$\;
+    \While{$Q \neq \emptyset$}{
+      $u \leftarrow$ \FExtractMin{$Q$}\tcp*{$d[u]$ is now final}
+      \ForEach{edge $(u, v) \in E$}{
+        \If(\tcp*[f]{relax $(u, v)$}){$d[u] + w(u, v) < d[v]$}{
+          $d[v] \leftarrow d[u] + w(u, v)$\;
+          $\pi[v] \leftarrow u$\;
+          \FDecreaseKey{$Q, v, d[v]$}\;
+        }
+      }
+    }
+    \Return{$d, \pi$}\;
+  }
+\end{algorithm}
+% +++++++++++++++++++++++++++++++++++++++ A alg
+
+    \end{column}
+    \begin{column}{0.35\textwidth}
+      \begin{itemize}\small
+        \item \textbf{Lines 2--6}: every vertex starts \emph{unreached}, except $s$
+        \item \textbf{Line 8}: the vertex closest to $s$ among the unfinished ones
+        \item \textbf{Lines 10--13}: \emph{relaxation}: a shorter way to $v$ through $u$?
+        \item \texttt{DecreaseKey} moves $v$ forward in the queue
+        \item $\infty + w = \infty$, so unreached vertices never improve others
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Path]{Reconstructing the path}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reconstructing the path}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V alg
+%: -Alg. 
+\begin{algorithm}[H]
+  \caption{Shortest path from $s$ to $t$}
+  \KwIn{predecessors $\pi[\,]$ from \FDijkstra, target $t$}
+  \KwOut{the list of vertices on a shortest path}
+  \Fn{\FPath{$\pi, t$}}{
+    \If{$d[t] = \infty$}{
+      \Return{``no path''}\;
+    }
+    $P \leftarrow$ empty list\;
+    $v \leftarrow t$\;
+    \While{$v \neq$ \KwNil}{
+      insert $v$ at the front of $P$\;
+      $v \leftarrow \pi[v]$\;
+    }
+    \Return{$P$}\;
+  }
+\end{algorithm}
+% +++++++++++++++++++++++++++++++++++++++ A alg
+
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \small In the example, $\pi$ is
+      \begin{center}
+        \begin{tabular}{@{}cccccc@{}}
+          \toprule
+          \texttt{s} & \texttt{a} & \texttt{b} & \texttt{c} & \texttt{d} & \texttt{t} \\
+          \midrule
+          nil & \texttt{b} & \texttt{s} & \texttt{a} & \texttt{c} & \texttt{d} \\
+          \bottomrule
+        \end{tabular}
+      \end{center}
+      Starting at \texttt{t} and following $\pi$:
+      \[
+      	t \leftarrow d \leftarrow c \leftarrow a \leftarrow b \leftarrow s
+      \]
+      so the path is \texttt{s}, \texttt{b}, \texttt{a}, \texttt{c}, \texttt{d}, \texttt{t} with length $1 + 2 + 1 + 3 + 2 = 9$.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Example]{A Worked Example}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Trace]{Step by step}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Running Dijkstra from \texttt{s}}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \begin{center}
+        \scalebox{0.75}{\examplegraph{}}
+      \end{center}
+      \small
+      \fbox{\textbf{3}} just extracted (final)\\
+      \textcolor{tree}{\textbf{3}} improved by relaxation\\
+      \textcolor{gray}{3} already final
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \small
+      \begin{tabular}{@{}lcccccc@{}}
+        \toprule
+        \textbf{Step} & $d[s]$ & $d[a]$ & $d[b]$ & $d[c]$ & $d[d]$ & $d[t]$ \\
+        \midrule
+      start & 0 & $\infty$ & $\infty$ & $\infty$ & $\infty$ & $\infty$ \\
+      \onslide<2->{1: extract \texttt{s}} & \onslide<2->{\fbox{\textbf{0}}} & \onslide<2->{\textcolor{tree}{\textbf{4}}} & \onslide<2->{\textcolor{tree}{\textbf{1}}} & \onslide<2->{$\infty$} & \onslide<2->{$\infty$} & \onslide<2->{$\infty$} \\
+      \onslide<3->{2: extract \texttt{b}} & \onslide<3->{\textcolor{gray}{0}} & \onslide<3->{\textcolor{tree}{\textbf{3}}} & \onslide<3->{\fbox{\textbf{1}}} & \onslide<3->{\textcolor{tree}{\textbf{6}}} & \onslide<3->{$\infty$} & \onslide<3->{$\infty$} \\
+      \onslide<4->{3: extract \texttt{a}} & \onslide<4->{\textcolor{gray}{0}} & \onslide<4->{\fbox{\textbf{3}}} & \onslide<4->{\textcolor{gray}{1}} & \onslide<4->{\textcolor{tree}{\textbf{4}}} & \onslide<4->{\textcolor{tree}{\textbf{10}}} & \onslide<4->{$\infty$} \\
+      \onslide<5->{4: extract \texttt{c}} & \onslide<5->{\textcolor{gray}{0}} & \onslide<5->{\textcolor{gray}{3}} & \onslide<5->{\textcolor{gray}{1}} & \onslide<5->{\fbox{\textbf{4}}} & \onslide<5->{\textcolor{tree}{\textbf{7}}} & \onslide<5->{\textcolor{tree}{\textbf{10}}} \\
+      \onslide<6->{5: extract \texttt{d}} & \onslide<6->{\textcolor{gray}{0}} & \onslide<6->{\textcolor{gray}{3}} & \onslide<6->{\textcolor{gray}{1}} & \onslide<6->{\textcolor{gray}{4}} & \onslide<6->{\fbox{\textbf{7}}} & \onslide<6->{\textcolor{tree}{\textbf{9}}} \\
+      \onslide<7->{6: extract \texttt{t}} & \onslide<7->{\textcolor{gray}{0}} & \onslide<7->{\textcolor{gray}{3}} & \onslide<7->{\textcolor{gray}{1}} & \onslide<7->{\textcolor{gray}{4}} & \onslide<7->{\textcolor{gray}{7}} & \onslide<7->{\fbox{\textbf{9}}} \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.6em}
+      \onslide<8->{\textbf{Note:} \texttt{a} was first reached with 4 (via \texttt{s}),
+      then improved to 3 (via \texttt{b}). Likewise $d[c]$: $6 \rightarrow 4$, $d[d]$: $10 \rightarrow 7$, $d[t]$: $10 \rightarrow 9$.}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Tree]{Shortest-path tree}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The result: a shortest-path tree}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{center}
+        \scalebox{0.95}{\examplegraph{treearc}}
+      \end{center}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \small
+      \begin{tabular}{@{}lccl@{}}
+        \toprule
+        $v$ & $d[v]$ & $\pi[v]$ & \textbf{shortest path} \\
+        \midrule
+        \texttt{s} & 0 & nil        & \texttt{s} \\
+        \texttt{a} & 3 & \texttt{b} & \texttt{s b a} \\
+        \texttt{b} & 1 & \texttt{s} & \texttt{s b} \\
+        \texttt{c} & 4 & \texttt{a} & \texttt{s b a c} \\
+        \texttt{d} & 7 & \texttt{c} & \texttt{s b a c d} \\
+        \texttt{t} & 9 & \texttt{d} & \texttt{s b a c d t} \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.6em}
+      The edges $(\pi[v], v)$ form a \textbf{tree} rooted at $s$:
+      one shortest path to \emph{every} vertex, for the price of one run.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Analysis]{Analysis}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Correctness]{Why it works}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Why it works}
+  \begin{block}{Invariant}
+    When a vertex $u$ is extracted from $Q$, $d[u] = \delta(s, u)$.
+  \end{block}
+
+  \vspace{0.3em}
+  \textbf{Sketch of the proof.} Suppose $u$ is the first vertex extracted with $d[u] > \delta(s, u)$.
+  Take a shortest path from $s$ to $u$, and let $y$ be the first vertex on it still in $Q$;
+  its predecessor $x$ is finished, so $(x, y)$ was relaxed and $d[y] = \delta(s, y)$. Then
+  \[
+  	d[y] = \delta(s, y) \le \delta(s, u) < d[u]
+  \]
+  because the weights after $y$ are \textbf{non-negative}. But then \FExtractMin would have chosen $y$,
+  not $u$. Contradiction.
+
+  \vspace{0.4em}
+  \begin{alertblock}{The key assumption}
+    \small $\delta(s, y) \le \delta(s, u)$ holds only because no edge has a negative weight.
+  \end{alertblock}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Negative]{Negative weights}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Negative weights break it}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[x=1cm, y=1cm]
+        \node[src] (s) at (0,0) {s};
+        \node[vtx] (a) at (2.4,0.9) {a};
+        \node[vtx] (b) at (2.4,-0.9) {b};
+        \node[vtx] (c) at (4.6,0.9) {c};
+        \draw[arc] (s) -- node[wt]{2} (a);
+        \draw[arc] (s) -- node[wt]{3} (b);
+        \draw[arc] (b) -- node[wt]{$-2$} (a);
+        \draw[arc] (a) -- node[wt]{1} (c);
+      \end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.56\textwidth}
+      \begin{enumerate}\small
+        \item extract \texttt{s}: $d[a] = 2$, $d[b] = 3$
+        \item extract \texttt{a} (2 is the smallest): relax $(a, c)$, so $d[c] = 3$.
+              \texttt{a} is now ``finished''
+        \item extract \texttt{b}: $3 + (-2) = 1 < 2$, so $d[a] = 1$, but the edge $(a, c)$
+              is never relaxed again
+        \item extract \texttt{c}: $d[c] = 3$
+      \end{enumerate}
+      \small Dijkstra answers $d[c] = 3$; the true distance is $\delta(s, c) = 3 - 2 + 1 = 2$.
+    \end{column}
+  \end{columns}
+
+  \vspace{0.6em}
+  \begin{block}{With negative weights}
+    \small Use the \textbf{Bellman--Ford} algorithm, $O(|V| \cdot |E|)$, which also detects negative cycles.
+  \end{block}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Complexity]{Running time}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Running time}
+  Every vertex is extracted once, and every edge is relaxed once:
+  $|V|$ times \FExtractMin, at most $|E|$ times \FDecreaseKey.
+
+  \vspace{0.5em}
+  \small
+  \begin{tabular}{@{}L{0.26\textwidth}L{0.16\textwidth}L{0.16\textwidth}L{0.3\textwidth}@{}}
+    \toprule
+    \textbf{Priority queue} & \textbf{ExtractMin} & \textbf{DecreaseKey} & \textbf{Total} \\
+    \midrule
+    unsorted array    & $O(|V|)$      & $O(1)$             & $O(|V|^{2})$ \\
+    binary heap       & $O(\log |V|)$ & $O(\log |V|)$      & $O((|V| + |E|) \log |V|)$ \\
+    Fibonacci heap    & $O(\log |V|)$ amortized & $O(1)$ amortized & $O(|E| + |V| \log |V|)$ \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.8em}
+  \normalsize
+  \begin{block}{Which one?}
+    \small Dense graphs ($|E| \approx |V|^{2}$): the simple array is enough.
+    Sparse graphs (road maps, networks): a binary heap. In Java, \texttt{PriorityQueue}
+    has no \texttt{DecreaseKey}; the usual trick is to insert $v$ again with the new distance
+    and skip entries that are out of date.
+  \end{block}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Summary]{Summary and exercises}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Summary}
+  \begin{itemize}
+    \item Dijkstra finds shortest paths from one source to \textbf{all} vertices
+    \item It needs \textbf{non-negative} edge weights
+    \item Greedy: always finish the closest unfinished vertex, then relax its edges
+    \item $d[\,]$ holds the distances, $\pi[\,]$ the shortest-path tree
+    \item With a binary heap: $O((|V| + |E|) \log |V|)$
+  \end{itemize}
+
+  \vspace{0.5em}
+  \textbf{Exercises}
+  \begin{enumerate}\small
+    \item Run the algorithm by hand from \texttt{a} on the example graph. Which vertices are unreachable?
+    \item Change the weight of $(b, a)$ from 2 to 5 and run it again from \texttt{s}. Which paths change?
+    \item Modify the pseudo code to stop as soon as a given target $t$ is extracted.
+    \item Implement the algorithm in Java with \texttt{PriorityQueue} and test it on the example.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+\end{document}

@@ -14,30 +14,56 @@
 % =====================================================================
 %  Code + Output presentation template
 %  ---------------------------------------------------------------------
-%  The macros live in the shared library  codeoutput.sty  (see its header
-%  for the full list). This file only loads it and shows examples.
+%  The macros live in the shared libraries hblibCodeoutput.sty and
+%  hblibPresentation.sty (see their headers). This file loads them and
+%  shows examples.
 %  run_examples.sh runs codeoutput/<name>.<ext> and writes codeoutput/<name>.txt.
 % =====================================================================
 
 \documentclass[aspectratio=169,10pt,compress]{beamer}
 
-\useoutertheme{split}
-\useinnertheme{rounded}
-\usecolortheme{whale}
-\usecolortheme{orchid}
-\setbeamertemplate{blocks}[rounded]
-\setbeamertemplate{navigation symbols}{}
-% "i / N" on every frame comes from hblibPresentation.sty (\insertshorttitle)
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V beamer
+	\useoutertheme{split}
+	\useinnertheme{rounded}
+	\usecolortheme{whale}
+	\usecolortheme{orchid}
+	\setbeamertemplate{blocks}[rounded]
+	\setbeamertemplate{navigation symbols}{}
+	% "i / N" on every frame comes from hblibPresentation.sty (\insertshorttitle)
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A beamer
 
+
+
+
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+%	\usepackage{../../zCisLaTeXTemplate/hblib/hblibPresentation} % lib presentation: i/N, \hSection, algorithm2e, ...
+%	\usepackage{../../zCisLaTeXTemplate/hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstcodedown, ...
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation 
+	\usepackage{../../hblib/hblibCodeoutput} % lib code listing
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array, listings, tikz and algorithm2e come from the hblib libraries
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-\usepackage{xcolor}
 \usepackage{booktabs}
-\usepackage{array}
 
-
-\usepackage{hblibCodeoutput}   % lib code + output macros: \lstcode, \lstcodedown, ...
-\usepackage{hblibPresentation}   % lib pesentation libray 
+% ---------------------------------------------------------------------
+%  algorithm2e set-up (the package is loaded by hblibPresentation)
+% ---------------------------------------------------------------------
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\DontPrintSemicolon
+\SetKwProg{Fn}{function}{}{end}
+\SetKwFunction{FDijkstra}{Dijkstra}
+\SetKwFunction{FExtractMin}{ExtractMin}
+\SetKwFunction{FDecreaseKey}{DecreaseKey}
+\SetKw{KwNil}{nil}
 
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 
@@ -73,7 +99,7 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Outline}
-  \tableofcontents
+  \tableofcontents[hideallsubsections]
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -94,10 +120,11 @@
 %: -Lst.
 \begin{lstlisting}[language={}, basicstyle=\ttfamily\footnotesize, frame=single,
                    backgroundcolor=\color{codebg}, rulecolor=\color{gray!40}]
-project/
-|-- code-output-template.tex
+zCisLaTeXTemplate/hblib/
 |-- hblibCodeoutput.sty
-|-- hblibPresentation.sty
+`-- hblibPresentation.sty
+course/project/
+|-- hbCisLaTeXTemplate.tex
 |-- run_examples.sh
 |-- codeoutput/
 |   |-- fibonacci.py
@@ -113,11 +140,11 @@ project/
     \end{column}
     \begin{column}{0.54\textwidth}
       \begin{enumerate}\small
-        \item Load the library: \verb|\usepackage{codeoutput}|
-        \item Put each program in \texttt{code/}
+        \item Load the libraries: \verb|\usepackage{hblibCodeoutput}|, \verb|\usepackage{hblibPresentation}|
+        \item Put each program in \texttt{codeoutput/}
         \item Run \cmd{sh run\_examples.sh}. It runs every program and saves what it prints
               (stdout \emph{and} stderr) to \texttt{codeoutput/<name>.txt}
-        \item Compile the slides: \cmd{pdflatex code-output-template.tex}
+        \item Compile the slides: \cmd{pdflatex hbCisLaTeXTemplate.tex}
       \end{enumerate}
 
       \begin{block}{One source of truth}
@@ -180,7 +207,7 @@ project/
 \begin{frame}[t,fragile] \frametitle{Paths and options}
   \begin{itemize}\small
     \item Paths are \textbf{relative to the \texttt{.tex} file}, so code and output can live
-          anywhere: \texttt{code/primes.py}, \texttt{../week3/sort.c}, \texttt{lab2/out.txt}
+          anywhere: \texttt{codeoutput/primes.py}, \texttt{../week3/sort.c}, \texttt{lab2/out.txt}
     \item The code and output paths are given separately, so one program can have
           several outputs (e.g.\ \texttt{codeoutput/run1.txt}, \texttt{codeoutput/run2.txt})
     \item Optional arguments take ordinary \texttt{listings} options:
@@ -191,12 +218,12 @@ project/
 %: -Lst.
 \begin{lstlisting}[language={[LaTeX]TeX}, basicstyle=\ttfamily\scriptsize, frame=single,
                    backgroundcolor=\color{codebg}, rulecolor=\color{gray!40}]
-\lstcode[firstline=4, lastline=9, firstnumber=4]{code/factorial.c}{C}  % excerpt
-\lstcodedown[][lastline=5]{code/primes.py}{Python}{codeoutput/primes.txt}  % 5 output lines
+\lstcode[firstline=4, lastline=9, firstnumber=4]{codeoutput/factorial.c}{C}  % excerpt
+\lstcodedown[][lastline=5]{codeoutput/primes.py}{Python}{codeoutput/primes.txt}  % 5 output lines
 \lstcoderight[0.6][basicstyle=\ttfamily\scriptsize]
-   {code/git-demo.sh}{bash}{codeoutput/git-demo.txt}                       % smaller code
+   {codeoutput/git-demo.sh}{bash}{codeoutput/git-demo.txt}                       % smaller code
 \lstcodeoverlaystep[][][0.4\textwidth]{8.6cm,2.3cm}
-   {code/primes.py}{Python}{codeoutput/primes.txt}                         % at (8.6,2.3)
+   {codeoutput/primes.py}{Python}{codeoutput/primes.txt}                         % at (8.6,2.3)
 \end{lstlisting}
 % +++++++++++++++++++++++++++++++++++++++ A lst
 
@@ -209,7 +236,7 @@ project/
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Sharing the library}
-  All macros live in \texttt{codeoutput.sty}. Load it in any beamer presentation:
+  All macros live in \texttt{hblibCodeoutput.sty}. Load it in any beamer presentation:
 
 
 % +++++++++++++++++++++++++++++++++++++++ V lst
@@ -218,7 +245,7 @@ project/
 		language={[LaTeX]TeX}, basicstyle=\ttfamily\scriptsize, frame=single,
 		backgroundcolor=\color{codebg}, rulecolor=\color{gray!40}
 		]
-	\usepackage{codeoutput}
+	\usepackage{hblibCodeoutput}
 	\definecolor{codeframe}{RGB}{120,40,120}   % optional: recolor after loading
 \end{lstlisting}
 % +++++++++++++++++++++++++++++++++++++++ A lst
@@ -229,10 +256,13 @@ project/
       \textbf{Where to put the file}
       \begin{itemize}\small
         \item \textbf{One project:} next to the \texttt{.tex} file
-        \item \textbf{All projects:} in your personal texmf tree, e.g.\\
-              \texttt{\textasciitilde/texmf/tex/latex/codeoutput/} (Linux),\\
-              \texttt{\textasciitilde/Library/texmf/tex/latex/codeoutput/} (macOS)
-        \item Check with \cmd{kpsewhich codeoutput.sty}
+        \item \textbf{All projects:} in your personal texmf tree
+              \begin{itemize}\footnotesize
+                \item Windows (MiKTeX): add a folder in \emph{MiKTeX Console, Settings, Directories}
+                      and put the files in its \texttt{tex/latex/hblib/}
+                \item macOS: \texttt{\textasciitilde/Library/texmf/tex/latex/hblib/}
+              \end{itemize}
+        \item Check with \cmd{kpsewhich hblibCodeoutput.sty}
       \end{itemize}
     \end{column}
     \begin{column}{0.44\textwidth}
@@ -241,15 +271,11 @@ project/
         \item code: \texttt{codebg}, \texttt{codeframe}, \texttt{codekw}, \texttt{codestr}, \texttt{codecmt}
         \item output: \texttt{termbg}, \texttt{termfg}, \texttt{termframe}
       \end{itemize}
-      \small The full macro list is in the header of \texttt{codeoutput.sty}.
+      \small The full macro list is in the header of \texttt{hblibCodeoutput.sty}.
     \end{column}
   \end{columns}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-%\section[Python]{Python Examples}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \hSection[CodeLocation]{Code location}{}{}
@@ -259,6 +285,9 @@ project/
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \subsection[down]{Output at below}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Code, then output: \texttt{\textbackslash lstcodedown}}
@@ -273,6 +302,9 @@ project/
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \subsection[right]{Output at right}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Side by side: \texttt{\textbackslash lstcoderight}}
@@ -290,6 +322,9 @@ project/
 \subsection[downStep]{Output at below with step}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
+
+
+
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Output on the next click: \texttt{\textbackslash lstcodedownstep}}
   \lstcodedownstep{codeoutput/grades.py}{Python}{codeoutput/grades.txt}
@@ -303,6 +338,9 @@ project/
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \subsection[rightStep]{Output at right with step}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Side by side, output on the next click: \texttt{\textbackslash lstcoderightstep}}
@@ -319,6 +357,9 @@ project/
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \subsection[error]{Errors as output}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Errors are output too}
@@ -341,6 +382,9 @@ project/
 \subsection[onTop]{Output on top of the code}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
+
+
+
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Output on top of the code: \texttt{\textbackslash lstcodeoverlaystep}}
   \lstcodeoverlaystep[][][0.4\textwidth]{8.9cm,2.1cm}{codeoutput/primes.py}{Python}{codeoutput/primes.txt}
@@ -357,6 +401,9 @@ project/
 \subsection[cover]{Output covers the code}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
+
+
+
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{The overlay can cover part of the code}
   \lstcodeoverlaystep[basicstyle=\ttfamily\small][basicstyle=\ttfamily\scriptsize][0.72\textwidth]%
@@ -367,10 +414,6 @@ project/
   terminal window popping up.}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-%\section[C, Java]{C and Java Examples}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 
 
@@ -385,6 +428,9 @@ project/
 \subsection[allCode]{The code}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
+
+
+
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{A C program}
   \lstcoderight[0.6][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/factorial.c}{C}{codeoutput/factorial.txt}
@@ -396,6 +442,9 @@ project/
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \subsection[segment]{A segment of the code}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Showing only part of a file}
@@ -441,6 +490,9 @@ project/
 \subsection[Java]{Java Example}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
+
+
+
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{A Java program}
   \lstcodedown[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Hello.java}{Java}{codeoutput/Hello.txt}
@@ -453,6 +505,9 @@ project/
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \subsection[Shell]{Shell Example}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{A shell script: Git in action}
@@ -473,6 +528,9 @@ project/
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \subsection[Tips]{Tips}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Tips}
@@ -508,6 +566,9 @@ project/
 \subsection[slidegrid]{slidegrid}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
+
+
+
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Finding $x,y$: \texttt{\textbackslash slidegrid}}
   \slidegrid
@@ -518,5 +579,85 @@ project/
   overlay's upper-left corner, then remove it. The slide is 16\,cm $\times$ 9\,cm.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Pseudo code]{Pseudo code}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Dijkstra'sSP]{Dijkstra's algorithm}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Pseudo code}
+  \begin{columns}[T]
+    \begin{column}{0.62\textwidth}
+      \SetAlFnt{\scriptsize}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V alg
+%: -Alg. 
+\begin{algorithm}[H]
+  \caption{Dijkstra's algorithm}
+  \KwIn{graph $G = (V, E)$, weights $w(u, v) \ge 0$, source $s$}
+  \KwOut{distances $d[\,]$ and predecessors $\pi[\,]$}
+  \Fn{\FDijkstra{$G, w, s$}}{
+    \ForEach{$v \in V$}{
+      $d[v] \leftarrow \infty$\;
+      $\pi[v] \leftarrow$ \KwNil\;
+    }
+    $d[s] \leftarrow 0$\;
+    $Q \leftarrow$ priority queue of all $v \in V$, keyed by $d[v]$\;
+    \While{$Q \neq \emptyset$}{
+      $u \leftarrow$ \FExtractMin{$Q$}\tcp*{$d[u]$ is now final}
+      \ForEach{edge $(u, v) \in E$}{
+        \If(\tcp*[f]{relax $(u, v)$}){$d[u] + w(u, v) < d[v]$}{
+          $d[v] \leftarrow d[u] + w(u, v)$\;
+          $\pi[v] \leftarrow u$\;
+          \FDecreaseKey{$Q, v, d[v]$}\;
+        }
+      }
+    }
+    \Return{$d, \pi$}\;
+  }
+\end{algorithm}
+% +++++++++++++++++++++++++++++++++++++++ A alg
+
+    \end{column}
+    \begin{column}{0.35\textwidth}
+      \begin{itemize}\small
+        \item \textbf{Lines 2--6}: every vertex starts \emph{unreached}, except $s$
+        \item \textbf{Line 8}: the vertex closest to $s$ among the unfinished ones
+        \item \textbf{Lines 10--13}: \emph{relaxation}: a shorter way to $v$ through $u$?
+        \item \texttt{DecreaseKey} moves $v$ forward in the queue
+        \item $\infty + w = \infty$, so unreached vertices never improve others
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{{\Huge {Questions?}}}\\
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
 
 \end{document}

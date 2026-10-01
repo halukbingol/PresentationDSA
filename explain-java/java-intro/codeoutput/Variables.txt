@@ -1,0 +1,4 @@
+Ayşe is 19 years old
+GPA: 3.45, grade: A
+Enrolled? true
+Max credits: 40

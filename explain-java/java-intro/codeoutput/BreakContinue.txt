@@ -1,0 +1,5 @@
+adding 1
+adding 3
+adding 5
+adding 7
+sum = 16

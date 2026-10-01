@@ -1,0 +1,5 @@
+data[0] = 10
+data[1] = 20
+data[2] = 30
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 3 out of bounds for length 3
+	at RuntimeError.main(RuntimeError.java:5)

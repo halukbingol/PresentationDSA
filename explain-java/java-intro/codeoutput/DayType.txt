@@ -1,0 +1,5 @@
+MON -> weekday
+WED -> weekday
+SAT -> weekend
+SUN -> weekend
+XYZ -> unknown
