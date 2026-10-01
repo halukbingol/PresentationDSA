@@ -1,0 +1,648 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+\usepackage{listings}
+\usepackage{hyperref}
+
+\title[CIS111-w02]{CIS111-w02\\Computer concepts\\Eclipse/run, editor\\int variable}
+\author[Bingol]{Haluk O. Bingol}
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{}
+
+\begin{document}
+
+\begin{frame}[t,fragile] \frametitle{}
+    \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{Computer concepts}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Computer concepts} % 2/50
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Chapter 1 -- Introduction} % 3/50
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Chapter Goals} % 4/50
+    \begin{itemize}
+        \item To learn about computers and programming
+        \item To compile and run your first Java program
+        \item To recognize compile-time and run-time errors
+        \item To describe an algorithm with pseudocode
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Computer Programs} % 5/50
+    \begin{itemize}
+        \item Computers are programmed to perform many different tasks.
+        \item Computers execute very basic instructions in rapid succession.
+        \item A computer program is a sequence of instructions and decisions.
+        \item Programming is the act of designing and implementing computer programs.
+        \item The physical computer and peripheral devices are collectively called the \textbf{hardware}.
+        \item The programs the computer executes are called the \textbf{software}.
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{The Anatomy of a Computer} % 6/50
+    \begin{itemize}
+        \item Central Processing Unit (CPU) performs
+        \begin{itemize}
+            \item Program control
+            \item Data processing
+        \end{itemize}
+        \item Storage
+        \begin{itemize}
+            \item Memory (Primary storage)
+            \item Secondary storage
+        \end{itemize}
+        \item Peripherals
+        \begin{itemize}
+            \item To interact with human users
+        \end{itemize}
+        \item Networks
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Central Processing Unit} % 7/50
+    \begin{center}
+        Figure 1: Central Processing Unit
+    \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{A Hard Disk} % 8/50
+    \begin{center}
+        Figure 2: Hard Disk
+    \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Schematic Diagram of a Computer} % 9/50
+    \begin{center}
+        Figure 3: Schematic Design of a Personal Computer
+    \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Computers are Everywhere} % 10/50
+    \begin{itemize}
+        \item This transit card contains a computer.
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{Java}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Java} % 11/50
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{The Java Programming Language} % 12/50
+    \begin{itemize}
+        \item Safe
+        \item Portable
+        \begin{itemize}
+            \item Platform-independent
+            \item Distributed as instructions for a virtual machine
+        \end{itemize}
+        \item Vast set of library packages
+        \item Designed for the Internet
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Java Versions} % 13/50
+    \begin{itemize}
+        \item Version 5 (2004): Generic classes, enhanced for loop, auto-boxing, enumerations, \ldots
+        \item \ldots
+        \item \url{https://en.wikipedia.org/wiki/Java_version_history}
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Becoming Familiar with Your Programming Environment} % 14/50
+    \begin{itemize}
+        \item An editor is a program for entering and modifying text, such as a Java program.
+        \item Java is case sensitive.
+        \item Java compiler translates source code into class files.
+        \item Class files contain instructions for the Java Virtual Machine (JVM).
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Becoming Familiar with Your Programming Environment} % 15/50
+    \begin{center}
+        Figure 6: From Source Code to Running Program
+    \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Becoming Familiar with Your Programming Environment} % 16/50
+    \begin{enumerate}
+        \item Start the Java development environment.
+        \item Write a simple program.
+        \item Run the program.
+        \item Organize your work.
+    \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{Integrated Development Environment (IDE): Eclipse}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Integrated Development Environment (IDE): Eclipse} % 17/50
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{What is Eclipse?} % 18/50
+    \begin{itemize}
+        \item Open Source
+        \begin{itemize}
+            \item It is a general purpose open platform that facilitates and encourages the development of third party plug-ins
+        \end{itemize}
+        \item Best known as an Integrated Development Environment (IDE)
+        \begin{itemize}
+            \item Provides tools for coding, building, running and debugging applications
+        \end{itemize}
+        \item Originally designed for Java, now supports many other languages
+        \begin{itemize}
+            \item Good support for C, C++
+            \item Python, PHP, Ruby, etc.
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Selecting a Workspace} % 19/50
+    \begin{itemize}
+        \item In Eclipse, all of your code will live under a workspace
+        \item A workspace is nothing more than a location where we will store our source code and where Eclipse will write out our preferences
+        \item Eclipse allows you to have multiple workspaces -- each tailored in its own way
+        \item Choose a location where you want to store your files, then click OK
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Creating a New Project} % 20/50
+    \begin{itemize}
+        \item All code in Eclipse needs to live under a project
+        \item To create a project: \texttt{File > New > Java Project}
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Creating a New Project (continued)} % 21/50
+    \begin{itemize}
+        \item Enter a name for the project, then click Finish
+        \item Be sure that the box ``Create module-info.java file'' unchecked
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Creating a New Project (continued)} % 22/50
+    \begin{itemize}
+        \item The newly created project should then appear under the Package Explorer
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{The src folder} % 23/50
+    \begin{itemize}
+        \item Eclipse automatically creates a folder to store your source code in called \texttt{src}
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Creating a Class} % 24/50
+    \begin{itemize}
+        \item To create a class, simply click on the New button, then select Class
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Creating a Class (continued)} % 25/50
+    \begin{itemize}
+        \item This brings up the new class wizard
+        \item From here you can specify the following\ldots
+        \begin{itemize}
+            \item Package
+            \item Class name
+            \item Whether or not to include a main
+            \item Etc.
+        \end{itemize}
+        \item Fill in necessary information then click Finish to continue
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Becoming Familiar with Your Programming Environment} % 26/50
+    \begin{center}
+        Figure 4: Running the HelloPrinter Program in an Integrated Development Environment
+    \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{Java -- HelloPrinter}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Java} % 27/50
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Section\_5/HelloPrinter.java} % 28/50
+\begin{lstlisting}[language=Java]
+public class HelloPrinter {
+    public static void main(String[] args) {
+        // Display a greeting in the console window
+        System.out.println("Hello, World!");
+    }
+}
+\end{lstlisting}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Analyzing Your First Program: Class Declaration} % 29/50
+    \begin{itemize}
+        \item Classes are the fundamental building blocks of Java programs
+        \item Declaration of a class called \texttt{HelloPrinter}:
+    \end{itemize}
+    \begin{lstlisting}[language=Java]
+public class HelloPrinter
+    \end{lstlisting}
+    \begin{itemize}
+        \item In Java, every source file can contain, at most one public class.
+        \item The name of the public class must match the name of the file containing the class:
+        \begin{itemize}
+            \item Class \texttt{HelloPrinter} must be contained in a file named \texttt{HelloPrinter.java}
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Analyzing Your First Program: Methods} % 30/50
+    \begin{itemize}
+        \item Each class contains declarations of methods.
+        \item Each method contains a sequence of instructions.
+        \item A method contains a collection of programming instructions that describe how to carry out a particular task.
+        \item A method is called by specifying the method and its arguments.
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Analyzing Your First Program: main Method} % 31/50
+    \begin{itemize}
+        \item Every Java application contains a class with a \texttt{main} method
+        \item When the application starts, the instructions in the \texttt{main} method are executed
+        \item Declaring a main method:
+    \end{itemize}
+\begin{lstlisting}[language=Java]
+public static void main(String[] args)
+{
+    . . .
+}
+\end{lstlisting}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Analyzing Your First Program: Statements} % 32/50
+    \begin{itemize}
+        \item The body of the main method contains statements.
+        \item Our method has a single statement:
+    \end{itemize}
+\begin{lstlisting}[language=Java]
+System.out.println("Hello, World!");
+\end{lstlisting}
+    \begin{itemize}
+        \item It prints a line of text: \texttt{Hello, World!}
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Analyzing Your First Program: Method Call} % 33/50
+    \begin{itemize}
+        \item A method call:
+    \end{itemize}
+\begin{lstlisting}[language=Java]
+System.out.println("Hello, World!");
+\end{lstlisting}
+    \begin{itemize}
+        \item A method call requires:
+        \begin{itemize}
+            \item The method you want to use (in this case, \texttt{System.out.println})
+            \item Any values the method needs to carry out its task enclosed in parentheses (in this case, \texttt{"Hello, World!"})
+            \item The technical term for such values is ``arguments''
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Syntax 1.1 Java Program} % 34/50
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Analyzing Your First Program: Strings} % 35/50
+    \begin{itemize}
+        \item \textbf{String}: a sequence of characters enclosed in double quotation marks:
+    \end{itemize}
+\begin{lstlisting}[language=Java]
+"Hello, World!"
+\end{lstlisting}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Analyzing Your First Program: Printing} % 36/50
+    \begin{itemize}
+        \item You can print numerical values:
+    \end{itemize}
+\begin{lstlisting}[language=Java]
+System.out.println(3 + 4);
+\end{lstlisting}
+    \begin{itemize}
+        \item evaluates the expression \texttt{3 + 4} and displays the number \texttt{7}.
+        \item \texttt{System.out.println} method prints a string or a number and then starts a new line.
+        \item The sequence of statements:
+    \end{itemize}
+\begin{lstlisting}[language=Java]
+System.out.println("Hello");
+System.out.println("World!");
+\end{lstlisting}
+    \begin{itemize}
+        \item Prints two lines: \texttt{Hello} and \texttt{World!}
+        \item There is a second method, \texttt{System.out.print}, that you can use to print an item without starting a new line
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Errors} % 37/50
+    \begin{itemize}
+        \item A \textbf{compile-time error} (syntax error)
+        \begin{itemize}
+            \item is a violation of the programming language rules detected by the compiler.
+        \end{itemize}
+\begin{lstlisting}[language=Java]
+System.out.println("Hello, World!");
+\end{lstlisting}
+        \item A \textbf{run-time error} (logic error)
+        \begin{itemize}
+            \item causes a program to perform an action that the programmer did not intend.
+        \end{itemize}
+\begin{lstlisting}[language=Java]
+System.out.println("Hello, Word!");
+\end{lstlisting}
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Errors} % 38/50
+    \begin{itemize}
+        \item \textbf{Exception} -- a type of run-time error
+        \begin{itemize}
+            \item Generates an error message from the Java virtual machine
+            \item This statement:
+        \end{itemize}
+    \end{itemize}
+\begin{lstlisting}[language=Java]
+System.out.println(1 / 0)
+\end{lstlisting}
+    \begin{itemize}
+        \item Generates this run-time error message: \texttt{"Division by zero"}
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{Algorithm}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Algorithm} % 39/50
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Problem Solving: Algorithm Design} % 40/50
+    \begin{itemize}
+        \item \textbf{Algorithm}: A sequence of steps that is:
+        \begin{itemize}
+            \item unambiguous
+            \item executable
+            \item terminating
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{An Algorithm for Solving an Investment Problem} % 41/50
+    \begin{itemize}
+        \item The problem:
+        \begin{itemize}
+            \item You put \$10,000 into a bank account that earns 5 percent interest per year. How many years does it take for the account balance to be double the original?
+        \end{itemize}
+        \item Calculating by hand
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{An Algorithm for Solving an Investment Problem -- continued} % 42/50
+    \begin{itemize}
+        \item The steps in the algorithm:
+        \begin{itemize}
+            \item Start with a year value of 0, a column for the interest, and a balance of \$10,000.
+        \end{itemize}
+        \item Repeat the following steps while the balance is less than \$20,000:
+        \begin{itemize}
+            \item Add 1 to the year value.
+            \item Compute the interest as balance $\times$ 0.05 (i.e., 5 percent interest). Add the interest to the balance.
+        \end{itemize}
+        \item Report the final year value as the answer.
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Pseudocode} % 43/50
+    \begin{itemize}
+        \item \textbf{Pseudocode}: An informal description of a sequence of steps for solving a problem
+        \item Describe how a value is set or changed:
+        \begin{itemize}
+            \item \texttt{total cost = purchase price + operating cost}
+            \item \texttt{Multiply the balance value by 1.05.}
+            \item \texttt{Remove the first and last character from the word.}
+        \end{itemize}
+        \item Describe decisions and repetitions:
+        \begin{itemize}
+            \item \texttt{If total cost 1 < total cost 2}
+            \item \texttt{While the balance is less than \$20,000}
+            \item \texttt{For each picture in the sequence}
+        \end{itemize}
+        \item Use indentation to indicate which statements should be selected or repeated:
+        \begin{itemize}
+            \item[] \texttt{For each car}\\
+                    \quad \texttt{operating cost = 10 x annual fuel cost}\\
+                    \quad \texttt{total cost = purchase price + operating cost}
+        \end{itemize}
+        \item Indicate results:
+        \begin{itemize}
+            \item \texttt{Choose car1.}
+            \item \texttt{Report the final year value as the answer.}
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{From Algorithm to Programs} % 44/50
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Self Check 1.25} % 45/50
+    \begin{itemize}
+        \item Suppose you have a random sequence of black and white marbles and want to rearrange it so that the black and white marbles are grouped together. Consider this algorithm:
+        \begin{itemize}
+            \item Repeat until sorted:
+            \begin{itemize}
+                \item Locate the first black marble that is preceded by a white marble, and switch them.
+            \end{itemize}
+        \end{itemize}
+        \item What does the algorithm do with the sequence? Spell out the steps until the algorithm stops.
+        \item Answer:
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Self Check 1.26} % 46/50
+    \begin{itemize}
+        \item Suppose you have a random sequence of colored marbles. Consider this pseudocode:
+        \begin{itemize}
+            \item Repeat until sorted:
+            \begin{itemize}
+                \item Locate the first marble that is preceded by a marble of a different color, and switch them.
+            \end{itemize}
+        \end{itemize}
+        \item Why is this not an algorithm?
+        \item Answer: The sequence doesn't terminate. Consider the input -- the first two marbles keep getting switched.
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{int variable}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{int variable} % 47/50
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Variables} % 48/50
+    \begin{itemize}
+        \item Most computer programs hold temporary values in named storage locations
+        \begin{itemize}
+            \item Programmers name them for easy access
+        \end{itemize}
+        \item There are many different types (sizes) of storage to hold different things
+        \begin{itemize}
+            \item Will see just \texttt{int} for now
+        \end{itemize}
+        \item You ``declare'' a variable by telling the compiler:
+        \begin{itemize}
+            \item What type (size) of variable you need
+            \item What name you will use to refer to it
+        \end{itemize}
+    \end{itemize}
+\begin{lstlisting}[language=Java]
+// declaration
+int a;
+// assigning an initial value
+a = 5;
+// declaration and assigning initial value
+int b = 7;
+// use the value of a
+b = a;
+\end{lstlisting}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{Syntax 2.1 Variable Declaration} % 49/50
+    \begin{itemize}
+        \item When declaring a variable, you often specify an initial value
+        \item This is also where you tell the compiler the size (type) it will hold
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t,fragile] \frametitle{The Assignment Statement} % 50/50
+    \begin{itemize}
+        \item Use the ``assignment statement'' ( with an '=' ) to place a new value into a variable
+\begin{lstlisting}[language=Java]
+int cansPerPack = 6;   // declare & initialize
+cansPerPack = 8;       // assignment
+\end{lstlisting}
+        \item Beware: The \texttt{=} sign is NOT used for comparison:
+        \begin{itemize}
+            \item It copies the value on the right side into the variable on the left side
+            \item You will learn about the comparison operator in the next chapter
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+\end{document}

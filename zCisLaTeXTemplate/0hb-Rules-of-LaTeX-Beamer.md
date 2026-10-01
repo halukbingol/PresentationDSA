@@ -1,7 +1,13 @@
-# rules of LaTeX Beamer
-
+# Rules of LaTeX Beamer
 
 [toc]
+
+Rules for AI generated LaTeX presentation.
+
+## Cross Platform
+
+Explain for both Windows and MacOS.
+
 
 ## First lines
 
@@ -188,3 +194,9 @@ Use the following empty line and comment structure at the beginning and at the e
 - Use `{` and `}` in subcripts and superscripts. 
 That is,
 use  `a_{b}` rather than `a_b` in math mode.
+
+
+
+## Pseudo algorithms
+
+Use `algorithm2e` package for pseudo algorithms.

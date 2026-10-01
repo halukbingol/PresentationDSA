@@ -1,0 +1,11 @@
+codeoutput/MissingImport.java:5: error: cannot find symbol
+        ArrayList<String> names = new ArrayList<>();
+        ^
+  symbol:   class ArrayList
+  location: class MissingImport
+codeoutput/MissingImport.java:5: error: cannot find symbol
+        ArrayList<String> names = new ArrayList<>();
+                                      ^
+  symbol:   class ArrayList
+  location: class MissingImport
+2 errors

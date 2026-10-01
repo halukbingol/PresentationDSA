@@ -1,0 +1,4 @@
+Number of arguments: 2
+1. Hello Ada
+2. Hello Ada
+3. Hello Ada

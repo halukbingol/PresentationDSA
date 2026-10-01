@@ -1,0 +1,2 @@
+Hello from Eclipse!
+Java version: 21.0.10
