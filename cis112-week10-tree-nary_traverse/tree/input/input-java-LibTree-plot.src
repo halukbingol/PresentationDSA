@@ -1,0 +1,19 @@
+public class LibTree<T> {
+	public static void plot(NodeBinaryI<?> node) {
+		plot(node, 0, ">");
+	}
+
+	private static void plot(NodeBinaryI<?> node, int level, String leftRight) {
+		// right subtree
+		if (node.right() != null) {
+			plot(node.right(), level + 1, "/");
+		}
+		// print the node
+		String indent = "  ".repeat(level);
+		System.out.println(indent + leftRight + node.data());
+		// left subtree
+		if (node.left() != null) {
+			plot(node.left(), level + 1, "\\");
+		}
+	}
+}

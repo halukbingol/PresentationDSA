@@ -1,0 +1,12 @@
+public class MyBST<T extends Comparable<T>> {
+	MyNodeBST<T> root;
+	...
+	public MyNodeBST<T> maximum() {
+		return (MyNodeBST<T>) LibTreeBS.maximum(root);
+	}
+
+	public MyNodeBST<T> maximum(MyNodeBST<T> x) {
+		return (MyNodeBST<T>) LibTreeBS.maximum(x);
+	}
+	...
+}

@@ -1,0 +1,18 @@
+    /2
+  /-
+    \5
+>*
+    /7
+  \+
+    \8
+
+canonical:/[8]\[+]/[7]\[*]/[5]\[-]/[2]\
+
+traverseInOrder:
+	[MyNode: data=8]
+	[MyNode: data=+]
+	[MyNode: data=7]
+	[MyNode: data=*]
+	[MyNode: data=5]
+	[MyNode: data=-]
+	[MyNode: data=2]

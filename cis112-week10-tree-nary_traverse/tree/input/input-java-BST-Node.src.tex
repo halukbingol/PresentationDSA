@@ -1,0 +1,18 @@
+public class MyNodeBST<T extends Comparable<T>> 
+		implements MyNodeBSTInterface<T> {
+	T data;
+	MyNodeBST<T> parent;
+	MyNodeBST<T> left;
+	MyNodeBST<T> right;
+
+	public MyNodeBST() {
+		this(null);
+	}
+	public MyNodeBST(T data) {
+		this.data = data;
+		parent = null;
+		left = null;
+		right = null;
+	}
+	...
+}

@@ -1,0 +1,34 @@
+\begin{function}[H]
+	\SetKwData{X}{\texttt{x}}
+	\SetKwData{K}{\texttt{k}}
+	\SetKwData{N}{\texttt{NIL}}
+	%
+	\SetKwData{P}{\texttt{parent}}
+	\SetKwData{L}{\texttt{left}}
+	\SetKwData{R}{\texttt{right}}
+	\SetKwData{Data}{\texttt{data}}
+	\SetKwData{Key}{\texttt{key}}
+%	\tcp*[f]{{\tiny aaa}}\\
+%	\FuncSty{TreeDelete(}\ArgSty{T, z}\FuncSty{)}\\
+		\If {z.\L == \N}{
+			\Transplant(T, z, z.\R)\tcp*[f]{{\tiny replace z by its right child}}\\
+		} \ElseIf { z.\R == \N }{
+			\Transplant(T, z, z.\L)\tcp*[f]{{\tiny replace z by its left child}}\\
+		} \Else {
+			 y = \TreeMinimum(z.\R)\tcp*[f]{{\tiny y is z’s successor}}\\
+			 \If(\tcp*[f]{\tiny is farther down the tree?}) {y $\neq$ z.\R}{	
+				\Transplant(T, y, y.\R)\tcp*[f]{{\tiny replace y by its right child}}\\
+				y.\R = z.\R	\tcp*[f]{{\tiny z’s right child becomes}}\\
+				y.\R.\P = y\tcp*[f]{{\tiny y’s right child}}\\
+			 }
+			\Transplant(T, z, y)\tcp*[f]{{\tiny replace z by its successor y}}\\
+			y.\L = z.\L\tcp*[f]{{\tiny and give z’s left child to y,}}\\
+			y.\L.\P = y\tcp*[f]{{\tiny which had no left child}}\\
+		}
+	\caption{TreeDelete(T, z)
+		\hCite{%
+			\cite{cormen2022introduction}%
+		}
+	}
+\end{function}
+

@@ -1,0 +1,12 @@
+public class LibTreeBS<T extends Comparable<T>> {
+	...
+	public static <T> NodeBSTInterface<T> minimum(
+			NodeBSTInterface<T> x
+		) {
+		while (x.left() != null) {
+			x = x.left();
+		}
+		return x;
+	}
+	...
+}

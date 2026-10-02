@@ -1,0 +1,31 @@
+public class MyBinaryTree<T> {
+
+	private MyNode<T> root;
+
+	public MyBinaryTree() {
+		root = null;
+	}
+
+	public MyBinaryTree(T data) {
+		root = new MyNode<>(data);
+	}
+	
+	public MyBinaryTree(
+			T data
+			, MyBinaryTree<T> left
+			, MyBinaryTree<T> right
+		) {
+		root = new MyNode<>(data);
+		if (left == null) {
+			root.left = null;
+		} else {
+			root.left = left.root;
+		}
+		if (right == null) {
+			root.right = null;
+		} else {
+			root.right = right.root;
+		}
+	}
+	...
+}

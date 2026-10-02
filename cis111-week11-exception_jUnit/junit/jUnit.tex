@@ -1,0 +1,236 @@
+\documentclass{beamer}
+	\usetheme{Dresden}
+	\usepackage{beamerthemesplit}
+	
+	\useoutertheme{split}
+	\usecolortheme{whale}
+	\useinnertheme{rounded} 
+	\usecolortheme{orchid}
+	\setbeamertemplate{blocks}[rounded]
+
+
+\usepackage{listings}  % For code formatting
+\usepackage{xcolor}    % For color support in code
+
+% Configure listings
+\lstset{
+	basicstyle=\ttfamily\tiny, 
+	keywordstyle=\color{blue}\bfseries,
+	commentstyle=\color{green},
+	stringstyle=\color{red},
+ 	numberstyle=\tiny\color{codegray}, % hb
+	frame=single,
+	breaklines=true,         % Line breaking
+	showstringspaces=false,  % Don't show spaces in strings
+	tabsize=2,               % Set tab size to 4 spaces
+	language=Java,           % Set language to Java for syntax highlighting
+	literate={->}{$\rightarrow$}{2} % Correctly display -> as an arrow
+}
+
+% Add page numbers with total frame count in the footer
+\setbeamertemplate{footline}[frame number]{}
+\setbeamertemplate{footline}{%
+    \hfill \insertframenumber/\inserttotalframenumber\hspace{1em}
+}
+
+% Reduce space between the slide title and the content globally
+\addtobeamertemplate{frametitle}{}{\vspace{-1em}}
+
+\title{Introduction to JUnit in Java}
+\subtitle{A Guide to Unit Testing with JUnit}
+\author{[Haluk Bingol]}
+\date{\today}
+
+\begin{document}
+
+\frame{\titlepage}
+
+% Table of Contents
+\begin{frame}{Table of Contents}
+    \tableofcontents
+\end{frame}
+
+
+\section{What is JUnit?}
+
+\begin{frame}{What is JUnit?}
+	\begin{itemize}
+		\item JUnit is a popular testing framework for Java.
+		\item Supports writing and running tests to ensure code quality.
+		\item Follows the TDD (Test-Driven Development) approach.
+		\item Integrated with most Java IDEs (e.g., Eclipse, IntelliJ IDEA).
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Why Use JUnit?}
+	\begin{itemize}
+		\item Automated Testing: Efficient and repeatable tests.
+		\item Early Bug Detection: Helps catch bugs early in development.
+		\item Regression Testing: Ensures new code doesn’t break existing functionality.
+		\item Improves Code Quality: Encourages modular, testable code.
+	\end{itemize}
+\end{frame}
+
+\section{JUnit Architecture}
+
+\begin{frame}{JUnit Architecture}
+	\begin{itemize}
+		\item \textbf{Test Runner}: Executes tests.
+		\item \textbf{Test Fixtures}: Prepare setup and teardown routines.
+		\item \textbf{Test Cases}: Individual units of tests (methods).
+		\item \textbf{Assertions}: Validate expected outcomes.
+		\item \textbf{Annotations}: Simplify test configurations (@Test, @Before, etc.).
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Key Annotations in JUnit}
+	\begin{itemize}
+		\item \textbf{@Test}: Marks a method as a test method.
+		\item \textbf{@BeforeEach}: Executes before each test (setup).
+		\item \textbf{@AfterEach}: Executes after each test (cleanup).
+		\item \textbf{@BeforeAll}: Runs once before all tests.
+		\item \textbf{@AfterAll}: Runs once after all tests.
+		\item \textbf{@Disabled}: Disables a test temporarily.
+	\end{itemize}
+\end{frame}
+
+\section{a Simple Test Case}
+
+\begin{frame}[fragile]{Creating a Simple Test Case}
+	Example:
+	\begin{lstlisting}
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+public class CalculatorTest {
+    @Test
+    void testAdd() {
+        Calculator calc = new Calculator();
+        assertEquals(5, calc.add(2, 3), "2 + 3 should be 5");
+    }
+}
+	\end{lstlisting}
+	\textbf{assertEquals}: Checks if the actual value matches the expected value.
+\end{frame}
+
+\begin{frame}{Common Assertions in JUnit}
+	\begin{itemize}
+		\item \textbf{assertEquals(expected, actual)}: Asserts equality.
+		\item \textbf{assertTrue(condition)}: Asserts if the condition is true.
+		\item \textbf{assertFalse(condition)}: Asserts if the condition is false.
+		\item \textbf{assertNull(object)}: Asserts if the object is null.
+		\item \textbf{assertNotNull(object)}: Asserts if the object is not null.
+		\item \textbf{assertThrows(Exception.class, () $\rightarrow$ methodCall)}: Asserts if an exception is thrown.
+	\end{itemize}
+\end{frame}
+
+\subsection{Parameterized Tests in JUnit}
+
+\begin{frame}[fragile]{Parameterized Tests in JUnit}
+	Parameterized tests allow testing with multiple sets of data.
+
+	Example:
+	\begin{lstlisting}
+@ParameterizedTest
+@ValueSource(ints = {2, 4, 6})
+void testIsEven(int number) {
+    assertTrue(number % 2 == 0);
+}
+	\end{lstlisting}
+	This test will run three times, each time with different input.
+\end{frame}
+
+\subsection{JUnit Test Lifecycle}
+
+\begin{frame}{JUnit Test Lifecycle}
+	\begin{itemize}
+		\item \textbf{@BeforeAll}: Set up shared resources.
+		\item \textbf{@BeforeEach}: Set up before each test (e.g., initialize objects).
+		\item \textbf{@Test}: Execute the test case.
+		\item \textbf{@AfterEach}: Tear down (cleanup) after each test.
+		\item \textbf{@AfterAll}: Clean up shared resources.
+	\end{itemize}
+\end{frame}
+
+\subsection{Handling Exceptions }
+
+\begin{frame}[fragile]{Handling Exceptions in JUnit}
+	Example of testing exception handling:
+	\begin{lstlisting}
+@Test
+void testDivisionByZero() {
+    assertThrows(ArithmeticException.class, () -> {
+        Calculator calc = new Calculator();
+        calc.divide(1, 0);
+    });
+}
+	\end{lstlisting}
+	Verifies that an exception is correctly thrown under specific conditions.
+\end{frame}
+
+\begin{frame}[fragile]{Mocking with JUnit}
+	\begin{itemize}
+		\item Mockito can be used with JUnit to mock dependencies.
+		\item Example:
+	\end{itemize}
+	\begin{lstlisting}
+@Mock
+List<String> mockedList;
+
+@Test
+void testMockList() {
+    when(mockedList.size()).thenReturn(5);
+    assertEquals(5, mockedList.size());
+}
+	\end{lstlisting}
+\end{frame}
+
+\subsection{Best Practices}
+
+\begin{frame}{Best Practices for JUnit Testing}
+	\begin{itemize}
+		\item Write \textbf{independent} test cases.
+		\item Name tests clearly to reflect their purpose.
+		\item Use \textbf{mocking} for external dependencies.
+		\item Keep tests \textbf{simple and focused} on one behavior.
+		\item Aim for \textbf{100\% code coverage} where feasible.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{JUnit 5 vs. JUnit 4}
+	\begin{itemize}
+		\item JUnit 5 introduced:
+		\begin{itemize}
+			\item Modular architecture (JUnit Platform, JUnit Jupiter, JUnit Vintage).
+			\item \textbf{@BeforeEach} and \textbf{@AfterEach} replace \textbf{@Before} and \textbf{@After}.
+			\item More powerful extensions and parameterized tests.
+			\item Support for Java 8 and higher (lambda expressions).
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\subsection{Running JUnit Tests in IDEs}
+
+\begin{frame}{Running JUnit Tests in IDEs}
+	\begin{itemize}
+		\item \textbf{Eclipse/IntelliJ}: Right-click the test class or method and select "Run as JUnit Test."
+		\item \textbf{Maven/Gradle Integration}: JUnit tests can be run as part of the build process.
+		\item Example Maven command: \texttt{mvn test}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Conclusion}
+	\begin{itemize}
+		\item JUnit is a vital tool for Java developers.
+		\item Helps maintain code quality and catch bugs early.
+		\item Supports automated testing with flexible configurations.
+		\item Integrates with modern development tools and methodologies (TDD, CI/CD).
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Questions?}
+	\centering
+	Any questions?
+\end{frame}
+
+\end{document}

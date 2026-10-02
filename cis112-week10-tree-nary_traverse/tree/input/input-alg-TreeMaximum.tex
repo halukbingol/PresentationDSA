@@ -1,0 +1,22 @@
+\begin{function}[H]
+	\SetKwData{X}{\texttt{x}}
+	\SetKwData{K}{\texttt{k}}
+	\SetKwData{N}{\texttt{NIL}}
+	%
+	\SetKwData{Left}{\texttt{left}}
+	\SetKwData{Right}{\texttt{right}}
+	\SetKwData{Data}{\texttt{data}}
+	\SetKwData{Key}{\texttt{key}}
+
+%	\FuncSty{TreeMaximum(}\ArgSty{\X}\FuncSty{)}\\
+		\While {\X.\Right $\neq$ \N}{
+			\X = \X.\Right\\
+		}
+		\Return \X
+	\caption{TreeMaximum(x)
+		\hCite{%
+			\cite{cormen2022introduction}%
+		}
+	}
+\end{function}
+

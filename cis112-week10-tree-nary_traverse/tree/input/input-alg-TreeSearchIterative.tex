@@ -1,0 +1,26 @@
+\begin{function}[H]
+	\SetKwData{X}{\texttt{x}}
+	\SetKwData{K}{\texttt{k}}
+	\SetKwData{N}{\texttt{NIL}}
+	%
+	\SetKwData{Left}{\texttt{left}}
+	\SetKwData{Right}{\texttt{right}}
+	\SetKwData{Data}{\texttt{data}}
+	\SetKwData{Key}{\texttt{key}}
+
+%	\FuncSty{IterativeTreeSearch(}\ArgSty{\X, \K}\FuncSty{)}\\
+		\While {\X $\neq$ \N and \K $\neq$ \X.\Key}{
+			\If {\K $<$ \X.\Key}{
+				\X = \X.\Left
+			}\Else {
+				\X = \X.\Right	
+			}
+		}
+		\Return \X
+	
+	\caption{IterativeTreeSearch(x, k)
+		\hCite{%
+			\cite{cormen2022introduction}%
+		}	
+	}
+\end{function}

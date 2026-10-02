@@ -1,0 +1,30 @@
+public class MyBST<T extends Comparable<T>> {
+	MyNodeBST<T> root;
+	...
+	public void delete(MyNodeBST<T> z) {
+		MyNodeBST<T> y = null;
+		if (z.left == null) {
+			// replace z by its right child
+			transplant(z, z.right);
+		} else if (z.right == null) {
+			// replace z by its left child
+			transplant(z, z.left);
+		} else {
+			// y is z's successor
+			y = minimum(z.right);
+			if (y != z.right) {
+				// y is farther down in the tree
+				// replace y by its right child
+				transplant(y, y.right);
+				// z's right child becomes y's right child
+				y.right = z.right;
+				y.right.parent = y;
+			}
+			// replace z by its successor y
+			transplant(z, y);
+			// z's right child, which has no let child, becomes y's right child
+			y.left = z.left;
+			y.left.parent = y;
+		}
+	}
+}

@@ -1,0 +1,12 @@
+public class MyBST<T extends Comparable<T>> {
+	MyNodeBST<T> root;
+	...
+	public MyNodeBST<T> successor() {
+		return (MyNodeBST<T>) LibTreeBS.successor(root);
+	}
+
+	public MyNodeBST<T> successor(MyNodeBST<T> x) {
+		return (MyNodeBST<T>) LibTreeBS.successor(x);
+	}
+	...
+}

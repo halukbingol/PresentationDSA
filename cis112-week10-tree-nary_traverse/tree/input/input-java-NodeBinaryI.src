@@ -1,0 +1,5 @@
+public interface NodeBinaryI<T> {
+	NodeBinary<T> left();
+	NodeBinary<T> right();
+	T data();
+}

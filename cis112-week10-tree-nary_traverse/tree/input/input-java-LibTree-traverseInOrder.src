@@ -1,0 +1,16 @@
+public class LibTree<T> {
+	public static <T> String traverseInOrder(
+		NodeBinaryInterface<T> node
+	) {
+		if (node == null) {
+			return "";
+		}
+		String s = "";
+		s += traverseInOrder(node.left());
+		s += node.toString();
+		s += traverseInOrder(node.right());
+		return s;
+	}
+}
+
+

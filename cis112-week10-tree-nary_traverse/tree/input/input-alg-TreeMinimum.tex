@@ -1,0 +1,22 @@
+\begin{function}[H]
+	\SetKwData{X}{\texttt{x}}
+	\SetKwData{K}{\texttt{k}}
+	\SetKwData{N}{\texttt{NIL}}
+	%
+	\SetKwData{Left}{\texttt{left}}
+	\SetKwData{Right}{\texttt{right}}
+	\SetKwData{Data}{\texttt{data}}
+	\SetKwData{Key}{\texttt{key}}
+
+%	\FuncSty{TreeMinimum(}\ArgSty{\X}\FuncSty{)}\\
+		\While {\X.\Left $\neq$ \N}{
+			\X = \X.\Left\\
+		}
+		\Return \X
+	\caption{TreeMinimum(x)
+		\hCite{%
+			\cite{cormen2022introduction}%
+		}	
+	}
+\end{function}
+

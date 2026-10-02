@@ -1,0 +1,22 @@
+public class MyBinaryTreeConstructor {
+	public static MyBinaryTree<String> constructBT_S_Expression() {
+		// ( 8 + 7 ) * ( 5 - 2 )
+		MyBinaryTree<String> tree;
+		tree = //
+				new MyBinaryTree<>("*", //
+						new MyBinaryTree<>("+", //
+								new MyBinaryTree<>("8"), //
+								new MyBinaryTree<>("7") //
+						), //
+						new MyBinaryTree<>("-", //
+								new MyBinaryTree<>("5"), //
+								new MyBinaryTree<>("2") //
+						) //
+				);
+		// check
+		tree.plot();
+		System.out.println("\ncanonical:" + tree.canonical());
+		System.out.println("\ntraverseInOrder:" + tree.traverseInOrder());
+		return tree;
+	}
+}

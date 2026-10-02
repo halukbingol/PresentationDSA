@@ -1,0 +1,19 @@
+\begin{function}[H]
+	\SetKwData{X}{\texttt{x}}
+	\SetKwData{Left}{\texttt{left}}
+	\SetKwData{Right}{\texttt{right}}
+	\SetKwData{Data}{\texttt{data}}
+	\SetKwData{N}{\texttt{NIL}}
+
+%	\FuncSty{InorderTreeWalk(}\ArgSty{\X}\FuncSty{)}\\
+		\If{\X $\neq$ NIL}{
+			InorderTreeWalk(\X.\Left)\\
+			print \X.\Data\\
+			InorderTreeWalk(\X.\Right)\\
+		}
+	\caption{InorderTreeWalk(x)
+		\hCite{%
+			\cite{cormen2022introduction}%
+		}	
+	}
+\end{function}

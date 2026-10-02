@@ -1,0 +1,17 @@
+public class LibTreeBS<T extends Comparable<T>> {
+	public static <T> NodeBSTInterface<T> successor(NodeBSTInterface<T> x) {
+		if (x.right() != null) {
+			// leftmost node in the right subtree
+			return minimum(x.right());
+		} else {
+			// find the lowest ancestor of x whose left child is an ancestor of x
+			NodeBSTInterface<T> y = null;
+			y = x.parent();
+			while (y != null && x == y.right()) {
+				x = y;
+				y = y.parent();
+			}
+			return y;
+		}
+	}
+}

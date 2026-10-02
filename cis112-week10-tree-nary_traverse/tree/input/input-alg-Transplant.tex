@@ -1,0 +1,30 @@
+\begin{function}[H]
+	\SetKwData{X}{\texttt{x}}
+	\SetKwData{K}{\texttt{k}}
+	\SetKwData{N}{\texttt{NIL}}
+	%
+	\SetKwData{Left}{\texttt{left}}
+	\SetKwData{Right}{\texttt{right}}
+	\SetKwData{Data}{\texttt{data}}
+	\SetKwData{Key}{\texttt{key}}
+
+%\tcp*[f]{{\tiny aaa}}\\
+%\tcp{{\tiny aaa}}
+
+%	\FuncSty{Transplant(}\ArgSty{T, u, v}\FuncSty{)}\\
+		\If {u.p == \N}{
+			T.root = v\\
+		} \ElseIf {u == u.p.\Left}{
+			u.p.\Left = v\\
+		} \Else {
+			u.p.\Right = v\\
+		}
+		\If {v $\neq$ \N}{
+			v.p = u.p\\
+		}
+	\caption{Transplant(T, u, v)
+		\hCite{%
+			\cite{cormen2022introduction}%
+		}
+	}
+\end{function}

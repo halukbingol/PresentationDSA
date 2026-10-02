@@ -1,0 +1,17 @@
+public class MyBSTConstructor_Test {
+
+	private static final boolean DEBUG = true;
+
+	public static void main(String[] args) {
+		MyBST<String> tree;
+		
+		tree = MyBSTConstructor.constructBST_S_412_nodeByNode();
+		//
+		if (DEBUG) {
+			tree.plot();
+			System.out.println(tree.canonical());
+		}
+	}
+
+}
+

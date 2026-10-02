@@ -1,0 +1,25 @@
+\begin{function}[H]
+	\SetKwData{X}{\texttt{x}}
+	\SetKwData{K}{\texttt{k}}
+	\SetKwData{N}{\texttt{NIL}}
+	%
+	\SetKwData{Left}{\texttt{left}}
+	\SetKwData{Right}{\texttt{right}}
+	\SetKwData{Data}{\texttt{data}}
+	\SetKwData{Key}{\texttt{key}}
+
+%	\FuncSty{TreeSearch(}\ArgSty{\X, \K}\FuncSty{)}\\
+		\If {\X == \N or \Key == \X.\Key}{
+			\Return \X
+		}
+		\If { \K $<$ \X.\Key }{
+			\Return TreeSearch( \X.\Left, \K )
+		} \Else {
+			\Return TreeSearch( \X.\Right, \K )
+		}
+	\caption{TreeSearch(x, k)
+		\hCite{%
+			\cite{cormen2022introduction}%
+		}	
+	}
+\end{function}

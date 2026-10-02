@@ -1,0 +1,41 @@
+\begin{function}[H]
+	\SetKwData{X}{\texttt{x}}
+	\SetKwData{K}{\texttt{k}}
+	\SetKwData{T}{\texttt{T}}
+	\SetKwData{N}{\texttt{NIL}}
+	%
+	\SetKwData{P}{\texttt{parent}}
+	\SetKwData{Left}{\texttt{left}}
+	\SetKwData{Right}{\texttt{right}}
+	\SetKwData{Data}{\texttt{data}}
+	\SetKwData{Key}{\texttt{key}}
+
+%\tcp*[f]{{\tiny aaa}}\\
+%\tcp{{\tiny aaa}}
+%	\FuncSty{TreeInsert(}\ArgSty{\T, z}\FuncSty{)}\\
+		\X = \T.root 	\tcp*[f]{{\tiny node being compared with z}}\\
+		y = \N	\tcp*[f]{{\tiny  will be parent of z}}\\
+		\While {\X $\neq$ \N}{
+			\tcp{{\tiny descend until reaching a leaf}}
+			y = x\\
+			\If {z.\Key $<$ \X.\Key}{
+				\X = \X.\Left\\
+			} \Else {
+				\X = \X.\Right\\
+			}
+		}
+		z.\P = y	\tcp*[f]{{\tiny found the location- insert z with parent y}}\\
+		\If {y == \N}{
+			\T.root = z	\tcp*[f]{{\tiny tree was empty}}\\
+		} \ElseIf {z.\Key $<$ y.\Key}{
+			y.left = z\\
+		} \Else {
+			y.\Right = z\\
+		}
+	\caption{TreeInsert(T, z)
+		\hCite{%
+			\cite{cormen2022introduction}%
+		}
+	}
+\end{function}
+

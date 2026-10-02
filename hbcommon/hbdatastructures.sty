@@ -1,0 +1,236 @@
+% !TEX spellcheck = en_US
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2024 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{adtlibrary}[2024/03/12 data structure library]
+
+\RequirePackage{xparse}
+\RequirePackage{xcolor} % color
+\RequirePackage{tikz} % drawing
+\RequirePackage{pgffor} 
+\RequirePackage[nomessages]{fp} % calculations
+\RequirePackage {calc} % calculations
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V color
+\definecolor{colorTop}{RGB}{55,215,0}
+\definecolor{colorTail}{RGB}{55,215,0}		
+\definecolor{colorHead}{RGB}{255,215,0}
+\definecolor{colorEmpty}{RGB}{170,255,0}	%{0,215,150}	%{255,203,209}	%{255,215,0}
+\definecolor{colorUsed}{RGB}{238, 107, 110}	%{255,203,209}	%{255,215,0}
+\definecolor{colorUnused}{RGB}{230,230,230}	%{192,192,192}	%{211,211,211}
+\definecolor{colorLabel}{RGB}{250,118,194}
+\definecolor{colorIndex}{RGB}{119,118,194}	%{119,118,194}
+\definecolor{colorBoxZero}{RGB}{160,160,160}
+%
+%\definecolor{maroon}{rgb}{0.5,0,0}
+%\definecolor{darkgreen}{rgb}{0,0.5,0}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A color
+
+
+
+
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V Queue
+% Define \hQueue macro
+% if \first=1 then index=0 is not used. Queue starts at index=0
+%                else Queue starts at index=1.
+% See CLRS
+\NewDocumentCommand{\hQueue}{m m m m m O{0.8} O{0.6}}{ 
+	\edef\first{#1}  % first index: 0 or 1
+	\edef\capacity{#2}  % capacity
+	\edef\head{#3}  % index of head
+	\edef\tail{#4}  % index of tail
+	\edef\content{#5} % comma separated list
+	\def\width{#6} % box width
+	\def\height{#7} % box height
+	
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V debug
+%	\show{#1}
+%	\MARK
+%	\showtokens{#1}
+%	\@@end
+%	\end
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A debug
+	%
+	\def\xhh{\width/4} % x displacement for head mark
+	\def\xff{\width*3/4} % x displacement for  tail mark
+	\def\y{-.3} % y 
+	\def\yshf{\y+\height/4} % y displacement for mark
+	\def\yindex{\y+\height-0.06} % y displacement for indices
+	
+	
+	% filled rectangles
+	% index=0
+	\ifnum\first=1
+		\filldraw[fill=colorBoxZero] (0,\y) rectangle +(\width,\height);
+		\node[colorIndex] at (\width/2,\yindex) {{\tiny 0}}; % index 0
+	\fi
+	% index>0
+	\foreach \j in {1,...,\capacity} {
+		\ifnum\first=1
+			\FPeval{i}{clip(\j)};
+		\else
+			\FPeval{i}{clip(\j-1)};
+		\fi
+		\FPeval{x}{clip(\i*\width)};
+
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V debug
+%\FPeval{yDebug}{clip(\i*\height)};
+%\node at (\x,\yDebug) {{\tiny j=\j, i=\i}}; % debug
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A debug
+		\ifnum\head>\tail
+			% circlular started
+			\ifnum\i<\tail 
+				\filldraw[fill=colorUsed] (\x,\y) rectangle +(\width,\height);
+			\fi
+			\ifnum\i>\tail 
+				\ifnum\i<\head 
+					\filldraw[fill=colorUnused] (\x,\y) rectangle +(\width,\height);
+				\fi
+				\ifnum\i>\head 
+					\filldraw[fill=colorUsed] (\x,\y) rectangle +(\width,\height);
+				\fi
+			\fi
+		\else
+			% \head <= \tail
+			% circular is not started yet
+			\ifnum\i<\head 
+				\filldraw[fill=colorUnused] (\x,\y) rectangle +(\width,\height);
+				%\node[red] at (0.5,0.2*\i) {{\tiny O1:\i }}; %---------------
+			\fi
+			\ifnum\i>\head 
+				\ifnum\i<\tail 
+					\filldraw[fill=colorUsed] (\x,\y) rectangle +(\width,\height);
+					%\node[red] at (1,0.2*\i) {{\tiny I:\i }}; %---------------
+				\fi
+				\ifnum\i>\tail 
+					\filldraw[fill=colorUnused] (\x,\y) rectangle +(\width,\height);
+					%\node[red] at (2,0.2*\i) {{\tiny O2:\i }}; %---------------
+				\fi
+			\fi
+		\fi % \head>\tail
+		
+		\ifnum\i=\head 
+			\ifnum\i=\tail 
+				% empty
+				\filldraw[fill=colorEmpty] (\x,\y) rectangle +(\width,\height);
+				\node[colorLabel] at (\x+\xff,\yshf) {{\tiny t}};
+				\node[colorLabel] at (\x+\xhh,\yshf) {{\tiny h}};
+				%\node[red] at (0.4,1) {{\tiny T:\i}}; %---------------
+			\else
+				\filldraw[fill=colorHead] (\x,\y) rectangle +(\width,\height);
+				\node[colorLabel] at (\x+\xhh,\yshf) {{\tiny h}};
+				%\node[red] at (0,1) {{\tiny H:\i }}; %---------------
+			\fi
+		\fi
+		\ifnum\i=\tail 
+			\ifnum\i=\head
+				% empty
+				\filldraw[fill=colorEmpty] (\x,\y) rectangle +(\width,\height);
+				\node[colorLabel] at (\x+\xff,\yshf) {{\tiny t}};
+				\node[colorLabel] at (\x+\xhh,\yshf) {{\tiny h}};
+				%\node[red] at (0.4,1) {{\tiny T:\i}}; %---------------
+			\else
+				\filldraw[fill=colorTail] (\x,\y) rectangle +(\width,\height);
+				\node[colorLabel] at (\x+\xff,\yshf) {{\tiny t}};
+				%\node[red] at (0.4,1) {{\tiny T:\i}}; %---------------
+			\fi
+		\fi
+		
+		% index
+		\FPeval{xindex}{\i*\width+\width/2};
+		\node[colorIndex] at (\xindex,\yindex) {{\tiny \i}}; % index
+	} % foreach
+		
+	% draw the elements
+	\foreach \elem [count=\i] in \capacity {
+		\ifnum\first=1
+			\FPeval{j}{\i}
+		\else
+			\FPeval{j}{clip(\i-1)}
+		\fi
+		\FPeval{x}{\j*\width+\width/2};
+		\node at (\x,\y+\height/2) {{\scriptsize \elem}}; % content
+	}
+} % \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A Queue
+
+
+
+
+
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V Stack
+% Define \stack macro
+% if \first=1 then index=0 is not used. Stack starts at index=0
+%                else Stack starts at index=1.
+% See CLRS
+\NewDocumentCommand{\hStack}{m m m m O{0.5} O{0.5}}{ 
+	\edef\first{#1}  % first index: 0 or 1
+	\edef\capacity{#2}  % capacity
+	\edef\top{#3}  % index of top
+	\edef\content{#4} % comma separated list
+	\def\width{#5} % box width
+	\def\height{#6} % box height
+	%
+	\def\xtt{\width*7/8} % x displacement for  top mark
+	\def\y{-.3} % y 
+	\def\yshf{\y+\height/4} % y displacement for stack, head. tail mark
+	\def\yindex{\y+\height-0.06} % y displacement for indices
+
+	% Draw  rectangles
+	% index=0
+	\ifnum\first=1
+		\filldraw[fill=colorBoxZero] (0,\y) rectangle +(\width,\height);
+		\node[colorIndex] at (\width/2,\yindex) {{\tiny 0}}; % index 0
+	\fi
+	% index>0
+	\foreach \j in {1,...,\capacity} {
+		\ifnum\first=1
+			\FPeval{i}{clip(\j)};
+		\else
+			\FPeval{i}{clip(\j-1)};
+		\fi
+		\FPeval{x}{clip(\i*\width)};
+	
+		\ifnum\i<\top 
+			% box is in the stack
+			\filldraw[fill=colorUsed] (\x,\y) rectangle +(\width,\height);
+		\fi
+		\ifnum\i=\top 
+			% box is the top element
+			\filldraw[fill=colorTop] (\x,\y) rectangle +(\width,\height);
+			\node[red] at (\x+\xtt,\yshf) {{\tiny t}};
+		\fi
+		\ifnum\i>\top 
+			% box is not in the stack
+			\filldraw[fill=colorUnused] (\x,\y) rectangle +(\width,\height);
+		\fi
+		
+		% index
+		\FPeval{xindex}{\i*\width+\width/2};
+		\node[colorIndex] at (\xindex,\yindex) {{\tiny \i}}; % index
+	}
+	% draw the elements
+	\foreach \elem [count=\i] in \content {
+		\ifnum\first=1
+			\FPeval{j}{\i}
+		\else
+			\FPeval{j}{clip(\i-1)}
+		\fi
+		\FPeval{x}{\j*\width+\width/2};
+		\node at (\x,\y+\height/2) {{\scriptsize \elem}}; % content
+	}
+}  % \hStack 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A Stack
+
+
+\endinput

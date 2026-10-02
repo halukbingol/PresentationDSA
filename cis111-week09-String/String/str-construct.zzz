@@ -1,0 +1,9 @@
+construct
+s0:<
+s1:Hello world<
+s2:Hello world<
+s3:Hello world<
+(s0 == s1):false
+(s0 == s2):false
+(s1 == s2):false
+(s2 == s3):true

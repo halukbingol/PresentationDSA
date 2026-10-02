@@ -1,0 +1,36 @@
+\begin{function}[H]
+	\SetKwData{X}{\texttt{x}}
+	\SetKwData{K}{\texttt{k}}
+	\SetKwData{N}{\texttt{NIL}}
+	%
+	\SetKwData{P}{\texttt{parent}}
+	\SetKwData{Left}{\texttt{left}}
+	\SetKwData{Right}{\texttt{right}}
+	\SetKwData{Data}{\texttt{data}}
+	\SetKwData{Key}{\texttt{key}}
+
+%	\FuncSty{TreeSuccessor(}\ArgSty{\X}\FuncSty{)}\\
+		\If {\X.\Right $\neq$ \N} {
+			\tcp*[f]{{\tiny leftmost node in right subtree}}\\
+			\Return \TreeMinimum(\X.\Right)\\
+		} \Else {
+			\tcp*[f]{{\tiny find the lowest ancestor of \X,}}\\
+			\tcp*[f]{{\tiny whose left child is an ancestor of \X}}\\
+			y = \X.\P\\
+			\While {y $\neq$ \N
+					and \X == y.\Right}{
+				\X = y\\
+				y = y.\P\\
+			}
+		}
+		\Return y
+	\caption{TreeSuccessor(x) 
+		\hCite{%
+			\cite{cormen2022introduction}%
+		}
+	}
+\end{function}
+
+%\hCite{%
+%	\cite{cormen2022introduction}%
+%}

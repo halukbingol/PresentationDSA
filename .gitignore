@@ -1,6 +1,14 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V specific
-/-cis111-cis112-presentations-2026-3.xlsx
-/weekly-cis111+112+114+116.xlsx alias
+
+# folders
+/test*/
+
+
+# files
+/z-cis111-cis112-presentations-2026-3.xlsx
+/z-cis111-cis112-presentations-2026-3.md
+/z-weekly-cis111+112+114+116.xlsx alias
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V specific
 
 

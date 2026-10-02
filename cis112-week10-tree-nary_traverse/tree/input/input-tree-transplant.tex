@@ -1,0 +1,35 @@
+\begin{tikzpicture}
+	\tikzset{every leaf node/.style={font=\sffamily}}
+	\Tree
+	[.$x$
+		[.u \edge[roof]; {subtree(u)} ]
+		[.$y$ ]
+	]
+\end{tikzpicture}
+$\implies$
+\begin{tikzpicture}
+	\tikzset{every leaf node/.style={font=\sffamily}}
+	\Tree
+	[.$x$
+		[.v \edge[roof]; {subtree(v)} ]
+		[.$y$ ]
+	]
+\end{tikzpicture}
+\\
+\begin{tikzpicture}
+	\tikzset{every leaf node/.style={font=\sffamily}}
+	\Tree
+	[.$x$
+		[.$y$ ]
+		[.u \edge[roof]; {subtree(u)} ]
+	]
+\end{tikzpicture}
+$\implies$
+\begin{tikzpicture}
+	\tikzset{every leaf node/.style={font=\sffamily}}
+	\Tree
+	[.$x$
+		[.$y$ ]
+		[.v \edge[roof]; {subtree(v)} ]
+	]
+\end{tikzpicture}

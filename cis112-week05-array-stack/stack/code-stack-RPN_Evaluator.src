@@ -1,0 +1,27 @@
+private static int rpnEvaluator(String rpnExpression) {
+	System.out.println("\nrpnEvaluator");
+	/**/System.out.println("rpnExpression:" + rpnExpression);
+	Stack<Integer> stack = new Stack<>();
+	String[] arrToken = rpnExpression.split("[ ]");
+	for (String token : arrToken) {
+		// If the command is an operator, pop the arguments and push the result
+		if (token.equals("+")) {
+			stack.push(stack.pop() + stack.pop());
+		} else if (token.equals("-")) {
+			Integer arg2 = stack.pop();
+			stack.push(stack.pop() - arg2);
+		} else if (token.equals("*")) {
+			stack.push(stack.pop() * stack.pop());
+		} else if (token.equals("/")) {
+			Integer arg2 = stack.pop();
+			stack.push(stack.pop() / arg2);
+		} else {
+			// Not an operator--push the value
+			stack.push(Integer.parseInt(token));
+		}
+		/**/System.out.println("item:" + token + " stack:" + stack);
+	}
+	Integer result = stack.pop();
+	/**/System.out.println("result:" + result);
+	return result;
+}

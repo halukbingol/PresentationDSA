@@ -1,0 +1,20 @@
+# Tree
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V specific
+/cis112-Tree.pdf
+/cis112-Tree-202[0-9]*.pdf
+
+/cis112-TreeBinarySearch.pdf
+/cis112-TreeBinarySearch-202[0-9]*.pdf
+/cis112-TreeBinarySearch.synctex(busy)
+
+/cis112-TreeHeap.pdf
+/cis112-TreeHeap-202[0-9]*.pdf
+
+/hb-test.*
+/hb-test-beamer.*
+
+/classify/
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A specific
+

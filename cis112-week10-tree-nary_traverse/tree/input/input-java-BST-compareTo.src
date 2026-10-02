@@ -1,0 +1,9 @@
+MyNodeBST<T> x = ...;
+MyNodeBST<T> y = ...;
+
+// compare x and y
+if (y.data.compareTo(x.data) < 0) {
+	// y is smaller than x
+} else {
+	// y is larger than x
+}

@@ -1,0 +1,18 @@
+public class LibTree<T> {
+	...
+	public static <T> int height(NodeBinaryInterface<T> node) {
+		if (node == null) {
+			return 0;
+		} else if (node.left() == null//
+				&& node.right() == null) {
+			return 0;
+		} else {
+			int h = 1 + Math.max(//
+					height(node.left())//
+					, height(node.right())//
+			);
+			return h;
+		}
+	}
+	...
+}

@@ -1,0 +1,13 @@
+public class MyBST<T extends Comparable<T>> {
+	MyNodeBST<T> root;
+	...
+
+	public MyNodeBST<T> minimum() {
+		return (MyNodeBST<T>) LibTreeBS.minimum(root);
+	}
+
+	public MyNodeBST<T> minimum(MyNodeBST<T> x) {
+		return (MyNodeBST<T>) LibTreeBS.minimum(x);
+	}
+	...
+}

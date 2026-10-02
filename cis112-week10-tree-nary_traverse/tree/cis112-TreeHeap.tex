@@ -1,0 +1,1097 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2024Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+%\documentclass{beamer}
+\documentclass[10pt]{beamer}
+	\usetheme{Dresden}
+%	\usetheme{Copenhagen}
+%	\usetheme{Marburg}
+%	\usetheme{CambridgeUS}
+%	\usetheme{Warsaw}
+%	\usetheme{AnnArbor}
+
+%	\usecolortheme{orchid}
+	
+%	\usecolortheme{}
+%	\useinnertheme{}
+%	\useoutertheme{}
+%	\setbeamertemplate{bibliography item}[text]
+\usepackage{beamerthemesplit}
+%\usecolortheme{default}
+%\usecolortheme{structure}
+%\usepackage{beamerthemesplit} // Activate for custom appearance
+
+\useoutertheme{split}
+\usecolortheme{whale}
+\useinnertheme{rounded} 
+\usecolortheme{orchid}
+\setbeamertemplate{blocks}[rounded]
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V HB lib
+\usepackage{../hbcommon/hbdatastructures} 
+\usepackage{../hbcommon/hbpresentation} 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V specific	
+\usepackage{subcaption} % subfigure
+
+\usepackage[normalem]{ulem} %strikethroug
+
+\usepackage{tikz-qtree} % tree
+\usepackage{adjustbox} % tikzpicture alignment
+
+%\usepackage{moreverb} % tab control
+\usepackage{fancyvrb} % tab
+
+\usepackage{epstopdf} % eps 2 pdf
+\epstopdfsetup{update} % only regenerate pdf files when eps file is newer
+
+% https://tex.stackexchange.com/questions/118173/how-to-write-ceil-and-floor-in-latex
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\newcommand{\hDummy}{dummy}
+
+
+%\usetikzlibrary{circuits.ee.IEC} % ground symbol
+%\newcommand\hGround{%
+%	\mathbin{\text{\begin{tikzpicture}[circuit ee IEC,yscale=0.6,xscale=0.5]
+%	\draw (0,2ex) to (0,0) node[ground,rotate=-90,xshift=.65ex] {};
+%	\end{tikzpicture}}}%
+%}
+
+%% https://tex.stackexchange.com/questions/127641/how-do-i-typeset-the-ground-symbol-in-latex
+%\DeclareUnicodeCharacter{23DA}{\hGround}
+%\DeclareRobustCommand\hGround{%
+%	\unskip\nobreak\thinspace\textemdash\allowbreak\thinspace\ignorespaces%
+%}
+
+
+
+% beamer blocks
+% https://tex.stackexchange.com/questions/347269/different-colors-for-different-types-of-blocks-in-beamer
+% https://tex.stackexchange.com/questions/28760/custom-beamer-blocks-for-pros-and-cons/
+
+% https://tex.stackexchange.com/questions/1858/stable-vertical-alignment-of-columns-in-beamer
+% https://tex.stackexchange.com/questions/127027/vertical-alignment-of-tikz-picture-in-a-table-cell
+% https://tex.stackexchange.com/questions/172434/drawing-vertical-hierarchical-n-ary-tree-in-tikz
+%  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+%	\newcommand{\hAbs}[1]{\ensuremath{\left \lvert \, #1 \, \right \rvert} } % |x|
+%	\newcommand{\hMean}[1]{\ensuremath{<\!\! #1 \!\!>}} % average
+%	\newcommand{\hMean}[1]{\ensuremath{\overline{#1}}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+%: ==== HB Header Common Packages v20160423 ====V
+	\usepackage[utf8]{inputenc} % To use Unicode characters
+	\usepackage[iso]{datetime}
+	%	\usepackage{etex}
+	
+%	\usepackage[a4paper]{geometry}
+	
+	\usepackage{xcolor}
+	% black, blue, brown, cyan, darkgray, gray, green, lightgray, lime, 
+	% magenta, olive, orange, pink, purple, red, teal, violet, white, yellow
+%	\usepackage[colorlinks=true,linkcolor=red,urlcolor=blue,citecolor=red]%
+%		{hyperref}
+	\usepackage{graphicx,epstopdf}
+	% \graphicspath{{fig}}
+%	\graphicspath{{../common/figures/}}
+	% \DeclareGraphicsExtensions{.pdf,.jpeg,.png,.eps}
+	% \DeclareGraphicsRule{.tif}{png}{.png}%
+	%	{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+%	\usepackage{subfigure}
+%\usepackage{subfig}
+%\usepackage{subcaption}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V HB Header Common Packages v20160423 
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\title{
+	cis112\\
+	Tree- Heap
+}
+
+\author[Bingol]{Haluk O. Bingol}
+
+\institute{
+	Faculty of Computer and Information Sciences\\
+	Yeditepe University
+}
+
+%\date{
+%	cis112\\ 
+%	Yeditepe University, 2024-02-25
+%}
+\date{
+	{\tiny v2026-05-03}
+}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+\begin{document}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V Title
+\frame{\titlepage}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A 
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V Content
+\begin{frame}[t]\frametitle{Content}
+	\begin{columns}[T]
+	\begin{column}{.5\linewidth}   
+	    	\tableofcontents[hideallsubsections]
+		
+		\input{input/input-cite}
+	\end{column}
+	\begin{column}{.5\linewidth}
+		\includegraphics[width=.8\columnwidth]
+		{fig/fig-Erguvan.jpg}
+%		{example-image}
+	\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection{Motivation}{Hierarchy}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection{Definitions}{}{\input{input/input-cite}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+\subsection{Balanced Binary Trees}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t]\frametitle{Balanced Binary Trees}
+	\vspace{-0.5cm}
+	\begin{columns}[T] % >>>>
+	\begin{column}{.5\linewidth} % ++++ V
+		\begin{definition}
+			 A binary tree $T = \{ r, T_{l}, T_{r} \}$ is \hDefined{balanced} 
+			 iff
+			\begin{itemize}
+			
+				\item
+				$T$ is empty or
+			
+				\item
+				$T_{l}, T_{r}$ have ``almost the same height''.
+			\end{itemize}		 
+		\end{definition}
+		
+		\textbf{Remark.}
+		\begin{itemize}
+			
+			\item 
+			Consider ``almost the same height'' as difference of 1.
+
+			\item			
+			How to \hEmph{keep a tree balanced} is an important issue that 
+			we will deal with
+
+		\end{itemize}
+		
+	\end{column} % ++++ A
+	\begin{column}{.5\linewidth} % ++++ V
+		\begin{example}
+		{\scriptsize
+			\begin{figure}[htbp]
+			\begin{center}
+				\input{input/input-tree-TreeBinary-Balanced-almost}
+			\end{center}
+			\end{figure}
+		} % fsize
+		\end{example}
+	\end{column} % ++++ A
+	\end{columns} % <<<<
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+\subsection{Heap}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t]\frametitle{Max-Heap Property}
+
+	\vspace{-0.5cm}
+	\begin{columns}[T] % >>>>
+	\begin{column}{.5\linewidth} % ++++ V
+%	{\footnotesize 
+		\begin{definition}
+			An binary tree  \hCode{T} has  \hDefined{Max-Heap Property} 
+			iff
+			\[
+				\hCode{i.parent.key $\ge$ i.key} 
+			\]
+			for all nodes $i$.
+			
+			A binary tree with max-heap property is called \hDefined{max-heap}.
+		\end{definition}
+		
+%	} %fsize
+	\end{column} % ++++ A
+	\begin{column}{.5\linewidth} % ++++ V
+		\begin{example}
+		{\scriptsize
+		\begin{figure}[htbp]
+		\begin{center}
+			\input{input/input-tree-CLRS6-1.tex}
+		\end{center}
+		\end{figure}
+		} % fsize
+
+
+		{\tiny 
+			\begin{table}[t]
+			\setlength{\tabcolsep}{5pt}
+			\begin{tabular}
+				{|
+					p{.3cm} 
+					!{\vrule width 1pt}
+					*{10}{p{.05cm}|} 
+				}
+				\hline
+				\textcolor{colorIndex}{index}	&\textcolor{colorIndex}{1}	&\textcolor{colorIndex}{2}	&\textcolor{colorIndex}{3}	&\textcolor{colorIndex}{4}	&\textcolor{colorIndex}{5}	&\textcolor{colorIndex}{6}	&\textcolor{colorIndex}{7}	&\textcolor{colorIndex}{8}	&\textcolor{colorIndex}{9}	&\textcolor{colorIndex}{10}\\
+				\noalign{\hrule height 1pt}
+				Value	&16	&14	&10	&8	&7	&9	&3	&2	&4	&1\\
+				\hline
+			\end{tabular}
+			\end{table}
+		} % fsize
+
+		\end{example}
+
+	\end{column} % ++++ A
+	\end{columns} % <<<<
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+\section{Priority Queue}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t]\frametitle{Priority Queue}
+
+	\vspace{-0.5cm}
+	\begin{columns}[T] % >>>>
+	\begin{column}{.6\linewidth} % ++++ V
+%	{\footnotesize 
+		\begin{definition}[Mathematical]
+			A \hDefined{priority queue}  is a data structure of 
+			a set \hEmph{\(S\)} of elements \hEmph{\(x\)},
+			each has a key \hCode{x.key}.
+			
+			A \hDefined{max-priority queue} has the following operations
+			\begin{enumerate}
+			
+				\item 
+				\hEmph{\hCode{insert(S, x)} }inserts the element \hCode{x}
+				
+				\item 
+				\hEmph{\hCode{maximum(S)}} returns the element of \hCode{S} 
+				with the largest \hCode{key}
+				
+				\item 
+				\hEmph{\hCode{extractMax(S)}} removes and returns the element of \hCode{S} 
+				with the largest \hCode{key}
+			\end{enumerate}			
+		\end{definition}
+		
+		\textbf{Q.}
+		What happens if there are more than one element with  the largest \hCode{key}?
+		
+%	} %fsize
+	\end{column} % ++++ A
+	\begin{column}{.4\linewidth} % ++++ V
+		\begin{example}
+		{\scriptsize
+%			\input{input/input-tree-Tree-three}
+		} % fsize
+		\end{example}
+
+	\end{column} % ++++ A
+	\end{columns} % <<<<
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection{Observations}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{array-like structures and index functions}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t]\frametitle{Array-Like Approach}
+
+%	\vspace{-0.5cm}
+	\begin{columns}[T] % >>>>
+	\begin{column}{.5\linewidth} % ++++ V
+		
+		\begin{itemize}
+			\item
+			Use array-like implementation.
+
+			\item
+			Use an array of size \(M > N\)
+		\end{itemize}
+			
+		\phantom{line} \\
+		
+		\textbf{``left-justified''}
+		
+		\begin{itemize}
+			
+			\item
+			For a tree with \( N \) nodes,
+			use indices \(1, 2, \dotsc, N \)
+			
+			\item
+			Note that
+			\begin{itemize}
+	
+				\item 
+				Index 0 is not used
+	
+				\item 
+				Indices \(N+1, \dotsc, M\) are not used
+				
+				\item
+				The first available location (FAL) is \(N+1\)
+	
+			\end{itemize}
+
+		\end{itemize}
+	\end{column} % ++++ A
+	\begin{column}{.5\linewidth} % ++++ V
+		\begin{example}
+		{\footnotesize
+		Starting at index 1.
+		} %fsize
+
+		{\scriptsize
+			\input{input/input-tree-TreeBinaryFull-template}
+		} %fsize
+
+		{\tiny 
+			\begin{table}[t]
+			\setlength{\tabcolsep}{5pt}
+			\begin{tabular}
+				{|
+					p{.3cm} 
+					!{\vrule width 1pt}
+					*{11}{p{.05cm}|} 
+				}
+				\hline
+				\textcolor{colorIndex}{index}	
+				&\textcolor{red}{0}
+				&\textcolor{colorIndex}{1}	&\textcolor{colorIndex}{2}	
+				&\textcolor{colorIndex}{3}	&\textcolor{colorIndex}{4}	
+				&\textcolor{colorIndex}{5}	&\textcolor{colorIndex}{6}	
+				&\textcolor{colorIndex}{7}	&\textcolor{colorIndex}{8}	
+				&\textcolor{colorIndex}{9}	&\textcolor{colorIndex}{...}\\
+				
+				\noalign{\hrule height 1pt}
+				
+				Value	
+				&\textcolor{red}{$\times$}	
+				&1	&2	&3	&4	&5	&6	&7	&8	&9	&...\\
+				\hline
+			\end{tabular}
+			\end{table}
+		} % fsize
+		\end{example}
+	\end{column} % ++++ A
+	\end{columns} % <<<<
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t]\frametitle{Starting at index 1}
+	\begin{columns}[T] % >>>>
+	\begin{column}{.5\linewidth} % ++++ V
+	{\footnotesize
+		
+		\begin{itemize}
+			\item
+			Use array-like implementation.
+
+			\item
+			Use an array of size \(M > N\)
+		\end{itemize}
+
+		\phantom{line}\\
+		
+		\textbf{Index functions:}
+		
+		Starting at index 1\\ 
+		(i.e., not using index 0)\\
+		\phantom{line} \\
+		For node at index \(i\)
+
+		\begin{itemize}
+			\item
+			 \( parent = \floor*{i / 2} \)
+			
+			\item
+			\( left = 2 i \)
+			
+			\item
+			\( right = 2 i + 1 \)
+		\end{itemize}
+	} % fsize
+	\end{column} % ++++ A
+	\begin{column}{.5\linewidth} % ++++ V
+		\begin{example}
+		{\footnotesize
+		Starting at index 1.
+		} %fsize
+
+		{\scriptsize
+			\input{input/input-tree-TreeBinaryFull-template}
+		} %fsize
+
+		{\tiny 
+			\begin{table}[t]
+			\setlength{\tabcolsep}{5pt}
+			\begin{tabular}
+				{|
+					p{.3cm} 
+					!{\vrule width 1pt}
+					*{11}{p{.05cm}|} 
+				}
+				\hline
+				\textcolor{colorIndex}{index}	
+				&\textcolor{red}{0}
+				&\textcolor{colorIndex}{1}	&\textcolor{colorIndex}{2}	
+				&\textcolor{colorIndex}{3}	&\textcolor{colorIndex}{4}	
+				&\textcolor{colorIndex}{5}	&\textcolor{colorIndex}{6}	
+				&\textcolor{colorIndex}{7}	&\textcolor{colorIndex}{8}	
+				&\textcolor{colorIndex}{9}	&\textcolor{colorIndex}{...}\\
+				
+				\noalign{\hrule height 1pt}
+				
+				Value	
+				&\textcolor{red}{$\times$}	
+				&1	&2	&3	&4	&5	&6	&7	&8	&9	&...\\
+				\hline
+			\end{tabular}
+			\end{table}
+		} % fsize
+		\end{example}
+		\end{column} % ++++ A
+	\end{columns} % <<<<
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t]\frametitle{Starting at index 0}
+	\begin{columns}[T] % >>>>
+	\begin{column}{.5\linewidth} % ++++ V
+	{\footnotesize
+		
+		\begin{itemize}
+			\item
+			Use array-like implementation.
+
+			\item
+			Use an array of size \(M > N\)
+		\end{itemize}
+
+		\phantom{line}\\
+		
+		\textbf{Index functions:}
+		
+		Starting at index 0\\ 
+		\phantom{line} \\
+		For node at index \(i\)
+
+		\begin{itemize}
+			\item
+			 \( parent = \floor*{ (i - 1) / 2} \)
+			
+			\item
+			\( left = 2 i + 1 \)
+			
+			\item
+			\( right = 2 i + 2 \)
+		\end{itemize}
+	} % fsize
+	\end{column} % ++++ A
+	\begin{column}{.5\linewidth} % ++++ V
+		\begin{example}
+		{\footnotesize
+		Starting at index 1.
+		} %fsize
+
+		{\scriptsize
+			\input{input/input-tree-TreeBinaryFull-template}
+		} %fsize
+
+		{\tiny 
+			\begin{table}[t]
+			\setlength{\tabcolsep}{5pt}
+			\begin{tabular}
+				{|
+					p{.3cm} 
+					!{\vrule width 1pt}
+					*{11}{p{.05cm}|} 
+				}
+				\hline
+				\textcolor{colorIndex}{index}	
+				&\textcolor{red}{0}
+				&\textcolor{colorIndex}{1}	&\textcolor{colorIndex}{2}	
+				&\textcolor{colorIndex}{3}	&\textcolor{colorIndex}{4}	
+				&\textcolor{colorIndex}{5}	&\textcolor{colorIndex}{6}	
+				&\textcolor{colorIndex}{7}	&\textcolor{colorIndex}{8}	
+				&\textcolor{colorIndex}{9}	&\textcolor{colorIndex}{...}\\
+				
+				\noalign{\hrule height 1pt}
+				
+				Value	
+				&\textcolor{red}{$\times$}	
+				&1	&2	&3	&4	&5	&6	&7	&8	&9	&...\\
+				\hline
+			\end{tabular}
+			\end{table}
+		} % fsize
+		\end{example}
+		\end{column} % ++++ A
+	\end{columns} % <<<<
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t]\frametitle{Observations}
+	\begin{columns}[T] % >>>>
+	\begin{column}{.5\linewidth} % ++++ V
+	    	
+		\begin{itemize}
+			\item
+			\hEmph{insert} a new node $x$ at  
+			the first available location (\hEmph{FAL}),
+			e.g., index 14
+			
+			\item
+			\hEmph{remove} a node,
+			the first available location becomes one less index (move to the left),
+			e.g., 	index 13 becomes empty
+		\end{itemize}
+	\end{column} % ++++ A
+	\begin{column}{.5\linewidth} % ++++ V
+		\begin{example}
+		{\footnotesize
+		Starting at index 1.
+		} %fsize
+
+		{\scriptsize
+			\input{input/input-tree-TreeBinaryFull-template-1-13}
+		} %fsize
+
+		{\tiny 
+			\begin{table}[t]
+			\setlength{\tabcolsep}{5pt}
+			\begin{tabular}
+				{|
+					p{.3cm} 
+					!{\vrule width 1pt}
+					*{11}{p{.05cm}|} 
+				}
+				\hline
+				\textcolor{colorIndex}{index}	
+				&\textcolor{red}{0}
+				&\textcolor{colorIndex}{1}	&\textcolor{colorIndex}{2}	
+				&\textcolor{colorIndex}{3}	&\textcolor{colorIndex}{4}	
+				&\textcolor{colorIndex}{5}	&\textcolor{colorIndex}{6}	
+				&\textcolor{colorIndex}{7}	&\textcolor{colorIndex}{8}	
+				&\textcolor{colorIndex}{9}	&\textcolor{colorIndex}{...}\\
+				
+				\noalign{\hrule height 1pt}
+				
+				Value	
+				&\textcolor{red}{$\times$}	
+				&1	&2	&3	&4	&5	&6	&7	&8	&9	&...\\
+				\hline
+			\end{tabular}
+			\end{table}
+		} % fsize
+		\end{example}
+		\end{column} % ++++ A
+	\end{columns} % <<<<
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+%\begin{frame}[t]\frametitle{Insert}
+%	insert $x$ to the first available location and move it up
+%
+%	\begin{figure}[htbp]
+%	\begin{center}
+%		\includegraphics[width=.8\columnwidth]
+%		{fig/fig-heap-insert-95.png}
+%		\hCite{%
+%			\cite{lafore2003data}%
+%		}
+%	\end{center}
+%	\end{figure}
+%	
+%\end{frame}
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSubsection{Observations...}{Cases}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t]\frametitle{Cases (MaxHeap)}
+	\begin{columns}[T] % >>>>
+	\begin{column}{.5\linewidth} % ++++ V
+		\centering
+		\only<1>{
+			$parent < left$\\
+			\phantom{line} \\ 
+			\phantom{line} \\ 
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-case-685-a.pdf}
+		}
+		\only<2>{
+			$parent < right$\\
+			\phantom{line} \\ 
+			\phantom{line} \\ 
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-case-658-a.pdf}
+		}
+		\only<3>{
+			$parent < left$ \\ 
+			$parent < right$\\
+			$right < left$\\
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-case-687-a.pdf}
+		}
+		\only<4>{
+			$parent < left$ \\ 
+			$parent < right$\\
+			$left < right$\\
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-case-678-a.pdf}
+		}
+		\only<5>{
+			$parent > left$ \\ 
+			$parent > right$\\
+			\phantom{line} \\ 
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-case-635-a.pdf}
+		}
+	\end{column} % ++++ A
+	\begin{column}{.5\linewidth} % ++++ V
+		\centering
+		\only<1>{
+			\phantom{line} \\ 
+			\phantom{line} \\ 
+			swap: $parent \Longleftrightarrow left$\\
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-case-685-b.pdf}
+		}
+		\only<2>{
+			\phantom{line} \\ 
+			\phantom{line} \\ 
+			swap: $parent \Longleftrightarrow right$\\
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-case-658-b.pdf}
+		}
+		\only<3>{
+			\phantom{line} \\ 
+			\phantom{line} \\ 
+			swap: $parent \Longleftrightarrow left$\\
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-case-687-b.pdf}
+		}
+		\only<4>{
+			\phantom{line} \\ 
+			\phantom{line} \\ 
+			swap: $parent \Longleftrightarrow right$\\
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-case-678-b.pdf}
+		}
+		\only<5>{
+			\phantom{line} \\ 
+			\phantom{line} \\ 
+			\textbf{no} swap\\
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-case-635-b.pdf}
+		}
+	\end{column} % ++++ A
+	\end{columns} % <<<<
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSubsection{Observations...}{Insert}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t]\frametitle{Insert (heapifyUp)}
+		\centering
+		\only<1>{
+			\phantom{line} \\ 
+			Initial State. FAL is in the left of 37\\
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-insert-01.pdf}
+		}
+		\only<2>{
+			\phantom{line} \\ 
+			Insert 95 in FAL\\
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-insert-02.pdf}
+		}
+		\only<3>{
+			\phantom{line} \\ 
+			Swap: $95 \Longleftrightarrow 37$\\
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-insert-03.pdf}
+		}
+		\only<4>{
+			\phantom{line} \\ 
+			Swap: $95 \Longleftrightarrow 51$\\
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-insert-04.pdf}
+		}		
+		\only<5>{
+			\textbf{No} swap\\
+			since $95 < 97$\\
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-insert-05.pdf}
+		}
+		\only<6>{
+			\phantom{line} \\ 
+			Done\\
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-insert-06.pdf}
+		}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+%\begin{frame}[t]\frametitle{Insert}
+%	\begin{columns}[T] % >>>>
+%	\begin{column}{.5\linewidth} % ++++ V
+%		\centering
+%		\only<1-2>{
+%			\phantom{line} \\ 
+%			Initial State. FAL is in the left of 37\\
+%			\includegraphics[width=\textwidth]
+%				{fig/fig-bst-insert-01.pdf}
+%		}
+%		\only<3-4>{
+%			\phantom{line} \\ 
+%			Swap: $95 \Longleftrightarrow 37$\\
+%			\includegraphics[width=\textwidth]
+%				{fig/fig-bst-insert-03.pdf}
+%		}
+%		\only<5-6>{
+%			\textbf{No} swap\\
+%			since $95 < 97$\\
+%			\includegraphics[width=\textwidth]
+%				{fig/fig-bst-insert-05.pdf}
+%		}
+%	\end{column} % ++++ A
+%	\begin{column}{.5\linewidth} % ++++ V
+%		\centering
+%		\only<2-3>{
+%			\phantom{line} \\ 
+%			Insert 95 in FAL\\
+%			\includegraphics[width=\textwidth]
+%				{fig/fig-bst-insert-02.pdf}
+%		}
+%		\only<4-5>{
+%			\phantom{line} \\ 
+%			Swap: $95 \Longleftrightarrow 51$\\
+%			\includegraphics[width=\textwidth]
+%				{fig/fig-bst-insert-04.pdf}
+%		}		
+%		\only<6>{
+%			\phantom{line} \\ 
+%			Done\\
+%			\includegraphics[width=\textwidth]
+%				{fig/fig-bst-insert-06.pdf}
+%		}
+%	\end{column} % ++++ A
+%	\end{columns} % <<<<
+%\end{frame}
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSubsection{Observations...}{Delete}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t]\frametitle{Delete (heapifyUp)}
+		\centering
+		\only<1>{
+			Initial State, 92 is the largest\\
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-delete-01.pdf}
+		}
+		\only<2>{
+			Remove 92, create a hole\\
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-delete-02.pdf}
+		}
+		\only<3>{
+			Swap: $50\Longleftrightarrow$ hole\\
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-delete-03.pdf}
+		}
+		\only<4>{
+			Swap: $50\Longleftrightarrow 72$\\
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-delete-04.pdf}
+		}		
+		\only<5>{
+			Swap: $50\Longleftrightarrow 69$\\
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-delete-05.pdf}
+		}
+		\only<6>{
+			Done; 
+			since
+			$50> 44$ and
+			$50> 25$\\
+			\includegraphics[width=\textwidth]
+				{fig/fig-bst-delete-06.pdf}
+		}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+%\begin{frame}[t]\frametitle{Delete}
+%	\begin{columns}[T] % >>>>
+%	\begin{column}{.5\linewidth} % ++++ V
+%		\centering
+%		\only<1-2>{
+%			\phantom{line} \\ 
+%			Initial State, 92 is the largest\\
+%			\includegraphics[width=\textwidth]
+%				{fig/fig-bst-delete-01.pdf}
+%		}
+%		\only<3-4>{
+%			\phantom{line} \\ 
+%			Swap: $50 \Longleftrightarrow$ hole\\
+%			\includegraphics[width=\textwidth]
+%				{fig/fig-bst-delete-03.pdf}
+%		}
+%		\only<5-6>{
+%			\phantom{line} \\ 
+%			Swap: $50 \Longleftrightarrow 69$\\
+%			\includegraphics[width=\textwidth]
+%				{fig/fig-bst-delete-05.pdf}
+%		}
+%	\end{column} % ++++ A
+%	\begin{column}{.5\linewidth} % ++++ V
+%		\centering
+%		\only<2-3>{
+%			\phantom{line} \\ 
+%			Remove 92, create a hole\\
+%			\includegraphics[width=\textwidth]
+%				{fig/fig-bst-delete-02.pdf}
+%		}
+%		\only<4-5>{
+%			\phantom{line} \\ 
+%			Swap 50 with 72\\
+%			\includegraphics[width=\textwidth]
+%				{fig/fig-bst-delete-04.pdf}
+%		}		
+%		\only<6>{
+%			Done; \\
+%			since
+%			$50 > 44$ and
+%			$50 > 25$
+%			\includegraphics[width=\textwidth]
+%				{fig/fig-bst-delete-06.pdf}
+%		}
+%	\end{column} % ++++ A
+%	\end{columns} % <<<<
+%\end{frame}
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+%\begin{frame}[t]\frametitle{Insert}
+%	Insert $95$ to the first available location (FAL) and move it up
+%	
+%	\begin{figure}[htbp]
+%	\begin{center}
+%
+%	\begin{subfigure}[b]{0.45\textwidth}
+%		\centering
+%		\only<1-2>{
+%			Initial State. FAL is in the left of 37
+%			\includegraphics[width=\textwidth]
+%				{fig/fig-bst-insert-95-01.pdf}
+%		}
+%		\only<3-4>{
+%			Swap 95 with 37
+%			\includegraphics[width=\textwidth]
+%				{fig/fig-bst-insert-95-03.pdf}
+%		}
+%		\only<5-6>{
+%			Swap 95 with82
+%			\includegraphics[width=\textwidth]
+%				{fig/fig-bst-insert-95-05.pdf}
+%		}
+%	\end{subfigure}
+%
+%	\hfill
+%
+%	\begin{subfigure}[b]{0.45\textwidth}
+%		\centering
+%		\only<2-3>{
+%			Insert 95 in FAL
+%			\includegraphics[width=\textwidth]
+%				{fig/fig-bst-insert-95-02.pdf}
+%		}
+%		\only<4-5>{
+%			Swap 95 with 51
+%			\includegraphics[width=\textwidth]
+%				{fig/fig-bst-insert-95-04.pdf}
+%		}
+%	\end{subfigure}
+%
+%	\end{center}
+%	\end{figure}
+%	
+%\end{frame}
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+%\begin{frame}[t]\frametitle{Delete}
+%	Delete the root, move the last node to the root and move it down
+%	
+%	\begin{figure}[htbp]
+%	\begin{center}
+%		\includegraphics[width=.9\columnwidth]
+%		{fig/fig-heap-remove.png}
+%		\hCite{%
+%			\cite{lafore2003data}%
+%		}
+%	\end{center}
+%	\end{figure}
+%\end{frame}
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t]\frametitle{Heapsort}
+	\begin{figure}[htbp]
+	\begin{center}
+		\includegraphics[width=.5\columnwidth]
+		{fig/fig-heapsort.png}
+		\hCite{%
+			\cite{lafore2003data}%
+		}
+	\end{center}
+	\end{figure}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V References bib
+\begin{frame}[t,allowframebreaks]\frametitle{References}
+	\setbeamertemplate{bibliography item}[text] % sets numbers in references
+%	\bibliographystyle{abbrv}
+%	\bibliographystyle{apalike}
+%	\bibliographystyle{ieeetr}
+	\bibliographystyle{IEEEtran}
+	%
+	\tiny\bibliography{../hbcommon/bingol-DataStructures} % bib file
+
+	
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+\end{document}

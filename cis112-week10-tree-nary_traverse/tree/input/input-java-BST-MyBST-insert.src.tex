@@ -1,0 +1,33 @@
+public class MyBST<T extends Comparable<T>> {
+	MyNodeBST<T> root;
+
+	public MyBST() {
+		root = null;
+	}
+	public void insert(T data) {
+		if (data == null) {
+			return;
+		}
+		MyNodeBST<T> x = root;
+		MyNodeBST<T> y = null;
+		MyNodeBST<T> z = new MyNodeBST<>(data);
+		while (x != null) {
+			y = x;
+			if (z.data.compareTo(x.data) < 0) {
+				x = x.left;
+			} else {
+				x = x.right;
+			}
+		}
+		// location is found.
+		z.parent = y;
+		if (y == null) {
+			root = z;
+		} else if (z.data.compareTo(y.data) < 0) {
+			y.left = z;
+		} else {
+			y.right = z;
+		}
+	}
+	...
+}

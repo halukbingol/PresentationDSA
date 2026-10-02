@@ -1,0 +1,13 @@
+System.out.println("\nexample_EuropeanNumberHandler");
+String european = "EUR7.654.321,1234";
+System.out.println("european:" + european);
+String tmp = new String(european);
+tmp = tmp.replaceFirst("EUR", "");
+System.out.println("replaceFirst(\"EUR\", \"\"):" + tmp);
+tmp = tmp.replaceAll("\\.", "");
+System.out.println("replaceAll(\"\\\\.\", \"\"):" + tmp);
+tmp = tmp.replaceFirst(",", ".");
+System.out.println("replaceFirst(\",\", \".\"):" + tmp);
+double d = Double.parseDouble(tmp);
+System.out.println("(d + 3):" + (d + 3));
+System.out.println("european:" + european);

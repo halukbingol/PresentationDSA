@@ -1,0 +1,22 @@
+public class MyNode<T> implements NodeBinaryI<T>{
+
+	public T data;
+	public MyNode<T> left;
+	public MyNode<T> right;
+
+	@Override
+	public NodeBinary left() {
+		return left;
+	}
+
+	@Override
+	public NodeBinary right() {
+		return right;
+	}
+
+	@Override
+	public T data() {
+		return data;
+	}
+
+}
