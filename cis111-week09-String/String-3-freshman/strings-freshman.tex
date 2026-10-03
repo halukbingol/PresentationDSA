@@ -1,0 +1,657 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Strings in Java -- Freshman Level: First Steps with Text
+%  ---------------------------------------------------------------------
+%  Built on hbCisLaTeXTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their outputs are read from codeoutput/:
+%     codeoutput/<Name>.java   the program
+%     codeoutput/<Name>.in     keyboard input (optional)
+%     codeoutput/<Name>.txt    what it printed, made by:  sh run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstcodedown, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\definecolor{gitred}{RGB}{240,80,50}
+\newcommand{\cmd}[1]{\texttt{\color{gitred}#1}}
+
+% ---------------------------------------------------------------------
+\title{Strings in Java}
+\subtitle{Freshman Level: First Steps with Text}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-4}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={5-8}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Setup]{Running Java on Your Computer}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Install]{Install and check}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Install Java and check it}
+  \small You need a \textbf{JDK} (Java Development Kit), for example Eclipse Temurin 21 from \texttt{adoptium.net}.
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Windows}
+        \footnotesize
+        \begin{enumerate}
+          \item Download the \texttt{.msi} installer, run it, and tick \emph{Set JAVA\_HOME} and \emph{Add to PATH}
+          \item Open \textbf{Command Prompt} (\texttt{Win} key, type \texttt{cmd})
+          \item Check:
+        \end{enumerate}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash]
+java -version
+javac -version
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{macOS}
+        \footnotesize
+        \begin{enumerate}
+          \item Download the \texttt{.pkg} installer (Apple silicon: \emph{aarch64}; Intel: \emph{x64}) and run it
+          \item Open \textbf{Terminal} (\texttt{Cmd}+\texttt{Space}, type \texttt{Terminal})
+          \item Check:
+        \end{enumerate}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash]
+java -version
+javac -version
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+
+      \end{block}
+    \end{column}
+  \end{columns}
+  \small Both commands should print a version number such as \texttt{21.0.10}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Run]{Compile and run}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Compile and run a program}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Windows (Command Prompt)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash]
+cd C:\Users\ayse\cse101
+chcp 65001
+javac -encoding UTF-8 Greeting.java
+java Greeting
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+
+        \footnotesize \cmd{chcp 65001} lets the console show Turkish letters (ç, ğ, ı, ş).
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{macOS (Terminal)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash]
+cd ~/cse101
+javac Greeting.java
+java Greeting
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+
+        \footnotesize Terminal is UTF-8 already; no extra step.
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vspace{0.3em}
+  \begin{itemize}\small
+    \item \cmd{javac} \textbf{compiles} \texttt{Greeting.java} into \texttt{Greeting.class}; \cmd{java} \textbf{runs} it (no \texttt{.class} at the end)
+    \item Shortcut since Java 11 for one-file programs: \cmd{java Greeting.java}
+    \item The file name must match the class name: \texttt{public class Greeting} lives in \texttt{Greeting.java}
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[First]{Your First Strings}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[What]{What is a string?}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What is a string?}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      A \textbf{string} is a piece of text: a sequence of characters between double quotes.
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=Java]
+String city = "İstanbul";
+String empty = "";
+char letter = 'A';      // one char
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+
+      \begin{itemize}\small
+        \item \texttt{String} (capital S) is the type
+        \item Double quotes \texttt{"..."} for strings, single quotes \texttt{'.'} for one \texttt{char}
+        \item \texttt{+} glues strings together (\textbf{concatenation})
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \small Every character has a position, starting at \textbf{0}:
+      \vspace{0.6em}
+      \begin{center}
+        \begin{tikzpicture}\hString[0.48]{İ,s,t,a,n,b,u,l}\end{tikzpicture}
+      \end{center}
+      \vspace{0.4em}
+      \small \texttt{city.length()} is 8,\\
+      \texttt{city.charAt(0)} is \texttt{'İ'},\\
+      \texttt{city.charAt(7)} is \texttt{'l'}.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Plus]{Joining with +}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Joining strings with \texttt{+}}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Greeting.java}{Java}{codeoutput/Greeting.txt}
+
+  \vspace{0.3em}
+  \small \hRemark{Look at the last line:} \texttt{"Class of " + year} is a string, then \texttt{+ 4} appends ``4''.
+  Use parentheses to add numbers first.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Puzzle: what does \texttt{+} do here?}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/PlusPuzzle.java}{Java}{codeoutput/PlusPuzzle.txt}
+
+  \vspace{0.3em}
+  \small \texttt{+} works \textbf{left to right}. Number $+$ number adds; as soon as one side is a \texttt{String}, it joins.
+  Two \texttt{char}s are numbers: \texttt{'a' + 'b'} is $97 + 98$.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Input]{Reading Text}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Scanner]{Reading with Scanner}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reading a line with \texttt{Scanner}}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/ReadName.java}{Java}{codeoutput/ReadName.txt}
+
+  \vspace{0.3em}
+  \small Here the input comes from the file \texttt{ReadName.in} (\texttt{Ayşe Yılmaz}, \texttt{İstanbul}),
+  so the typed text is not shown after the prompts. \texttt{nextLine()} reads a whole line, spaces included.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Trap]{The nextLine trap}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The \texttt{nextInt} / \texttt{nextLine} trap}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/NextLineTrap.java}{Java}{codeoutput/NextLineTrap.txt}
+
+  \vspace{0.3em}
+  \small Input: \texttt{19}, Enter, \texttt{Ali Can}, Enter. \texttt{nextInt()} stops before the Enter, so the first
+  \texttt{nextLine()} returns the empty rest of that line. \hRemark{Fix:} call \texttt{in.nextLine()} once after \texttt{nextInt()}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Loop]{Character by Character}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Loop]{Looping over a string}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Looping over a string}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=Java]
+for (int i = 0; i < s.length(); i++) {
+    char c = s.charAt(i);
+    // use c
+}
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+
+      \begin{itemize}\small
+        \item Start at \texttt{0}
+        \item Stop \textbf{before} \texttt{s.length()}: use \texttt{<}, not \texttt{<=}
+        \item \texttt{charAt(i)} gives the \texttt{char} at position \texttt{i}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \begin{center}
+      \begin{tikzpicture}
+        \hString[0.6]{J,a,v,a}
+        \foreach \i in {0,1,2,3} \draw[-{Stealth}, thick, orange] (\i*0.6+0.3,-0.55) -- (\i*0.6+0.3,-0.05);
+        \node[font=\scriptsize, orange] at (1.2,-0.8) {\texttt{i} = 0, 1, 2, 3};
+        \node[font=\scriptsize] at (1.2,-1.25) {\texttt{i} = 4 = \texttt{length()}: stop};
+      \end{tikzpicture}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Spelling a word}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Spell.java}{Java}{codeoutput/Spell.txt}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Count]{Counting}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Counting vowels}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/CountVowels.java}{Java}{codeoutput/CountVowels.txt}
+
+  \vspace{0.3em}
+  \small A handy trick: \texttt{vowels.indexOf(c) >= 0} means ``\texttt{c} is one of the characters in \texttt{vowels}''.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Compare]{Comparing Strings}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Equals]{equals, not ==}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The most famous string bug}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/EqualsTrap.java}{Java}{codeoutput/EqualsTrap.txt}
+
+  \vspace{0.3em}
+  \small The user typed \texttt{yes}, yet \texttt{answer == "yes"} is \texttt{false}: \texttt{==} asks whether they are
+  the \textbf{same object}. \hRemark{Always compare text with} \texttt{equals}: \texttt{answer.equals("yes")}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Comparing strings: the rules}
+  \small
+  \begin{tabular}{@{}L{0.4\textwidth}L{0.5\textwidth}@{}}
+    \toprule
+    \textbf{Question}                     & \textbf{Write} \\
+    \midrule
+    same text?                            & \texttt{a.equals(b)} \\
+    same text, ignoring case?             & \texttt{a.equalsIgnoreCase(b)} \\
+    which comes first?                    & \texttt{a.compareTo(b) < 0} \\
+    is it empty?                          & \texttt{a.isEmpty()} \\
+    does it contain \texttt{"x"}?         & \texttt{a.contains("x")} \\
+    does it start with \texttt{"Dr."}?    & \texttt{a.startsWith("Dr.")} \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.8em}
+  \begin{alertblock}{Never}
+    \texttt{if (a == b)} with strings. It may even work in a small test (with literals), then fail with user input.
+  \end{alertblock}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Errors]{When Things Go Wrong}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Index]{Index out of bounds}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Index out of bounds}
+  \lstcodedownstep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize, linerange={1-2,13-13}]{codeoutput/OutOfBounds.java}{Java}{codeoutput/OutOfBounds.txt}
+
+  \small \hRemark{Read the message:} the exception name, \texttt{Index 4 out of bounds for length 4}, and the
+  line of \emph{your} file (\texttt{OutOfBounds.java:5}). Valid indices are \texttt{0..length()-1}.
+  (The 10 lines from inside Java, \texttt{at java.base/...}, are skipped here.)
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Null]{null}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A string that is not there: \texttt{null}}
+  \lstcodedownstep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/NullName.java}{Java}{codeoutput/NullName.txt}
+
+  \small \texttt{name} refers to no object. Printing it shows \texttt{null}, but calling a method on it crashes.
+  Java even tells us which variable was \texttt{null}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Problems]{Small Problems}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Reverse]{Reversing}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reversing a string}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Reverse.java}{Java}{codeoutput/Reverse.txt}
+
+  \vspace{0.3em}
+  \small The loop walks from the last index down to 0. \texttt{StringBuilder} does the same in one call, and faster.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Palindrome]{Palindromes}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Palindrome: the idea}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \small A \textbf{palindrome} reads the same backwards: \texttt{kayak}, \texttt{level},
+      \texttt{ey edip adanada pide ye}.
+
+      \vspace{0.4em}
+      Compare the two ends, then move inwards:
+      \begin{center}
+      \begin{tikzpicture}
+        \hString[0.55]{k,a,y,a,k}
+        \draw[{Stealth}-{Stealth}, thick, orange] (0.27,-0.1) to[bend right=35] (2.47,-0.1);
+        \draw[{Stealth}-{Stealth}, thick, blue] (0.82,-0.1) to[bend right=35] (1.92,-0.1);
+        \node[font=\scriptsize] at (1.37,-0.95) {\texttt{i} moves right, \texttt{j} moves left};
+      \end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \SetAlFnt{\small}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V alg
+%: -Alg. 
+\begin{algorithm}[H]
+  \caption{IsPalindrome($s$)}
+  $i \leftarrow 0$, \quad $j \leftarrow \mathit{length}(s) - 1$\;
+  \While{$i < j$}{
+    \If{$s[i] \neq s[j]$}{
+      \Return{false}\;
+    }
+    $i \leftarrow i + 1$, \quad $j \leftarrow j - 1$\;
+  }
+  \Return{true}\;
+\end{algorithm}
+% +++++++++++++++++++++++++++++++++++++++ A alg
+
+
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Palindrome in Java}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/Palindrome.java}{Java}{codeoutput/Palindrome.txt}
+
+  \vspace{0.3em}
+  \small \texttt{toLowerCase()} first, so \texttt{"Level"} counts. The spaces in the last example happen to be symmetric too.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Count words]{Counting words}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Counting lines, words and characters}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\tiny]{codeoutput/WordCount.java}{Java}{codeoutput/WordCount.txt}
+
+  \vspace{0.3em}
+  \small Input: 3 lines, one empty. \texttt{split("\textbackslash\textbackslash s+")} splits at runs of spaces; \texttt{strip()} avoids an empty first word.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Rules]{Do and do not}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Do and do not}
+  \small
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Do}
+        \begin{itemize}
+          \item Count positions from \textbf{0} to \texttt{length()-1}
+          \item Loop with \texttt{i < s.length()}
+          \item Compare with \texttt{equals}
+          \item Store results: \texttt{s = s.trim();}
+          \item Put numbers in parentheses: \texttt{"x" + (a + b)}
+          \item Call \texttt{nextLine()} after \texttt{nextInt()}
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Do not}
+        \begin{itemize}
+          \item Compare strings with \texttt{==}
+          \item Use \texttt{charAt(s.length())}
+          \item Call methods on a \texttt{null} string
+          \item Confuse \texttt{'a'} (char) with \texttt{"a"} (String)
+          \item Expect \texttt{s.toUpperCase();} alone to change \texttt{s}
+        \end{itemize}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Exercises]{Exercises}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Read a full name and print the initials: \texttt{Ayşe Yılmaz} $\to$ \texttt{A.Y.}
+    \item Read a word and print it with every letter on its own line, numbered from 1.
+    \item Count how many times the letter \texttt{a} (either case) appears in a sentence.
+    \item Read a password and say whether it has at least 8 characters, a digit and an upper-case letter
+          (use \texttt{Character.isDigit}, \texttt{Character.isUpperCase}).
+    \item Read two words and print them in dictionary order (\texttt{compareToIgnoreCase}).
+    \item Replace every space in a sentence with \texttt{\_} \textbf{without} \texttt{replace}: build a new string in a loop.
+    \item \textbf{Challenge:} check whether a sentence is a palindrome when spaces are ignored
+          (\texttt{"Ey Edip, Adana'da pide ye"}).
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

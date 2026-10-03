@@ -1,0 +1,451 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Strings in Java -- Sophomore Level: Objects, Efficiency and Data Structures
+%  ---------------------------------------------------------------------
+%  Built on hbCisLaTeXTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their outputs are read from codeoutput/:
+%     codeoutput/<Name>.java   the program
+%     codeoutput/<Name>.in     keyboard input (optional)
+%     codeoutput/<Name>.txt    what it printed, made by:  sh run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstcodedown, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\definecolor{gitred}{RGB}{240,80,50}
+\newcommand{\cmd}[1]{\texttt{\color{gitred}#1}}
+
+% ---------------------------------------------------------------------
+\title{Strings in Java}
+\subtitle{Sophomore Level: Objects, Efficiency and Data Structures}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Design]{The Design of String}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Class]{An immutable class}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{String} is an immutable class}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=Java, basicstyle=\ttfamily\scriptsize]
+public final class String
+        implements Comparable<String>, CharSequence, ... {
+    private final byte[] value;  // characters
+    private final byte coder;    // LATIN1/UTF16
+    private int hash;            // cached
+    ...
+}
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+
+      \small (simplified from the JDK 21 source)
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \small How Java makes it immutable:
+      \begin{itemize}\small
+        \item \texttt{final} class: no subclass can add mutating methods
+        \item \texttt{private final} array: nobody outside can reach it
+        \item No method changes \texttt{value}; ``changing'' methods build a new \texttt{String}
+        \item Constructors copy the given \texttt{char[]}, so changing your array later does not affect the string
+      \end{itemize}
+      \begin{block}{Same recipe for your classes}
+        \small \texttt{final} class, \texttt{private final} fields, no setters, defensive copies.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Pool]{Literals and the pool}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Literals, the pool and \texttt{intern()}}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Pool.java}{Java}{codeoutput/Pool.txt}
+
+  \vspace{0.3em}
+  \small \texttt{"ja" + "va"} is a \textbf{compile-time constant}: \texttt{javac} writes the literal \texttt{"java"} into the class file.
+  \texttt{half + "va"} is computed at run time and gives a new object. \texttt{intern()} returns the pooled one.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Hashing]{equals and hashCode}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Contract]{The contract}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The \texttt{equals}/\texttt{hashCode} contract}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \textbf{The contract} (\texttt{java.lang.Object})
+      \begin{enumerate}\small
+        \item \texttt{a.equals(b)} $\Rightarrow$ \texttt{a.hashCode() == b.hashCode()}
+        \item The converse need \textbf{not} hold: different strings may share a hash (a \textbf{collision})
+        \item \texttt{hashCode} must not change while the object is in a hash table
+      \end{enumerate}
+      \small \texttt{String} satisfies all three; immutability gives (3) for free.
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \textbf{\texttt{String.hashCode()}} for $s = s_{0} s_{1} \dots s_{n-1}$:
+      \[
+      	h(s) = \sum_{i=0}^{n-1} s_{i} \cdot 31^{n-1-i} \pmod{2^{32}}
+      \]
+      \small computed by Horner's rule: $h \leftarrow 31 h + s_{i}$.
+      \vspace{0.4em}
+
+      Example: $h(\texttt{"Aa"}) = 65 \cdot 31 + 97 = 2112$ and
+      $h(\texttt{"BB"}) = 66 \cdot 31 + 66 = 2112$: a collision.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Computing \texttt{hashCode} by hand}
+  \lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\tiny]{codeoutput/HashCodes.java}{Java}{codeoutput/HashCodes.txt}
+
+  \vspace{0.3em}
+  \small Our \texttt{hash} matches \texttt{String.hashCode()}. Overflow wraps around (\texttt{Yeditepe} is negative).
+  \texttt{String} caches its hash in a field.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Keys]{Good and bad keys}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Why keys should be immutable}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/KeyTrap.java}{Java}{codeoutput/KeyTrap.txt}
+
+  \vspace{0.3em}
+  \small \texttt{StringBuilder} has no \texttt{equals}/\texttt{hashCode} of its own and can change: \hRemark{use \texttt{String} keys}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Efficiency]{Building Strings Efficiently}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Timing]{Measuring}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{+=} in a loop versus \texttt{StringBuilder}}
+  \lstcoderightstep[0.6][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Timing.java}{Java}{codeoutput/Timing.txt}
+
+  \vspace{0.3em}
+  \small One run; \hRemark{your numbers will differ}. Doubling $n$: \texttt{+=} about $4\times$ slower (quadratic), builder near 1\,ms.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Amortized]{Why the builder is fast}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Why the builder is fast: doubling}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\tiny]{codeoutput/Capacity.java}{Java}{codeoutput/Capacity.txt}
+
+  \vspace{0.3em}
+  \small When full, the capacity $c$ grows to $2c + 2$. Appending $n$ characters copies fewer than
+  $n + \frac{n}{2} + \frac{n}{4} + \dots < 2n$ characters in total: each \texttt{append} is \textbf{amortized} $O(1)$.
+  With \texttt{+=}, step $k$ copies $k$ characters: $O(n^{2})$ in total.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Order]{Ordering Strings}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Comparators]{Comparable and Comparator}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{Comparable} and \texttt{Comparator}}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{Natural order}: \texttt{String implements Comparable<String>}
+      \begin{itemize}\small
+        \item \texttt{compareTo} compares \texttt{char} codes (UTF-16 values)
+        \item \texttt{Arrays.sort}, \texttt{Collections.sort}, \texttt{TreeMap} use it by default
+      \end{itemize}
+      \textbf{Other orders}: pass a \texttt{Comparator<String>}
+      \begin{itemize}\small
+        \item \texttt{String.CASE\_INSENSITIVE\_ORDER}
+        \item \texttt{Comparator.comparing(String::length)}
+        \item \texttt{Collator.getInstance(locale)}: a language's alphabet
+        \item combine with \texttt{.thenComparing(...)}, \texttt{.reversed()}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \small The Turkish alphabet:
+
+      \vspace{0.3em}
+      \texttt{a b c ç d e f g ğ h ı i j k l m n o ö p r s ş t u ü v y z}
+
+      \vspace{0.5em}
+      In Unicode, \texttt{ç} (231), \texttt{ı} (305), \texttt{ü} (252) all come after \texttt{z} (122),
+      so \texttt{compareTo} puts \texttt{çay} after \texttt{zeytin}.
+      \begin{alertblock}{Rule}
+        \small Sort for \textbf{people} with a \texttt{Collator};
+        sort for \textbf{programs} (keys, IDs) with \texttt{compareTo}.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Four ways to sort the same words}
+  \lstcoderightstep[0.62][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/SortStrings.java}{Java}{codeoutput/SortStrings.txt}
+
+  \vspace{0.3em}
+  \small Only the \texttt{Collator} gives the dictionary order: \texttt{armut, çay, Elma, ılık, incir, Üzüm, zeytin}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Structures]{Strings in Data Structures}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Map]{Counting with a map}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Word frequencies with a \texttt{TreeMap}}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/WordFreq.java}{Java}{codeoutput/WordFreq.txt}
+
+  \vspace{0.3em}
+  \small \texttt{[\textasciicircum\textbackslash\textbackslash p\{L\}]+} splits at anything that is not a \textbf{letter} in any language
+  (\texttt{\textbackslash\textbackslash W+} would also split Turkish words at \texttt{ç, ş, ı}).
+  \texttt{merge(w, 1, Integer::sum)} adds 1, starting from 1.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Anagram]{Anagrams}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Anagrams: sorting or counting}
+  \lstcoderightstep[0.72][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Anagram.java}{Java}{codeoutput/Anagram.txt}
+
+  \vspace{0.3em}
+  \small \texttt{c - 'a'} is 0..25 because \texttt{'a'..'z'} are consecutive; for other alphabets count in a \texttt{HashMap}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Stack]{Matching brackets with a stack}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Matching brackets with a stack}
+  \small Read \texttt{\{[()]\}} from left to right: \textbf{push} an opening bracket, \textbf{pop} on a closing one and check that they match.
+  \vspace{0.4em}
+  \begin{center}
+  \begin{tikzpicture}[x=1cm, y=1cm]
+    \foreach \lab/\y in {after \texttt{\{}/0.3, after \texttt{\{[(}/-0.8, after \texttt{\{[()}/-1.9, after \texttt{\{[()]\}}/-3.0}
+      \node[anchor=east, font=\small] at (-0.3,\y) {\lab};
+    \begin{scope}[shift={(0,0.3)}]  \hStack{0}{5}{0}{{\{}}[0.7][0.6] \end{scope}
+    \begin{scope}[shift={(0,-0.8)}] \hStack{0}{5}{2}{{\{},{[},{(}}[0.7][0.6] \end{scope}
+    \begin{scope}[shift={(0,-1.9)}] \hStack{0}{5}{1}{{\{},{[}}[0.7][0.6] \end{scope}
+    \begin{scope}[shift={(0,-3.0)}] \hStack{0}{5}{-1}{}[0.7][0.6] \end{scope}
+    \node[anchor=west, font=\small, align=left] at (4.0,-0.8) {\texttt{)} pops \texttt{(}: match};
+    \node[anchor=west, font=\small, align=left] at (4.0,-3.0) {empty at the end:\\ \textbf{balanced}};
+  \end{tikzpicture}
+  \end{center}
+  \small The green box is the \textbf{top} (\texttt{t}). Drawn with \texttt{\textbackslash hStack} from \texttt{hblibDatastructures}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Bracket matching in Java}
+  \lstcoderightstep[0.74][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Brackets.java}{Java}{codeoutput/Brackets.txt}
+
+  \vspace{0.3em}
+  \small \texttt{ArrayDeque} is Java's recommended stack. Each character is pushed and popped at most once: $O(n)$.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Costs]{Costs of String operations}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Costs of common operations}
+  \small $n$ = \texttt{s.length()}, $m$ = length of the other string, $k$ = length of the result
+  \vspace{0.3em}
+
+  \begin{tabular}{@{}L{0.36\textwidth}L{0.17\textwidth}L{0.38\textwidth}@{}}
+    \toprule
+    \textbf{Operation} & \textbf{Time} & \textbf{Note} \\
+    \midrule
+    \texttt{length()}, \texttt{charAt(i)}       & $O(1)$        & array access \\
+    \texttt{substring(b, e)}                    & $O(k)$        & copies $k = e - b$ chars (since Java 7) \\
+    \texttt{a + b}, \texttt{concat}             & $O(n + m)$    & new array \\
+    \texttt{equals}, \texttt{compareTo}         & $O(\min(n, m))$ & stops at the first difference \\
+    \texttt{hashCode()}                         & $O(n)$ once   & then cached \\
+    \texttt{indexOf(t)}                         & $O(n \cdot m)$ worst & naive search (see the junior slides) \\
+    \texttt{sb.append(x)}                       & $O(1)$ amortized & capacity doubling \\
+    \texttt{s += x} in a loop of $n$            & $O(n^{2})$    & copies everything each time \\
+    \bottomrule
+  \end{tabular}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Exercises]{Exercises}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Write an immutable class \texttt{Name(first, last)} with correct \texttt{equals}, \texttt{hashCode} and \texttt{compareTo}
+          (last name, then first name, with a Turkish \texttt{Collator}).
+    \item Generate 8 different strings with the same \texttt{hashCode} (hint: \texttt{"Aa"} and \texttt{"BB"} combine).
+    \item Group words into anagram classes with a \texttt{Map<String, List<String>>} keyed by the sorted letters.
+    \item Extend \texttt{Brackets} to ignore brackets inside quotes: \texttt{"a(\textbackslash"b\textbackslash")"}.
+    \item Measure \texttt{String.join}, \texttt{StringBuilder} and \texttt{+=} for 100\,000 short words; plot the times.
+    \item Implement \texttt{reverseWords("the cat sat")} $\to$ \texttt{"sat cat the"} in $O(n)$ with a \texttt{StringBuilder}.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

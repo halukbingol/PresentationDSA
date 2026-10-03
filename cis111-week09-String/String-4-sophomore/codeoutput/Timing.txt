@@ -1,0 +1,4 @@
+n= 20000  +=  115.7 ms  builder= 0.97 ms  same=true
+n= 40000  +=  307.6 ms  builder= 1.64 ms  same=true
+n= 80000  +=  937.4 ms  builder= 1.68 ms  same=true
+n=160000  += 3445.8 ms  builder= 0.86 ms  same=true

@@ -1,0 +1,611 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Strings in Java -- Junior Level: String Algorithms, Regular Expressions and Unicode
+%  ---------------------------------------------------------------------
+%  Built on hbCisLaTeXTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their outputs are read from codeoutput/:
+%     codeoutput/<Name>.java   the program
+%     codeoutput/<Name>.in     keyboard input (optional)
+%     codeoutput/<Name>.txt    what it printed, made by:  sh run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstcodedown, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\definecolor{gitred}{RGB}{240,80,50}
+\newcommand{\cmd}[1]{\texttt{\color{gitred}#1}}
+
+\SetKw{KwAnd}{and}
+\DontPrintSemicolon
+
+% ---------------------------------------------------------------------
+\title{Strings in Java}
+\subtitle{Junior Level: String Algorithms, Regular Expressions and Unicode}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Matching]{The String Matching Problem}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Problem]{The problem}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The string matching problem}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \textbf{Given} a text $T[0..n-1]$ and a pattern $P[0..m-1]$ over an alphabet $\Sigma$.
+
+      \textbf{Find} every \textbf{shift} $s$ with $0 \le s \le n - m$ such that
+      \[
+      	T[s + j] = P[j] \quad \text{for all } 0 \le j < m
+      \]
+      \small Used in editors (\emph{find}), \texttt{grep}, search engines, DNA analysis, intrusion detection, plagiarism checks.
+      In Java: \texttt{indexOf}, \texttt{contains}, \texttt{split}, \texttt{replace}.
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \small $T = $ \texttt{abracadabra}, $P = $ \texttt{abra}: shifts 0 and 7.
+      \begin{center}
+      \begin{tikzpicture}
+        \hString[0.36]{a,b,r,a,c,a,d,a,b,r,a}
+        \begin{scope}[shift={(0,-0.75)}] \hString[0.36]{a,b,r,a}[0][4] \end{scope}
+        \begin{scope}[shift={(2.52,-0.75)}] \hString[0.36]{a,b,r,a}[0][4] \end{scope}
+        \node[font=\scriptsize] at (0.72,-1.0) {$s = 0$};
+        \node[font=\scriptsize] at (3.24,-1.0) {$s = 7$};
+      \end{tikzpicture}
+      \end{center}
+      \begin{alertblock}{Question}
+        \small How many character comparisons does it take? Naively up to $(n - m + 1) \cdot m$.
+        Can we do $O(n + m)$?
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Naive]{The naive algorithm}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The naive algorithm}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \SetAlFnt{\small}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V alg
+%: -Alg. 
+\begin{algorithm}[H]
+  \caption{NaiveMatcher($T$, $P$)}
+  $n \leftarrow |T|$, \quad $m \leftarrow |P|$\;
+  \For{$s \leftarrow 0$ \KwTo $n - m$}{
+    $j \leftarrow 0$\;
+    \While{$j < m$ \KwAnd $T[s + j] = P[j]$}{
+      $j \leftarrow j + 1$\;
+    }
+    \If{$j = m$}{
+      report a match at shift $s$\;
+    }
+  }
+\end{algorithm}
+% +++++++++++++++++++++++++++++++++++++++ A alg
+
+
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item Try every shift; compare left to right until a mismatch
+        \item \textbf{Worst case} $\Theta((n - m + 1) m)$: $T = \texttt{a}^{n-1}\texttt{b}$, $P = \texttt{a}^{m-1}\texttt{b}$
+        \item \textbf{Typical text}: mismatches come early, so it is fast in practice
+        \item Java's \texttt{String.indexOf} is essentially this (with tuned, vectorized loops)
+        \item The weakness: after a mismatch it \textbf{forgets} what it has already seen
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The naive algorithm in Java}
+  \lstcodeoverlaystep[basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny][0.36\textwidth]{9.6cm,2.25cm}{codeoutput/NaiveSearch.java}{Java}{codeoutput/NaiveSearch.txt}
+
+  \vspace{0.2em}
+  \small On the worst case ($n = 1001$, $m = 11$) it makes 10\,901 comparisons, close to $n \cdot m = 11\,011$.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[KMP]{Knuth--Morris--Pratt}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Idea]{The idea}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{KMP: never look back in the text}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \small After $q$ characters matched, we \textbf{know} $T[i-q..i-1] = P[0..q-1]$.
+      On a mismatch, shift $P$ so that its longest \textbf{border} (a proper prefix that is also a suffix)
+      lines up with that text. The text index $i$ never moves back.
+
+      \vspace{0.4em}
+      \textbf{Prefix function}: $\pi[q]$ = length of the longest proper border of $P[0..q]$.
+      \vspace{0.4em}
+
+      \begin{tabular}{@{}l*{7}{c}@{}}
+        \toprule
+        $q$      & 0 & 1 & 2 & 3 & 4 & 5 & 6 \\
+        $P[q]$   & \texttt{a} & \texttt{b} & \texttt{a} & \texttt{b} & \texttt{a} & \texttt{c} & \texttt{a} \\
+        $\pi[q]$ & 0 & 0 & 1 & 2 & 3 & 0 & 1 \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.3em}
+      \footnotesize e.g.\ $\pi[4] = 3$: \texttt{aba} is both a prefix and a suffix of \texttt{ababa}.
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \SetAlFnt{\small}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V alg
+%: -Alg. 
+\begin{algorithm}[H]
+  \caption{PrefixFunction($P$)}
+  $\pi[0] \leftarrow 0$, \quad $k \leftarrow 0$\;
+  \For{$q \leftarrow 1$ \KwTo $m - 1$}{
+    \While{$k > 0$ \KwAnd $P[k] \neq P[q]$}{
+      $k \leftarrow \pi[k - 1]$\;
+    }
+    \If{$P[k] = P[q]$}{
+      $k \leftarrow k + 1$\;
+    }
+    $\pi[q] \leftarrow k$\;
+  }
+  \Return{$\pi$}\;
+\end{algorithm}
+% +++++++++++++++++++++++++++++++++++++++ A alg
+
+
+      \small Amortized: $k$ increases at most $m$ times, so $O(m)$. Matching is the same loop over $T$: $O(n)$.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Java]{KMP in Java}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{KMP in Java}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=8, lastline=19, firstnumber=8]{codeoutput/KMP.java}{Java}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/KMP.txt}}
+      \uncover<2->{\small Same worst case: 1\,991 comparisons instead of 10\,901. Each text character is compared
+      at most twice (once matched, once after a fall-back): at most $2n$, so $O(n + m)$.}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=21, lastline=38, firstnumber=21]{codeoutput/KMP.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Hashing]{Rabin--Karp}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Rolling]{Rolling hash}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Rabin--Karp: compare hashes, not strings}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \small Treat a window of $m$ characters as a number in base $B$, modulo a prime $Q$:
+      \[
+      	h(s) = \Bigl( \sum_{j=0}^{m-1} T[s + j] \cdot B^{m-1-j} \Bigr) \bmod Q
+      \]
+      Sliding the window by one is $O(1)$, not $O(m)$:
+      \[
+      	h(s + 1) = \bigl( (h(s) - T[s] \cdot B^{m-1}) \cdot B + T[s + m] \bigr) \bmod Q
+      \]
+      Only when $h(s) = h(P)$ compare the characters (hashes may collide).
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Cost}
+        \small Expected $O(n + m)$; worst case $O(nm)$ if many hashes collide.
+      \end{block}
+      \begin{block}{Where it shines}
+        \small Searching \textbf{many patterns} at once (put all pattern hashes in a set), and plagiarism detection
+        (hash every window of $k$ words).
+      \end{block}
+      \small \texttt{String.hashCode()} is the same polynomial with $B = 31$ and $Q = 2^{32}$ (overflow).
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Rabin--Karp in Java}
+  \lstcodeoverlaystep[basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny][0.2\textwidth]{11.6cm,2.25cm}{codeoutput/RabinKarp.java}{Java}{codeoutput/RabinKarp.txt}
+
+  \vspace{0.2em}
+  \small \texttt{regionMatches} verifies a hash hit, so a collision can never give a wrong answer.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Edit]{Edit Distance}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Recurrence]{The recurrence}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Edit distance (Levenshtein)}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \small The fewest single-character \textbf{insertions}, \textbf{deletions} and \textbf{replacements}
+      that turn $a$ into $b$. \texttt{kitten} $\to$ \texttt{sitting} needs 3:
+      \textbf{k}itten $\to$ \textbf{s}itten $\to$ sitt\textbf{i}n $\to$ sittin\textbf{g}.
+
+      \vspace{0.3em}
+      $d[i][j]$ = distance between the first $i$ characters of $a$ and the first $j$ of $b$:
+      \[
+      	d[i][j] = \min
+      	\begin{cases}
+      		d[i-1][j-1] + [a_{i} \neq b_{j}] & \text{replace or keep} \\
+      		d[i-1][j] + 1 & \text{delete } a_{i} \\
+      		d[i][j-1] + 1 & \text{insert } b_{j}
+      	\end{cases}
+      \]
+      with $d[i][0] = i$ and $d[0][j] = j$.
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{itemize}\small
+        \item \textbf{Dynamic programming}: fill the table row by row
+        \item Time and space $O(|a| \cdot |b|)$; space $O(|b|)$ if only the distance is needed (keep two rows)
+        \item Uses: spelling suggestions (``did you mean''), DNA alignment, \texttt{diff}, fuzzy search
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Edit distance in Java}
+  \lstcodeoverlaystep[basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny][0.33\textwidth]{10.6cm,2.25cm}{codeoutput/EditDistance.java}{Java}{codeoutput/EditDistance.txt}
+
+  \vspace{0.2em}
+  \small The bottom-right cell is the answer; following the minima back gives the edits.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Regex]{Regular Expressions}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Syntax]{Syntax}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Regular expressions in one slide}
+  \footnotesize
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{tabular}{@{}ll@{}}
+        \toprule
+        \textbf{Pattern} & \textbf{Matches} \\
+        \midrule
+        \texttt{.}                & any character \\
+        \texttt{[abc]}, \texttt{[\textasciicircum abc]} & one of / none of \\
+        \texttt{[a-z]}            & a range \\
+        \texttt{\textbackslash d}, \texttt{\textbackslash s}, \texttt{\textbackslash w} & digit, space, word char (ASCII) \\
+        \texttt{\textbackslash p\{L\}}  & a letter in \emph{any} language \\
+        \texttt{X*}, \texttt{X+}, \texttt{X?} & 0+, 1+, 0 or 1 times \\
+        \texttt{X\{2,4\}}         & 2 to 4 times \\
+        \texttt{\textasciicircum}, \texttt{\$} & start, end of input \\
+        \texttt{(X)}, \texttt{(?<name>X)} & group, named group \\
+        \texttt{X|Y}              & \texttt{X} or \texttt{Y} \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{In Java}
+      \begin{itemize}
+        \item In a string literal every \texttt{\textbackslash} is doubled: the regex \texttt{\textbackslash d+} is written \texttt{"\textbackslash\textbackslash d+"}
+        \item \texttt{s.matches(re)}: the \textbf{whole} string must match
+        \item \texttt{Matcher.find()}: the next match \textbf{anywhere}
+        \item \texttt{split}, \texttt{replaceAll}, \texttt{replaceFirst} take regexes
+        \item Compile once, reuse: \texttt{Pattern.compile(re)}
+        \item In a replacement, \texttt{\$1} refers to group 1
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Regular expressions in Java}
+  \lstcodeoverlaystep[basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny][0.38\textwidth]{10.2cm,2.25cm}{codeoutput/RegexDemo.java}{Java}{codeoutput/RegexDemo.txt}
+
+  \vspace{0.2em}
+  \small \texttt{\textbackslash w} is ASCII-only in Java, so \texttt{"Çağrı".matches("\textbackslash\textbackslash w+")} is \texttt{false};
+  \texttt{\textbackslash p\{L\}} accepts letters of every language.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Unicode]{Unicode and Encodings}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Code points]{Code points}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{chars, code points and grapheme clusters}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \small Three ways to count ``characters'':
+      \begin{itemize}\small
+        \item \textbf{\texttt{char}}: a 16-bit UTF-16 code unit; \texttt{length()} counts these
+        \item \textbf{code point}: a Unicode number \texttt{U+0000}..\texttt{U+10FFFF};
+              above \texttt{U+FFFF} it takes two \texttt{char}s (a \textbf{surrogate pair})
+        \item \textbf{grapheme cluster}: what a reader sees as one letter; may be several code points
+              (\texttt{e} + combining accent, flags, family emoji)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \small
+      \begin{tabular}{@{}lll@{}}
+        \toprule
+        \textbf{Unit} & \textbf{Java API} \\
+        \midrule
+        \texttt{char}       & \texttt{length()}, \texttt{charAt} \\
+        code point          & \texttt{codePoints()}, \texttt{codePointAt} \\
+        grapheme            & \texttt{BreakIterator}, regex \texttt{\textbackslash X} \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.5em}
+      \begin{alertblock}{Case and locale}
+        \small Case mapping can change the length: \texttt{"İ".toLowerCase(Locale.ROOT)} is \texttt{i} + a combining dot (2 chars).
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Unicode in Java}
+  \lstcodeoverlaystep[basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny][0.34\textwidth]{10.6cm,2.25cm}{codeoutput/UnicodeDemo.java}{Java}{codeoutput/UnicodeDemo.txt}
+
+  \vspace{0.2em}
+  \small \texttt{reverse()} keeps surrogate pairs; equal-looking strings may differ until \textbf{normalized} (NFC).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Encodings]{Encodings}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Bytes and encodings}
+  \lstcodeoverlaystep[basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny][0.38\textwidth]{10.4cm,3.8cm}{codeoutput/Encoding.java}{Java}{codeoutput/Encoding.txt}
+
+  \vspace{0.2em}
+  \small Decoding UTF-8 bytes as Windows-1252 gives \texttt{AÄŸaÃ§}. Since Java 18 the default charset is UTF-8 on every system.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Encodings on Windows and macOS}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Windows}
+        \footnotesize
+        \begin{itemize}
+          \item Old Java (before 18): the default charset was Windows-1254 (Turkish), files written there were not UTF-8
+          \item Console: run \cmd{chcp 65001}; Java 19+ also reads it from \texttt{stdout.encoding}
+          \item Compile UTF-8 sources with \cmd{javac -encoding UTF-8}
+          \item Notepad saves UTF-8 by default since Windows 10 (1903)
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{macOS}
+        \footnotesize
+        \begin{itemize}
+          \item Terminal and the file system use UTF-8
+          \item Older HFS+ volumes store file names decomposed (NFD): \texttt{ç} may arrive as \texttt{c} + cedilla;
+                \textbf{normalize} names before comparing
+          \item TextEdit: choose UTF-8 in the save dialog for plain text
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vspace{0.3em}
+  \begin{alertblock}{Rule for portable programs}
+    \small Always pass a charset: \texttt{Files.readString(path, StandardCharsets.UTF\_8)},
+    \texttt{new InputStreamReader(in, UTF\_8)}. Never rely on the platform default.
+  \end{alertblock}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Compare]{Comparing the algorithms}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{String matching algorithms at a glance}
+  \small
+  \begin{tabular}{@{}L{0.2\textwidth}L{0.14\textwidth}L{0.17\textwidth}L{0.4\textwidth}@{}}
+    \toprule
+    \textbf{Algorithm} & \textbf{Preprocess} & \textbf{Match} & \textbf{When to use} \\
+    \midrule
+    Naive            & none     & $O(nm)$ worst      & short patterns, typical text (\texttt{indexOf}) \\
+    KMP              & $O(m)$   & $O(n)$             & guaranteed linear time, streaming text \\
+    Rabin--Karp      & $O(m)$   & $O(n)$ expected    & many patterns, plagiarism (window hashes) \\
+    Boyer--Moore     & $O(m + |\Sigma|)$ & sublinear typical & long patterns, large alphabets (\texttt{grep}) \\
+    Aho--Corasick    & $O(\sum m_{i})$ & $O(n + \text{matches})$ & a dictionary of patterns at once \\
+    Suffix array     & $O(n \log n)$ & $O(m \log n)$ & many queries on one fixed text \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.5em}
+  Edit distance: $O(|a| \cdot |b|)$ dynamic programming. Regex: convenient, but its cost depends on the pattern
+  (see the senior slides on catastrophic backtracking).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Exercises]{Exercises}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Compute $\pi$ for \texttt{aabaaab} by hand, then check with \texttt{KMP.prefix}.
+    \item Extend \texttt{NaiveSearch} and \texttt{KMP} to count comparisons on random texts over $\{a, b\}$; plot both against $n$.
+    \item Use Rabin--Karp with $k$-word windows to find the longest common passage of two text files.
+    \item Print the actual edits (replace / insert / delete) from the edit-distance table.
+    \item Write a regex for Turkish mobile numbers (\texttt{05xx xxx xx xx}, spaces optional) and test it.
+    \item Reverse a string by \textbf{code points}, and show that a \texttt{char} loop breaks an emoji.
+    \item Read a UTF-8 file with Turkish text on Windows and macOS; compare with and without an explicit charset.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}
