@@ -24,14 +24,19 @@
 ]{revtex4-2}
 
 
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-%: -def.
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstcodedown, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V def
 \newcommand{\docName}{How to Study for CIS 111}
 \newcommand{\AI}{\textsc{ai}}
 \newcommand{\JDK}{\textsc{jdk}}
 \newcommand{\IDE}{\textsc{ide}}
 \newcommand{\cisOOO}{\textsc{cis111}}
-
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 
@@ -82,54 +87,18 @@
 %% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A tables 
 %
 %
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V list 
-%: -Pkg. list
-\usepackage{enumitem}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A list 
-%
-%
-%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V links
-%%: -Pkg. link
-%\usepackage{hyperref}
-%\hypersetup{
-%  colorlinks=true,
-%  urlcolor=blue,
-%  linkcolor=blue,
-%  citecolor=blue
-%}
-%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A links
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V list 
+%%: -Pkg. list
+%\usepackage{enumitem}
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A list 
 
 
 
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V listings
-%: -Pkg. listing
-%\usepackage{listings}
-%\lstset{
-%  basicstyle=\ttfamily,
-%  keywordstyle=\color{blue},
-%  language=Python,
-%}
-
-\usepackage{listings}
-\usepackage{xcolor}
-
-\lstset{
-  basicstyle=\ttfamily,
-  keywordstyle=\color{blue},
-  commentstyle=\color{gray}\itshape,
-  stringstyle=\color{red},
-}
-
-\newcommand{\code}[1]{\lstinline[language=Java]{#1}}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A listings
-
-
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V timestamp
-%: -Pkg. timestamp
-%\usepackage[style=iso,showisoZ=true]{datetime2}    % yyyy-mm-dd \DTMnow
-\usepackage[style=iso,showzone=false]{datetime2}    % yyyy-mm-dd \DTMnow
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A timestamp
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V timestamp
+%%: -Pkg. timestamp
+%%\usepackage[style=iso,showisoZ=true]{datetime2}    % yyyy-mm-dd \DTMnow
+%\usepackage[style=iso,showzone=false]{datetime2}    % yyyy-mm-dd \DTMnow
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A timestamp
 
 
 

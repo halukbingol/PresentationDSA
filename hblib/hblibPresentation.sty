@@ -15,7 +15,9 @@
 
 %: ~~~~~~~~~~~~~~~~ V HB packages
 \RequirePackage[utf8]{inputenc}   % unicode (default since LaTeX 2018, kept for older installations)
-\RequirePackage[iso]{datetime}    % \currenttime in \hbTimeStampDraft
+%\RequirePackage[iso]{datetime}    % \currenttime in \hbTimeStampDraft
+\RequirePackage[style=iso,showzone=false]{datetime2}    % yyyy-mm-dd \DTMnow
+
 \RequirePackage{graphicx}
 \RequirePackage{epstopdf}         % eps 2 pdf
 \epstopdfsetup{update}            % only regenerate pdf files when eps file is newer
@@ -28,6 +30,8 @@
 \RequirePackage{array}            % tables, \newcolumntype
 \RequirePackage{listings}
 \RequirePackage[ruled,vlined,linesnumbered]{algorithm2e} % pseudo code
+\RequirePackage{enumitem}
+
 % ~~~~~~~~~~~~~~~~ A HB packages
 
 %: ~~~~~~~~~~~~~~~~ V HB beamer theme

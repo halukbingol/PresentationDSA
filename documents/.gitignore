@@ -1,15 +1,15 @@
-# cis11x-syllabus
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V specific
 
 # folders
-/_old
+/_old/
 /test*/
+/todo/
 
 
 # files
-/cis111-syllabus*.pdf
-/cis112-syllabus*.pdf
-z-syllabus-LatexTables-2*.xlsx
+#
+/test*.tex
+/test*.pdf
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V specific
 

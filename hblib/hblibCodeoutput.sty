@@ -61,9 +61,13 @@
 
 
 
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hb
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V code
 %\newcommand{\hCode}[1]{\texttt{\color{gitred}#1}}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hb
+\newcommand{\code}[1]{%
+  \lstinline[language=Java,basicstyle=\ttfamily\small]{#1}%
+%  \lstinline[language=Java,basicstyle=\ttfamily\footnotesize]{#1}%
+}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A code
 
 
 
