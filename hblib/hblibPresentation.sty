@@ -44,6 +44,27 @@
 % ~~~~~~~~~~~~~~~~ A HB beamer theme
 
 
+
+
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V \h stuff
+%\usepackage{fancybox}
+%%\usepackage{textcomp}
+%\newcommand{\hKeyboard}[1]{\fbox{\textsf{\small #1}}} % key press on keyboard
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V keyboard and menu
+\usepackage{menukeys}
+%\keys{Ctrl + C}
+%\keys{\ctrl + \shift + N}
+%\menu{File > Save As}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
 %: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V HB Header Presentation v2024-02-25
 
 %: ~~~~~~~~~~~~~~~~ V HB Version
@@ -69,7 +90,8 @@
 
 %: ~~~~~~~~~~~~~~~~ V HB separator
 % \hSection[short]{Long}{line 1}{line 2}: \section plus a title frame
-\NewDocumentCommand{\hSection}{O{#2} m m m}{%
+% \NewDocumentCommand{\hSection}{O{#2} m m m}{%
+\NewDocumentCommand{\hSection}{O{#2} m O{} O{}}{%
 	\section[#1]{#2}%
 	\begin{frame}
 		\begin{center}
@@ -108,7 +130,7 @@
 	\endgroup
 }
 \newcommand{\hFontLarger}[2]{\hb@fontshift{#1}{#2}} % N pt larger
-\newcommand{\hCode}[1]{\hb@fontshift{-2}{\texttt{#1}}} % inline code, 2 pt smaller
+\newcommand{\hCode}[1]{\hb@fontshift{-2}{\texttt{\color{gitred}#1}}} % inline code, 2 pt smaller
 % ~~~~~~~~~~~~~~~~ A HB font size
 
 %: ~~~~~~~~~~~~~~~~ V HB table

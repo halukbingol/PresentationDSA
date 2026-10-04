@@ -58,10 +58,12 @@
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 
 \definecolor{gitred}{RGB}{240,80,50}
-\newcommand{\cmd}[1]{\texttt{\color{gitred}#1}}
+
+
+%\newcommand{\cmd}[1]{\texttt{\color{gitred}#1}}
 
 % ---------------------------------------------------------------------
-\title{Code and Output}
+\title{hb Cis \LaTeX\ Template}
 \subtitle{A Template That Reads Both from Files}
 \author[Bingol]{Haluk O. Bingol}
 
@@ -92,6 +94,204 @@
   \tableofcontents[hideallsubsections]
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+%\hSection[General]{General}{}{}
+\hSection[General]{General}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[hStuff]{\hCode{hStuff}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[menukeys]{\hCode{menukeys} package}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\hCode{menukeys} package- Keys}
+	
+	Use \hCode{keys} to represent key strokes on the keyboard.
+	One key \keys{X} or  key combinations such as
+	\keys{Ctrl+X} or 
+	\keys{Ctrl+Shift+F}.
+
+	Common key combinations:
+	
+	%: +++++++++++++++++++++++++++++++++++++++ V -Tbl. cut-paste
+	\begin{center}
+	\sffamily\small
+	\begin{tabular}{|l |l |}
+		\hline
+		\textbf{function} &\textbf{key combination}\\
+		\hline
+		cut &\keys{Ctrl+X}\\
+		paste &\keys{Ctrl+V}\\
+		help in eclipse &\keys{Ctrl+Space}\\
+		\hline
+	\end{tabular}
+	\end{center}
+	% +++++++++++++++++++++++++++++++++++++++ A
+	
+	Special keys
+
+	%: +++++++++++++++++++++++++++++++++++++++ V -Tbl. special keys
+	\begin{center}
+	\sffamily\small
+	\begin{tabular}{|l |l  |l |}
+		\hline
+		\textbf{function} &\textbf{key combination}&\textbf{key symbol}\\
+		\hline
+		Control &\keys{Ctrl} &\keys{\ctrl}\\
+		Command &\keys{Cmd} &\keys{\cmd}\\
+		Escape &\keys{Esc} &\keys{\esc}\\
+		Shift &\keys{Shift} &\keys{\shift}\\
+		Alt &\keys{Alt} &\keys{\Alt}\\
+		Windows &\keys{Win} &none\\
+		\hline
+	\end{tabular}
+	\end{center}
+	% +++++++++++++++++++++++++++++++++++++++ A
+
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\hCode{menukeys} package- Menu}
+	
+	Use \hCode{menu} to describe menu sequences.
+	
+	\textbf{Example}
+	In eclipse, source code is formatted with key combination
+	\keys{Ctrl+Shift+F}.
+	It can be done by menu, too:
+	\begin{itemize}
+		
+		\item 
+		In context menu 
+		\menu{Source > Format}.
+	
+		\item 
+		On top menu \menu{Source > Format}.
+		
+	\end{itemize}
+
+	It may be multiple level deep
+	\menu{Extras > Settings > Saving} or simple one level 
+	\menu{Change save path}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\hCode{menukeys} package- Path}
+	
+	Use \hCode{\directory} to represent 
+	a path such as\\
+	\hCode{Macintosh HD/Users/Your Name/Documents} \\
+	as\\
+	\directory{Macintosh HD/Users/Your Name/Documents}.
+
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{hCode}
+	Use \hCode{your code here} to talk about the code.
+%	aaa \hKeyboard{a} bbb
+%	aaa \hKeyboard{Ctrl}+\hKeyboard{Cmd}+\hKeyboard{Shft} bbb
+
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Pseudo code]{Pseudo code}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Dijkstra'sSP]{Dijkstra's algorithm}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Pseudo code}
+  \begin{columns}[T]
+    \begin{column}{0.62\textwidth}
+      \SetAlFnt{\scriptsize}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V alg
+%: -Alg. 
+\begin{algorithm}[H]
+  \caption{Dijkstra's algorithm}
+  \KwIn{graph $G = (V, E)$, weights $w(u, v) \ge 0$, source $s$}
+  \KwOut{distances $d[\,]$ and predecessors $\pi[\,]$}
+  \Fn{\FDijkstra{$G, w, s$}}{
+    \ForEach{$v \in V$}{
+      $d[v] \leftarrow \infty$\;
+      $\pi[v] \leftarrow$ \KwNil\;
+    }
+    $d[s] \leftarrow 0$\;
+    $Q \leftarrow$ priority queue of all $v \in V$, keyed by $d[v]$\;
+    \While{$Q \neq \emptyset$}{
+      $u \leftarrow$ \FExtractMin{$Q$}\tcp*{$d[u]$ is now final}
+      \ForEach{edge $(u, v) \in E$}{
+        \If(\tcp*[f]{relax $(u, v)$}){$d[u] + w(u, v) < d[v]$}{
+          $d[v] \leftarrow d[u] + w(u, v)$\;
+          $\pi[v] \leftarrow u$\;
+          \FDecreaseKey{$Q, v, d[v]$}\;
+        }
+      }
+    }
+    \Return{$d, \pi$}\;
+  }
+\end{algorithm}
+% +++++++++++++++++++++++++++++++++++++++ A alg
+
+    \end{column}
+    \begin{column}{0.35\textwidth}
+      \begin{itemize}\small
+        \item \textbf{Lines 2--6}: every vertex starts \emph{unreached}, except $s$
+        \item \textbf{Line 8}: the vertex closest to $s$ among the unfinished ones
+        \item \textbf{Lines 10--13}: \emph{relaxation}: a shorter way to $v$ through $u$?
+        \item \texttt{DecreaseKey} moves $v$ forward in the queue
+        \item $\infty + w = \infty$, so unreached vertices never improve others
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \section[Usage]{How to Use This Template}
@@ -567,72 +767,6 @@ course/project/
 
   \small Put \verb|\slidegrid| in a frame to draw a 1\,cm grid, read off $(x,y)$ for the
   overlay's upper-left corner, then remove it. The slide is 16\,cm $\times$ 9\,cm.
-\end{frame}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
-
-
-
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\hSection[Pseudo code]{Pseudo code}{}{}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
-
-
-
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[Dijkstra'sSP]{Dijkstra's algorithm}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
-
-
-
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Pseudo code}
-  \begin{columns}[T]
-    \begin{column}{0.62\textwidth}
-      \SetAlFnt{\scriptsize}
-
-
-% +++++++++++++++++++++++++++++++++++++++ V alg
-%: -Alg. 
-\begin{algorithm}[H]
-  \caption{Dijkstra's algorithm}
-  \KwIn{graph $G = (V, E)$, weights $w(u, v) \ge 0$, source $s$}
-  \KwOut{distances $d[\,]$ and predecessors $\pi[\,]$}
-  \Fn{\FDijkstra{$G, w, s$}}{
-    \ForEach{$v \in V$}{
-      $d[v] \leftarrow \infty$\;
-      $\pi[v] \leftarrow$ \KwNil\;
-    }
-    $d[s] \leftarrow 0$\;
-    $Q \leftarrow$ priority queue of all $v \in V$, keyed by $d[v]$\;
-    \While{$Q \neq \emptyset$}{
-      $u \leftarrow$ \FExtractMin{$Q$}\tcp*{$d[u]$ is now final}
-      \ForEach{edge $(u, v) \in E$}{
-        \If(\tcp*[f]{relax $(u, v)$}){$d[u] + w(u, v) < d[v]$}{
-          $d[v] \leftarrow d[u] + w(u, v)$\;
-          $\pi[v] \leftarrow u$\;
-          \FDecreaseKey{$Q, v, d[v]$}\;
-        }
-      }
-    }
-    \Return{$d, \pi$}\;
-  }
-\end{algorithm}
-% +++++++++++++++++++++++++++++++++++++++ A alg
-
-    \end{column}
-    \begin{column}{0.35\textwidth}
-      \begin{itemize}\small
-        \item \textbf{Lines 2--6}: every vertex starts \emph{unreached}, except $s$
-        \item \textbf{Line 8}: the vertex closest to $s$ among the unfinished ones
-        \item \textbf{Lines 10--13}: \emph{relaxation}: a shorter way to $v$ through $u$?
-        \item \texttt{DecreaseKey} moves $v$ forward in the queue
-        \item $\infty + w = \infty$, so unreached vertices never improve others
-      \end{itemize}
-    \end{column}
-  \end{columns}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
