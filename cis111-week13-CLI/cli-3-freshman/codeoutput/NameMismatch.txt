@@ -1,0 +1,10 @@
+$ javac Greeting.java
+Greeting.java:1: error: class Hello is public, should be declared in a file named Hello.java
+public class Hello {
+       ^
+1 error
+[exit code 1]
+$ mv Greeting.java Hello.java
+$ javac Hello.java
+$ java Hello
+Hello, Yeditepe!

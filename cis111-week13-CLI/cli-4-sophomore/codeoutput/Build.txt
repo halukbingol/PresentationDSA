@@ -1,0 +1,11 @@
+$ sh build.sh; echo "exit code: $?"
+Ayşe: 130.49 TL
+build OK
+exit code: 0
+$ cp broken/Account.java src/edu/yeditepe/bank/
+$ sh build.sh; echo "exit code: $?"
+src/edu/yeditepe/bank/Account.java:17: error: ';' expected
+        cents += c
+                  ^
+1 error
+exit code: 1

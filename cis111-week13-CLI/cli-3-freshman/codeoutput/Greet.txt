@@ -1,0 +1,5 @@
+$ javac Greet.java
+$ java Greet < name.txt
+What is your name? Hello, Ayşe!
+$ echo "Ali Can" | java Greet
+What is your name? Hello, Ali Can!

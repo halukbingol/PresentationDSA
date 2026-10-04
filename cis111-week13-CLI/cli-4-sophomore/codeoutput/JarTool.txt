@@ -1,0 +1,19 @@
+$ javac -d out --source-path src src/edu/yeditepe/bank/Main.java
+$ jar cfe bank.jar edu.yeditepe.bank.Main -C out .
+$ jar --update --file bank.jar -C extra README.txt
+$ jar tf bank.jar
+META-INF/
+META-INF/MANIFEST.MF
+edu/
+edu/yeditepe/
+edu/yeditepe/bank/
+edu/yeditepe/bank/Account.class
+edu/yeditepe/bank/Main.class
+edu/yeditepe/bank/util/
+edu/yeditepe/bank/util/Money.class
+README.txt
+$ jar xf bank.jar README.txt
+$ cat README.txt
+Bank example, CSE course.
+$ java -jar bank.jar
+Ayşe: 130.49 TL

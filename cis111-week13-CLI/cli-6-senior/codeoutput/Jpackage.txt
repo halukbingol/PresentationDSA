@@ -1,0 +1,21 @@
+$ javac -d out src/app/Main.java
+$ mkdir input
+$ jar --create --file input/app.jar --main-class app.Main -C out .
+$ jpackage --type app-image --name Hello --input input --main-jar app.jar --dest big
+$ du -sh big/Hello
+157M	big/Hello
+$ jlink --add-modules java.base --output rt --strip-debug --no-header-files --no-man-pages --compress=zip-9
+$ jpackage --type app-image --name Hello --input input --main-jar app.jar --runtime-image rt --dest small
+$ du -sh small/Hello
+39M	small/Hello
+$ find small/Hello -maxdepth 2
+small/Hello
+small/Hello/lib
+small/Hello/lib/Hello.png
+small/Hello/lib/runtime
+small/Hello/lib/app
+small/Hello/lib/libapplauncher.so
+small/Hello/bin
+small/Hello/bin/Hello
+$ small/Hello/bin/Hello
+Hello from a packaged app!

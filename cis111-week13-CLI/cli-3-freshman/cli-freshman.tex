@@ -1,0 +1,502 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Java on the Command Line -- Freshman Level: Your First Programs in a Terminal
+%  ---------------------------------------------------------------------
+%  Built on hbCisLaTeXTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their outputs are read from codeoutput/:
+%     codeoutput/<Name>.java   the program
+%     codeoutput/<Name>.in     keyboard input (optional)
+%     codeoutput/<Name>.txt    what it printed, made by:  sh run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstcodedown, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\definecolor{gitred}{RGB}{240,80,50}
+\newcommand{\cmd}[1]{\texttt{\color{gitred}#1}}
+
+\tikzset{
+  box/.style={draw, thick, rounded corners, align=center, font=\small, inner sep=5pt},
+  tool/.style={-{Stealth[length=2.5mm]}, thick}
+}
+
+% ---------------------------------------------------------------------
+\title{Java on the Command Line}
+\subtitle{Freshman Level: Your First Programs in a Terminal}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-3}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={4-6}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Terminal]{The Terminal}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Open]{Opening a terminal}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Opening a terminal}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Windows}
+        \small \texttt{Win} key, type \texttt{cmd} (Command Prompt) or \texttt{terminal} (Windows Terminal), Enter.
+        In File Explorer: type \texttt{cmd} in the address bar to open it \textbf{in that folder}.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{macOS}
+        \small \texttt{Cmd}+\texttt{Space}, type \texttt{Terminal}, Enter.
+        In Finder: Control-click a folder, \emph{Services}, \emph{New Terminal at Folder} (turn it on in
+        \emph{System Settings, Keyboard, Keyboard Shortcuts, Services} if missing).
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vspace{0.3em}
+  \footnotesize
+  \begin{tabular}{@{}L{0.3\textwidth}L{0.3\textwidth}L{0.3\textwidth}@{}}
+    \toprule
+    \textbf{To \dots}                 & \textbf{Windows (cmd)}        & \textbf{macOS (zsh)} \\
+    \midrule
+    see where you are                 & \texttt{cd}                   & \texttt{pwd} \\
+    list files                        & \texttt{dir}                  & \texttt{ls} \\
+    go into a folder / up             & \texttt{cd week1} / \texttt{cd ..} & \texttt{cd week1} / \texttt{cd ..} \\
+    make a folder                     & \texttt{mkdir week1}          & \texttt{mkdir week1} \\
+    show a file                       & \texttt{type Hello.java}      & \texttt{cat Hello.java} \\
+    clear the screen                  & \texttt{cls}                  & \texttt{clear} \\
+    \bottomrule
+  \end{tabular}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Keys]{Useful keys}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Keys that save time}
+  \small
+  \begin{tabular}{@{}L{0.25\textwidth}L{0.65\textwidth}@{}}
+    \toprule
+    \textbf{Key}                      & \textbf{Does} \\
+    \midrule
+    \texttt{Tab}                      & completes a file or folder name: \texttt{javac He}\texttt{Tab} $\to$ \texttt{javac Hello.java} \\
+    \texttt{Up} / \texttt{Down}       & previous / next command (no retyping after an edit) \\
+    \texttt{Ctrl}+\texttt{C}          & stops a running program (e.g.\ an endless loop) \\
+    \texttt{Ctrl}+\texttt{D} (macOS), \texttt{Ctrl}+\texttt{Z} Enter (Windows) & ends keyboard input (``end of file'') \\
+    \texttt{Ctrl}+\texttt{L} (macOS), \texttt{cls} (Windows) & clears the screen \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.6em}
+  \begin{alertblock}{Spaces in folder names}
+    \small \texttt{cd My Documents} fails; write \texttt{cd "My Documents"}. Simplest: use folder names without spaces or Turkish letters,
+    e.g.\ \texttt{cse101/week1}.
+  \end{alertblock}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Install]{Installing and Checking Java}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Install]{Installing}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Install a JDK}
+  \small Get \textbf{Eclipse Temurin 21 (LTS)} from \texttt{adoptium.net}: a free JDK, which contains \texttt{javac}, \texttt{java} and \texttt{jar}.
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Windows}
+        \footnotesize
+        \begin{enumerate}
+          \item Download the \texttt{.msi} for \emph{Windows x64}
+          \item In the installer, enable \emph{Add to PATH} and \emph{Set JAVA\_HOME}
+          \item Or in a terminal: \cmd{winget install EclipseAdoptium.Temurin.21.JDK}
+          \item Close and \textbf{reopen} the terminal
+        \end{enumerate}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{macOS}
+        \footnotesize
+        \begin{enumerate}
+          \item Download the \texttt{.pkg}: \emph{aarch64} for Apple silicon (M1, M2, \dots), \emph{x64} for Intel
+          \item Double-click and follow the installer
+          \item Or with Homebrew: \cmd{brew install --cask temurin@21}
+          \item Open a \textbf{new} Terminal window
+        \end{enumerate}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \small Check in the new terminal: \cmd{java -version} and \cmd{javac -version} must both print \texttt{21...}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[PATH]{When the command is not found}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{``Command not found}
+  \small If the shell cannot find \texttt{javac} on the \textbf{PATH}, you see one of these:
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\scriptsize]
+C:\Users\ayse> javac -version
+'javac' is not recognized as an internal or external command,
+operable program or batch file.
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\scriptsize]
+ayse@mac ~ % javac -version
+The operation couldn't be completed. Unable to locate a Java Runtime that supports javac.
+Please visit http://www.java.com for information on installing Java.
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Windows fix}
+        \footnotesize Reopen the terminal. Still failing: \emph{Edit the system environment variables} $\to$ \emph{Path} $\to$
+        add \texttt{C:\textbackslash Program Files\textbackslash Eclipse Adoptium\textbackslash jdk-21...\textbackslash bin}. Check with \cmd{where javac}.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{macOS fix}
+        \footnotesize macOS has only placeholder \texttt{java}/\texttt{javac}: this message means no JDK is installed yet.
+        List installed JDKs: \cmd{/usr/libexec/java\_home -V}; check \cmd{which javac}.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[First]{Your First Program}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Cycle]{Edit, compile, run}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Edit, compile, run}
+  \begin{center}
+  \begin{tikzpicture}[x=1cm, y=1cm]
+    \node[box, fill=blue!8] (e) at (0,0) {\textbf{edit}\\ \scriptsize\texttt{Hello.java}\\ \scriptsize in an editor};
+    \node[box, fill=orange!12] (c) at (4.5,0) {\textbf{compile}\\ \scriptsize\texttt{javac Hello.java}};
+    \node[box, fill=green!12] (r) at (9,0) {\textbf{run}\\ \scriptsize\texttt{java Hello}};
+    \draw[tool] (e) -- (c);
+    \draw[tool] (c) -- node[above, font=\scriptsize]{no errors} (r);
+    \draw[tool, red!70!black] (c) to[bend left=35] node[below, font=\scriptsize]{compile errors} (e);
+    \draw[tool, red!70!black] (r) to[bend left=40] node[below, font=\scriptsize]{wrong output or exception} (e);
+  \end{tikzpicture}
+  \end{center}
+  \begin{itemize}\small
+    \item Use a plain-text editor: VS Code, Notepad++ or Notepad (Windows), TextEdit in \emph{plain text} mode (macOS); save as \textbf{UTF-8}
+    \item Keep the terminal open in the same folder as your file
+    \item After every change: \textbf{save}, compile again, run again
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[First]{A first session}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A first session}
+  \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/proj/First/Hello.java}{Java}
+  \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/First.txt}}
+
+  \vspace{0.2em}
+  \small Windows: \texttt{dir} instead of \texttt{ls}, \texttt{type} instead of \texttt{cat}; \texttt{javac} and \texttt{java} are the same.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Errors]{Reading Error Messages}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Compile]{Compile-time errors}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The file name must match the class}
+  \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/proj/NameMismatch/Greeting.java}{Java}
+  \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/NameMismatch.txt}}
+
+  \vspace{0.2em}
+  \small A \texttt{public class Hello} must be in \texttt{Hello.java} (capital letters matter). Windows: \texttt{ren} instead of \texttt{mv}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A missing semicolon}
+  \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/proj/Semicolon/Hello.java}{Java}
+  \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Semicolon.txt}}
+
+  \vspace{0.2em}
+  \small \hRemark{Read the message:} file and line (\texttt{Hello.java:3}), what is wrong (\texttt{';' expected}),
+  and a \texttt{\textasciicircum} under the place. Fix the \textbf{first} error first; later ones may disappear.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A wrong capital letter}
+  \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/proj/Typo/Hello.java}{Java}
+  \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Typo.txt}}
+
+  \vspace{0.2em}
+  \small Java is case-sensitive: \texttt{system} is not \texttt{System}. The message can be indirect; look at the
+  line and the \texttt{\textasciicircum}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Run]{Run-time errors}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{``Could not find or load main class}
+  \lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/RunErrors.txt}
+
+  \vspace{0.2em}
+  \small Give the \textbf{class name} (no \texttt{.class}), with the right capitals, from the \textbf{folder} that contains
+  \texttt{Hello.class}. On Windows and macOS \texttt{java hello} gives \texttt{NoClassDefFoundError: Hello (wrong name: hello)} instead,
+  because their file systems ignore case.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{No \texttt{main} method}
+  \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/proj/NoMain/Hello.java}{Java}
+  \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/NoMain.txt}}
+
+  \vspace{0.2em}
+  \small \texttt{javac} accepts the class; only \texttt{java} needs \texttt{public static void main(String[] args)}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{An exception: the program crashes}
+  \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Divide/Divide.java}{Java}
+  \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Divide.txt}}
+
+  \vspace{0.2em}
+  \small A \textbf{stack trace}: the exception, its message, and where it happened (\texttt{Divide.java:5}). The exit code is 1.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[IO]{Input and Arguments}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Input]{Keyboard input}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reading input}
+  \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/proj/Greet/Greet.java}{Java}
+  \uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Greet.txt}}
+
+  \vspace{0.2em}
+  \small Run \texttt{java Greet} and type a name. For testing, \texttt{<} reads the input from a file and
+  \texttt{|} (a \textbf{pipe}) passes another command's output; both work on Windows and macOS.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Args]{Arguments}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Arguments: \texttt{java Sum 3 4 5}}
+  \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/proj/Sum/Sum.java}{Java}
+  \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny, linerange={1-7,11-12}]{codeoutput/Sum.txt}}
+
+  \vspace{0.2em}
+  \small Arguments arrive in \texttt{args} as strings; \texttt{Integer.parseInt} makes numbers (3 internal stack lines skipped).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Errors]{Error message guide}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Error message guide}
+  \footnotesize
+  \begin{tabular}{@{}L{0.44\textwidth}L{0.5\textwidth}@{}}
+    \toprule
+    \textbf{Message}                                                   & \textbf{Usual cause} \\
+    \midrule
+    \texttt{'javac' is not recognized} / \texttt{command not found}    & JDK not installed or not on PATH; reopen the terminal \\
+    \texttt{class X is public, should be declared in a file named X.java} & file name and class name differ \\
+    \texttt{';' expected}, \texttt{cannot find symbol}                 & typo, missing semicolon, wrong capital letter \\
+    \texttt{Could not find or load main class}                         & wrong folder, wrong name, or \texttt{.class} typed \\
+    \texttt{Main method not found}                                     & \texttt{main} missing or not \texttt{public static void main(String[] args)} \\
+    \texttt{Exception in thread "main" ...}                            & a run-time error; read the type, the message and the line \\
+    \bottomrule
+  \end{tabular}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Exercises]{Exercises}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item In a folder \texttt{cse101/week1}, write, compile and run \texttt{Hello.java} on your own computer.
+    \item Make each error from these slides on purpose; read the message before fixing it.
+    \item Write \texttt{Max.java} that prints the largest of its integer arguments: \texttt{java Max 3 9 4} $\to$ \texttt{9}.
+    \item Write \texttt{Echo.java} that prints every line it reads, numbered. Run it with the keyboard
+          (end with \texttt{Ctrl}+\texttt{D} on macOS, \texttt{Ctrl}+\texttt{Z} Enter on Windows) and with \texttt{< Echo.java}.
+    \item Run \texttt{java Hello.java} (one step). When is this enough, and when do you need \texttt{javac}?
+    \item Help a friend with the other operating system: write the same steps for Windows \emph{and} macOS.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

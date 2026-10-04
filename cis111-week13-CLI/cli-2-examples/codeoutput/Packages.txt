@@ -1,0 +1,17 @@
+$ find src -name "*.java"
+src/edu/yeditepe/hello/Greeter.java
+src/edu/yeditepe/hello/Main.java
+$ javac -d out src/edu/yeditepe/hello/*.java
+$ find out -type f
+out/edu/yeditepe/hello/Main.class
+out/edu/yeditepe/hello/Greeter.class
+$ java -cp out edu.yeditepe.hello.Main
+Hello from Yeditepe!
+$ java -cp out Main
+Error: Could not find or load main class Main
+Caused by: java.lang.ClassNotFoundException: Main
+[exit code 1]
+$ java edu.yeditepe.hello.Main
+Error: Could not find or load main class edu.yeditepe.hello.Main
+Caused by: java.lang.ClassNotFoundException: edu.yeditepe.hello.Main
+[exit code 1]

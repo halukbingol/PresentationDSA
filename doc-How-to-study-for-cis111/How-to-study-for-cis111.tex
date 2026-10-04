@@ -1,0 +1,509 @@
+
+%\documentclass[12pt,twocolumn]{amsart}
+\documentclass[%
+ reprint,
+%superscriptaddress,
+%groupedaddress,
+%unsortedaddress,
+%runinaddress,
+%frontmatterverbose, 
+%preprint,
+%preprintnumbers,
+%nofootinbib,
+%nobibnotes,
+%bibnotes,
+ amsmath,amssymb,
+ aps,
+%pra,
+%prb,
+%rmp,
+%prstab,
+%prstper,
+%floatfix,
+]{revtex4-2}
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+%: -def.
+\newcommand{\docName}{How to Study for CIS 111}
+\newcommand{\AI}{\textsc{ai}}
+\newcommand{\JDK}{\textsc{jdk}}
+\newcommand{\IDE}{\textsc{ide}}
+\newcommand{\cisOOO}{\textsc{cis111}}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+\usepackage{graphicx}% Include figure files
+\usepackage{dcolumn}% Align table columns on decimal point
+\usepackage{bm}% bold math
+%\usepackage{hyperref}% add hypertext capabilities
+%\usepackage[mathlines]{lineno}% Enable numbering of text and display math
+%\linenumbers\relax % Commence numbering lines
+
+%\usepackage[showframe,%Uncomment any one of the following lines to test 
+%%scale=0.7, marginratio={1:1, 2:3}, ignoreall,% default settings
+%%text={7in,10in},centering,
+%%margin=1.5in,
+%%total={6.5in,8.75in}, top=1.2in, left=0.9in, includefoot,
+%%height=10in,a5paper,hmargin={3cm,0.8in},
+%]{geometry}
+
+
+
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  V page layout
+%%: -Pkg. page layout
+%
+%% ---------- Page layout ----------
+%%\usepackage[margin=2cm]{geometry}
+%\usepackage[
+%  margin=2cm,
+%  footskip=30pt,
+%]{geometry}
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A page layout
+%
+%
+%
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V encoding and fonts 
+%%: -Pkg. encoding and fonts
+%\usepackage[T1]{fontenc}
+%\usepackage[utf8]{inputenc}
+%\usepackage{lmodern}
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A encoding and fonts 
+%
+%
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V tables 
+%%: -Pkg. table
+%\usepackage{booktabs} % for much better looking tables
+%\usepackage{tabularx}
+%\usepackage{longtable}
+%\usepackage{array} % for better arrays (eg matrices) in maths
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A tables 
+%
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V list 
+%: -Pkg. list
+\usepackage{enumitem}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A list 
+%
+%
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V links
+%%: -Pkg. link
+%\usepackage{hyperref}
+%\hypersetup{
+%  colorlinks=true,
+%  urlcolor=blue,
+%  linkcolor=blue,
+%  citecolor=blue
+%}
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A links
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V listings
+%: -Pkg. listing
+%\usepackage{listings}
+%\lstset{
+%  basicstyle=\ttfamily,
+%  keywordstyle=\color{blue},
+%  language=Python,
+%}
+
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstset{
+  basicstyle=\ttfamily,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray}\itshape,
+  stringstyle=\color{red},
+}
+
+\newcommand{\code}[1]{\lstinline[language=Java]{#1}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A listings
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V timestamp
+%: -Pkg. timestamp
+%\usepackage[style=iso,showisoZ=true]{datetime2}    % yyyy-mm-dd \DTMnow
+\usepackage[style=iso,showzone=false]{datetime2}    % yyyy-mm-dd \DTMnow
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A timestamp
+
+
+
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V capitalized title
+%%: -Pkg. capitalized title
+%%\usepackage{sectsty}
+%%\usepackage{titlecaps}
+%%
+%%\sectionfont{\normalfont\large\bfseries\Titlecap}
+%%\subsectionfont{\normalfont\normalsize\bfseries\Titlecap}
+%%\subsubsectionfont{\normalfont\normalsize\bfseries\Titlecap}
+%
+%
+%%\usepackage{titlecaps}
+%%
+%%\makeatletter
+%%\renewcommand\section{\@startsection{section}{1}%
+%%  \z@
+%%  {-1.5ex\@plus -.5ex \@minus -.2ex}%
+%%  {.7ex \@plus .2ex}%
+%%  {\normalfont\large\bfseries\Titlecap}}
+%%
+%%\renewcommand\subsection{\@startsection{subsection}{2}%
+%%  \z@
+%%  {-1.25ex\@plus -.5ex \@minus -.2ex}%
+%%  {.5ex \@plus .2ex}%
+%%  {\normalfont\normalsize\bfseries\Titlecap}}
+%%
+%%\renewcommand\subsubsection{\@startsection{subsubsection}{3}%
+%%  \z@
+%%  {-1.25ex\@plus -.5ex \@minus -.2ex}%
+%%  {.5ex \@plus .2ex}%
+%%  {\normalfont\normalsize\bfseries\Titlecap}}
+%%\makeatother
+%
+%\makeatletter
+%\renewcommand\section{\@startsection{section}{1}%
+%  \z@
+%  {-1.5ex\@plus -.5ex \@minus -.2ex}%
+%  {.7ex \@plus .2ex}%
+%  {\normalfont\large\bfseries}}
+%
+%\renewcommand\subsection{\@startsection{subsection}{2}%
+%  \z@
+%  {-1.25ex\@plus -.5ex \@minus -.2ex}%
+%  {.5ex \@plus .2ex}%
+%  {\normalfont\normalsize\bfseries}}
+%
+%\renewcommand\subsubsection{\@startsection{subsubsection}{3}%
+%  \z@
+%  {-1.25ex\@plus -.5ex \@minus -.2ex}%
+%  {.5ex \@plus .2ex}%
+%  {\normalfont\normalsize\bfseries}}
+%\makeatother
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A capitalized title
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  V headers and footers
+%: -Pkg. headers and footers
+\newcommand{\headerfont}{\sffamily\small}
+%
+\usepackage{lastpage}   % <-- provides \pageref{LastPage}
+%
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+%\fancyhead[L]{aaa}
+%\fancyhead[R]{aaa}
+\fancyfoot[L]{\headerfont \docName}
+\fancyfoot[C]{\headerfont \thepage\,/\,\pageref{LastPage}}
+\fancyfoot[R]{\headerfont v\DTMnow}
+%\lhead{}\chead{}\rhead{}
+%\lfoot{}\cfoot{\thepage}\rfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  A headers and footers
+
+%% ---------- Paragraph spacing ----------
+%\usepackage{parskip}
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+%
+%
+%
+%% See the ``Article customise'' template for come common customisations
+%% +++++++++++++++++++++++++++++++++++++++ V
+%%: -Fig.
+%%% LaTeX - Article customise
+%
+%%%% PACKAGES
+%\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+%%\usepackage{subfigure} % make it possible to include more than one captioned figure/table in a single float
+%\usepackage{subcaption} % modern
+
+
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{document}
+
+\title{How to Study for CIS 111}
+\author{
+	Haluk Bingol
+}
+\affiliation{
+	Faculty of Computer and Information Sciences\\
+	Yeditepe University
+}
+\date{\today}% It is always \today, today,
+             %  but any date may be explicitly specified
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{abstract}
+	Unfortunately K12 education is quite different then what is expected in university.
+	K12 is focused on multiple choice questions.
+	In university, you are expected to ``create'' new things from a ``blank'' paper.
+	This is also the case in programming.
+	You start with almost empty source file.
+	
+	First year students to the Faculty of Computer and Information Sciences suffer a lot from \cisOOO.
+	\cisOOO\ seems to them very difficult because they are expected to design and implement a new application in the labs and in the exams,
+	which are done on computer.
+	This is an attempt to help our new students how to be successful in \cisOOO\ and, 
+	in general, 
+	in programming.	
+\end{abstract}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+\maketitle
+
+\tableofcontents
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\section{General Study Strategy}
+
+Studying only the presentation slides is not enough for success in \cisOOO. 
+Read the related chapter in the textbook. 
+The book usually explains concepts more clearly, covers more material, and 
+provides additional examples.
+
+After reading, try to solve a few programming exercises at the end of the chapter. 
+If you cannot solve them, go back to the relevant section and read it again. 
+Then review the sample exam questions here:
+\href{https://drive.google.com/drive/folders/1r1TcJdlwSAhWCe9vA9BqdJSkVTFXkmkM?usp=drive_link}
+	{link}.
+
+
+
+
+
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\section{How to Solve a Programming Exercise}
+
+\AI\ can sometimes solve an entire problem for you. 
+If you choose that route, you will not learn how to program. 
+You may memorize the solution, but that will not help you in exams.
+To actually learn how to code the solution, follow this process:
+
+\begin{enumerate}[label=\roman*)]
+	
+	\item 
+	First, try to solve the problem by yourself.
+	
+	\item 
+	If you cannot solve it, ask \AI\ for a hint about how to approach the problem. 
+	Do not ask for the full code yet.
+	
+	\item 
+	With that hint, try again by yourself.
+	
+	\item 
+	If you still cannot solve it, go to the Help Desk. 
+	Help Desk staff instructed not to solve the entire problem for you. 
+	They will guide you toward the correct approach. 
+	Bring your code, error messages, and notes about what you have tried.
+	
+	\item 
+	Try again by yourself.
+	
+	\item 
+	Only after these steps should you ask \AI\ for a complete solution. 
+	When you receive it, study it, close it, and rewrite the solution from scratch without looking.
+	
+\end{enumerate}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\section{Advice for First-Time Programmers}
+
+A first-year student in their first programming course should focus on doing, not just reading.
+
+\begin{itemize}
+	
+	\item
+	\emph{Write code every day, even in small amounts.} 
+	Programming is a skill, like playing an instrument. 
+	You learn by practicing, not by watching.
+	
+	\item
+	Read a concept, then immediately type out examples yourself. 
+	Do not copy and paste.
+	
+	\item
+	Type out examples from lectures and the textbook by hand. 
+	Then modify them: change a value, break the code on purpose, and see what happens. 
+	\emph{Understanding why something breaks teaches more than seeing it work.}
+	
+	\item
+	\emph{Start assignments early, not the night before.} 
+	Programming problems take unpredictable amounts of time, and bugs often need time to solve.
+	
+	\item
+	\emph{Learn to read error messages instead of fearing them.} 
+	They usually tell you the line and the problem. 
+	Getting comfortable with debugging is half the job.
+	
+	\item
+	\emph{Master the fundamentals deeply before moving on}: 
+	variables, loops, conditionals, functions, and data types. 
+	These appear in every language and later course.
+	
+	\item
+	Explain concepts out loud or to a classmate. 
+	If you cannot explain how a loop works, you do not fully understand it yet.
+	
+	\item
+	Use office hours and do not struggle silently for more than about 30 minutes on a single bug. 
+	\emph{Learning when to ask for help is a skill.}
+	
+	\item
+	Practice beyond assigned work with small personal projects: 
+	a calculator, a number guessing game, a to-do list. 
+	\emph{Applying concepts to something you chose makes them stick.}
+	
+	\item
+	The biggest mistake freshmen make is trying to memorize syntax or passively reading. 
+	\emph{Programming rewards active, hands-on repetition.}
+
+\end{itemize}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\section{How to Study for a First Java Course}
+
+	
+\begin{itemize}
+
+	\item
+	\textbf{Set up your tools early.} 
+	Install the \JDK\ and an \IDE\ such as IntelliJ IDEA Community or \textbf{Eclipse} in the first week. 
+	Learn to compile and run from both the \IDE\ and the command line 
+	(\code{javac} then \code{java}), 
+	so you understand what is actually happening.
+	
+	\item
+	\textbf{Get comfortable with Java’s structure right away.} 
+	Every program lives inside a class, and execution starts at 
+	\code{public static void main(String[] args)}. 
+	This boilerplate confuses beginners because it contains keywords you do not understand yet. 
+	Accept it early, then revisit each keyword (
+	\code{public}, 
+	\code{static}, 
+	\code{void}
+	) as the course explains them.
+	
+	\item
+	\textbf{Master the fundamentals in order:} 
+	variables and primitive types (
+	\code{int}, 
+	\code{double}, 
+	\code{boolean}, 
+	\code{char}
+	), then 
+	\code{String}, then operators, 
+	conditionals (
+	\code{if}/\code{else}, 
+	\code{switch}), 
+	loops (\code{for}, \code{while}), 
+	arrays, and finally methods. 
+	Do not move on until each feels automatic.
+	
+	\item
+	\textbf{Pay close attention to types.} 
+	Java is statically typed, so many beginner errors are type mismatches. 
+	Understand the difference between integer and floating-point division: 
+	\code{5 / 2} is 2, not 2.5. 
+	Also understand why \code{==} on String values behaves unexpectedly and 
+	why you should use 
+	\code{.equals()} instead.
+	
+	\item
+	\textbf{Understand objects and classes deeply.} 
+	This is where Java courses separate students who pass from those who thrive. 
+	Practice writing your own classes with fields, constructors, and methods. 
+	Understand the difference between a class (the blueprint) and an object (the instance), and 
+	what this refers to.
+	
+	\item
+	\textbf{Type out and modify every example.} 
+	Write a class, add a method, break it, read the compiler error, and fix it. 
+	Java’s compiler errors are strict but informative. Learn to read them.
+	
+	\item
+	\textbf{Practice with small programs}: 
+	a temperature converter, 
+	a grade calculator, 
+	a simple bank account class, and 
+	a number guessing game. 
+	These exercise variables, loops, conditionals, and eventually objects.
+	
+	\item
+	Common beginner traps to watch for:
+	
+	\begin{itemize}
+		
+		\item 
+		Confusing \code{=} (assignment) with \code{==} (comparison).
+		
+		\item 
+		Off-by-one errors in loops and arrays. 
+		Arrays start at index 0 and ends at $N - 1$.
+		
+		\item 
+		Forgetting that array length is \code{.length} but 
+		\code{String} length is \code{.length()}.
+		
+		\item 
+		Null pointer exceptions.
+	
+		
+	\end{itemize}
+
+	\item
+	\textbf{Start assignments early.} 
+	Use the Help Desk and office hours. 
+	Do not just read. Compile and run constantly.
+	
+	\item
+	For exams, practice the sample exam questions under timed conditions. 
+	Trace code by hand, predict output, and write small code fragments on paper. 
+	If your instructor allows a reference sheet, build it yourself.
+
+\end{itemize}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\section{Using AI Responsibly}
+
+Use \AI\ as a tutor, not as a replacement for your own thinking. 
+Ask for hints, explanations, and debugging questions. 
+\emph{Do not ask \AI\ to write your assignment and then submit it as your own.} 
+You should be able to explain every line of code you turn in. 
+Follow your instructor’s academic integrity and \AI-use policies.
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\end{document}

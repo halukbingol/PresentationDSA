@@ -1,0 +1,9 @@
+$ javac -d out Memory.java
+$ cat jvm.options
+-Xmx96m
+-cp out
+$ java @jvm.options Memory
+max heap : 96 MB
+$ JDK_JAVA_OPTIONS="-Xmx32m" java -cp out Memory
+NOTE: Picked up JDK_JAVA_OPTIONS: -Xmx32m
+max heap : 32 MB

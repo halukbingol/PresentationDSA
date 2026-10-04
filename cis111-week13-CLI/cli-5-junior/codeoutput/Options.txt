@@ -1,0 +1,13 @@
+$ javac Memory.java
+$ java Memory
+max heap : 1496 MB
+CPUs     : 2
+$ java -Xmx64m Memory
+max heap : 64 MB
+CPUs     : 2
+$ java -XX:+PrintFlagsFinal -version 2>/dev/null | grep -E " (MaxHeapSize|MaxRAMPercentage|UseG1GC) "
+   size_t MaxHeapSize                              = 1568669696                                {product} {ergonomic}
+   double MaxRAMPercentage                         = 25.000000                                 {product} {default}
+     bool UseG1GC                                  = true                                      {product} {ergonomic}
+$ java -verbose:class Memory | grep -c "class,load"
+537

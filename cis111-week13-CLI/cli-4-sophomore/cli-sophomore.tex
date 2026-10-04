@@ -1,0 +1,454 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Java on the Command Line -- Sophomore Level: Projects, Classpath, JARs and Build Scripts
+%  ---------------------------------------------------------------------
+%  Built on hbCisLaTeXTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their outputs are read from codeoutput/:
+%     codeoutput/<Name>.java   the program
+%     codeoutput/<Name>.in     keyboard input (optional)
+%     codeoutput/<Name>.txt    what it printed, made by:  sh run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstcodedown, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\definecolor{gitred}{RGB}{240,80,50}
+\newcommand{\cmd}[1]{\texttt{\color{gitred}#1}}
+
+% ---------------------------------------------------------------------
+\title{Java on the Command Line}
+\subtitle{Sophomore Level: Projects, Classpath, JARs and Build Scripts}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Project]{A Project with Packages}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Layout]{Project layout}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A typical project layout}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\scriptsize]
+bank/
+|-- src/                     sources
+|   `-- edu/yeditepe/bank/
+|       |-- Main.java
+|       |-- Account.java
+|       `-- util/Money.java
+|-- res/                     resources
+|-- lib/                     libraries (jars)
+|-- out/                     compiled classes
+|-- docs/                    javadoc
+|-- build.sh, build.bat      build scripts
+`-- app.jar                  the product
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}\small
+        \item Sources and outputs are \textbf{separate}: delete \texttt{out/} any time, rebuild
+        \item The folder path below \texttt{src/} is the \textbf{package} name
+        \item Only \texttt{src/}, \texttt{res/} and the scripts go into version control (Git); \texttt{out/}, \texttt{docs/}, \texttt{*.jar} are generated
+        \item Maven and Gradle use the same idea with \texttt{src/main/java}, \texttt{src/main/resources}, \texttt{target/} or \texttt{build/}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Compiling many files: an argument file}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Layout/src/edu/yeditepe/bank/Main.java}{Java}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Layout.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small \texttt{@sources.txt} makes \texttt{javac} read its arguments from a file. Windows:
+  \cmd{dir /s /b src\textbackslash *.java > sources.txt}. Sub-packages become sub-folders of \texttt{out}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Letting \texttt{javac} find the sources: \texttt{--source-path}}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/SourcePath/src/edu/yeditepe/bank/Account.java}{Java}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/SourcePath.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small Given only \texttt{Main.java}, \texttt{javac} compiles every class it needs from \texttt{--source-path}.
+  Classes nobody uses are \textbf{not} compiled.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Classpath]{Libraries and the Classpath}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[LibJar]{A library jar}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Making and using a library jar}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/LibJar/lib-src/textutil/Text.java}{Java}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/LibJar/src/app/Main.java}{Java}
+    \end{column}
+    \begin{column}{0.56\textwidth}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/LibJar.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small Three ways to give the classpath: \texttt{-cp} with each jar, the wildcard \texttt{"lib/*"} (all jars in \texttt{lib};
+  quote it), or the \texttt{CLASSPATH} environment variable (avoid: it affects every Java program).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The classpath on Windows and macOS}
+  \small
+  \begin{tabular}{@{}L{0.24\textwidth}L{0.33\textwidth}L{0.33\textwidth}@{}}
+    \toprule
+                         & \textbf{Windows (cmd)}                         & \textbf{macOS (zsh)} \\
+    \midrule
+    separator            & \texttt{;}                                     & \texttt{:} \\
+    two entries          & \texttt{-cp out;lib\textbackslash a.jar}       & \texttt{-cp out:lib/a.jar} \\
+    all jars in a folder & \texttt{-cp "out;lib\textbackslash *"}         & \texttt{-cp "out:lib/*"} \\
+    environment variable & \texttt{set CLASSPATH=out;lib\textbackslash a.jar} & \texttt{export CLASSPATH=out:lib/a.jar} \\
+    show it              & \texttt{echo \%CLASSPATH\%}                    & \texttt{echo \$CLASSPATH} \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.5em}
+  \begin{itemize}\small
+    \item \texttt{-cp} \textbf{replaces} \texttt{CLASSPATH}; without both, the classpath is \texttt{.}
+    \item \texttt{lib/*} means all \texttt{.jar} files in \texttt{lib}, not sub-folders and not \texttt{.class} files
+    \item In PowerShell, quote arguments with \texttt{;} or \texttt{*}: \texttt{java -cp "out;lib\textbackslash *" app.Main}
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Jar]{JAR Files in Depth}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Exec]{Executable jars with libraries}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{An executable jar that uses a library}
+  \begin{columns}[T]
+    \begin{column}{0.3\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/ExecJar/manifest.txt}{{}}
+    \end{column}
+    \begin{column}{0.68\textwidth}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/ExecJar.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small \texttt{Class-Path} in the manifest lists jars \textbf{relative to the jar's own folder}; with \texttt{-jar},
+  \texttt{-cp} and \texttt{CLASSPATH} are ignored. Ship the \texttt{dist/} folder as it is.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Resources]{Resources}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Resources inside a jar}
+  \begin{columns}[T]
+    \begin{column}{0.66\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Resources/src/app/Hello.java}{Java}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Resources.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small Resources (texts, images, settings) are found on the classpath like classes, so they work the same
+  from \texttt{out/} and from a jar. Never use file paths such as \texttt{res/app/greeting.txt} in the code.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Tool]{The jar tool}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The \texttt{jar} tool: create, update, list, extract}
+  \lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/JarTool.txt}
+
+  \vspace{0.2em}
+  \small Short options like \texttt{tar}: \texttt{c}reate, \texttt{t} list, \texttt{x} extract, \texttt{u}pdate,
+  \texttt{f} file, \texttt{e} entry point (main class). \texttt{jar cfe} = \texttt{--create --file --main-class}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Docs]{Documentation}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Javadoc]{javadoc}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{API documentation with \texttt{javadoc}}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Javadoc/src/edu/yeditepe/bank/util/Money.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Javadoc.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small \texttt{/** ... */} comments become HTML pages; open \texttt{docs/index.html} in a browser.
+  \texttt{-quiet} hides progress messages. Without \texttt{-Xdoclint:none}, \texttt{javadoc} also warns about every missing
+  \texttt{@param}, \texttt{@return} and comment (7 warnings here): useful before a release.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Build]{Build Scripts}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Scripts]{One command to build}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{One command to build: \texttt{build.sh} and \texttt{build.bat}}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Build/build.sh}{bash}
+      \small macOS: \cmd{sh build.sh} (or \cmd{chmod +x build.sh} once, then \cmd{./build.sh})
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Build/build.bat}{{}}
+      \small Windows: \cmd{build.bat} in Command Prompt. \texttt{|| exit /b 1} stops on a compile error
+      (\texttt{set -e} does that in \texttt{sh}).
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Running the build script}
+  \lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Build.txt}
+
+  \vspace{0.2em}
+  \small The second run uses a broken \texttt{Account.java}: \texttt{javac} fails, \texttt{set -e} stops the script, and
+  its exit code (1) tells the caller (a person, an IDE, or a CI server) that the build failed.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Config]{Configuring a Program}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Config]{Arguments, properties, environment}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Arguments, properties, environment, defaults}
+  \begin{columns}[T]
+    \begin{column}{0.72\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Config/Config.java}{Java}
+    \end{column}
+    \begin{column}{0.26\textwidth}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Config.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small A common order: \textbf{argument} $>$ \textbf{system property} (\texttt{-D}) $>$ \textbf{environment variable} $>$
+  \textbf{default}. Windows: \texttt{set PORT=9000} then \texttt{java Config}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Cheat sheet]{Cheat sheet}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet}
+  \footnotesize
+  \begin{tabular}{@{}L{0.5\textwidth}L{0.42\textwidth}@{}}
+    \toprule
+    \textbf{Command} & \textbf{Does} \\
+    \midrule
+    \texttt{javac -d out @sources.txt}                          & compile a list of files \\
+    \texttt{javac -d out --source-path src src/a/Main.java}     & compile \texttt{Main} and what it needs \\
+    \texttt{javac -cp lib/x.jar ...}                            & compile against a library \\
+    \texttt{java -cp "out:lib/*" a.Main}                        & run with all jars in \texttt{lib} (Windows \texttt{;}) \\
+    \texttt{jar cfe app.jar a.Main -C out .}                    & executable jar \\
+    \texttt{jar --create ... --manifest m.txt}                  & add \texttt{Class-Path} etc.\ to the manifest \\
+    \texttt{jar tf}, \texttt{jar xf}, \texttt{jar uf}           & list, extract, update \\
+    \texttt{javadoc -d docs --source-path src pkg...}           & HTML documentation \\
+    \texttt{java -Dkey=value ...}                               & system property \\
+    \bottomrule
+  \end{tabular}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Exercises]{Exercises}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Add a class \texttt{edu.yeditepe.bank.Bank} holding many accounts; rebuild with \texttt{build.sh} \emph{and} \texttt{build.bat}.
+    \item Put \texttt{Money} into its own jar \texttt{bank-util.jar}; build \texttt{app.jar} with a \texttt{Class-Path} to it.
+    \item Load the currency symbol (\texttt{TL}) from a resource \texttt{money.properties} with \texttt{java.util.Properties}.
+    \item Extend \texttt{build.sh} with a \texttt{clean} and a \texttt{docs} target (\texttt{sh build.sh docs}).
+    \item What happens with \texttt{java -cp lib/textutil.jar -jar app.jar}? Explain.
+    \item Unzip \texttt{app.jar} with your operating system's zip tool. What is inside?
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

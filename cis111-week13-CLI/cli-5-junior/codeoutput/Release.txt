@@ -1,0 +1,16 @@
+$ javac --release 8 -Xlint:-options -d out8 Repeat.java
+Repeat.java:3: error: cannot find symbol
+        System.out.println("ab".repeat(3));     // String.repeat: Java 11
+                               ^
+  symbol:   method repeat(int)
+  location: class String
+1 error
+[exit code 1]
+$ javac --release 11 -d out11 Repeat.java
+$ javap -v -cp out11 Repeat | grep major
+  major version: 55
+$ javac -d out21 Repeat.java
+$ javap -v -cp out21 Repeat | grep major
+  major version: 65
+$ java -cp out11 Repeat
+ababab

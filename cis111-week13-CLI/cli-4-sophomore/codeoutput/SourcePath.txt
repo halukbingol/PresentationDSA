@@ -1,0 +1,7 @@
+$ javac -d out --source-path src src/edu/yeditepe/bank/Main.java
+$ find out -name "*.class"
+out/edu/yeditepe/bank/Main.class
+out/edu/yeditepe/bank/util/Money.class
+out/edu/yeditepe/bank/Account.class
+$ java -cp out edu.yeditepe.bank.Main
+Ayşe: 130.49 TL

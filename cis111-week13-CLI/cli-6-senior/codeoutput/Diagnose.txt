@@ -1,0 +1,22 @@
+$ javac Busy.java
+$ java -XX:StartFlightRecording=filename=rec.jfr Busy > busy.log &
+$ sleep 1.5; jps -l | grep Busy | sed "s/^[0-9]*/<pid>/"
+<pid> Busy
+$ jcmd Busy VM.version | tail -2
+OpenJDK 64-Bit Server VM version 21.0.10+7-Ubuntu-124.04
+JDK 21.0.10
+$ jcmd Busy Thread.print | grep -A3 '"main"' | tail -3
+   java.lang.Thread.State: RUNNABLE
+	at Busy.work(Busy.java:4)
+	at Busy.main(Busy.java:12)
+$ wait; cat busy.log | tail -1
+done 5495994504
+$ jfr summary rec.jfr | grep -E "Duration|jdk.ExecutionSample "
+ Duration: 3 s
+ jdk.ExecutionSample                       140          1400
+$ jfr view hot-methods rec.jfr | sed -n 2,6p
+                      Java Methods that Executes the Most
+
+Method                                                          Samples Percent
+--------------------------------------------------------------- ------- -------
+Busy.work(int)                                                      140 100.00%

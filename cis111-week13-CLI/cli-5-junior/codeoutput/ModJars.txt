@@ -1,0 +1,18 @@
+$ javac -d mods --module-source-path src -m edu.yeditepe.app
+$ mkdir mlib
+$ jar --create --file mlib/greet.jar -C mods/edu.yeditepe.greet .
+$ jar --create --file mlib/app.jar --main-class edu.yeditepe.app.Main -C mods/edu.yeditepe.app .
+$ java -p mlib -m edu.yeditepe.app
+INFO: starting
+*** Hello, Yeditepe ***
+$ jar --describe-module --file mlib/greet.jar | tail -n +2
+exports edu.yeditepe.greet.api
+requires java.base mandated
+contains edu.yeditepe.greet.internal
+
+$ java --list-modules | wc -l
+69
+$ java --list-modules | grep -E "java.(base|logging|sql)@"
+java.base@21.0.10
+java.logging@21.0.10
+java.sql@21.0.10

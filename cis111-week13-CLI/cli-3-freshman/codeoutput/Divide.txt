@@ -1,0 +1,7 @@
+$ javac Divide.java
+$ java Divide 7 2
+7 / 2 = 3
+$ java Divide 7 0
+Exception in thread "main" java.lang.ArithmeticException: / by zero
+	at Divide.main(Divide.java:5)
+[exit code 1]

@@ -1,0 +1,16 @@
+$ javadoc -quiet -Xdoclint:none -d docs --source-path src edu.yeditepe.bank edu.yeditepe.bank.util
+$ ls docs/*.html
+docs/allclasses-index.html
+docs/allpackages-index.html
+docs/help-doc.html
+docs/index-all.html
+docs/index.html
+docs/overview-summary.html
+docs/overview-tree.html
+docs/search.html
+$ ls docs/edu/yeditepe/bank
+Account.html
+Main.html
+package-summary.html
+package-tree.html
+util

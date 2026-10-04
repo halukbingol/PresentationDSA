@@ -1,0 +1,14 @@
+$ javac Hello.java
+$ java Hello.class
+Error: Could not find or load main class Hello.class
+Caused by: java.lang.ClassNotFoundException: Hello.class
+[exit code 1]
+$ java hello
+Error: Could not find or load main class hello
+Caused by: java.lang.ClassNotFoundException: hello
+[exit code 1]
+$ cd ..
+$ java Hello
+Error: Could not find or load main class Hello
+Caused by: java.lang.ClassNotFoundException: Hello
+[exit code 1]

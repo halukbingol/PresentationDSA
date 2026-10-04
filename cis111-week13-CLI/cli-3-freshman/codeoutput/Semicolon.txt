@@ -1,0 +1,6 @@
+$ javac Hello.java
+Hello.java:3: error: ';' expected
+        System.out.println("Hello, Yeditepe!")
+                                              ^
+1 error
+[exit code 1]

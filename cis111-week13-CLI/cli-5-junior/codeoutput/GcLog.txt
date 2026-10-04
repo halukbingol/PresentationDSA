@@ -1,0 +1,8 @@
+$ javac Garbage.java
+$ java -Xmx64m -Xlog:gc Garbage | sed -n 1,6p
+[0.008s][info][gc] Using G1
+[0.066s][info][gc] GC(0) Pause Young (Normal) (G1 Evacuation Pause) 7M->1M(64M) 2.833ms
+[0.077s][info][gc] GC(1) Pause Young (Normal) (G1 Evacuation Pause) 13M->2M(64M) 3.561ms
+[0.107s][info][gc] GC(2) Pause Young (Normal) (G1 Evacuation Pause) 36M->6M(64M) 6.104ms
+[0.120s][info][gc] GC(3) Pause Young (Normal) (G1 Evacuation Pause) 39M->9M(64M) 5.071ms
+[0.133s][info][gc] GC(4) Pause Young (Normal) (G1 Evacuation Pause) 43M->13M(64M) 5.077ms

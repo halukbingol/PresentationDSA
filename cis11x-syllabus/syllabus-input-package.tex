@@ -1,6 +1,7 @@
 
 % ---------- Page layout ----------
-\usepackage[margin=1in]{geometry}
+\usepackage[margin=2cm]{geometry}
+\geometry{a4paper}
 
 % ---------- Encoding and fonts ----------
 \usepackage[T1]{fontenc}
@@ -16,7 +17,8 @@
 % ---------- Lists ----------
 \usepackage{enumitem}
 
-% ---------- Links ----------
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V links
 \usepackage{hyperref}
 \hypersetup{
   colorlinks=true,
@@ -24,23 +26,38 @@
   linkcolor=blue,
   citecolor=blue
 }
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A links
 
-% ---------- Headers and footers ----------
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V timestamp
+%\usepackage[style=iso,showisoZ=true]{datetime2}    % yyyy-mm-dd \DTMnow
+\usepackage[style=iso,showzone=false]{datetime2}    % yyyy-mm-dd \DTMnow
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A timestamp
+
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V headers and footers
+\newcommand{\headerfont}{\sffamily\small}
+\usepackage{lastpage}   % <-- provides \pageref{LastPage}
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{}
-%\fancyhead[L]{CIS 112 --- Introduction to Programming}
-%\fancyhead[R]{Fall 2026}
 %\fancyhead[L]{\course --- \coursetitle}
 %\fancyhead[R]{Fall 2026}
-\fancyfoot[L]{\course-\coursetitle}
-\fancyfoot[R]{\semester}
-\fancyfoot[C]{\thepage}
+\fancyfoot[L]{\headerfont \course-\coursetitle}
+\fancyfoot[C]{\headerfont \thepage\,/\,\pageref{LastPage}}
+\fancyfoot[R]{\headerfont \semester\ (@\DTMnow)}
 %\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0.4pt}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A headers and footers
+s
 
 % ---------- Paragraph spacing ----------
 \usepackage{parskip}
+
 
 
 
@@ -50,8 +67,8 @@
 % Title block
 % =========================================================
 \begin{center}
-  {\large Syllabus\\}
+  {\Large Syllabus\\}
   {\LARGE\bfseries \course: \coursetitle}\\[0.5em]
   {\large \semester}\\[0.5em]
-  \rule{\textwidth}{0.4pt}
+%  \rule{\textwidth}{0.4pt}
 \end{center}

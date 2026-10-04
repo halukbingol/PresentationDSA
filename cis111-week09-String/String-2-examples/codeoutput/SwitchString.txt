@@ -1,0 +1,4 @@
+Monday -> weekday
+SUNDAY -> weekend
+FRIDAY -> weekday
+Funday -> unknown: Funday

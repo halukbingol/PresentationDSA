@@ -1,0 +1,6 @@
+$ ls
+Hello.java
+$ java Hello.java
+Hello from the command line!
+$ ls
+Hello.java

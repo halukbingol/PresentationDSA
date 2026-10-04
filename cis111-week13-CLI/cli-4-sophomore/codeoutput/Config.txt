@@ -1,0 +1,9 @@
+$ javac Config.java
+$ java Config
+port = 8080
+$ PORT=9000 java Config
+port = 9000
+$ PORT=9000 java -Dport=7000 Config
+port = 7000
+$ PORT=9000 java -Dport=7000 Config 6000
+port = 6000

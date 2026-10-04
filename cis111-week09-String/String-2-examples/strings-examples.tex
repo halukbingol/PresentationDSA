@@ -1,0 +1,489 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Strings in Java -- Learning by Example
+%  ---------------------------------------------------------------------
+%  Built on hbCisLaTeXTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their outputs are read from codeoutput/:
+%     codeoutput/<Name>.java   the program
+%     codeoutput/<Name>.in     keyboard input (optional)
+%     codeoutput/<Name>.txt    what it printed, made by:  sh run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstcodedown, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\definecolor{gitred}{RGB}{240,80,50}
+\newcommand{\cmd}[1]{\texttt{\color{gitred}#1}}
+
+% ---------------------------------------------------------------------
+\title{Strings in Java}
+\subtitle{Learning by Example}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Setup]{How to Use These Examples}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Run]{Running the examples}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Running the examples}
+  \small Every program on these slides is a file in \texttt{codeoutput/}; the output shown is what it really printed (Java 21).
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{macOS (Terminal)}
+        \footnotesize
+        \cmd{cd} into the folder of the slides, then
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash]
+javac -d build codeoutput/Case.java
+java -cp build Case
+sh run_examples.sh        # all of them
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Windows (Command Prompt)}
+        \footnotesize
+        \cmd{chcp 65001} first, so Turkish letters print correctly:
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash]
+chcp 65001
+javac -encoding UTF-8 -d build codeoutput\Case.java
+java -cp build Case
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+
+        \texttt{run\_examples.sh} runs in \emph{Git Bash}.
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vspace{0.3em}
+  \small Each slide shows the code first; the output appears on the next click. \hRemark{Predict it before you click.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Inspect]{Creating and Inspecting}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Create]{Creating strings}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Five ways to get a String}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\tiny]{codeoutput/Create.java}{Java}{codeoutput/Create.txt}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Length]{Length and characters}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{length()} and \texttt{charAt(i)}}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\tiny]{codeoutput/LengthCharAt.java}{Java}{codeoutput/LengthCharAt.txt}
+
+  \vspace{0.3em}
+  \small Valid indices are \texttt{0} to \texttt{length()-1}. A \texttt{char} is a number: \texttt{(int) c} shows its code.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Substring]{Pieces of a string}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{substring(begin, end)}}
+  \begin{columns}[T]
+    \begin{column}{0.66\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Substring.java}{Java}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \begin{center}
+        \begin{tikzpicture}\hString[0.32]{H,e,l,l,o,{,},\textvisiblespace,W,o,r,l,d}[7][12]\end{tikzpicture}
+      \end{center}
+      \small \texttt{substring(7, 12)}: from index 7 \textbf{up to, not including} 12.
+      \vspace{0.3em}
+
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Substring.txt}}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Search]{Searching and Comparing}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Search]{Searching}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Searching: \texttt{indexOf}, \texttt{contains}, \dots}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Search.java}{Java}{codeoutput/Search.txt}
+
+  \vspace{0.3em}
+  \small \texttt{indexOf} returns \texttt{-1} when not found. The loop finds every occurrence by starting after the previous one.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Compare]{Comparing}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Comparing: \texttt{equals} and \texttt{compareTo}}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Compare.java}{Java}{codeoutput/Compare.txt}
+
+  \vspace{0.3em}
+  \small \texttt{==} asks ``same object?''; \texttt{equals} asks ``same text?''. \texttt{compareTo} is negative, zero or positive.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Case]{Upper and lower case}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Upper and lower case: the Turkish \texttt{i}}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Case.java}{Java}{codeoutput/Case.txt}
+
+  \vspace{0.3em}
+  \small \hRemark{Pitfall:} \texttt{toUpperCase()} without a locale uses the computer's language. On a Turkish
+  computer \texttt{"title".toUpperCase()} is \texttt{"TİTLE"}. Use \texttt{Locale.ROOT} for program text (keywords, file names).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Transform]{Transforming}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Split]{Trimming, splitting, joining}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Trimming, splitting and joining}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\tiny]{codeoutput/TrimSplit.java}{Java}{codeoutput/TrimSplit.txt}
+
+  \vspace{0.3em}
+  \small \texttt{split} takes a \textbf{regular expression}: \texttt{"\textbackslash\textbackslash s+"} means ``one or more white-space characters.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Replace]{Replacing}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Replacing and repeating}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Replace.java}{Java}{codeoutput/Replace.txt}
+
+  \vspace{0.3em}
+  \small The last line proves it again: none of these methods changes \texttt{s}; each returns a new string.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Format]{Formatting}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Formatting numbers and text}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Format.java}{Java}{codeoutput/Format.txt}
+
+  \vspace{0.3em}
+  \small \texttt{\%s} text, \texttt{\%d} integer, \texttt{\%.2f} two decimals, \texttt{\%-8s} left-aligned in 8 columns, \texttt{\%n} new line.
+  With the Turkish locale the decimal separator is a comma.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Convert]{Converting}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Strings and numbers}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Convert.java}{Java}{codeoutput/Convert.txt}
+
+  \vspace{0.3em}
+  \small \texttt{"42" + 1} is \texttt{"421"}: as soon as one side of \texttt{+} is a \texttt{String}, \texttt{+} means concatenation.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Build]{Building Strings}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Builder]{StringBuilder}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{StringBuilder}: a mutable string}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Builder.java}{Java}{codeoutput/Builder.txt}
+
+  \vspace{0.3em}
+  \small Methods return the builder itself, so calls can be chained: \texttt{sb.append(a).append(b)}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Words]{Working word by word}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Word by word: title case}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/TitleCase.java}{Java}{codeoutput/TitleCase.txt}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Chars]{Classifying characters}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Classifying characters: \texttt{Character}}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/CharClass.java}{Java}{codeoutput/CharClass.txt}
+
+  \vspace{0.3em}
+  \small \texttt{Character.isLetter} knows Turkish letters too. \texttt{\textquotesingle 7\textquotesingle{} - \textquotesingle 0\textquotesingle} turns a digit character into its value.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Modern]{Modern Java}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Text block]{Text blocks}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Text blocks (Java 15+)}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/TextBlock.java}{Java}{codeoutput/TextBlock.txt}
+
+  \vspace{0.3em}
+  \small A text block starts with \texttt{"""} and a new line. The common indentation is removed;
+  a \texttt{\textbackslash} at the end of a line joins it with the next one.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Switch]{Switch on strings}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{switch} on strings}
+  \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/SwitchString.java}{Java}{codeoutput/SwitchString.txt}
+
+  \vspace{0.3em}
+  \small A \texttt{switch} can test strings (with \texttt{equals}, never \texttt{==}). Normalize the case first, with \texttt{Locale.ROOT}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Cheat sheet]{Cheat sheet}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet}
+  \footnotesize
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{tabular}{@{}L{0.5\textwidth}L{0.42\textwidth}@{}}
+        \toprule
+        \textbf{Method} & \textbf{Gives} \\
+        \midrule
+        \texttt{length()}                 & number of chars \\
+        \texttt{charAt(i)}                & char at index \texttt{i} \\
+        \texttt{substring(b, e)}          & chars \texttt{b..e-1} \\
+        \texttt{indexOf(x)}               & first index or \texttt{-1} \\
+        \texttt{contains(x)}              & \texttt{boolean} \\
+        \texttt{startsWith}/\texttt{endsWith} & \texttt{boolean} \\
+        \texttt{equals}/\texttt{equalsIgnoreCase} & same text? \\
+        \texttt{compareTo(x)}             & $<0$, $0$, $>0$ \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{tabular}{@{}L{0.5\textwidth}L{0.42\textwidth}@{}}
+        \toprule
+        \textbf{Method} & \textbf{Gives (a new string)} \\
+        \midrule
+        \texttt{toUpperCase(locale)}      & upper case \\
+        \texttt{strip()}                  & no outer spaces \\
+        \texttt{split(regex)}             & \texttt{String[]} \\
+        \texttt{String.join(sep, ...)}    & joined string \\
+        \texttt{replace(a, b)}            & all \texttt{a} replaced \\
+        \texttt{repeat(n)}                & \texttt{n} copies \\
+        \texttt{String.format(...)}       & formatted text \\
+        \texttt{Integer.parseInt(s)}      & \texttt{int} (not a string) \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Exercises]{Exercises}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Print a name in reverse with a loop, then with \texttt{StringBuilder.reverse()}.
+    \item Count the vowels (\texttt{a e ı i o ö u ü}) in a Turkish sentence.
+    \item Given \texttt{"surname, name"}, print \texttt{"Name SURNAME"} (use \texttt{indexOf}, \texttt{substring}, \texttt{strip}).
+    \item Read a CSV line \texttt{"Ali,3.25,6"} and print it as a formatted table row with \texttt{String.format}.
+    \item Check whether a word is a palindrome, ignoring case (\texttt{"Kayak"}).
+    \item Turn \texttt{"hello world from java"} into \texttt{"helloWorldFromJava"} (camel case).
+    \item Explain the output of \texttt{System.out.println(1 + 2 + "3" + 4 + 5);} and then run it.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

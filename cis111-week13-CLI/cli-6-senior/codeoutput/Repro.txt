@@ -1,0 +1,10 @@
+$ javac -d out src/app/Main.java
+$ jar --create --file a.jar -C out .
+$ sleep 2; jar --create --file b.jar -C out .
+$ jar --create --date=2026-01-01T00:00:00Z --file c.jar -C out .
+$ sleep 2; jar --create --date=2026-01-01T00:00:00Z --file d.jar -C out .
+$ sha256sum a.jar b.jar c.jar d.jar | cut -c1-20,65-
+1398c2aac14d47709464  a.jar
+fa98002d67b55901e403  b.jar
+cfabc3f20fce65d98860  c.jar
+cfabc3f20fce65d98860  d.jar

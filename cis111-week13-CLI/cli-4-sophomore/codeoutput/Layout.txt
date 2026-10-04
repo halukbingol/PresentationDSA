@@ -1,0 +1,12 @@
+$ find src -name "*.java" > sources.txt
+$ cat sources.txt
+src/edu/yeditepe/bank/util/Money.java
+src/edu/yeditepe/bank/Account.java
+src/edu/yeditepe/bank/Main.java
+$ javac -d out @sources.txt
+$ find out -name "*.class"
+out/edu/yeditepe/bank/Main.class
+out/edu/yeditepe/bank/util/Money.class
+out/edu/yeditepe/bank/Account.class
+$ java -cp out edu.yeditepe.bank.Main
+Ayşe: 130.49 TL

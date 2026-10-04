@@ -1,0 +1,1 @@
+Merhaba! I was read from inside the jar.

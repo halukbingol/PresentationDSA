@@ -1,0 +1,481 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Java on the Command Line -- Junior Level: Versions, Modules, Custom Runtimes and the JVM
+%  ---------------------------------------------------------------------
+%  Built on hbCisLaTeXTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their outputs are read from codeoutput/:
+%     codeoutput/<Name>.java   the program
+%     codeoutput/<Name>.in     keyboard input (optional)
+%     codeoutput/<Name>.txt    what it printed, made by:  sh run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstcodedown, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\definecolor{gitred}{RGB}{240,80,50}
+\newcommand{\cmd}[1]{\texttt{\color{gitred}#1}}
+
+\tikzset{
+  box/.style={draw, thick, rounded corners, align=center, font=\small, inner sep=5pt},
+  tool/.style={-{Stealth[length=2.5mm]}, thick}
+}
+
+% ---------------------------------------------------------------------
+\title{Java on the Command Line}
+\subtitle{Junior Level: Versions, Modules, Custom Runtimes and the JVM}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Versions]{Java Versions and Class Files}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Release]{Compiling for an older Java}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Class file versions}
+  \begin{columns}[T]
+    \begin{column}{0.44\textwidth}
+      \small Every \texttt{.class} file records the version it was compiled for (its \textbf{major version}):
+      \vspace{0.3em}
+
+      \begin{tabular}{@{}lll@{}}
+        \toprule
+        \textbf{Java} & \textbf{major} & \textbf{LTS} \\
+        \midrule
+        8  & 52 & yes \\
+        11 & 55 & yes \\
+        17 & 61 & yes \\
+        21 & 65 & yes \\
+        25 & 69 & yes \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \small A JVM runs class files of its own version and \textbf{older}. A newer class file on an older JVM fails:
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\tiny]
+Error: LinkageError occurred while loading main class Repeat
+  java.lang.UnsupportedClassVersionError: Repeat has been
+  compiled by a more recent version of the Java Runtime
+  (class file version 65.0), this version of the Java
+  Runtime only recognizes class file versions up to 61.0
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+
+      \small Fix: run with a newer JDK, or compile with \texttt{javac --release 17}.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{javac --release N}}
+  \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/proj/Release/Repeat.java}{Java}
+  \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Release.txt}}
+
+  \vspace{0.2em}
+  \small \texttt{--release} sets language level, class file version \textbf{and} API: Java 8 has no \texttt{String.repeat}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Modules]{The Module System}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Idea]{Why modules}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Modules (Java 9+): a level above packages}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \small A \textbf{module} is a named group of packages with a descriptor \texttt{module-info.java}:
+      \begin{itemize}\small
+        \item \texttt{requires}: which modules it needs (checked at compile time \emph{and} at start-up)
+        \item \texttt{exports}: which packages others may use; the rest is \textbf{strongly encapsulated}
+        \item The JDK itself is 69 modules: \texttt{java.base}, \texttt{java.sql}, \texttt{java.logging}, \dots
+      \end{itemize}
+      \small \textbf{Module path} (\texttt{--module-path}, \texttt{-p}) replaces the classpath for modules.
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[x=1cm, y=1cm]
+        \node[box, fill=green!12] (app) at (0,2) {\texttt{edu.yeditepe.app}};
+        \node[box, fill=blue!8, align=left] (g) at (0,0) {\texttt{edu.yeditepe.greet}\\[2pt]
+              \scriptsize exports \texttt{...greet.api}\\ \scriptsize hides \texttt{...greet.internal}};
+        \node[box, fill=gray!12] (log) at (2.9,0.9) {\texttt{java.logging}};
+        \node[box, fill=gray!12] (base) at (1.2,-1.6) {\texttt{java.base}};
+        \draw[tool] (app) -- node[left, font=\scriptsize]{requires} (g);
+        \draw[tool] (app) -- (log);
+        \draw[tool, gray] (g) -- (base);
+        \draw[tool, gray] (log) -- (base);
+      \end{tikzpicture}
+      \end{center}
+      \small Every module implicitly requires \texttt{java.base}.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Compile]{Compiling and running modules}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Two modules}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Modules/src/edu.yeditepe.greet/module-info.java}{Java}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Modules/src/edu.yeditepe.greet/edu/yeditepe/greet/api/Greeter.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Modules/src/edu.yeditepe.app/module-info.java}{Java}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Modules/src/edu.yeditepe.app/edu/yeditepe/app/Main.java}{Java}
+    \end{column}
+  \end{columns}
+  \small Source layout: one folder per module below \texttt{src/}, named like the module.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Compiling and running modules}
+  \lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Modules.txt}
+
+  \vspace{0.2em}
+  \small \texttt{--module-source-path src -m M} compiles module \texttt{M} and the modules it requires.
+  Run with \texttt{--module-path} (\texttt{-p}) and \texttt{--module module/main.class} (\texttt{-m}).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Strong encapsulation}
+  \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/proj/Encapsulation/src/edu.yeditepe.app/edu/yeditepe/app/Main.java}{Java}
+  \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Encapsulation.txt}}
+
+  \vspace{0.2em}
+  \small \texttt{public} is not enough: the package must be \textbf{exported} (\texttt{javac} says it ``does not exist'').
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Jars]{Modular jars}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Modular jars}
+  \lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/ModJars.txt}
+
+  \vspace{0.2em}
+  \small A modular jar is a jar with \texttt{module-info.class}. With a \texttt{--main-class}, \texttt{-m edu.yeditepe.app} is enough.
+  \texttt{--describe-module} shows exports, requires and hidden (``contains'') packages (\texttt{tail} skips the jar's location).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Runtime]{Dependencies and Custom Runtimes}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[jdeps]{jdeps}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Which JDK modules does my code need? \texttt{jdeps}}
+  \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Jdeps/classic/src/report/Report.java}{Java}
+  \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Jdeps.txt}}
+
+  \vspace{0.2em}
+  \small \texttt{--print-module-deps} gives the list for \texttt{jlink}; \texttt{java.sql} already brings \texttt{java.logging}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[jlink]{jlink}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A custom runtime with \texttt{jlink}}
+  \lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Jlink.txt}
+
+  \vspace{0.2em}
+  \small The image contains only 4 modules and a \texttt{hello} launcher: 39\,MB instead of the full JDK (most of the
+  rest is the JVM library itself). Copy \texttt{rt/} to a computer with \textbf{no Java installed} and run \texttt{rt/bin/hello}
+  (on Windows \texttt{rt\textbackslash bin\textbackslash hello.bat}); build the image on the same operating system it will run on.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[JVM]{Controlling the JVM}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Options]{JVM options}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Families of \texttt{java} options}
+  \small
+  \begin{tabular}{@{}L{0.2\textwidth}L{0.36\textwidth}L{0.36\textwidth}@{}}
+    \toprule
+    \textbf{Family} & \textbf{Examples} & \textbf{Note} \\
+    \midrule
+    standard        & \texttt{-cp}, \texttt{-p}, \texttt{-m}, \texttt{-jar}, \texttt{-D}, \texttt{-version} & stable, all JVMs \\
+    \texttt{-X}     & \texttt{-Xmx512m}, \texttt{-Xms}, \texttt{-Xss}, \texttt{-Xlog:gc}       & non-standard but common; \texttt{java -X} lists them \\
+    \texttt{-XX:}   & \texttt{-XX:+UseSerialGC}, \texttt{-XX:MaxRAMPercentage=50}             & HotSpot tuning; \texttt{+}/\texttt{-} switch booleans \\
+    diagnostics     & \texttt{-verbose:class}, \texttt{-XshowSettings:vm}, \texttt{-XX:+PrintFlagsFinal} & look inside start-up \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.5em}
+  \begin{itemize}\small
+    \item JVM options go \textbf{before} the class or \texttt{-jar app.jar}; everything after is passed to \texttt{main}
+    \item \texttt{java -Xmx64m App} limits the heap; \texttt{java App -Xmx64m} passes \texttt{"-Xmx64m"} to \texttt{args}!
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Heap size, flags and class loading}
+  \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Options/Memory.java}{Java}
+  \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Options.txt}}
+
+  \vspace{0.2em}
+  \small Without \texttt{-Xmx} the JVM takes 25\,\% of the RAM it sees (\texttt{MaxRAMPercentage}). A tiny program loads
+  over 500 classes, mostly from the CDS archive. \texttt{2>/dev/null} hides the version text (Windows: \texttt{2>NUL}).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Watching the garbage collector: \texttt{-Xlog:gc}}
+  \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/GcLog/Garbage.java}{Java}
+  \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/GcLog.txt}}
+
+  \vspace{0.2em}
+  \small Per line: time, collection, heap before $\to$ after (size), pause. Times differ on every run.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[ArgFiles]{Argument files and JDK\_JAVA\_OPTIONS}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Option files and \texttt{JDK\_JAVA\_OPTIONS}}
+  \begin{columns}[T]
+    \begin{column}{0.3\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/ArgFiles/jvm.options}{{}}
+    \end{column}
+    \begin{column}{0.68\textwidth}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/ArgFiles.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small \texttt{@file} inserts the file's options (handy for long module paths). \texttt{JDK\_JAVA\_OPTIONS} adds options to
+  every \texttt{java} run and announces itself with \texttt{NOTE}. Windows: \texttt{set JDK\_JAVA\_OPTIONS=-Xmx32m}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Tools]{Build Tools}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Maven]{What Maven and Gradle do}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What Maven and Gradle do for you}
+  \small
+  \begin{tabular}{@{}L{0.3\textwidth}L{0.3\textwidth}L{0.32\textwidth}@{}}
+    \toprule
+    \textbf{By hand}                                   & \textbf{Maven}               & \textbf{Gradle} \\
+    \midrule
+    download jars into \texttt{lib/}                   & \texttt{<dependency>} in \texttt{pom.xml} & \texttt{dependencies \{ \}} \\
+    \texttt{javac -d out -cp ... @sources}             & \texttt{mvn compile}         & \texttt{gradle compileJava} \\
+    run the tests                                      & \texttt{mvn test}            & \texttt{gradle test} \\
+    \texttt{jar --create ...}                          & \texttt{mvn package}         & \texttt{gradle jar} \\
+    \texttt{javadoc -d docs ...}                       & \texttt{mvn javadoc:javadoc} & \texttt{gradle javadoc} \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.5em}
+  \begin{itemize}\small
+    \item Both call \texttt{javac}, \texttt{jar}, \texttt{java} underneath; \texttt{mvn -X} / \texttt{gradle --info} show the commands
+    \item Wrappers \texttt{mvnw} / \texttt{gradlew} (\texttt{mvnw.cmd} / \texttt{gradlew.bat} on Windows) download the right tool version
+    \item Knowing the command line lets you debug a build that ``works in the IDE''
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Cheat sheet]{Cheat sheet}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet}
+  \footnotesize
+  \begin{tabular}{@{}L{0.56\textwidth}L{0.36\textwidth}@{}}
+    \toprule
+    \textbf{Command} & \textbf{Does} \\
+    \midrule
+    \texttt{javac --release 17 ...}                                & compile for Java 17 (and its API) \\
+    \texttt{javap -v -cp out C | grep major}                       & class file version \\
+    \texttt{javac -d mods --module-source-path src -m M}           & compile module \texttt{M} and its requirements \\
+    \texttt{java -p mods -m M/pkg.Main}                            & run a module \\
+    \texttt{jar --describe-module --file m.jar}                    & what a modular jar exports and needs \\
+    \texttt{jdeps --print-module-deps app.jar}                     & JDK modules the code uses \\
+    \texttt{jlink -p mods --add-modules M --output rt ...}         & custom runtime \\
+    \texttt{java -Xmx512m -Xlog:gc ...}                            & heap limit, GC log \\
+    \texttt{java @opts.txt ...}, \texttt{JDK\_JAVA\_OPTIONS}       & options from a file / the environment \\
+    \bottomrule
+  \end{tabular}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Exercises]{Exercises}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Compile a program with \texttt{--release 11} and run it on Java 21. Then compile with 21 and try an older JDK; read the error.
+    \item Turn the sophomore bank example into two modules, \texttt{bank.core} and \texttt{bank.app}; export only what \texttt{bank.app} needs.
+    \item Use \texttt{jdeps} on a jar you use in another course; which JDK modules does it need?
+    \item Build a \texttt{jlink} image of your module, zip it, and run it on a classmate's computer without Java
+          (Windows build for Windows, macOS build for macOS).
+    \item Run \texttt{Garbage} with \texttt{-Xmx16m}, \texttt{-Xmx64m}, \texttt{-Xmx256m}; count the collections in the log.
+    \item Find in your IDE's run log the exact \texttt{java} command it uses.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

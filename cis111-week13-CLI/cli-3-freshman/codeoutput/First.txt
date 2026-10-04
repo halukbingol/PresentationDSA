@@ -1,0 +1,14 @@
+$ ls
+Hello.java
+$ cat Hello.java
+public class Hello {
+    public static void main(String[] args) {
+        System.out.println("Hello, Yeditepe!");
+    }
+}
+$ javac Hello.java
+$ ls
+Hello.class
+Hello.java
+$ java Hello
+Hello, Yeditepe!

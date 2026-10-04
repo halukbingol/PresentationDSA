@@ -1,0 +1,18 @@
+$ java Props.java
+greeting  : Hello
+COURSE    : null
+java      : 21.0.10
+os.name   : Linux
+separators: / and :
+$ java -Dgreeting=Merhaba Props.java
+greeting  : Merhaba
+COURSE    : null
+java      : 21.0.10
+os.name   : Linux
+separators: / and :
+$ COURSE=CSE101 java Props.java
+greeting  : Hello
+COURSE    : CSE101
+java      : 21.0.10
+os.name   : Linux
+separators: / and :

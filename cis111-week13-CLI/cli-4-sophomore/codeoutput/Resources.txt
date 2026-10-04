@@ -1,0 +1,11 @@
+$ javac -d out src/app/Hello.java
+$ cp -r res/. out/
+$ jar --create --file hello.jar --main-class app.Hello -C out .
+$ jar --list --file hello.jar
+META-INF/
+META-INF/MANIFEST.MF
+app/
+app/Hello.class
+app/greeting.txt
+$ java -jar hello.jar
+Merhaba! I was read from inside the jar.

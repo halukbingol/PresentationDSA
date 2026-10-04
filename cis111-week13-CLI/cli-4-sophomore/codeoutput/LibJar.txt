@@ -1,0 +1,16 @@
+$ javac -d lib-out lib-src/textutil/Text.java
+$ mkdir lib
+$ jar --create --file lib/textutil.jar -C lib-out .
+$ javac -cp lib/textutil.jar -d out src/app/Main.java
+$ java -cp out:lib/textutil.jar app.Main
++----------------------+
+| Hello from a library |
++----------------------+
+$ java -cp "out:lib/*" app.Main
++----------------------+
+| Hello from a library |
++----------------------+
+$ CLASSPATH=out:lib/textutil.jar java app.Main
++----------------------+
+| Hello from a library |
++----------------------+

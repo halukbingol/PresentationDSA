@@ -1,0 +1,6 @@
+$ javac Server.java
+$ java Server > server.log & sleep 1; kill -TERM $!; wait $!; echo "exit code: $?"
+exit code: 143
+$ cat server.log
+server running
+shutdown hook: closing files, saving state

@@ -1,0 +1,12 @@
+$ javac Sum.java
+$ java Sum 3 4 5
+sum = 12
+$ java Sum
+sum = 0
+$ java Sum 3 four
+Exception in thread "main" java.lang.NumberFormatException: For input string: "four"
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:662)
+	at java.base/java.lang.Integer.parseInt(Integer.java:778)
+	at Sum.main(Sum.java:5)
+[exit code 1]

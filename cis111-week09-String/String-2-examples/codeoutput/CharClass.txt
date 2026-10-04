@@ -1,0 +1,7 @@
+letters: 15
+digits : 3
+spaces : 4
+others : 3
+Ş
+true
+8

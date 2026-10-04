@@ -1,0 +1,10 @@
+$ javac -d mods --module-source-path src -m edu.yeditepe.app
+$ find mods -name "*.class"
+mods/edu.yeditepe.greet/module-info.class
+mods/edu.yeditepe.greet/edu/yeditepe/greet/api/Greeter.class
+mods/edu.yeditepe.greet/edu/yeditepe/greet/internal/Formatter.class
+mods/edu.yeditepe.app/module-info.class
+mods/edu.yeditepe.app/edu/yeditepe/app/Main.class
+$ java --module-path mods --module edu.yeditepe.app/edu.yeditepe.app.Main
+INFO: starting
+*** Hello, Yeditepe ***

@@ -1,0 +1,5 @@
+length: 8
+first : Y
+last  : e
+0:Y 1:e 2:d 3:i 4:t 5:e 6:p 7:e 
+d has code 100

@@ -1,0 +1,14 @@
+$ javac -d out src/app/Startup.java
+$ jar --create --file app.jar --main-class app.Startup -C out .
+$ java -Xlog:class+load -jar app.jar | grep -c "shared objects file"
+825
+$ java -Xshare:off -Xlog:class+load -jar app.jar | grep -c "source: jrt"
+854
+$ java -XX:ArchiveClassesAtExit=app.jsa -jar app.jar
+JAVAC, JAVA, JAR, JLINK, JPACKAGE (2026-10-02)
+$ time java -Xshare:off -jar app.jar > /dev/null
+real 0.208s
+$ time java -jar app.jar > /dev/null
+real 0.112s
+$ time java -XX:SharedArchiveFile=app.jsa -jar app.jar > /dev/null
+real 0.095s

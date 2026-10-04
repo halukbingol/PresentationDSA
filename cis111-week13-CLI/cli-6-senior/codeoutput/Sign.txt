@@ -1,0 +1,22 @@
+$ javac -d out src/app/Main.java
+$ jar --create --file app.jar --main-class app.Main -C out .
+$ keytool -genkeypair -keystore ks.p12 -storepass changeit -alias cse -keyalg RSA -dname "CN=CSE Course, O=Yeditepe University" -validity 365
+Generating 3,072 bit RSA key pair and self-signed certificate (SHA384withRSA) with a validity of 365 days
+	for: CN=CSE Course, O=Yeditepe University
+$ jarsigner -keystore ks.p12 -storepass changeit app.jar cse
+jar signed.
+
+Warning: 
+The signer's certificate is self-signed.
+$ jar tf app.jar | grep META-INF/
+META-INF/MANIFEST.MF
+META-INF/CSE.SF
+META-INF/CSE.RSA
+META-INF/
+$ jarsigner -verify app.jar | grep verified
+jar verified.
+$ mkdir -p hack/app; cp out/app/Main.class hack/app/; printf x >> hack/app/Main.class
+$ jar --update --file app.jar -C hack app/Main.class
+$ jarsigner -verify app.jar
+jarsigner: java.lang.SecurityException: SHA-384 digest error for app/Main.class
+[exit code 1]

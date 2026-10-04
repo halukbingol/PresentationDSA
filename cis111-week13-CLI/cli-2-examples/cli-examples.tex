@@ -1,0 +1,459 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Java on the Command Line -- Learning by Example
+%  ---------------------------------------------------------------------
+%  Built on hbCisLaTeXTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their outputs are read from codeoutput/:
+%     codeoutput/<Name>.java   the program
+%     codeoutput/<Name>.in     keyboard input (optional)
+%     codeoutput/<Name>.txt    what it printed, made by:  sh run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstcodedown, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\definecolor{gitred}{RGB}{240,80,50}
+\newcommand{\cmd}[1]{\texttt{\color{gitred}#1}}
+
+% ---------------------------------------------------------------------
+\title{Java on the Command Line}
+\subtitle{Learning by Example}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Setup]{Reading the Examples}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Read]{How to read the examples}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{How to read the examples}
+  \begin{itemize}\small
+    \item Each example is a small project; the \textbf{terminal sessions} on the slides were recorded by
+          really running the commands (OpenJDK 21, a Linux shell, which behaves like macOS Terminal)
+    \item A line starting with \texttt{\$} is a command; the lines below it are its output
+    \item \texttt{[exit code 1]} is added when a command fails (a non-zero exit code)
+    \item The code appears first; the session on the next click: \hRemark{predict the output}
+  \end{itemize}
+  \vspace{0.3em}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Windows (Command Prompt)}
+        \footnotesize
+        \begin{itemize}
+          \item \texttt{ls} $\to$ \texttt{dir}, \texttt{cat} $\to$ \texttt{type}, \texttt{/} $\to$ \texttt{\textbackslash} in paths
+          \item classpath separator \texttt{;} instead of \texttt{:}
+          \item \texttt{echo \$?} $\to$ \texttt{echo \%ERRORLEVEL\%}
+          \item first run \cmd{chcp 65001} for Turkish letters
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{macOS (Terminal)}
+        \footnotesize
+        \begin{itemize}
+          \item The commands work exactly as shown
+          \item \texttt{find}, \texttt{unzip}, \texttt{cat} are built in
+          \item Terminal uses UTF-8
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Run]{Compile and Run}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Hello]{javac and java}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{javac}, then \texttt{java}}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/proj/Hello/Hello.java}{Java}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Hello.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small \texttt{javac} writes \texttt{Hello.class} next to the source. \texttt{java} takes the \textbf{class name}
+  \texttt{Hello}, without \texttt{.class}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Launcher]{The source launcher}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{One step: \texttt{java Hello.java} (Java 11+)}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/proj/Launcher/Hello.java}{Java}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Launcher.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small For a program in \textbf{one file}, \texttt{java} can compile in memory and run. No \texttt{.class} file appears.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[IO]{Arguments, Input and Output}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Args]{Arguments}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Command-line arguments}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/proj/Args/Args.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Args.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small The shell splits the command line at spaces; quotes keep \texttt{"Ayşe Yılmaz"} together as one argument.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Streams]{Redirection}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Standard input, output and error}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Streams/Upper.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Streams.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small \texttt{<} feeds a file to \texttt{System.in}; \texttt{>} sends \texttt{System.out} to a file;
+  \texttt{2>} sends \texttt{System.err} elsewhere. The count goes to stderr, so it is not mixed into \texttt{out.txt}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Exit]{Exit codes}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exit codes}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Exit/Check.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Exit.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small \texttt{System.exit(2)} sets the exit code; an uncaught exception gives 1. \texttt{\&\&} runs the next command only on success,
+  \texttt{||} only on failure. Windows: \texttt{echo \%ERRORLEVEL\%}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Packages]{Packages and the Classpath}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Packages]{Packages}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Packages and \texttt{-d}}
+  \begin{columns}[T]
+    \begin{column}{0.44\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Packages/src/edu/yeditepe/hello/Main.java}{Java}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Packages.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small \texttt{-d out} puts class files into package folders below \texttt{out}. Run with \texttt{-cp out} and the
+  \textbf{fully qualified} name; both wrong attempts fail with \texttt{ClassNotFoundException}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Library]{Using a library}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Compiling and running against a library}
+  \begin{columns}[T]
+    \begin{column}{0.44\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Library/lib/src/textutil/Text.java}{Java}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Library/app/src/app/Main.java}{Java}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny, linerange={1-21,26-26}]{codeoutput/Library.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small \texttt{javac} and \texttt{java} both need the library on the classpath (4 internal stack lines skipped).
+  Windows: \texttt{-cp app\textbackslash out;lib\textbackslash out}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Jar]{JAR Files}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Jar]{An executable jar}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Building and running a jar}
+  \lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Jar.txt}
+
+  \vspace{0.2em}
+  \small \texttt{-C out .} adds everything below \texttt{out}; \texttt{--main-class} writes the \texttt{Main-Class} line.
+  A jar is a zip file, so \texttt{unzip} (or any zip tool) can read it.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Environment]{Properties, Environment and Tools}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Props]{System properties and environment}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{System properties (\texttt{-D}) and environment variables}
+  \begin{columns}[T]
+    \begin{column}{0.6\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Props/Props.java}{Java}
+    \end{column}
+    \begin{column}{0.38\textwidth}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Props.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small \texttt{-Dname=value} sets a property for one run. \texttt{COURSE=CSE101 java ...} is macOS/Linux syntax;
+  Windows: \texttt{set COURSE=CSE101} then \texttt{java ...}. On Windows the separators print as \texttt{\textbackslash} and \texttt{;}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[JShell]{jshell}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{jshell}: Java without a class}
+  \begin{columns}[T]
+    \begin{column}{0.6\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/JShell/demo.jsh}{Java}
+    \end{column}
+    \begin{column}{0.38\textwidth}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/JShell.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small Typing \cmd{jshell} alone starts an interactive session (\texttt{/exit} to leave): good for trying out an API.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Javap]{javap}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Looking inside a class file: \texttt{javap}}
+  \lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Javap.txt}
+
+  \vspace{0.2em}
+  \small \texttt{javap -c} shows the bytecode: \texttt{getstatic} gets \texttt{System.out}, \texttt{ldc} loads the string,
+  \texttt{invokevirtual} calls \texttt{println}. The compiler added a default constructor.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Cheat sheet]{Cheat sheet}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet}
+  \footnotesize
+  \begin{tabular}{@{}L{0.46\textwidth}L{0.46\textwidth}@{}}
+    \toprule
+    \textbf{Command} & \textbf{Does} \\
+    \midrule
+    \texttt{javac Hello.java}                          & compile into the same folder \\
+    \texttt{java Hello}                                & run class \texttt{Hello} (from \texttt{.}) \\
+    \texttt{java Hello.java}                           & compile in memory and run (one file) \\
+    \texttt{javac -d out src/a/b/*.java}               & compile into package folders under \texttt{out} \\
+    \texttt{java -cp out a.b.Main}                     & run a class in a package \\
+    \texttt{javac -cp lib.jar ...}, \texttt{java -cp out:lib.jar ...} & use a library (Windows: \texttt{;}) \\
+    \texttt{jar --create --file app.jar --main-class a.b.Main -C out .} & build an executable jar \\
+    \texttt{java -jar app.jar}                         & run it \\
+    \texttt{java App < in > out 2> err}                & redirect the three streams \\
+    \texttt{java -Dkey=value App}                      & set a system property \\
+    \texttt{jshell}, \texttt{javap -c Hello}           & try code; look at bytecode \\
+    \bottomrule
+  \end{tabular}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Exercises]{Exercises}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Write \texttt{Sum.java} that adds its integer arguments; run it with 0, 1 and 5 arguments.
+    \item Write \texttt{WordCount.java} that counts words from standard input; run it on a text file with \texttt{<}.
+    \item Make \texttt{Check} return exit code 3 for non-numbers (catch \texttt{NumberFormatException}); test with \texttt{\&\&} and \texttt{||}.
+    \item Move \texttt{Hello} into the package \texttt{edu.yeditepe.week1}; compile with \texttt{-d out} and run it.
+    \item Package the \texttt{Library} example into two jars, \texttt{textutil.jar} and \texttt{app.jar}, and run it with \texttt{-cp}.
+    \item Do all of the above on Windows (Command Prompt) \emph{and} on macOS (Terminal); note every difference.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

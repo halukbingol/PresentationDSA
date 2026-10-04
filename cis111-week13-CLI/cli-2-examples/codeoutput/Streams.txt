@@ -1,0 +1,18 @@
+$ javac Upper.java
+$ java Upper < names.txt
+AYŞE
+ALI
+CAN
+3 lines converted
+$ java Upper < names.txt > out.txt
+3 lines converted
+$ cat out.txt
+AYŞE
+ALI
+CAN
+$ java Upper < names.txt 2> err.txt
+AYŞE
+ALI
+CAN
+$ cat err.txt
+3 lines converted

@@ -1,0 +1,9 @@
+$ java -XshowSettings:vm -version 2>&1 | grep Heap
+    Max. Heap Size (Estimated): 1.46G
+$ java -XX:MaxRAMPercentage=75 -XshowSettings:vm -version 2>&1 | grep Heap
+    Max. Heap Size (Estimated): 4.38G
+$ java -XX:+PrintFlagsFinal -version 2>/dev/null | grep -E " (UseContainerSupport|ActiveProcessorCount|InitialRAMPercentage|MaxRAMPercentage) "
+      int ActiveProcessorCount                     = -1                                        {product} {default}
+   double InitialRAMPercentage                     = 1.562500                                  {product} {default}
+   double MaxRAMPercentage                         = 25.000000                                 {product} {default}
+     bool UseContainerSupport                      = true                                      {product} {default}

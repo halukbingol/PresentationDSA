@@ -1,0 +1,5 @@
+Java 21!
+Hello Java 21!
+hello Java 21 (length 13)
+desserts
+HELLO JAVA 21

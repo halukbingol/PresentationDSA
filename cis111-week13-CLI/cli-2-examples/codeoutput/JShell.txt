@@ -1,0 +1,4 @@
+$ jshell demo.jsh
+x = 42
+YEDITEPE has 8 letters
+[1, 4, 9, 16, 25]

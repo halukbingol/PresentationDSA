@@ -1,0 +1,145 @@
+
+\documentclass[12pt]{amsart}
+
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -def.
+\newcommand{\docName}{How to Study for CIS 111}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Fig.
+
+% ---------- Page layout ----------
+\usepackage[margin=1in]{geometry}
+
+% ---------- Encoding and fonts ----------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+
+% ---------- Tables ----------
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+
+% ---------- Lists ----------
+\usepackage{enumitem}
+
+% ---------- Links ----------
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  urlcolor=blue,
+  linkcolor=blue,
+  citecolor=blue
+}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V timestamp
+%\usepackage[style=iso,showisoZ=true]{datetime2}    % yyyy-mm-dd \DTMnow
+\usepackage[style=iso,showzone=false]{datetime2}    % yyyy-mm-dd \DTMnow
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A timestamp
+
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V headers and footers
+%: -Hd. headers and footers
+\newcommand{\headerfont}{\sffamily\small}
+%
+\usepackage{lastpage}   % <-- provides \pageref{LastPage}
+%
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+%\fancyhead[L]{aaa}
+%\fancyhead[R]{aaa}
+\fancyfoot[L]{\headerfont \docName}
+\fancyfoot[C]{\headerfont \thepage\,/\,\pageref{LastPage}}
+\fancyfoot[R]{\headerfont v\DTMnow}
+%\lhead{}\chead{}\rhead{}
+%\lfoot{}\cfoot{\thepage}\rfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% +++++++++++++++++++++++++++++++++++++++ A headers and footers
+
+% ---------- Paragraph spacing ----------
+\usepackage{parskip}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+
+
+% See the ``Article customise'' template for come common customisations
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Fig.
+%% LaTeX - Article customise
+
+%%% PACKAGES
+%\usepackage{booktabs} % for much better looking tables
+%\usepackage{array} % for better arrays (eg matrices) in maths
+%\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfigure} % make it possible to include more than one captioned figure/table in a single float
+% These packages are all incorporated in the memoir class to one degree or another...
+
+
+%%%% SECTION TITLE APPEARANCE
+%\usepackage{sectsty}
+%\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+%% (This matches ConTeXt defaults)
+
+%%% ToC APPEARANCE
+%\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+%\usepackage[titles]{tocloft} % Alter the style of the Table of Contents
+%\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+%\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
+%% END Article customise
+% +++++++++++++++++++++++++++++++++++++++ A
+
+
+
+
+
+
+\title{How to Study for CIS 111}
+\author{Haluk Bingol}
+\date{\today} % delete this line to display the current date
+
+%%% BEGIN DOCUMENT
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\section{2.	How to Solve a Programming Exercise}
+
+AI can sometimes solve an entire problem for you. 
+
+\begin{enumerate}
+	
+	\item 
+	aa
+\end{enumerate}
+
+
+
+\begin{itemize}
+	
+	\item 
+	dd
+\end{itemize}
+
+
+\end{document}

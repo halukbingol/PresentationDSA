@@ -1,0 +1,11 @@
+$ javac Args.java
+$ java Args one two
+2 argument(s)
+args[0] = [one]
+args[1] = [two]
+$ java Args "Ayşe Yılmaz" 42
+2 argument(s)
+args[0] = [Ayşe Yılmaz]
+args[1] = [42]
+$ java Args
+0 argument(s)

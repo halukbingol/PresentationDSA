@@ -1,0 +1,481 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Java on the Command Line -- Senior Level: Packaging, Start-up, Diagnostics and Supply Chain
+%  ---------------------------------------------------------------------
+%  Built on hbCisLaTeXTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their outputs are read from codeoutput/:
+%     codeoutput/<Name>.java   the program
+%     codeoutput/<Name>.in     keyboard input (optional)
+%     codeoutput/<Name>.txt    what it printed, made by:  sh run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstcodedown, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\definecolor{gitred}{RGB}{240,80,50}
+\newcommand{\cmd}[1]{\texttt{\color{gitred}#1}}
+
+\tikzset{
+  box/.style={draw, thick, rounded corners, align=center, font=\small, inner sep=5pt},
+  tool/.style={-{Stealth[length=2.5mm]}, thick}
+}
+
+% ---------------------------------------------------------------------
+\title{Java on the Command Line}
+\subtitle{Senior Level: Packaging, Start-up, Diagnostics and Supply Chain}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Ship]{Shipping an Application}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Options]{Options}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{From \texttt{.class} files to something users can run}
+  \begin{center}
+  \begin{tikzpicture}[x=1cm, y=1cm]
+    \node[box, fill=blue!8] (c) at (0,0) {classes\\ \scriptsize\texttt{out/}};
+    \node[box, fill=yellow!20] (j) at (3,0) {jar\\ \scriptsize\texttt{app.jar}};
+    \node[box, fill=orange!12] (r) at (6.4,0) {runtime image\\ \scriptsize\texttt{jlink}};
+    \node[box, fill=green!12] (p) at (10.2,0) {app image / installer\\ \scriptsize\texttt{jpackage}};
+    \draw[tool] (c) -- node[above, font=\ttfamily\scriptsize]{jar} (j);
+    \draw[tool] (j) -- node[above, font=\ttfamily\scriptsize]{jdeps+jlink} (r);
+    \draw[tool] (r) -- (p);
+  \end{tikzpicture}
+  \end{center}
+  \small
+  \begin{tabular}{@{}L{0.2\textwidth}L{0.3\textwidth}L{0.42\textwidth}@{}}
+    \toprule
+    \textbf{Form}          & \textbf{User needs}                   & \textbf{Typical use} \\
+    \midrule
+    executable jar         & a matching Java installed             & servers, tools for developers, coursework \\
+    \texttt{jlink} image   & nothing; one OS and CPU per image     & containers, internal tools \\
+    \texttt{jpackage}      & nothing; double-click or installer    & desktop apps: \texttt{.msi}/\texttt{.exe}, \texttt{.dmg}/\texttt{.pkg}, \texttt{.deb}/\texttt{.rpm} \\
+    container image        & a container runtime                   & cloud services (\texttt{FROM eclipse-temurin:21-jre}) \\
+    \bottomrule
+  \end{tabular}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[jpackage]{jpackage}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{jpackage}: a self-contained application}
+  \lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Jpackage.txt}
+
+  \vspace{0.2em}
+  \small Default image: a full runtime (157\,MB). With a \texttt{jlink} runtime of only \texttt{java.base}: 39\,MB.
+  The app image runs without an installed Java. Recorded on Linux; the next slide shows Windows and macOS.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{jpackage} on Windows and macOS}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Windows}
+        \footnotesize
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\tiny]
+jpackage --type msi --name Hello ^
+  --input input --main-jar app.jar ^
+  --win-menu --win-shortcut
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+
+        \begin{itemize}
+          \item \texttt{msi} and \texttt{exe} need the \textbf{WiX Toolset} on the build machine
+          \item \texttt{\^} continues a line in Command Prompt
+          \item Unsigned installers trigger SmartScreen; sign with \texttt{signtool}
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{macOS}
+        \footnotesize
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\tiny]
+jpackage --type dmg --name Hello \
+  --input input --main-jar app.jar \
+  --mac-sign --mac-signing-key-user-name "..."
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+
+        \begin{itemize}
+          \item \texttt{dmg} or \texttt{pkg}; Xcode command line tools needed
+          \item Gatekeeper blocks unsigned apps; sign and \textbf{notarize} for distribution
+          \item Build on Apple silicon for \emph{aarch64}, on Intel for \emph{x64}
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \small \hRemark{No cross-building}: \texttt{jpackage} makes packages only for the operating system it runs on (use CI runners per OS).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Startup]{Start-up Time}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[CDS]{Class data sharing}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Where start-up time goes}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \small Before \texttt{main} runs, the JVM must
+      \begin{enumerate}\small
+        \item start (memory, GC, threads)
+        \item \textbf{load, verify and link} hundreds of classes
+        \item run static initializers; the code is \textbf{interpreted} until the JIT compiles hot methods
+      \end{enumerate}
+      \textbf{CDS} (class data sharing) stores step 2's result in an archive that is memory-mapped at start.
+      The JDK ships one for its own classes; \textbf{AppCDS} adds your application's classes.
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Two runs (Java 13+)}
+        \footnotesize
+        \texttt{java -XX:ArchiveClassesAtExit=app.jsa -jar app.jar}\\
+        \texttt{java -XX:SharedArchiveFile=app.jsa -jar app.jar}\\[3pt]
+        or one flag (Java 19+): \texttt{-XX:+AutoCreateSharedArchive -XX:SharedArchiveFile=app.jsa}
+      \end{block}
+      \small Further: Project Leyden (ahead-of-time class loading and linking, JDK 24+), GraalVM \texttt{native-image}
+      (compiles to a native executable; closed-world limits on reflection).
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Measuring CDS and AppCDS}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/CDS/src/app/Startup.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/CDS.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small Over 800 classes come from the JDK's CDS archive; without it start-up nearly doubles.
+  AppCDS helps most with thousands of classes (frameworks). One run each; PowerShell: \texttt{Measure-Command}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Diagnostics]{Diagnosing a Running JVM}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[jcmd]{jps, jcmd, JFR}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Tools for a running JVM}
+  \small
+  \begin{tabular}{@{}L{0.32\textwidth}L{0.6\textwidth}@{}}
+    \toprule
+    \textbf{Command}                                & \textbf{Shows} \\
+    \midrule
+    \texttt{jps -l}                                 & Java processes of this user (pid, main class) \\
+    \texttt{jcmd <pid|class> help}                  & all diagnostic commands of that JVM \\
+    \texttt{jcmd ... Thread.print}                  & stack of every thread (like \texttt{jstack}): hangs, deadlocks \\
+    \texttt{jcmd ... GC.heap\_info}, \texttt{GC.class\_histogram} & heap use, objects per class: memory leaks \\
+    \texttt{jcmd ... GC.heap\_dump file.hprof}      & full heap dump for a profiler (Eclipse MAT, VisualVM) \\
+    \texttt{jcmd ... JFR.start}, \texttt{JFR.dump}   & start/save a flight recording in production \\
+    \texttt{jfr summary/print rec.jfr}              & read a recording; or open it in JDK Mission Control \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.5em}
+  \small Same commands on Windows and macOS. They attach only to JVMs of the \textbf{same user}; in containers run them inside the container.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Inspecting a busy program}
+  \begin{columns}[T]
+    \begin{column}{0.34\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Diagnose/Busy.java}{Java}
+    \end{column}
+    \begin{column}{0.64\textwidth}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Diagnose.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small \texttt{jcmd} accepts the main class instead of a pid. \texttt{jfr view} (Java 21) summarizes the recording:
+  every CPU sample is in \texttt{Busy.work}. JFR costs about 1\,\% overhead, so it is used in production.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Hooks]{Shutting down}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Stopping cleanly: signals and shutdown hooks}
+  \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/proj/Hooks/Server.java}{Java}
+  \uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Hooks.txt}}
+
+  \vspace{0.2em}
+  \small \texttt{kill -TERM} (and \texttt{Ctrl}+\texttt{C}, \texttt{docker stop}) runs the shutdown hooks; exit code $143 = 128 + 15$ (SIGTERM).
+  \texttt{kill -9} skips them. On Windows, \texttt{Ctrl}+\texttt{C} runs the hooks, \texttt{taskkill /F} does not.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Supply]{Supply Chain and Builds}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Sign]{Signing jars}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Signing and verifying a jar}
+  \lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Sign.txt}
+
+  \vspace{0.2em}
+  \small The signature covers every entry's digest. After tampering, verification fails. Real releases use a CA-issued
+  certificate and a \textbf{timestamp} (\texttt{-tsa}) so signatures stay valid after the certificate expires.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Repro]{Reproducible builds}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reproducible jars (\texttt{jar --date}, since JDK 17.0.3)}
+  \lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Repro.txt}
+
+  \vspace{0.2em}
+  \small Jars store file times, so two builds of the same code differ (\texttt{a}, \texttt{b}). With a fixed \texttt{--date}
+  the bytes are identical (\texttt{c}, \texttt{d}): anyone can check that a published jar came from the published source.
+  macOS: \texttt{shasum -a 256}; Windows: \texttt{certutil -hashfile c.jar SHA256}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Supply-chain checklist}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Build}
+        \small
+        \begin{itemize}
+          \item Pin the JDK version (\texttt{--release}, CI image, toolchains)
+          \item Pin dependency versions; verify checksums or signatures
+          \item Reproducible output (\texttt{jar --date}, Maven \texttt{project.build.outputTimestamp})
+          \item Generate an SBOM (software bill of materials, CycloneDX)
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Run}
+        \small
+        \begin{itemize}
+          \item Smallest runtime that works (\texttt{jlink}): fewer modules, smaller attack surface
+          \item Keep the JDK patched (quarterly updates for LTS releases)
+          \item Do not run as root/Administrator
+          \item Secrets via environment or files, never as \texttt{-D} on the command line (visible in \texttt{ps}, \texttt{jcmd VM.system\_properties})
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Containers]{Java in Containers}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Memory]{Memory and CPUs}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The JVM reads container limits}
+  \lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Container.txt}
+
+  \vspace{0.2em}
+  \small The JVM detects cgroup memory and CPU limits (\texttt{UseContainerSupport}, on by default). The default heap is only
+  25\,\% of the limit; services often use \texttt{-XX:MaxRAMPercentage=75}. Docker Desktop on Windows and macOS runs a Linux VM,
+  so these flags behave the same there.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Cheat sheet]{Cheat sheet}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet}
+  \footnotesize
+  \begin{tabular}{@{}L{0.56\textwidth}L{0.36\textwidth}@{}}
+    \toprule
+    \textbf{Command} & \textbf{Does} \\
+    \midrule
+    \texttt{jpackage --type app-image|msi|dmg|deb ...}            & self-contained app or installer \\
+    \texttt{jpackage ... --runtime-image rt}                       & use a small \texttt{jlink} runtime \\
+    \texttt{java -XX:ArchiveClassesAtExit=a.jsa ...}               & create an AppCDS archive \\
+    \texttt{java -XX:SharedArchiveFile=a.jsa ...}                  & start faster with it \\
+    \texttt{jps -l}, \texttt{jcmd <pid> Thread.print}              & find a JVM, dump its threads \\
+    \texttt{java -XX:StartFlightRecording=filename=r.jfr ...}      & record; \texttt{jfr summary r.jfr} \\
+    \texttt{keytool -genkeypair ...}, \texttt{jarsigner}           & sign and verify jars \\
+    \texttt{jar --date=2026-01-01T00:00:00Z ...}                   & reproducible jar \\
+    \texttt{java -XX:MaxRAMPercentage=75 ...}                      & heap relative to container memory \\
+    \bottomrule
+  \end{tabular}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Projects]{Projects}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Projects}
+  \begin{enumerate}\small
+    \item Ship a course project three ways: executable jar, \texttt{jlink} image, \texttt{jpackage} installer (on your OS); compare size and start-up.
+    \item Write one CI workflow (e.g.\ GitHub Actions) that builds \texttt{.msi} on a Windows runner and \texttt{.dmg} on a macOS runner.
+    \item Measure start-up of a larger program (e.g.\ with many classes) with and without AppCDS; repeat 10 times and report mean and spread.
+    \item Introduce a deadlock between two threads; find it with \texttt{jcmd <pid> Thread.print}.
+    \item Make your build reproducible end to end; prove it by building on Windows and macOS and comparing SHA-256 hashes.
+    \item Run a service in a container with \texttt{--memory=256m}; find the heap the JVM chose, then tune it.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

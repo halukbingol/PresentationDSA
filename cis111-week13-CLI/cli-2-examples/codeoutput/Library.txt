@@ -1,0 +1,26 @@
+$ javac -d lib/out lib/src/textutil/Text.java
+$ javac -d app/out app/src/app/Main.java
+app/src/app/Main.java:3: error: package textutil does not exist
+import textutil.Text;
+               ^
+app/src/app/Main.java:7: error: cannot find symbol
+        System.out.println(Text.box("Java on the command line"));
+                           ^
+  symbol:   variable Text
+  location: class Main
+2 errors
+[exit code 1]
+$ javac -cp lib/out -d app/out app/src/app/Main.java
+$ java -cp app/out:lib/out app.Main
++--------------------------+
+| Java on the command line |
++--------------------------+
+$ java -cp app/out app.Main
+Exception in thread "main" java.lang.NoClassDefFoundError: textutil/Text
+	at app.Main.main(Main.java:7)
+Caused by: java.lang.ClassNotFoundException: textutil.Text
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:641)
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:526)
+	... 1 more
+[exit code 1]

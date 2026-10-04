@@ -1,0 +1,19 @@
+$ javac -d lib-out lib-src/textutil/Text.java
+$ mkdir -p dist/lib
+$ jar --create --file dist/lib/textutil.jar -C lib-out .
+$ javac -cp dist/lib/textutil.jar -d out src/app/Main.java
+$ jar --create --file dist/app.jar --manifest manifest.txt --main-class app.Main -C out .
+$ unzip -p dist/app.jar META-INF/MANIFEST.MF
+Manifest-Version: 1.0
+Class-Path: lib/textutil.jar
+Created-By: 21.0.10 (Ubuntu)
+Main-Class: app.Main
+
+$ cd dist
+$ find . -type f
+./lib/textutil.jar
+./app.jar
+$ java -jar app.jar
++----------------------+
+| Hello from a library |
++----------------------+

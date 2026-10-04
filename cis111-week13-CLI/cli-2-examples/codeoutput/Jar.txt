@@ -1,0 +1,17 @@
+$ javac -d out src/edu/yeditepe/hello/*.java
+$ jar --create --file hello.jar --main-class edu.yeditepe.hello.Main -C out .
+$ jar --list --file hello.jar
+META-INF/
+META-INF/MANIFEST.MF
+edu/
+edu/yeditepe/
+edu/yeditepe/hello/
+edu/yeditepe/hello/Greeter.class
+edu/yeditepe/hello/Main.class
+$ java -jar hello.jar
+Hello from Yeditepe!
+$ unzip -p hello.jar META-INF/MANIFEST.MF
+Manifest-Version: 1.0
+Created-By: 21.0.10 (Ubuntu)
+Main-Class: edu.yeditepe.hello.Main
+
