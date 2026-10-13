@@ -32,7 +32,7 @@
 	% "i / N" on every frame comes from hblibPresentation.sty (\insertshorttitle)
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A beamer
 
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
 	\usepackage{../../hblib/hblibPresentation} % lib presentation 
 	\usepackage{../../hblib/hblibCodeoutput} % lib code listing
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
@@ -235,7 +235,7 @@
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[Dijkstra'sSP]{Dijkstra's algorithm}
+\subsection[Dijkstra]{Dijkstra's algorithm}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 
@@ -306,8 +306,7 @@
     \begin{column}{0.42\textwidth}
 
 
-% +++++++++++++++++++++++++++++++++++++++ V lst
-%: -Lst.
+%: +++++++++++++++++++++++++++++++++++++++ V Lst directory structure
 \begin{lstlisting}[language={}, basicstyle=\ttfamily\footnotesize, frame=single,
                    backgroundcolor=\color{codebg}, rulecolor=\color{gray!40}]
 zCisLaTeXTemplate/hblib/
@@ -324,13 +323,13 @@ course/project/
 |   |-- Hello.java
 |   `-- Hello.txt
 \end{lstlisting}
-% +++++++++++++++++++++++++++++++++++++++ A lst
+% +++++++++++++++++++++++++++++++++++++++ A Lst Lst directory structure
 
 
     \end{column}
     \begin{column}{0.54\textwidth}
       \begin{enumerate}\small
-        \item Load the libraries: \verb|\usepackage{hblibCodeoutput}|, \verb|\usepackage{hblibPresentation}|
+%        \item Load the libraries: \verb|\usepackage{hblibCodeoutput}|, \verb|\usepackage{hblibPresentation}|
         \item Put each program in \texttt{codeoutput/}
         \item Run \cmd{sh run\_examples.sh}. It runs every program and saves what it prints
               (stdout \emph{and} stderr) to \texttt{codeoutput/<name>.txt}
