@@ -1,0 +1,22 @@
+$ javac -d out src/edu/yeditepe/shop/*.java
+$ jar cfe shop.jar edu.yeditepe.shop.Main -C out .
+$ jar tf shop.jar
+META-INF/
+META-INF/MANIFEST.MF
+edu/
+edu/yeditepe/
+edu/yeditepe/shop/
+edu/yeditepe/shop/Cart.class
+edu/yeditepe/shop/Item.class
+edu/yeditepe/shop/Main.class
+$ jar tvf shop.jar
+     0 Tue Oct 13 16:52:34 TRT 2026 META-INF/
+    93 Tue Oct 13 16:52:34 TRT 2026 META-INF/MANIFEST.MF
+     0 Tue Oct 13 16:52:34 TRT 2026 edu/
+     0 Tue Oct 13 16:52:34 TRT 2026 edu/yeditepe/
+     0 Tue Oct 13 16:52:34 TRT 2026 edu/yeditepe/shop/
+   887 Tue Oct 13 16:52:34 TRT 2026 edu/yeditepe/shop/Cart.class
+  1266 Tue Oct 13 16:52:34 TRT 2026 edu/yeditepe/shop/Item.class
+   917 Tue Oct 13 16:52:34 TRT 2026 edu/yeditepe/shop/Main.class
+$ java -jar shop.jar
+2 items, total 57.50 TL

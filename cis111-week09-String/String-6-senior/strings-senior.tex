@@ -38,7 +38,6 @@
 \usepackage{booktabs}
 
 \definecolor{gitred}{RGB}{240,80,50}
-\newcommand{\cmd}[1]{\texttt{\color{gitred}#1}}
 
 % ---------------------------------------------------------------------
 \title{Strings in Java}
@@ -181,7 +180,7 @@
         \begin{itemize}
           \item Literals and \texttt{intern()}ed strings live in a native hash table pointing into the heap
           \item In the main heap since Java 7 (before: PermGen), so pooled strings are garbage collected
-          \item Size: \texttt{-XX:StringTableSize=N}; statistics: \cmd{jcmd <pid> VM.stringtable}
+          \item Size: \texttt{-XX:StringTableSize=N}; statistics: \hCode{jcmd <pid> VM.stringtable}
           \item \texttt{intern()} is a hash lookup; interning everything is rarely a win
         \end{itemize}
       \end{block}
@@ -190,7 +189,7 @@
       \begin{block}{Deduplication (JEP 192)}
         \small
         \begin{itemize}
-          \item \cmd{-XX:+UseStringDeduplication}: the GC finds strings with equal contents and lets them
+          \item \hCode{-XX:+UseStringDeduplication}: the GC finds strings with equal contents and lets them
                 \textbf{share one} \texttt{byte[]}
           \item The \texttt{String} objects stay distinct, so \texttt{==} is unchanged
           \item First G1 only (Java 8u20); since Java 18 also Serial, Parallel and ZGC
@@ -200,7 +199,7 @@
     \end{column}
   \end{columns}
   \vspace{0.2em}
-  \small \hRemark{Windows and macOS alike}: \cmd{jps} lists running Java processes, \cmd{jcmd <pid> help} lists the commands;
+  \small \hRemark{Windows and macOS alike}: \hCode{jps} lists running Java processes, \hCode{jcmd <pid> help} lists the commands;
   both are in the JDK's \texttt{bin} folder (Command Prompt or Terminal).
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
@@ -217,8 +216,8 @@
   \begin{columns}[T]
     \begin{column}{0.44\textwidth}
       \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Concat.java}{Java}
-      \small \cmd{javap -c} disassembles (Windows and macOS alike); \texttt{Javap.sh} also uses
-      \cmd{javac -XDstringConcat=inline}, the pre-Java-9 way.
+      \small \hCode{javap -c} disassembles (Windows and macOS alike); \texttt{Javap.sh} also uses
+      \hCode{javac -XDstringConcat=inline}, the pre-Java-9 way.
       \vspace{0.3em}
 
       \uncover<3->{Java 9+: one \texttt{invokedynamic} to \texttt{makeConcatWithConstants}; the JVM chooses the
@@ -356,7 +355,7 @@ java -jar target/benchmarks.jar
 
 
 
-      \footnotesize Maven: macOS \cmd{brew install maven}; Windows: unzip from \texttt{maven.apache.org} and add \texttt{bin} to \texttt{PATH}.
+      \footnotesize Maven: macOS \hCode{brew install maven}; Windows: unzip from \texttt{maven.apache.org} and add \texttt{bin} to \texttt{PATH}.
       In Command Prompt write each command on one line (no \texttt{\textbackslash}).
     \end{column}
   \end{columns}
@@ -609,7 +608,7 @@ try {
   \begin{enumerate}\small
     \item With JMH, compare \texttt{+}, \texttt{StringBuilder}, \texttt{String.join} and \texttt{Collectors.joining}
           for 10 to $10^{6}$ parts; explain the curves.
-    \item Measure the heap of a CSV loader with and without \texttt{-XX:+UseStringDeduplication} (use \cmd{jcmd <pid> GC.heap\_info}).
+    \item Measure the heap of a CSV loader with and without \texttt{-XX:+UseStringDeduplication} (use \hCode{jcmd <pid> GC.heap\_info}).
     \item Use JOL (Java Object Layout) to print the exact size of \texttt{"Agac"} and \texttt{"Ağaç"}.
     \item Write a linter that flags \texttt{toUpperCase()}/\texttt{toLowerCase()} calls without a \texttt{Locale}.
     \item Build a regex sandbox that rejects patterns or inputs that run longer than 50\,ms

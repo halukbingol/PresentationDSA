@@ -1,0 +1,15 @@
+$ javadoc -quiet -d docs -sourcepath util/src edu.yeditepe.util
+util/src/edu/yeditepe/util/Table.java:13: warning: no @param for cells
+    public Table add(String... cells) {
+                 ^
+util/src/edu/yeditepe/util/Table.java:13: warning: no @return
+    public Table add(String... cells) {
+                 ^
+util/src/edu/yeditepe/util/Table.java:19: warning: no @return
+    public String render() {
+                  ^
+3 warnings
+$ ls docs/edu/yeditepe/util
+Table.html
+package-summary.html
+package-tree.html

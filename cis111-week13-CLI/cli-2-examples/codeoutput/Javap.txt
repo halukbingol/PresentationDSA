@@ -1,10 +1,4 @@
 $ javac Hello.java
-$ javap Hello
-Compiled from "Hello.java"
-public class Hello {
-  public Hello();
-  public static void main(java.lang.String[]);
-}
 $ javap -c Hello
 Compiled from "Hello.java"
 public class Hello {
@@ -17,7 +11,9 @@ public class Hello {
   public static void main(java.lang.String[]);
     Code:
        0: getstatic     #7                  // Field java/lang/System.out:Ljava/io/PrintStream;
-       3: ldc           #13                 // String Hello from the command line!
+       3: ldc           #13                 // String Hello, World!
        5: invokevirtual #15                 // Method java/io/PrintStream.println:(Ljava/lang/String;)V
        8: return
 }
+$ javap -v Hello | grep major
+  major version: 65

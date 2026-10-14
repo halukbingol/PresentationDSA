@@ -1,0 +1,6 @@
+$ java -cp out Loaders
+Loaders  loaded by app
+Driver   loaded by platform
+String   loaded by bootstrap
+  chain: app
+  chain: platform

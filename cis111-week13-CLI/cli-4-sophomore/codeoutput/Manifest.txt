@@ -1,0 +1,23 @@
+$ sh build.sh
+built: dist/books.jar
+$ unzip -p dist/books.jar META-INF/MANIFEST.MF
+Manifest-Version: 1.0
+Main-Class: edu.yeditepe.books.Main
+Class-Path: lib/table.jar
+Created-By: 21.0.12.1 (Ubuntu)
+
+$ cd dist
+$ find . -type f | sort
+./books.jar
+./lib/table.jar
+$ java -jar books.jar
+Title                        Author                Year  
+Tutunamayanlar               Oğuz Atay             1972  
+İnce Memed                   Yaşar Kemal           1955  
+Saatleri Ayarlama Enstitüsü  Ahmet Hamdi Tanpınar  1961  
+$ cd ..
+$ mkdir alone
+$ cp dist/books.jar alone/
+$ java -jar alone/books.jar 2>&1 | head -2
+Exception in thread "main" java.lang.NoClassDefFoundError: edu/yeditepe/util/Table
+	at edu.yeditepe.books.Main.main(Main.java:7)

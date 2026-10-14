@@ -1,6 +1,6 @@
 % !TEX spellcheck = en_US
 
-% v20261002T0800
+% v20261013T1900
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 % (NC) 2026 Haluk Bingol
@@ -40,11 +40,18 @@
 %                        {code path}{Language}{output path}     output floats on top,
 %                        upper-left corner at (x,y) from the slide's upper-left corner
 %
+%  Terminal sessions
+%    \lstterminal  [opts]{transcript path}   "$ command" lines highlighted
+%
+%  Inline code (frame must be [fragile])
+%    \code{...}  \hCodeJ{...}   Java          \hCodeB{...}   bash
+%
 %  Helper
 %    \slidegrid     1 cm grid over the slide, to find x,y (remove when done)
 %
-%  Style for LaTeX source typed in the .tex (e.g. to show how a macro is used)
-%    \begin{lstlisting}[style=texsnippet] ... \end{lstlisting}
+%  Styles for code typed in the .tex
+%    \begin{lstlisting}[style=texsnippet] ... \end{lstlisting}       LaTeX source
+%    \begin{lstlisting}[style=codesnippet, language=Java] ...         short code
 %
 %  "opts" are ordinary listings options, e.g.
 %    firstline=4, lastline=9, firstnumber=4, basicstyle=\ttfamily\scriptsize
@@ -55,25 +62,7 @@
 % =====================================================================
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{hblibCodeoutput}[2026/10/02 v1.5 Code and output from files for beamer]
-
-
-
-
-
-%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V code
-%\newcommand{\hCode}[1]{\texttt{\color{gitred}#1}}
-\newcommand{\code}[1]{%
-  \lstinline[language=Java,basicstyle=\ttfamily\small]{#1}%
-%  \lstinline[language=Java,basicstyle=\ttfamily\footnotesize]{#1}%
-}
-\newcommand{\hCodeJ}[1]{\lstinline[language=Java,basicstyle=\ttfamily\small]{#1}} % java
-\newcommand{\hCodeB}[1]{\lstinline[language=Java,basicstyle=\ttfamily\small]{#1}} % bash
-
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A code
-
-
+\ProvidesPackage{hblibCodeoutput}[2026/10/13 v1.8 Code and output from files for beamer]
 
 \RequirePackage{xparse} % \NewDocumentCommand on LaTeX older than 2020-10
 \RequirePackage{xcolor}
@@ -82,6 +71,23 @@
 \tcbuselibrary{listings,skins}
 \RequirePackage{tikz}
 \RequirePackage[absolute,overlay]{textpos}
+
+
+
+
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V code
+% inline code in the text (not in frame titles); the frame must be [fragile]
+%\newcommand{\hCode}[1]{\texttt{\color{gitred}#1}}   % \hCode is in hblibPresentation
+\newcommand{\code}[1]{%
+  \lstinline[language=Java,basicstyle=\ttfamily\small]{#1}%
+%  \lstinline[language=Java,basicstyle=\ttfamily\footnotesize]{#1}%
+}
+\newcommand{\hCodeJ}[1]{\lstinline[language=Java,basicstyle=\ttfamily\small]{#1}} % java
+\newcommand{\hCodeB}[1]{\lstinline[language=bash,basicstyle=\ttfamily\small]{#1}} % bash
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A code
+
+
+
 
 \@ifclassloaded{beamer}{}{%
   \PackageWarningNoLine{hblibCodeoutput}{This package is made for beamer.
@@ -116,13 +122,21 @@
   morekeywords={}
 }
 
-% Turkish (and a few other) UTF-8 letters, so they print in code and output
+% Turkish and common Latin-1 UTF-8 letters, so they print in code and output
+% (the Latin-1 ones also show "mojibake", e.g. "AÄŸaÃ§" for a wrongly decoded "Ağaç")
 \lstdefinestyle{utf8letters}{
   literate=
     {ç}{{\c{c}}}1 {Ç}{{\c{C}}}1 {ğ}{{\u{g}}}1 {Ğ}{{\u{G}}}1
     {ı}{{\i}}1    {İ}{{\.I}}1   {ö}{{\"o}}1   {Ö}{{\"O}}1
     {ş}{{\c{s}}}1 {Ş}{{\c{S}}}1 {ü}{{\"u}}1   {Ü}{{\"U}}1
-    {é}{{\'e}}1   {à}{{\`a}}1   {â}{{\^a}}1   {î}{{\^i}}1
+    {é}{{\'e}}1   {è}{{\`e}}1   {ê}{{\^e}}1   {ë}{{\"e}}1
+    {á}{{\'a}}1   {à}{{\`a}}1   {â}{{\^a}}1   {ä}{{\"a}}1
+    {ã}{{\~a}}1   {å}{{\aa}}1   {í}{{\'i}}1   {î}{{\^i}}1
+    {ó}{{\'o}}1   {ô}{{\^o}}1   {ú}{{\'u}}1   {û}{{\^u}}1
+    {ñ}{{\~n}}1   {ß}{{\ss}}1   {ÿ}{{\"y}}1   {É}{{\'E}}1
+    {Á}{{\'A}}1   {À}{{\`A}}1   {Â}{{\^A}}1   {Ä}{{\"A}}1
+    {Ã}{{\~A}}1   {Å}{{\AA}}1   {Î}{{\^I}}1   {Ó}{{\'O}}1
+    {Û}{{\^U}}1   {Ÿ}{{\"Y}}1   {§}{{\S}}1
 }
 
 % common to code and output
@@ -164,6 +178,26 @@
   frame=single,
   backgroundcolor=\color{codebg},
   rulecolor=\color{gray!40}
+}
+
+% a terminal transcript: lines starting with "$ " are commands (highlighted)
+\definecolor{termcmd}{RGB}{255,214,102}
+\lstdefinestyle{terminalstyle}{
+  style=outputstyle,
+  morecomment=[f][\color{termcmd}\bfseries]{\$},
+  commentstyle={}
+}
+
+% short code typed in the .tex: \begin{lstlisting}[style=codesnippet, language=Java]
+\lstdefinestyle{codesnippet}{
+  style=codestyle,
+  basicstyle=\ttfamily\footnotesize,
+  numbers=none,
+  frame=single,
+  backgroundcolor=\color{codebg},
+  rulecolor=\color{gray!40},
+  aboveskip=3pt,
+  belowskip=3pt
 }
 
 % ---------------------------------------------------------------------
@@ -215,6 +249,14 @@
 
 % \lstoutput[listings options]{output path}
 \NewDocumentCommand{\lstoutput}{O{} m}{\codeout@output{}{#1}{#2}}
+
+% \lstterminal[listings options]{transcript path}: a terminal session
+\NewDocumentCommand{\lstterminal}{O{} m}{%
+  \IfFileExists{#2}{%
+    \tcbinputlisting{outbox, listing file={#2},
+      title={Terminal}, after title={\hfill\ttfamily\mdseries\codeout@path{#2}},
+      listing options={style=terminalstyle, #1}}%
+  }{\codeout@missing{#2}}}
 
 % internal: code, output below; #1 = overlay spec for the output
 % \codeout@down{overlay}{code opts}{output opts}{code}{Language}{output}

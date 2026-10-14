@@ -1,0 +1,15 @@
+$ jpackage --type app-image --name Hello --module-path mlib --module com.app --dest out
+$ find out -maxdepth 3 | sort
+out
+out/Hello
+out/Hello/bin
+out/Hello/bin/Hello
+out/Hello/lib
+out/Hello/lib/Hello.png
+out/Hello/lib/app
+out/Hello/lib/libapplauncher.so
+out/Hello/lib/runtime
+$ out/Hello/bin/Hello
+Merhaba, Yeditepe!
+$ du -sh out/Hello
+53M	out/Hello

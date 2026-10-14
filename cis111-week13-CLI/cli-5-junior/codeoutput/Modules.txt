@@ -1,10 +1,22 @@
-$ javac -d mods --module-source-path src -m edu.yeditepe.app
-$ find mods -name "*.class"
-mods/edu.yeditepe.greet/module-info.class
-mods/edu.yeditepe.greet/edu/yeditepe/greet/api/Greeter.class
-mods/edu.yeditepe.greet/edu/yeditepe/greet/internal/Formatter.class
-mods/edu.yeditepe.app/module-info.class
-mods/edu.yeditepe.app/edu/yeditepe/app/Main.class
-$ java --module-path mods --module edu.yeditepe.app/edu.yeditepe.app.Main
-INFO: starting
-*** Hello, Yeditepe ***
+$ find src -name "*.java" | sort
+src/com.app/com/app/Main.java
+src/com.app/module-info.java
+src/com.greet/com/greet/api/Greeter.java
+src/com.greet/com/greet/internal/Words.java
+src/com.greet/module-info.java
+$ javac -d mods --module-source-path src -m com.greet,com.app
+$ find mods -type f | sort
+mods/com.app/com/app/Main.class
+mods/com.app/module-info.class
+mods/com.greet/com/greet/api/Greeter.class
+mods/com.greet/com/greet/internal/Words.class
+mods/com.greet/module-info.class
+$ java --module-path mods --module com.app/com.app.Main
+Merhaba, Yeditepe!
+$ java -p mods -m com.app/com.app.Main
+Merhaba, Yeditepe!
+$ java -p mods --describe-module com.greet
+com.greet file://~/project/mods/com.greet/
+exports com.greet.api
+requires java.base mandated
+contains com.greet.internal

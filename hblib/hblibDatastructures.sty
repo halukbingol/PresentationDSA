@@ -11,12 +11,11 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{adtlibrary}[2024/03/12 data structure library]
+\ProvidesPackage{hblibDatastructures}[2026/10/02 data structure library]
 
 \RequirePackage{xparse}
 \RequirePackage{xcolor} % color
-\RequirePackage{tikz} % drawing
-\RequirePackage{pgffor} 
+\RequirePackage{tikz} % drawing (also loads pgffor)
 \RequirePackage[nomessages]{fp} % calculations
 \RequirePackage {calc} % calculations
 
@@ -154,7 +153,7 @@
 	} % foreach
 		
 	% draw the elements
-	\foreach \elem [count=\i] in \capacity {
+	\foreach \elem [count=\i] in \content {
 		\ifnum\first=1
 			\FPeval{j}{\i}
 		\else
@@ -233,6 +232,27 @@
 	}
 }  % \hStack 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A Stack
+
+
+
+
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V String
+% \hString[box width]{c,h,a,r,s}[from][to]   (use inside a tikzpicture)
+% One box per character with its 0-based index above it.
+% Boxes from <= i < to are highlighted, as in s.substring(from, to).
+% A space can be given as \textvisiblespace.
+\NewDocumentCommand{\hString}{O{0.45} m O{-1} O{-1}}{%
+	\foreach \hb@c [count=\hb@i from 0] in {#2} {%
+		\ifnum\hb@i<#3\relax \def\hb@fill{white}%
+		\else\ifnum\hb@i<#4\relax \def\hb@fill{colorHead}%
+		\else \def\hb@fill{white}\fi\fi
+		\filldraw[fill=\hb@fill] (\hb@i*#1,0) rectangle +(#1,#1);
+		\node[font=\ttfamily\small, text height=1.6ex, text depth=0.3ex, inner sep=0pt]
+			at (\hb@i*#1+#1/2,#1/2) {\hb@c};
+		\node[colorIndex, font=\tiny] at (\hb@i*#1+#1/2,#1+0.14) {\hb@i};
+	}%
+} % \hString
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A String
 
 
 \endinput

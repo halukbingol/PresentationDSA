@@ -1,11 +1,12 @@
 $ javac Args.java
-$ java Args one two
-2 argument(s)
-args[0] = [one]
-args[1] = [two]
-$ java Args "Ayşe Yılmaz" 42
-2 argument(s)
-args[0] = [Ayşe Yılmaz]
-args[1] = [42]
+$ java Args one "two words" 3
+3 argument(s)
+args[0] = one
+args[1] = two words
+args[2] = 3
 $ java Args
 0 argument(s)
+$ java Args 'Ayşe Yılmaz' --verbose
+2 argument(s)
+args[0] = Ayşe Yılmaz
+args[1] = --verbose

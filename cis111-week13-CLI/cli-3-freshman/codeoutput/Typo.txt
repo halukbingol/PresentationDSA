@@ -1,6 +1,0 @@
-$ javac Hello.java
-Hello.java:3: error: package system does not exist
-        system.out.println("Hello, Yeditepe!");
-              ^
-1 error
-[exit code 1]

@@ -1,0 +1,14 @@
+$ javac -d build/util util/src/edu/yeditepe/util/Table.java
+$ mkdir -p dist/lib
+$ jar --create --file dist/lib/table.jar -C build/util .
+$ javac -d build/app -cp dist/lib/table.jar -sourcepath app/src app/src/edu/yeditepe/books/Main.java
+$ find build -name "*.class" | sort
+build/app/edu/yeditepe/books/Book.class
+build/app/edu/yeditepe/books/Catalog.class
+build/app/edu/yeditepe/books/Main.class
+build/util/edu/yeditepe/util/Table.class
+$ java -cp build/app:app/res:dist/lib/table.jar edu.yeditepe.books.Main
+Title                        Author                Year  
+Tutunamayanlar               Oğuz Atay             1972  
+İnce Memed                   Yaşar Kemal           1955  
+Saatleri Ayarlama Enstitüsü  Ahmet Hamdi Tanpınar  1961  

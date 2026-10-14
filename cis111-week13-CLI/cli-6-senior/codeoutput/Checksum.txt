@@ -1,0 +1,7 @@
+$ cat app.jar.sha256 | cut -c1-20,65-
+b0c9fb42eac94d6a38b8  app.jar
+$ sha256sum -c app.jar.sha256
+app.jar: OK
+$ sha256sum -c app.jar.sha256
+app.jar: FAILED
+sha256sum: WARNING: 1 computed checksum did NOT match

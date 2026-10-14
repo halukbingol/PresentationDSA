@@ -1,0 +1,5 @@
+$ javac Broken.java
+Broken.java:3: error: ';' expected
+        int count = 10
+                      ^
+1 error

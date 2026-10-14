@@ -1,5 +1,0 @@
-replacing
-s:	Hello world
-s.replace('l', '@'):	He@@o wor@d
-s.replaceFirst("l", "AA"):	HeAAlo world
-s.replaceAll("l", "AA"):	HeAAAAo worAAd

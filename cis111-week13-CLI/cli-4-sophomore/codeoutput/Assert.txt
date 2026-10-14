@@ -1,0 +1,7 @@
+$ javac -d build/util util/src/edu/yeditepe/util/Table.java
+$ javac -d build/test -cp build/util test/TableTest.java
+$ java -cp build/util:build/test TableTest
+all tests passed
+$ java -ea -cp build/util:build/test TableTest
+Exception in thread "main" java.lang.AssertionError: no padding after the last column
+	at TableTest.main(TableTest.java:9)

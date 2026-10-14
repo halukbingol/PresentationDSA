@@ -1,6 +1,6 @@
 % !TEX spellcheck = en_US
 
-% v20261002T0800
+% v20261013T1900
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 % (NC) 2024 Haluk Bingol
@@ -11,7 +11,7 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{hblibPresentation}[2026/10/02 hbpresentation library]
+\ProvidesPackage{hblibPresentation}[2026/10/13 hbpresentation library]
 
 %: ~~~~~~~~~~~~~~~~ V HB packages
 \RequirePackage[utf8]{inputenc}   % unicode (default since LaTeX 2018, kept for older installations)
@@ -30,7 +30,7 @@
 \RequirePackage{array}            % tables, \newcolumntype
 \RequirePackage{listings}
 \RequirePackage[ruled,vlined,linesnumbered]{algorithm2e} % pseudo code
-\RequirePackage{enumitem}
+\@ifclassloaded{beamer}{}{\RequirePackage{enumitem}} % enumitem breaks beamer's lists (\labelenumi loops)
 
 % ~~~~~~~~~~~~~~~~ A HB packages
 
@@ -61,7 +61,7 @@
 
 
 %: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V keyboard and menu
-\usepackage{menukeys}
+\RequirePackage{menukeys} % defines \cmd (the Mac command key): decks use \hCode for commands
 %\keys{Ctrl + C}
 %\keys{\ctrl + \shift + N}
 %\menu{File > Save As}
@@ -72,7 +72,7 @@
 %: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V HB Header Presentation v2024-02-25
 
 %: ~~~~~~~~~~~~~~~~ V timestamp
-\newcommand{\hbTimeStampDraft}{{\color{red}--Draft-- v\today/\currenttime}}
+\newcommand{\hbTimeStampDraft}{{\color{red}--Draft-- v\today/\DTMcurrenttime}} % datetime2
 \newcommand{\hbTimeStamp}{v\today}
 % ~~~~~~~~~~~~~~~~ A timestamp
 
@@ -81,6 +81,7 @@
 \definecolor{colorStop}{rgb}{.99, .27, .27}
 \definecolor{colorGo}{rgb}{.27, .69, .95}
 \definecolor{colorIndex}{rgb}{.27, .69, .95}
+\providecolor{gitred}{RGB}{240,80,50} % \hCode; a deck may \definecolor{gitred} again
 \newcommand{\hDefined}[1]{\textcolor{red}{#1}}
 \newcommand{\hEmph}[1]{\textcolor{colorHEmph}{#1}}
 \newcommand{\hColorBox}{\hEmph}
@@ -93,7 +94,7 @@
 % ~~~~~~~~~~~~~~~~ A HB References
 
 %: ~~~~~~~~~~~~~~~~ V HB separator
-% \hSection[short]{Long}{line 1}{line 2}: \section plus a title frame
+% \hSection[short]{Long}[line 1][line 2]: \section plus a title frame
 % \NewDocumentCommand{\hSection}{O{#2} m m m}{%
 \NewDocumentCommand{\hSection}{O{#2} m O{} O{}}{%
 	\section[#1]{#2}%

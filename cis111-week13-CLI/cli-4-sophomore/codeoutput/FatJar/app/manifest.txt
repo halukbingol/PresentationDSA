@@ -1,0 +1,2 @@
+Main-Class: edu.yeditepe.books.Main
+Class-Path: lib/table.jar

@@ -1,0 +1,12 @@
+$ javac -d out src/edu/yeditepe/shop/*.java
+$ jar --create --file shop.jar --main-class edu.yeditepe.shop.Main -C out .
+$ jdeps -summary shop.jar
+shop.jar -> java.base
+$ jdeps --list-deps shop.jar
+   java.base
+$ jdeps --print-module-deps shop.jar
+java.base
+$ javac -d rout Report.java
+$ jar --create --file report.jar -C rout .
+$ jdeps --print-module-deps report.jar
+java.base,java.sql

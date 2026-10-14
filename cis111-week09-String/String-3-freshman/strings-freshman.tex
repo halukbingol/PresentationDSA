@@ -38,7 +38,6 @@
 \usepackage{booktabs}
 
 \definecolor{gitred}{RGB}{240,80,50}
-\newcommand{\cmd}[1]{\texttt{\color{gitred}#1}}
 
 % ---------------------------------------------------------------------
 \title{Strings in Java}
@@ -170,7 +169,7 @@ java Greeting
 
 
 
-        \footnotesize \cmd{chcp 65001} lets the console show Turkish letters (ç, ğ, ı, ş).
+        \footnotesize \hCode{chcp 65001} lets the console show Turkish letters (ç, ğ, ı, ş).
       \end{block}
     \end{column}
     \begin{column}{0.48\textwidth}
@@ -194,8 +193,8 @@ java Greeting
   \end{columns}
   \vspace{0.3em}
   \begin{itemize}\small
-    \item \cmd{javac} \textbf{compiles} \texttt{Greeting.java} into \texttt{Greeting.class}; \cmd{java} \textbf{runs} it (no \texttt{.class} at the end)
-    \item Shortcut since Java 11 for one-file programs: \cmd{java Greeting.java}
+    \item \hCode{javac} \textbf{compiles} \texttt{Greeting.java} into \texttt{Greeting.class}; \hCode{java} \textbf{runs} it (no \texttt{.class} at the end)
+    \item Shortcut since Java 11 for one-file programs: \hCode{java Greeting.java}
     \item The file name must match the class name: \texttt{public class Greeting} lives in \texttt{Greeting.java}
   \end{itemize}
 \end{frame}

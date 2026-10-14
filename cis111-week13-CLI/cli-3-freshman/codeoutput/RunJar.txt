@@ -1,0 +1,12 @@
+$ ls
+quiz.jar
+$ java -jar quiz.jar
+Question 1: 1 x 7 = 7
+Question 2: 2 x 7 = 14
+Question 3: 3 x 7 = 21
+$ java -jar quiz.jar 5
+Question 1: 1 x 7 = 7
+Question 2: 2 x 7 = 14
+Question 3: 3 x 7 = 21
+Question 4: 4 x 7 = 28
+Question 5: 5 x 7 = 35

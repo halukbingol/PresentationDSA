@@ -1,0 +1,12 @@
+$ jar --create --file a.jar -C out .
+$ sleep 2
+$ jar --create --file b.jar -C out .
+$ sha256sum a.jar b.jar | cut -c1-16,65-
+81d7ce58a2c247a5  a.jar
+aee817c341cfe5a4  b.jar
+$ jar --create --date 2026-01-01T00:00:00Z --file a.jar -C out .
+$ sleep 2
+$ jar --create --date 2026-01-01T00:00:00Z --file b.jar -C out .
+$ sha256sum a.jar b.jar | cut -c1-16,65-
+76bfeafca1defab6  a.jar
+76bfeafca1defab6  b.jar

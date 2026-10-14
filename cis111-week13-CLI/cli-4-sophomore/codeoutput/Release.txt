@@ -1,0 +1,15 @@
+$ javac --release 8 -Xlint:-options Modern.java 2>&1 | grep -E "error|symbol:"
+Modern.java:3: error: cannot find symbol
+  symbol:   class var
+Modern.java:3: error: cannot find symbol
+  symbol:   method repeat(int)
+2 errors
+$ javac --release 11 Modern.java
+$ java Modern
+----------
+$ javap -v Modern.class | grep major
+  major version: 55
+$ javac --release 8 Hello.java 2>&1 | head -1
+warning: [options] source value 8 is obsolete and will be removed in a future release
+$ javap -v Hello.class | grep major
+  major version: 52

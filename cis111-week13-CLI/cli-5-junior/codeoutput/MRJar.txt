@@ -1,0 +1,17 @@
+$ find . -name "*.java" | sort
+./src-17/Info.java
+./src/Info.java
+$ javac --release 8 -Xlint:-options -d classes src/Info.java
+$ javac --release 17 -d classes-17 src-17/Info.java
+$ jar --create --file info.jar --main-class Info -C classes . --release 17 -C classes-17 .
+$ jar tf info.jar
+META-INF/
+META-INF/MANIFEST.MF
+Info.class
+META-INF/versions/17/
+META-INF/versions/17/Info$1Point.class
+META-INF/versions/17/Info.class
+$ unzip -p info.jar META-INF/MANIFEST.MF | grep Multi
+Multi-Release: true
+$ java -jar info.jar
+Java 17 version: Point[x=3, y=4]

@@ -1,0 +1,15 @@
+$ javac -d out src/Banner.java
+$ jar --create --file banner.jar --main-class Banner -C out . -C res .
+$ jar --list --file banner.jar
+META-INF/
+META-INF/MANIFEST.MF
+Banner.class
+banner.txt
+$ java -jar banner.jar
+resource: Yeditepe University
+file    : Yeditepe University (a file)
+$ mkdir elsewhere
+$ cd elsewhere
+$ java -jar ../banner.jar
+resource: Yeditepe University
+file    : not found

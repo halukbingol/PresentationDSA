@@ -1,0 +1,23 @@
+$ sh build.sh > /dev/null
+$ mkdir fat
+$ cd fat
+$ jar xf ../dist/lib/table.jar
+$ rm -r META-INF
+$ cd ..
+$ jar --create --file books-all.jar --main-class edu.yeditepe.books.Main -C build/app . -C app/res . -C fat .
+$ jar tf books-all.jar | grep -v /$
+META-INF/MANIFEST.MF
+edu/yeditepe/books/Book.class
+edu/yeditepe/books/Catalog.class
+edu/yeditepe/books/Main.class
+books.csv
+edu/yeditepe/util/Table.class
+$ java -jar books-all.jar
+Title                        Author                Year  
+Tutunamayanlar               Oğuz Atay             1972  
+İnce Memed                   Yaşar Kemal           1955  
+Saatleri Ayarlama Enstitüsü  Ahmet Hamdi Tanpınar  1961  
+$ ls -l dist/books.jar dist/lib/table.jar books-all.jar | awk '{print $5, $9}'
+4777 books-all.jar
+3516 dist/books.jar
+1781 dist/lib/table.jar

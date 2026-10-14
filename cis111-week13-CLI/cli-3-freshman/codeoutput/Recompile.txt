@@ -1,0 +1,14 @@
+$ javac Hello.java
+$ java Hello
+Hello, World!
+$ cat Hello.java
+public class Hello {
+    public static void main(String[] args) {
+        System.out.println("Merhaba, Dünya!");
+    }
+}
+$ java Hello
+Hello, World!
+$ javac Hello.java
+$ java Hello
+Merhaba, Dünya!

@@ -1,14 +1,19 @@
 $ javac Check.java
-$ java Check 5; echo "exit code: $?"
-5 squared is 25
-exit code: 0
-$ java Check -3; echo "exit code: $?"
-error: negative number -3
-exit code: 2
-$ java Check -3 && echo OK || echo FAILED
-error: negative number -3
-FAILED
+$ java Check 5
+5 is fine
+$ echo $?
+0
+$ java Check -5
+-5 is negative
+$ echo "exit code: $?"
+exit code: 1
 $ java Check
-Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 0 out of bounds for length 0
-	at Check.main(Check.java:3)
-[exit code 1]
+usage: java Check <number>
+$ echo "exit code: $?"
+exit code: 2
+$ java Check 7 && echo "ok" || echo "failed"
+7 is fine
+ok
+$ java Check -7 && echo "ok" || echo "failed"
+-7 is negative
+failed

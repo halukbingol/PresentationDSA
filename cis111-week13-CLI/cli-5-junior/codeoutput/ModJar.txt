@@ -1,0 +1,17 @@
+$ mkdir mlib
+$ jar --create --file mlib/greet.jar -C mods/com.greet .
+$ jar --create --file mlib/app.jar --main-class com.app.Main -C mods/com.app .
+$ jar --describe-module --file mlib/app.jar
+com.app jar:file://~/project/mlib/app.jar!/module-info.class
+requires com.greet
+requires java.base mandated
+contains com.app
+main-class com.app.Main
+
+$ java -p mlib -m com.app
+Merhaba, Yeditepe!
+$ java -cp "mlib/*" com.app.Main
+Merhaba, Yeditepe!
+$ jdeps --module-path mlib -summary mlib/app.jar
+com.app -> com.greet
+com.app -> java.base

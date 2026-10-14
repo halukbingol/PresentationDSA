@@ -1,18 +1,20 @@
-$ javac -d mods --module-source-path src -m edu.yeditepe.app
-$ jlink --module-path mods --add-modules edu.yeditepe.app --output rt --strip-debug --no-header-files --no-man-pages --compress=zip-9 --launcher hello=edu.yeditepe.app/edu.yeditepe.app.Main
-$ rt/bin/java --list-modules
-edu.yeditepe.app
-edu.yeditepe.greet
-java.base@21.0.10
-java.logging@21.0.10
-$ ls rt/bin
+$ java --list-modules | wc -l
+69
+$ jdeps --module-path mlib --print-module-deps mlib/app.jar
+com.greet,java.base
+$ jlink --module-path mlib --add-modules com.app --launcher hello=com.app --strip-debug --no-header-files --no-man-pages --output image
+$ ls image/bin
 hello
 java
 keytool
-$ rt/bin/hello
-INFO: starting
-*** Hello, Yeditepe ***
-$ du -sh rt
-39M	rt
-$ du -sh "$JAVA_HOME"
-286M	/usr/lib/jvm/java-21-openjdk-amd64
+$ image/bin/java --list-modules
+com.app
+com.greet
+java.base@21.0.12.1
+$ image/bin/hello
+Merhaba, Yeditepe!
+$ du -sh image
+52M	image
+$ jlink --add-modules java.se --output full
+$ du -sh full
+101M	full

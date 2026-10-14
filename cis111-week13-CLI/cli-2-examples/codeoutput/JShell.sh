@@ -1,4 +1,2 @@
-# JShell
-. codeoutput/session.inc
-fresh JShell
-run 'jshell demo.jsh'
+cat try.jsh
+jshell -q try.jsh

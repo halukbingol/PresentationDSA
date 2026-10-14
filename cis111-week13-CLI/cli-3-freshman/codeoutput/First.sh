@@ -1,8 +1,4 @@
-# First
-. codeoutput/session.inc
-fresh First
-run 'ls'
-run 'cat Hello.java'
-run 'javac Hello.java'
-run 'ls'
-run 'java Hello'
+ls
+javac Hello.java
+ls
+java Hello

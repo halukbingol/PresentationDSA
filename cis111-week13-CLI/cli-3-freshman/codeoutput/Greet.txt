@@ -1,5 +1,7 @@
 $ javac Greet.java
-$ java Greet < name.txt
-What is your name? Hello, Ayşe!
-$ echo "Ali Can" | java Greet
-What is your name? Hello, Ali Can!
+$ printf 'Ayşe\n19\n' | java Greet
+Your name: Your age: 
+Hi Ayşe, next year you will be 20.
+$ java Greet < answers.txt
+Your name: Your age: 
+Hi Mehmet, next year you will be 21.

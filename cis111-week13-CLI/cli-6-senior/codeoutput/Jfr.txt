@@ -1,0 +1,14 @@
+$ java -XX:StartFlightRecording=filename=rec.jfr -cp out Work
+[0.520s][info][jfr,startup] Started recording 1. No limit specified, using maxsize=250MB as default.
+[0.520s][info][jfr,startup] 
+[0.520s][info][jfr,startup] Use jcmd 9467 JFR.dump name=1 to copy recording data to file.
+sum = 110
+$ jfr summary rec.jfr | grep -E "Duration|jdk.(GarbageCollection|ExecutionSample|ObjectAllocationSample) "
+ Duration: 1 s
+ jdk.ObjectAllocationSample                120          1685
+ jdk.ExecutionSample                        24           240
+ jdk.GarbageCollection                       8           184
+$ jfr print --events jdk.ExecutionSample rec.jfr | grep -m 3 "line:"
+    java.util.HashMap.resize() line: 741
+    java.util.HashMap.putVal(int, Object, Object, boolean, boolean) line: 669
+    java.util.HashMap.put(Object, Object) line: 618

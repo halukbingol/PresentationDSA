@@ -1,0 +1,6 @@
+$ javac Crash.java
+$ java Crash
+6
+Exception in thread "main" java.lang.ArithmeticException: / by zero
+	at Crash.average(Crash.java:5)
+	at Crash.main(Crash.java:10)

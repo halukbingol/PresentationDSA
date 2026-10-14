@@ -1,0 +1,22 @@
+$ java -XshowSettings:vm -version 2>&1 | head -2
+VM settings:
+    Max. Heap Size (Estimated): 1.46G
+$ java -Xmx64m -XshowSettings:vm -version 2>&1 | head -2
+VM settings:
+    Max. Heap Size: 64.00M
+$ export JDK_JAVA_OPTIONS=-Xmx32m
+$ java -XshowSettings:vm -version 2>&1 | head -3
+NOTE: Picked up JDK_JAVA_OPTIONS: -Xmx32m
+VM settings:
+    Max. Heap Size: 32.00M
+$ unset JDK_JAVA_OPTIONS
+$ java -XX:+PrintFlagsFinal -version 2>/dev/null | grep -E " (MaxHeapSize|UseG1GC) " | awk '{print $2, $4}'
+MaxHeapSize 1568669696
+UseG1GC true
+$ javac Hog.java
+$ java -Xmx32m Hog
+blocks: 1
+blocks: 2
+blocks: 3
+Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
+	at Hog.main(Hog.java:8)

@@ -1,0 +1,18 @@
+$ java -Xmx64m Server &
+$ sleep 1
+$ jps
+6195 Jps
+6174 Server
+$ jcmd Server VM.version
+6174:
+OpenJDK 64-Bit Server VM version 21.0.12.1+1-1-24.04.4-Ubuntu
+JDK 21.0.12.1
+$ jcmd Server VM.flags | tr " " "\n" | grep MaxHeap
+-XX:MaxHeapSize=67108864
+-XX:SoftMaxHeapSize=67108864
+$ jcmd Server Thread.print | grep -c "java.lang.Thread.State"
+11
+$ jcmd Server GC.heap_info | head -3 | cut -c1-70
+6174:
+ garbage-first heap   total 65536K, used 1688K [0x00000000fc000000, 0x
+  region size 1024K, 1 young (1024K), 0 survivors (0K)

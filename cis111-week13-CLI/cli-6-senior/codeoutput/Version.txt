@@ -1,0 +1,13 @@
+$ javac Hello.java
+$ od -A d -t x1 -N 8 Hello.class
+0000000 ca fe ba be 00 00 00 41
+0000008
+$ javap -v Hello.class | grep major
+  major version: 65
+$ printf '\x00\x46' | dd of=Hello.class bs=1 seek=6 conv=notrunc 2>/dev/null
+$ od -A d -t x1 -N 8 Hello.class
+0000000 ca fe ba be 00 00 00 46
+0000008
+$ java Hello
+Error: LinkageError occurred while loading main class Hello
+	java.lang.UnsupportedClassVersionError: Hello has been compiled by a more recent version of the Java Runtime (class file version 70.0), this version of the Java Runtime only recognizes class file versions up to 65.0

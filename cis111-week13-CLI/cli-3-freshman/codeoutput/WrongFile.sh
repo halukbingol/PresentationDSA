@@ -1,0 +1,2 @@
+ls
+javac Greeting.java

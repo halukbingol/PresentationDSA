@@ -1,11 +1,12 @@
-$ javac -d mods --module-source-path src -m edu.yeditepe.app
-src/edu.yeditepe.app/edu/yeditepe/app/Main.java:3: error: package edu.yeditepe.greet.internal does not exist
-import edu.yeditepe.greet.internal.Formatter;   // not exported!
-                                  ^
-src/edu.yeditepe.app/edu/yeditepe/app/Main.java:7: error: cannot find symbol
-        System.out.println(Formatter.decorate("sneaky"));
-                           ^
-  symbol:   variable Formatter
-  location: class Main
-2 errors
-[exit code 1]
+$ javac -d mods --module-source-path src -m com.greet,com.app
+src/com.app/com/app/Main.java:3: error: package com.greet.internal is not visible
+import com.greet.internal.Words;   // not exported!
+                ^
+  (package com.greet.internal is declared in module com.greet, which does not export it)
+1 error
+$ javac -d mods --module-source-path src -m com.greet,com.app --add-exports com.greet/com.greet.internal=com.app
+$ java -p mods -m com.app/com.app.Main
+Exception in thread "main" java.lang.IllegalAccessError: class com.app.Main (in module com.app) cannot access class com.greet.internal.Words (in module com.greet) because module com.greet does not export com.greet.internal to module com.app
+	at com.app/com.app.Main.main(Main.java:7)
+$ java -p mods --add-exports com.greet/com.greet.internal=com.app -m com.app/com.app.Main
+Merhaba

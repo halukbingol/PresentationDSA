@@ -1,6 +1,3 @@
-# Javap
-. codeoutput/session.inc
-fresh Javap
-run 'javac Hello.java'
-run 'javap Hello'
-run 'javap -c Hello'
+javac Hello.java
+javap -c Hello
+javap -v Hello | grep major

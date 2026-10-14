@@ -1,17 +1,23 @@
-$ javac -d out src/edu/yeditepe/hello/*.java
-$ jar --create --file hello.jar --main-class edu.yeditepe.hello.Main -C out .
-$ jar --list --file hello.jar
+$ javac -d out src/edu/yeditepe/shop/*.java
+$ jar --create --file shop.jar -C out .
+$ jar --list --file shop.jar
 META-INF/
 META-INF/MANIFEST.MF
 edu/
 edu/yeditepe/
-edu/yeditepe/hello/
-edu/yeditepe/hello/Greeter.class
-edu/yeditepe/hello/Main.class
-$ java -jar hello.jar
-Hello from Yeditepe!
-$ unzip -p hello.jar META-INF/MANIFEST.MF
+edu/yeditepe/shop/
+edu/yeditepe/shop/Cart.class
+edu/yeditepe/shop/Item.class
+edu/yeditepe/shop/Main.class
+$ java -cp shop.jar edu.yeditepe.shop.Main
+2 items, total 57.50 TL
+$ java -jar shop.jar
+no main manifest attribute, in shop.jar
+$ jar --create --file shop.jar --main-class edu.yeditepe.shop.Main -C out .
+$ java -jar shop.jar
+2 items, total 57.50 TL
+$ unzip -p shop.jar META-INF/MANIFEST.MF
 Manifest-Version: 1.0
-Created-By: 21.0.10 (Ubuntu)
-Main-Class: edu.yeditepe.hello.Main
+Created-By: 21.0.12.1 (Ubuntu)
+Main-Class: edu.yeditepe.shop.Main
 

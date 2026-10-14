@@ -1,0 +1,9 @@
+$ javac Area.java
+$ java Area 3 4
+area = 12.0
+$ java Area 2.5 10
+area = 25.0
+$ java Area 3
+usage: java Area <width> <height>
+$ java Area three 4
+not a number: For input string: "three"

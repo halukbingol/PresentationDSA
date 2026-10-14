@@ -1,0 +1,17 @@
+$ ls lib
+version-1.0.jar
+version-2.0.jar
+$ javac -cp lib/version-1.0.jar App.java
+$ java -cp .:lib/version-1.0.jar:lib/version-2.0.jar App
+using version 1.0
+$ java -cp .:lib/version-2.0.jar:lib/version-1.0.jar App
+using version 2.0
+$ java -cp ".:lib/*" App
+using version 1.0
+$ export CLASSPATH=lib/version-2.0.jar
+$ java App
+Error: Could not find or load main class App
+Caused by: java.lang.ClassNotFoundException: App
+$ java -cp .:$CLASSPATH App
+using version 2.0
+$ unset CLASSPATH

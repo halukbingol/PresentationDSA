@@ -1,41 +1,57 @@
-#!/bin/sh
-# Run every program in codeoutput/ and save what it prints to codeoutput/<name>.txt
-# (stdout and stderr, so compiler and runtime errors appear on the slides too).
-# If codeoutput/<name>.in exists, it is used as the program's keyboard input.
-# If codeoutput/<name>.args exists, its words are passed as program arguments.
-# A "package x.y;" line in a .java file is honored (the class is run as x.y.Name).
-# Usage:  sh run_examples.sh                 (run all)
-#         sh run_examples.sh Loops.java      (run one)
+#!/bin/bash
+# Run the examples of one deck and save what they print to codeoutput/<Name>.txt
+#
+#   <Name>.java  compiled and run (stdout and stderr are both saved);
+#                <Name>.in   = keyboard input,  <Name>.args = program arguments
+#   <Name>.sh    a terminal session: each line is shown as "$ line" followed by
+#                its output. Empty lines and "# comments" are skipped; a line
+#                starting with "#@ " runs silently (setup). The session runs in a
+#                fresh copy of the folder codeoutput/<Name>/ (if it exists), so it
+#                never changes your files.
+#
+# Usage (macOS: Terminal; Windows: Git Bash), from the deck folder:
+#   bash run_examples.sh              run all
+#   bash run_examples.sh Hello.sh     run one
 
 cd "$(dirname "$0")" || exit 1
-mkdir -p build
+unset JAVA_TOOL_OPTIONS          # some systems set it; it adds a line to every output
 here=$(pwd)
+mkdir -p build
+
+session() {                      # session <file> <output> <folder to copy>
+    work=$(mktemp -d "${TMPDIR:-/tmp}/session.XXXXXX")
+    [ -d "$3" ] && cp -R "$3/." "$work/"
+    (
+        cd "$work" || exit 1
+        export LC_ALL=C.UTF-8 TZ=Europe/Istanbul; rc=0
+        while IFS= read -r line <&3 || [ -n "$line" ]; do
+            case "$line" in
+                '#@ '*) eval "${line#\#@ }" </dev/null >/dev/null 2>&1 ;;
+                ''|'#'*) ;;
+                *) printf '$ %s\n' "$line"; (exit $rc); eval "$line" </dev/null 2>&1; rc=$? ;;
+            esac
+        done 3< "$here/$1"
+    ) > "$2.tmp" 2>&1
+    sed -e "s#$work#~/project#g" -e "s#$(dirname "$work")/session\.[A-Za-z0-9]*#~/project#g" "$2.tmp" > "$2"
+    rm -f "$2.tmp"; rm -rf "$work"
+}
 
 if [ $# -gt 0 ]; then
     files=$(for f in "$@"; do echo "codeoutput/$f"; done)
 else
-    files=$(ls codeoutput/*.java codeoutput/*.py codeoutput/*.c codeoutput/*.sh 2>/dev/null)
+    files=$(ls codeoutput/*.java codeoutput/*.sh 2>/dev/null)
 fi
 
 for f in $files; do
-    name=$(basename "$f")
-    base=${name%.*}
-    out="codeoutput/$base.txt"
-    in="codeoutput/$base.in"
-    [ -f "$in" ] || in=/dev/null
+    name=$(basename "$f"); base=${name%.*}; out="codeoutput/$base.txt"
+    in="codeoutput/$base.in"; [ -f "$in" ] || in=/dev/null
     case "$name" in
-        *.java) pkg=$(sed -n 's/^package[[:space:]]*\([A-Za-z0-9_.]*\)[[:space:]]*;.*/\1/p' "$f")
-                cls=${pkg:+$pkg.}$base
-                args=""; [ -f "codeoutput/$base.args" ] && args=$(cat "codeoutput/$base.args")
-                if env -u JAVA_TOOL_OPTIONS javac -encoding UTF-8 -cp build -d build "$f" > "$out" 2>&1; then
-                    env -u JAVA_TOOL_OPTIONS java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 \
-                        -cp build "$cls" $args < "$in" > "$out" 2>&1
+        *.java) args=""; [ -f "codeoutput/$base.args" ] && args=$(cat "codeoutput/$base.args")
+                if javac -encoding UTF-8 -d build "$f" > "$out" 2>&1; then
+                    java -Dstdout.encoding=UTF-8 -cp build "$base" $args < "$in" > "$out" 2>&1
                 fi ;;
-        *.py)   python3 "$f" < "$in" 2>&1 | sed "s|$here/||g" > "$out" ;;
-        *.c)    gcc -O2 -Wall -o "build/$base" "$f" > "$out" 2>&1 \
-                    && "./build/$base" < "$in" > "$out" 2>&1 ;;
-        *.sh)   sh "$f" < "$in" > "$out" 2>&1 ;;
-        *)      echo "skip  $f"; continue ;;
+        *.sh)   session "$f" "$out" "codeoutput/$base" ;;
+        *)      continue ;;
     esac
     echo "ran   $f -> $out"
 done

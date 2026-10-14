@@ -17,17 +17,17 @@
 %  Java on the Command Line -- Learning by Example
 %  ---------------------------------------------------------------------
 %  Built on hbCisLaTeXTemplate.tex with the libraries in ../../hblib/.
-%  Programs and their outputs are read from codeoutput/:
-%     codeoutput/<Name>.java   the program
-%     codeoutput/<Name>.in     keyboard input (optional)
-%     codeoutput/<Name>.txt    what it printed, made by:  sh run_examples.sh
+%  Programs, terminal sessions and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program        codeoutput/<Name>.sh   a session
+%     codeoutput/<Name>/      the session's project folder
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
 % =====================================================================
 
 \documentclass[aspectratio=169,10pt,compress]{beamer}
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
 	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
-	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstcodedown, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
 	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
 
@@ -38,7 +38,8 @@
 \usepackage{booktabs}
 
 \definecolor{gitred}{RGB}{240,80,50}
-\newcommand{\cmd}[1]{\texttt{\color{gitred}#1}}
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
 
 % ---------------------------------------------------------------------
 \title{Java on the Command Line}
@@ -69,137 +70,177 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Outline}
-  \tableofcontents[hideallsubsections]
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-3}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={4-6}, hideallsubsections]
+    \end{column}
+  \end{columns}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\hSection[Setup]{Reading the Examples}{}{}
+\hSection[Setup]{How to Read These Examples}{}{}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[Read]{How to read the examples}
+\subsection[Sessions]{Terminal sessions}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{How to read the examples}
-  \begin{itemize}\small
-    \item Each example is a small project; the \textbf{terminal sessions} on the slides were recorded by
-          really running the commands (OpenJDK 21, a Linux shell, which behaves like macOS Terminal)
-    \item A line starting with \texttt{\$} is a command; the lines below it are its output
-    \item \texttt{[exit code 1]} is added when a command fails (a non-zero exit code)
-    \item The code appears first; the session on the next click: \hRemark{predict the output}
-  \end{itemize}
-  \vspace{0.3em}
+\begin{frame}[t,fragile] \frametitle{Reading a terminal session}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}\small
+        \item Every grey-black box is a \textbf{real session}, run with Java 21 for these slides
+        \item Yellow lines starting with \texttt{\$} are what was \textbf{typed}; the rest is what the computer printed
+        \item The sessions ran in a \texttt{bash} shell (Linux); \textbf{macOS Terminal} (zsh) gives the same results
+        \item \textbf{Windows} differences are shown next to the commands where they matter
+      \end{itemize}
+      \vspace{0.3em}
+      \small Each example's files are in \texttt{codeoutput/<Name>/}; \hCode{bash run\_examples.sh} repeats all sessions
+      (macOS: Terminal; Windows: Git Bash).
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Versions.txt}
+      \small \texttt{-version} prints to the error stream (old style); \texttt{--version} prints to standard output.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The same commands on Windows}
+  \small Open \textbf{Command Prompt} (\texttt{Win}, type \texttt{cmd}) or \textbf{PowerShell}. The Java commands are identical:
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}
       \begin{block}{Windows (Command Prompt)}
-        \footnotesize
-        \begin{itemize}
-          \item \texttt{ls} $\to$ \texttt{dir}, \texttt{cat} $\to$ \texttt{type}, \texttt{/} $\to$ \texttt{\textbackslash} in paths
-          \item classpath separator \texttt{;} instead of \texttt{:}
-          \item \texttt{echo \$?} $\to$ \texttt{echo \%ERRORLEVEL\%}
-          \item first run \cmd{chcp 65001} for Turkish letters
-        \end{itemize}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\scriptsize]
+C:\Users\ayse\cse101> javac Hello.java
+C:\Users\ayse\cse101> dir /b
+Hello.class
+Hello.java
+C:\Users\ayse\cse101> java Hello
+Hello, World!
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
       \end{block}
     \end{column}
     \begin{column}{0.48\textwidth}
       \begin{block}{macOS (Terminal)}
-        \footnotesize
-        \begin{itemize}
-          \item The commands work exactly as shown
-          \item \texttt{find}, \texttt{unzip}, \texttt{cat} are built in
-          \item Terminal uses UTF-8
-        \end{itemize}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\scriptsize]
+ayse@mac cse101 % javac Hello.java
+ayse@mac cse101 % ls
+Hello.class  Hello.java
+ayse@mac cse101 % java Hello
+Hello, World!
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
       \end{block}
     \end{column}
   \end{columns}
+
+  \vspace{0.2em}
+  \begin{itemize}\small
+    \item The \textbf{prompt} differs (\texttt{C:\textbackslash\dots>} versus \texttt{\dots\ \%}); in these slides it is shortened to \texttt{\$}
+    \item Differences to watch: class-path separator (\texttt{;} vs \texttt{:}), \texttt{type} vs \texttt{cat}, \texttt{dir} vs \texttt{ls}, \texttt{\%ERRORLEVEL\%} vs \texttt{\$?}
+  \end{itemize}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\hSection[Run]{Compile and Run}{}{}
+\hSection[Running]{Compiling and Running}{}{}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[Hello]{javac and java}
+\subsection[Hello]{Hello, World}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{\texttt{javac}, then \texttt{java}}
+\begin{frame}[t,fragile] \frametitle{Compile, then run}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Hello/Hello.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Hello.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small \texttt{javac} takes a \textbf{file} (\texttt{Hello.java}) and writes \texttt{Hello.class}; \texttt{java} takes a
+  \textbf{class name} (\texttt{Hello}, without \texttt{.class}).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Source-file mode: \texttt{java Hello.java}}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/SourceMode/Hello.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/SourceMode.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small Compiled in memory and run; no \texttt{.class} file is left behind (second \texttt{ls}). Needs Java 11 or later.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Arguments]{Arguments}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Command-line arguments: \texttt{String[] args}}
   \begin{columns}[T]
     \begin{column}{0.52\textwidth}
-      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/proj/Hello/Hello.java}{Java}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Args/Args.java}{Java}
     \end{column}
     \begin{column}{0.46\textwidth}
-      \uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Hello.txt}}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Args.txt}}
     \end{column}
   \end{columns}
 
-  \vspace{0.2em}
-  \small \texttt{javac} writes \texttt{Hello.class} next to the source. \texttt{java} takes the \textbf{class name}
-  \texttt{Hello}, without \texttt{.class}.
+  \vspace{0.1em}
+  \small The \textbf{shell} splits the line at spaces; quotes keep \texttt{"two words"} together. \win\ Command Prompt
+  only understands double quotes: \texttt{java Args "Ayşe Yılmaz" --verbose}.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[Launcher]{The source launcher}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
-
-
-
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{One step: \texttt{java Hello.java} (Java 11+)}
-  \begin{columns}[T]
-    \begin{column}{0.52\textwidth}
-      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/proj/Launcher/Hello.java}{Java}
-    \end{column}
-    \begin{column}{0.46\textwidth}
-      \uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Launcher.txt}}
-    \end{column}
-  \end{columns}
-
-  \vspace{0.2em}
-  \small For a program in \textbf{one file}, \texttt{java} can compile in memory and run. No \texttt{.class} file appears.
-\end{frame}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\hSection[IO]{Arguments, Input and Output}{}{}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[Args]{Arguments}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
-
-
-
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Command-line arguments}
-  \begin{columns}[T]
-    \begin{column}{0.56\textwidth}
-      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/proj/Args/Args.java}{Java}
-    \end{column}
-    \begin{column}{0.42\textwidth}
-      \uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Args.txt}}
-    \end{column}
-  \end{columns}
-
-  \vspace{0.2em}
-  \small The shell splits the command line at spaces; quotes keep \texttt{"Ayşe Yılmaz"} together as one argument.
-\end{frame}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[Streams]{Redirection}
+\subsection[Streams]{Input, output, redirection}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 
@@ -208,46 +249,70 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Standard input, output and error}
   \begin{columns}[T]
-    \begin{column}{0.5\textwidth}
-      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Streams/Upper.java}{Java}
-    \end{column}
     \begin{column}{0.48\textwidth}
-      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Streams.txt}}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Sum/Sum.java}{Java}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Sum.txt}}
     \end{column}
   \end{columns}
 
-  \vspace{0.2em}
-  \small \texttt{<} feeds a file to \texttt{System.in}; \texttt{>} sends \texttt{System.out} to a file;
-  \texttt{2>} sends \texttt{System.err} elsewhere. The count goes to stderr, so it is not mixed into \texttt{out.txt}.
+  \vspace{0.1em}
+  \small \texttt{|} pipe, \texttt{<} read from a file, \texttt{>} write to a file, \texttt{2>} redirect the \textbf{error} stream.
+  These work in Windows Command Prompt too (use \texttt{type} instead of \texttt{cat}).
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[Exit]{Exit codes}
+\subsection[Exit codes]{Exit codes}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Exit codes}
+\begin{frame}[t,fragile] \frametitle{Exit codes: \texttt{System.exit(n)}}
   \begin{columns}[T]
-    \begin{column}{0.5\textwidth}
-      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Exit/Check.java}{Java}
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Exit/Check.java}{Java}
     \end{column}
-    \begin{column}{0.48\textwidth}
-      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Exit.txt}}
+    \begin{column}{0.46\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Exit.txt}}
     \end{column}
   \end{columns}
 
-  \vspace{0.2em}
-  \small \texttt{System.exit(2)} sets the exit code; an uncaught exception gives 1. \texttt{\&\&} runs the next command only on success,
-  \texttt{||} only on failure. Windows: \texttt{echo \%ERRORLEVEL\%}.
+  \vspace{0.1em}
+  \small 0 means success. Scripts test it: \texttt{\&\&} runs on success, \texttt{||} on failure.
+  \win: \texttt{echo \%ERRORLEVEL\%} instead of \texttt{echo \$?}; an uncaught exception gives exit code 1.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\hSection[Packages]{Packages and the Classpath}{}{}
+\subsection[Properties]{Properties and environment}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{System properties (\texttt{-D}) and environment variables}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Props/Props.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Props.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small \texttt{-Dname=value} goes \textbf{before} the class name. \texttt{COURSE=CSE101 java \dots} sets a variable for one
+  command on macOS; on \win: \texttt{set COURSE=CSE101} then \texttt{java \dots}. On Windows \texttt{path.separator} is \texttt{;}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Projects]{Packages and Many Files}{}{}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
@@ -258,99 +323,202 @@
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Packages and \texttt{-d}}
+\begin{frame}[t,fragile] \frametitle{A small project with a package}
   \begin{columns}[T]
-    \begin{column}{0.44\textwidth}
-      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Packages/src/edu/yeditepe/hello/Main.java}{Java}
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Packages/src/edu/yeditepe/shop/Main.java}{Java}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Packages/src/edu/yeditepe/shop/Item.java}{Java}
     \end{column}
-    \begin{column}{0.54\textwidth}
-      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Packages.txt}}
+    \begin{column}{0.48\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Packages/src/edu/yeditepe/shop/Cart.java}{Java}
     \end{column}
   \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
-  \vspace{0.2em}
-  \small \texttt{-d out} puts class files into package folders below \texttt{out}. Run with \texttt{-cp out} and the
-  \textbf{fully qualified} name; both wrong attempts fail with \texttt{ClassNotFoundException}.
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Compiling and running a package}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Packages.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{-d out} creates the package folders. Run with the \textbf{full name}; neither the short name nor
+  the package folder works (``wrong name''). \win: \texttt{javac -d out src\textbackslash edu\textbackslash yeditepe\textbackslash shop\textbackslash *.java}.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[Library]{Using a library}
+\subsection[Many files]{Many files}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Compiling and running against a library}
-  \vspace{-0.5cm}
-  \begin{columns}[T]
-    \begin{column}{0.44\textwidth}
-      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Library/lib/src/textutil/Text.java}{Java}
-      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Library/app/src/app/Main.java}{Java}
-    \end{column}
-    \begin{column}{0.54\textwidth}
-      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny, linerange={1-21,26-26}]{codeoutput/Library.txt}}
-    \end{column}
-  \end{columns}
+\begin{frame}[t,fragile] \frametitle{Many source files: \texttt{@argfile} and \texttt{-sourcepath}}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/ManyFiles.txt}
 
-  \vspace{0.2em}
-  \small \texttt{javac} and \texttt{java} both need the library on the classpath (4 internal stack lines skipped).
-  Windows: \texttt{-cp app\textbackslash out;lib\textbackslash out}.
+  \vspace{0.1em}
+  \small
+  \texttt{@sources.txt} reads the file names from a file. With \texttt{-sourcepath src}, \texttt{javac} finds and compiles
+  \texttt{Cart} and \texttt{Item} by itself. \win: \texttt{dir /s /b src\textbackslash *.java > sources.txt}.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\hSection[Jar]{JAR Files}{}{}
+\hSection[Packaging]{Packaging in JARs}{}{}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[Jar]{An executable jar}
+\subsection[Jar]{Making a JAR}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Building and running a jar}
-  \lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Jar.txt}
+\begin{frame}[t,fragile] \frametitle{Making a JAR, then an executable JAR}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Jar.txt}
 
-  \vspace{0.2em}
-  \small \texttt{-C out .} adds everything below \texttt{out}; \texttt{--main-class} writes the \texttt{Main-Class} line.
-  A jar is a zip file, so \texttt{unzip} (or any zip tool) can read it.
+  \vspace{0.1em}
+  \small
+  Without \texttt{--main-class}, \texttt{java -jar} does not know where to start. \texttt{unzip -p} prints a file from inside the JAR
+  (\win: \texttt{tar -xOf shop.jar META-INF/MANIFEST.MF}, or open the JAR with any ZIP tool).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The short (classic) \texttt{jar} options}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/JarShort.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{c} create, \texttt{t} list, \texttt{x} extract, \texttt{v} verbose, \texttt{f} file name follows, \texttt{e} entry point (main class),
+  like the old Unix \texttt{tar}. \texttt{jar cfe} = \texttt{jar --create --file \dots\ --main-class \dots}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\hSection[Environment]{Properties, Environment and Tools}{}{}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[Props]{System properties and environment}
+\subsection[Resources]{Resources}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{System properties (\texttt{-D}) and environment variables}
+\begin{frame}[t,fragile] \frametitle{Resources inside a JAR}
   \begin{columns}[T]
     \begin{column}{0.6\textwidth}
-      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Props/Props.java}{Java}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Resources/src/Banner.java}{Java}
     \end{column}
     \begin{column}{0.38\textwidth}
-      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Props.txt}}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Resources.txt}}
     \end{column}
   \end{columns}
 
-  \vspace{0.2em}
-  \small \texttt{-Dname=value} sets a property for one run. \texttt{COURSE=CSE101 java ...} is macOS/Linux syntax;
-  Windows: \texttt{set COURSE=CSE101} then \texttt{java ...}. On Windows the separators print as \texttt{\textbackslash} and \texttt{;}.
+  \vspace{0.1em}
+  \small \texttt{getResourceAsStream("/banner.txt")} searches the \textbf{class path}, so it works from any folder.
+  A plain file path is relative to the \textbf{current folder}: run elsewhere, the file is gone.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[JShell]{jshell}
+\subsection[Libraries]{Using a library}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Using a library JAR}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Library/lib/edu/yeditepe/greet/Greeter.java}{Java}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Library/App.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Library.txt}}
+    \end{column}
+  \end{columns}
+  \small The library must be on the class path \textbf{twice}: when compiling (\texttt{javac -cp}) and when running
+  (\texttt{java -cp}). \win: \texttt{java -cp out;greet.jar App}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Tools]{Errors and Other Tools}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Errors]{Reading errors}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Compile-time errors}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Errors/Broken.java}{Java}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Errors.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small \texttt{javac} reports \textbf{file:line}, a message and a \texttt{\^{}} under the spot. Here it stops after the
+  syntax error; fix it, compile again, and the type error on line 4 appears.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Run-time errors: reading a stack trace}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Crash/Crash.java}{Java}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Crash.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small Read the trace \textbf{top-down}: the exception, then where it happened (\texttt{Crash.java:5} in \texttt{average}),
+  then who called it (\texttt{Crash.java:10} in \texttt{main}). The exit code is 1.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[javap]{Looking inside .class files}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{javap}: looking inside a \texttt{.class} file}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Javap.txt}
+
+  \vspace{0.1em}
+  \small
+  The bytecode: \texttt{getstatic} fetches \texttt{System.out}, \texttt{ldc} loads the string, \texttt{invokevirtual} calls \texttt{println}.
+  \textbf{Major version 65} means the file needs Java 21 or newer.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[jshell]{jshell}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 
@@ -358,34 +526,53 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{\texttt{jshell}: Java without a class}
-  \begin{columns}[T]
-    \begin{column}{0.6\textwidth}
-      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/JShell/demo.jsh}{Java}
-    \end{column}
-    \begin{column}{0.38\textwidth}
-      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/JShell.txt}}
-    \end{column}
-  \end{columns}
+  \small Type \hCode{jshell}, then expressions one by one (\texttt{/exit} to leave); or give it a script file:
 
-  \vspace{0.2em}
-  \small Typing \cmd{jshell} alone starts an interactive session (\texttt{/exit} to leave): good for trying out an API.
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/JShell.txt}
+
+  \vspace{0.1em}
+  \small Good for trying an API before writing a program. \texttt{-q} (quiet) skips the welcome text.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[Javap]{javap}
+\subsection[javadoc]{javadoc}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Looking inside a class file: \texttt{javap}}
-  \lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Javap.txt}
+\begin{frame}[t,fragile] \frametitle{\texttt{javadoc}: documentation from comments}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Docs/lib/edu/yeditepe/greet/Greeter.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Docs.txt}}
+    \end{column}
+  \end{columns}
 
-  \vspace{0.2em}
-  \small \texttt{javap -c} shows the bytecode: \texttt{getstatic} gets \texttt{System.out}, \texttt{ldc} loads the string,
-  \texttt{invokevirtual} calls \texttt{println}. The compiler added a default constructor.
+  \vspace{0.1em}
+  \small Open \texttt{docs/index.html} in a browser: the same format as the official Java API documentation.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[jdeps]{jdeps}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{jdeps}: what does a JAR depend on?}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Jdeps.txt}
+
+  \vspace{0.1em}
+  \small
+  The shop only needs \texttt{java.base}. \texttt{Report} uses \texttt{java.sql.Date} and \texttt{Logger}, yet only \texttt{java.sql}
+  is listed: \texttt{java.sql} already requires \texttt{java.logging}. This is the list \texttt{jlink} wants (junior slides).
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -403,21 +590,20 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Cheat sheet}
   \footnotesize
-  \begin{tabular}{@{}L{0.46\textwidth}L{0.46\textwidth}@{}}
+  \begin{tabular}{@{}L{0.5\textwidth}L{0.44\textwidth}@{}}
     \toprule
     \textbf{Command} & \textbf{Does} \\
     \midrule
-    \texttt{javac Hello.java}                          & compile into the same folder \\
-    \texttt{java Hello}                                & run class \texttt{Hello} (from \texttt{.}) \\
-    \texttt{java Hello.java}                           & compile in memory and run (one file) \\
-    \texttt{javac -d out src/a/b/*.java}               & compile into package folders under \texttt{out} \\
-    \texttt{java -cp out a.b.Main}                     & run a class in a package \\
-    \texttt{javac -cp lib.jar ...}, \texttt{java -cp out:lib.jar ...} & use a library (Windows: \texttt{;}) \\
-    \texttt{jar --create --file app.jar --main-class a.b.Main -C out .} & build an executable jar \\
-    \texttt{java -jar app.jar}                         & run it \\
-    \texttt{java App < in > out 2> err}                & redirect the three streams \\
-    \texttt{java -Dkey=value App}                      & set a system property \\
-    \texttt{jshell}, \texttt{javap -c Hello}           & try code; look at bytecode \\
+    \texttt{javac Hello.java}                               & compile into the current folder \\
+    \texttt{javac -d out -sourcepath src src/a/b/Main.java} & compile a project into \texttt{out} \\
+    \texttt{java Hello} / \texttt{java -cp out a.b.Main}     & run a class \\
+    \texttt{java Hello.java}                                & compile in memory and run (Java 11+) \\
+    \texttt{java -Dkey=value -cp out a.b.Main arg1 arg2}    & property, then class, then arguments \\
+    \texttt{jar --create --file app.jar --main-class a.b.Main -C out .} & executable JAR (\texttt{jar cfe}) \\
+    \texttt{jar --list --file app.jar} (\texttt{jar tf})    & list contents \\
+    \texttt{java -jar app.jar}                              & run an executable JAR \\
+    \texttt{java -cp out:lib/x.jar Main} (\win: \texttt{;}) & use a library \\
+    \texttt{javap -c Hello}, \texttt{jshell}, \texttt{javadoc -d docs \dots}, \texttt{jdeps app.jar} & tools \\
     \bottomrule
   \end{tabular}
 \end{frame}
@@ -433,12 +619,13 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Exercises}
   \begin{enumerate}\small
-    \item Write \texttt{Sum.java} that adds its integer arguments; run it with 0, 1 and 5 arguments.
-    \item Write \texttt{WordCount.java} that counts words from standard input; run it on a text file with \texttt{<}.
-    \item Make \texttt{Check} return exit code 3 for non-numbers (catch \texttt{NumberFormatException}); test with \texttt{\&\&} and \texttt{||}.
-    \item Move \texttt{Hello} into the package \texttt{edu.yeditepe.week1}; compile with \texttt{-d out} and run it.
-    \item Package the \texttt{Library} example into two jars, \texttt{textutil.jar} and \texttt{app.jar}, and run it with \texttt{-cp}.
-    \item Do all of the above on Windows (Command Prompt) \emph{and} on macOS (Terminal); note every difference.
+    \item Write \texttt{Upper.java} that prints its arguments in upper case; run it with and without quotes.
+    \item Make \texttt{Sum} read from a file and write the result to another file using only redirection.
+    \item Give \texttt{Check} a third exit code (3 for zero) and test it in a one-line \texttt{\&\&}/\texttt{||} command.
+    \item Add a class \texttt{Discount} to the shop project; compile everything with one \texttt{-sourcepath} command.
+    \item Package the shop as an executable JAR; run it from a different folder.
+    \item Put a \texttt{prices.txt} resource into the JAR and read it with \texttt{getResourceAsStream}.
+    \item Split \texttt{Greeter} into a library JAR with \texttt{javadoc}; use it from two different programs.
   \end{enumerate}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm

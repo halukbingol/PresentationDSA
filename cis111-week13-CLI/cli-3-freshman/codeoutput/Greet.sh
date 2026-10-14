@@ -1,6 +1,3 @@
-# Greet
-. codeoutput/session.inc
-fresh Greet
-run 'javac Greet.java'
-run 'java Greet < name.txt'
-run 'echo "Ali Can" | java Greet'
+javac Greet.java
+printf 'Ayşe\n19\n' | java Greet
+java Greet < answers.txt

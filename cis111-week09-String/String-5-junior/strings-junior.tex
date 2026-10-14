@@ -38,7 +38,6 @@
 \usepackage{booktabs}
 
 \definecolor{gitred}{RGB}{240,80,50}
-\newcommand{\cmd}[1]{\texttt{\color{gitred}#1}}
 
 \SetKw{KwAnd}{and}
 \DontPrintSemicolon
@@ -514,8 +513,8 @@
         \footnotesize
         \begin{itemize}
           \item Old Java (before 18): the default charset was Windows-1254 (Turkish), files written there were not UTF-8
-          \item Console: run \cmd{chcp 65001}; Java 19+ also reads it from \texttt{stdout.encoding}
-          \item Compile UTF-8 sources with \cmd{javac -encoding UTF-8}
+          \item Console: run \hCode{chcp 65001}; Java 19+ also reads it from \texttt{stdout.encoding}
+          \item Compile UTF-8 sources with \hCode{javac -encoding UTF-8}
           \item Notepad saves UTF-8 by default since Windows 10 (1903)
         \end{itemize}
       \end{block}

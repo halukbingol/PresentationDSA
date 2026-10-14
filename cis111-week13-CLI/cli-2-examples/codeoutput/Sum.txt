@@ -1,0 +1,19 @@
+$ javac Sum.java
+$ echo "3 4 5" | java Sum
+sum = 12
+$ cat numbers.txt
+10 20
+30
+40
+$ java Sum < numbers.txt
+sum = 100
+$ java Sum < numbers.txt > result.txt
+$ cat result.txt
+sum = 100
+$ java Sum < bad.txt
+skipping: two
+sum = 4
+$ java Sum < bad.txt 2> errors.txt
+sum = 4
+$ cat errors.txt
+skipping: two

@@ -1,0 +1,19 @@
+$ cat options.txt
+-cp out
+-Dgreeting="Merhaba Dünya"
+$ java @options.txt App one two
+Merhaba Dünya, args = one two
+$ export JAVA_TOOL_OPTIONS=-Dgreeting=Hi
+$ java -cp out App
+Picked up JAVA_TOOL_OPTIONS: -Dgreeting=Hi
+Hi, args = 
+$ javac -version
+Picked up JAVA_TOOL_OPTIONS: -Dgreeting=Hi
+javac 21.0.12.1
+$ unset JAVA_TOOL_OPTIONS
+$ export JDK_JAVA_OPTIONS=-Dgreeting=Selam
+$ java -cp out App
+NOTE: Picked up JDK_JAVA_OPTIONS: -Dgreeting=Selam
+Selam, args = 
+$ javac -version
+javac 21.0.12.1

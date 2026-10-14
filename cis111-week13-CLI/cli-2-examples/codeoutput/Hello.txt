@@ -5,4 +5,4 @@ $ ls
 Hello.class
 Hello.java
 $ java Hello
-Hello from the command line!
+Hello, World!

@@ -1,0 +1,17 @@
+$ file Turkce.java
+Turkce.java: Java source, ISO-8859 text
+$ javac Turkce.java 2>&1 | grep error
+Turkce.java:3: error: unmappable character (0xE7) for encoding UTF-8
+Turkce.java:3: error: unmappable character (0xE7) for encoding UTF-8
+Turkce.java:3: error: unmappable character (0xFE) for encoding UTF-8
+Turkce.java:3: error: unmappable character (0xFD) for encoding UTF-8
+Turkce.java:3: error: unmappable character (0xF0) for encoding UTF-8
+5 errors
+$ javac -encoding ISO-8859-9 Turkce.java
+$ java Turkce
+çiçek, şık, dağ
+$ iconv -f ISO-8859-9 -t UTF-8 Turkce.java > tmp.java
+$ mv tmp.java Turkce.java
+$ file Turkce.java
+Turkce.java: Java source, Unicode text, UTF-8 text
+$ javac Turkce.java

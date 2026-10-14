@@ -1,0 +1,12 @@
+$ find src -name "*.java" > sources.txt
+$ cat sources.txt
+src/edu/yeditepe/shop/Item.java
+src/edu/yeditepe/shop/Cart.java
+src/edu/yeditepe/shop/Main.java
+$ javac -d out @sources.txt
+$ rm -r out
+$ javac -d out -sourcepath src src/edu/yeditepe/shop/Main.java
+$ find out -type f | sort
+out/edu/yeditepe/shop/Cart.class
+out/edu/yeditepe/shop/Item.class
+out/edu/yeditepe/shop/Main.class

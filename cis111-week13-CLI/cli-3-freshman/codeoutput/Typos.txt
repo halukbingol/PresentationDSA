@@ -1,0 +1,10 @@
+$ javac Hello.java
+Hello.java:3: error: package system does not exist
+        system.out.println("Hello, World!");
+              ^
+Hello.java:4: error: cannot find symbol
+        System.out.printn("Bye");
+                  ^
+  symbol:   method printn(String)
+  location: variable out of type PrintStream
+2 errors

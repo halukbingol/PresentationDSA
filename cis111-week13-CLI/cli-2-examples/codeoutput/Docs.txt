@@ -1,0 +1,12 @@
+$ javadoc -quiet -d docs lib/edu/yeditepe/greet/Greeter.java
+$ ls docs | xargs -n 4
+allclasses-index.html allpackages-index.html copy.svg edu
+element-list help-doc.html index-all.html index.html
+legal link.svg member-search-index.js module-search-index.js
+overview-tree.html package-search-index.js resources script-dir
+script.js search-page.js search.html search.js
+stylesheet.css tag-search-index.js type-search-index.js
+$ ls docs/edu/yeditepe/greet
+Greeter.html
+package-summary.html
+package-tree.html

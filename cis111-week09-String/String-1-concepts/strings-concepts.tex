@@ -38,7 +38,6 @@
 \usepackage{booktabs}
 
 \definecolor{gitred}{RGB}{240,80,50}
-\newcommand{\cmd}[1]{\texttt{\color{gitred}#1}}
 
 \usetikzlibrary{fit}
 \tikzset{
@@ -727,7 +726,7 @@ x == z.intern()   // true
     \begin{column}{0.48\textwidth}
       \begin{block}{Windows}
         \footnotesize The console (Command Prompt) uses an old code page (857 in Turkey), so \texttt{ç} may print wrongly.
-        Run \cmd{chcp 65001} to switch it to UTF-8.
+        Run \hCode{chcp 65001} to switch it to UTF-8.
       \end{block}
     \end{column}
     \begin{column}{0.48\textwidth}

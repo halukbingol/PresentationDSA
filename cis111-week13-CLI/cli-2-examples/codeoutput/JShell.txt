@@ -1,4 +1,11 @@
-$ jshell demo.jsh
+$ cat try.jsh
+int x = 6 * 7;
+System.out.println("x = " + x);
+String s = "Yeditepe";
+System.out.println(s.toUpperCase() + " has " + s.length() + " letters");
+System.out.println(Math.sqrt(2));
+/exit
+$ jshell -q try.jsh
 x = 42
 YEDITEPE has 8 letters
-[1, 4, 9, 16, 25]
+1.4142135623730951

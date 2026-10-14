@@ -1,0 +1,8 @@
+$ cat src/com.app/module-info.java
+module com.app {
+}
+$ javac -d mods --module-source-path src -m com.greet,com.app 2>&1 | head -4
+src/com.app/com/app/Main.java:3: error: package com.greet.api is not visible
+import com.greet.api.Greeter;
+                ^
+  (package com.greet.api is declared in module com.greet, but module com.app does not read it)

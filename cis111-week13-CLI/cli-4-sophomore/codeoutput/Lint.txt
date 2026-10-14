@@ -1,0 +1,13 @@
+$ javac Old.java
+Old.java:8: warning: [removal] Integer(int) in Integer has been deprecated and marked for removal
+        Integer n = new Integer(42);       // deprecated
+                    ^
+Note: Old.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+1 warning
+$ javac -Xlint:all Old.java 2>&1 | grep warning
+Old.java:6: warning: [rawtypes] found raw type: List
+Old.java:6: warning: [rawtypes] found raw type: ArrayList
+Old.java:7: warning: [unchecked] unchecked call to add(E) as a member of the raw type List
+Old.java:8: warning: [removal] Integer(int) in Integer has been deprecated and marked for removal
+4 warnings

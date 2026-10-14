@@ -1,13 +1,9 @@
-# CDS
-[ -n "$BASH_VERSION" ] || exec bash "$0" "$@"
-TIMEFORMAT="real %3Rs"
-. codeoutput/session.inc
-fresh CDS
-run 'javac -d out src/app/Startup.java'
-run 'jar --create --file app.jar --main-class app.Startup -C out .'
-run 'java -Xlog:class+load -jar app.jar | grep -c "shared objects file"'
-run 'java -Xshare:off -Xlog:class+load -jar app.jar | grep -c "source: jrt"'
-run 'java -XX:ArchiveClassesAtExit=app.jsa -jar app.jar'
-run 'time java -Xshare:off -jar app.jar > /dev/null'
-run 'time java -jar app.jar > /dev/null'
-run 'time java -XX:SharedArchiveFile=app.jsa -jar app.jar > /dev/null'
+#@ javac -d out Startup.java
+#@ jar --create --file app.jar --main-class Startup -C out .
+#@ TIMEFORMAT="%R s"
+java -jar app.jar
+time (for i in 1 2 3 4 5; do java -Xshare:off -jar app.jar > /dev/null; done)
+time (for i in 1 2 3 4 5; do java -jar app.jar > /dev/null; done)
+java -XX:ArchiveClassesAtExit=app.jsa -jar app.jar > /dev/null
+ls -lh app.jsa | awk '{print $5, $9}'
+time (for i in 1 2 3 4 5; do java -XX:SharedArchiveFile=app.jsa -jar app.jar > /dev/null; done)

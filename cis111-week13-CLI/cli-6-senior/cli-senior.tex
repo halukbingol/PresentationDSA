@@ -14,20 +14,20 @@
 
 
 % =====================================================================
-%  Java on the Command Line -- Senior Level: Packaging, Start-up, Diagnostics and Supply Chain
+%  Java on the Command Line -- Senior Level: Inside the Launcher, Security and Delivery
 %  ---------------------------------------------------------------------
 %  Built on hbCisLaTeXTemplate.tex with the libraries in ../../hblib/.
-%  Programs and their outputs are read from codeoutput/:
-%     codeoutput/<Name>.java   the program
-%     codeoutput/<Name>.in     keyboard input (optional)
-%     codeoutput/<Name>.txt    what it printed, made by:  sh run_examples.sh
+%  Programs, terminal sessions and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program        codeoutput/<Name>.sh   a session
+%     codeoutput/<Name>/      the session's project folder
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
 % =====================================================================
 
 \documentclass[aspectratio=169,10pt,compress]{beamer}
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
 	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
-	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstcodedown, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
 	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
 
@@ -38,16 +38,13 @@
 \usepackage{booktabs}
 
 \definecolor{gitred}{RGB}{240,80,50}
-\newcommand{\cmd}[1]{\texttt{\color{gitred}#1}}
-
-\tikzset{
-  box/.style={draw, thick, rounded corners, align=center, font=\small, inner sep=5pt},
-  tool/.style={-{Stealth[length=2.5mm]}, thick}
-}
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+\lstdefinelanguage{text}{}
 
 % ---------------------------------------------------------------------
 \title{Java on the Command Line}
-\subtitle{Senior Level: Packaging, Start-up, Diagnostics and Supply Chain}
+\subtitle{Senior Level: Inside the Launcher, Security and Delivery}
 \author[Bingol]{Haluk O. Bingol}
 
 \institute[FCIS]{
@@ -74,124 +71,211 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Outline}
-  \tableofcontents[hideallsubsections]
-\end{frame}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\hSection[Ship]{Shipping an Application}{}{}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[Options]{Options}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
-
-
-
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{From \texttt{.class} files to something users can run}
-  \begin{center}
-  \begin{tikzpicture}[x=1cm, y=1cm]
-    \node[box, fill=blue!8] (c) at (0,0) {classes\\ \scriptsize\texttt{out/}};
-    \node[box, fill=yellow!20] (j) at (3,0) {jar\\ \scriptsize\texttt{app.jar}};
-    \node[box, fill=orange!12] (r) at (6.4,0) {runtime image\\ \scriptsize\texttt{jlink}};
-    \node[box, fill=green!12] (p) at (10.2,0) {app image / installer\\ \scriptsize\texttt{jpackage}};
-    \draw[tool] (c) -- node[above, font=\ttfamily\scriptsize]{jar} (j);
-    \draw[tool] (j) -- node[above, font=\ttfamily\scriptsize]{jdeps+jlink} (r);
-    \draw[tool] (r) -- (p);
-  \end{tikzpicture}
-  \end{center}
-  \small
-  \begin{tabular}{@{}L{0.2\textwidth}L{0.3\textwidth}L{0.42\textwidth}@{}}
-    \toprule
-    \textbf{Form}          & \textbf{User needs}                   & \textbf{Typical use} \\
-    \midrule
-    executable jar         & a matching Java installed             & servers, tools for developers, coursework \\
-    \texttt{jlink} image   & nothing; one OS and CPU per image     & containers, internal tools \\
-    \texttt{jpackage}      & nothing; double-click or installer    & desktop apps: \texttt{.msi}/\texttt{.exe}, \texttt{.dmg}/\texttt{.pkg}, \texttt{.deb}/\texttt{.rpm} \\
-    container image        & a container runtime                   & cloud services (\texttt{FROM eclipse-temurin:21-jre}) \\
-    \bottomrule
-  \end{tabular}
-\end{frame}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[jpackage]{jpackage}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
-
-
-
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{\texttt{jpackage}: a self-contained application}
-  \lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Jpackage.txt}
-
-  \vspace{0.2em}
-  \small Default image: a full runtime (157\,MB). With a \texttt{jlink} runtime of only \texttt{java.base}: 39\,MB.
-  The app image runs without an installed Java. Recorded on Linux; the next slide shows Windows and macOS.
-\end{frame}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
-
-
-
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{\texttt{jpackage} on Windows and macOS}
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}
-      \begin{block}{Windows}
-        \footnotesize
-
-
-% +++++++++++++++++++++++++++++++++++++++ V lst
-%: -Lst.
-\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\tiny]
-jpackage --type msi --name Hello ^
-  --input input --main-jar app.jar ^
-  --win-menu --win-shortcut
-\end{lstlisting}
-% +++++++++++++++++++++++++++++++++++++++ A lst
-
-
-
-        \begin{itemize}
-          \item \texttt{msi} and \texttt{exe} need the \textbf{WiX Toolset} on the build machine
-          \item \texttt{\^} continues a line in Command Prompt
-          \item Unsigned installers trigger SmartScreen; sign with \texttt{signtool}
-        \end{itemize}
-      \end{block}
+      \tableofcontents[sections={1-4}, hideallsubsections]
     \end{column}
     \begin{column}{0.48\textwidth}
-      \begin{block}{macOS}
-        \footnotesize
-
-
-% +++++++++++++++++++++++++++++++++++++++ V lst
-%: -Lst.
-\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\tiny]
-jpackage --type dmg --name Hello \
-  --input input --main-jar app.jar \
-  --mac-sign --mac-signing-key-user-name "..."
-\end{lstlisting}
-% +++++++++++++++++++++++++++++++++++++++ A lst
-
-
-
-        \begin{itemize}
-          \item \texttt{dmg} or \texttt{pkg}; Xcode command line tools needed
-          \item Gatekeeper blocks unsigned apps; sign and \textbf{notarize} for distribution
-          \item Build on Apple silicon for \emph{aarch64}, on Intel for \emph{x64}
-        \end{itemize}
-      \end{block}
+      \tableofcontents[sections={5-8}, hideallsubsections]
     \end{column}
   \end{columns}
-  \small \hRemark{No cross-building}: \texttt{jpackage} makes packages only for the operating system it runs on (use CI runners per OS).
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\hSection[Startup]{Start-up Time}{}{}
+\hSection[Launcher]{Inside the java Launcher}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Steps]{From command to main}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What happens when you type \texttt{java -cp out App}}
+% +++++++++++++++++++++++++++++++++++++++ V alg
+%: -Alg. 
+\begin{algorithm}[H]
+  \caption{The \texttt{java} launcher (simplified)}
+  \KwIn{command line $c$, environment $e$}
+  insert $e[\texttt{JDK\_JAVA\_OPTIONS}]$ before the options of $c$; expand every \texttt{@file}\;
+  split $c$ into JVM options, the main class (or \texttt{-jar} / \texttt{-m}) and the program arguments\;
+  load the JVM library (\texttt{libjvm.so}, \texttt{jvm.dll}, \texttt{libjvm.dylib}) and create the JVM\;
+  the JVM reads $e[\texttt{JAVA\_TOOL\_OPTIONS}]$, maps the CDS archive, resolves the boot modules\;
+  \eIf{\texttt{-jar} $f$}{$\mathit{main} \gets$ \texttt{Main-Class} of $f$; class path $\gets f$ + its \texttt{Class-Path}}{
+    $\mathit{main} \gets$ the given class}
+  load $\mathit{main}$ with the \textbf{application class loader}; link, verify, initialize\;
+  call \texttt{main(String[])} on a new thread \texttt{main}\;
+  wait for all non-daemon threads; run shutdown hooks; \Return{exit status}\;
+\end{algorithm}
+% +++++++++++++++++++++++++++++++++++++++ A alg
+
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Where the JDK lives}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{\win}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\scriptsize]
+where java
+echo %JAVA_HOME%
+dir "C:\Program Files\Eclipse Adoptium"
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+      \small Installers add \texttt{bin} to the \texttt{PATH} and may set \texttt{JAVA\_HOME}; the \emph{first} \texttt{java.exe}
+      on the \texttt{PATH} wins (beware of old \texttt{C:\textbackslash ProgramData\textbackslash Oracle\textbackslash Java\textbackslash javapath}).
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{\mac}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\scriptsize]
+/usr/libexec/java_home -V
+export JAVA_HOME=$(/usr/libexec/java_home -v 21)
+ls /Library/Java/JavaVirtualMachines
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+      \small \texttt{/usr/bin/java} is a stub that starts the JDK chosen by \texttt{java\_home}.
+      JDKs live in \texttt{\dots/jdk-21.jdk/Contents/Home}. Several versions side by side: \texttt{JAVA\_HOME} selects one;
+      tools such as SDKMAN! or jenv switch per project.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Options]{Options from files and the environment}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Argument files and option variables}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/ArgFiles/options.txt}{text}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/ArgFiles/App.java}{text}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/ArgFiles.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small \texttt{JAVA\_TOOL\_OPTIONS} is read by \textbf{every} JVM, also the one inside \texttt{javac};
+  \texttt{JDK\_JAVA\_OPTIONS} only by the \texttt{java} launcher. Both are announced, so a stray value cannot hide.
+  \texttt{@file} keeps long command lines (Windows limit: 8191 characters in \texttt{cmd}) out of scripts.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Class loading]{Class Loading}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Three class loaders}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[ld/.style={draw, rounded corners, thick, minimum width=4.4cm, minimum height=0.8cm, align=center, font=\small}]
+        \node[ld, fill=gray!15] (b) at (0,0) {\textbf{bootstrap}\\[-2pt]{\scriptsize\ttfamily java.base, \dots}};
+        \node[ld, fill=orange!12] (p) at (0,-1.5) {\textbf{platform}\\[-2pt]{\scriptsize\ttfamily java.sql, java.xml, \dots}};
+        \node[ld, fill=blue!10] (a) at (0,-3) {\textbf{app}\\[-2pt]{\scriptsize\ttfamily -cp, -p}};
+        \draw[-latex, thick] (a) -- node[right, font=\scriptsize] {parent} (p);
+        \draw[-latex, thick] (p) -- node[right, font=\scriptsize] {parent} (b);
+      \end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Loaders.txt}}
+      \uncover<3->{
+      \begin{itemize}\small
+        \item A loader first asks its \textbf{parent}: a class path JAR cannot replace \texttt{java.lang.String}.
+        \item The same name loaded by two loaders gives two \emph{different} classes (plugins, application servers).
+      \end{itemize}}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Watching the JVM load classes: \texttt{-Xlog}}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/ClassLoad.txt}
+
+  \vspace{0.1em}
+  \small
+  About 550 classes are loaded to print one line; almost all come from the \textbf{CDS archive} (\emph{shared objects file}),
+  a memory image of pre-parsed JDK classes. \texttt{-Xlog} is the unified logging of the JVM: \texttt{-Xlog:help} lists the tags
+  (\texttt{gc}, \texttt{class+load}, \texttt{safepoint}, \dots).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Class files]{Class Files and Versions}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Inside a \texttt{.class} file}
+  \begin{columns}[T]
+    \begin{column}{0.44\textwidth}
+      \begin{center}\small
+      \begin{tabular}{rll}
+        \toprule
+        bytes & content & \\
+        \midrule
+        0--3  & magic             & \texttt{CA FE BA BE} \\
+        4--5  & minor version     & \texttt{00 00} \\
+        6--7  & major version     & \texttt{00 41} = 65 \\
+        8--   & constant pool, \dots & \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+      \[
+      	\mathit{major} = \mathit{release} + 44
+      \]
+      \small so Java 8 \(\to\) 52, 17 \(\to\) 61, 21 \(\to\) 65, 25 \(\to\) 69.
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Version.txt}
+    \end{column}
+  \end{columns}
+  \vspace{0.2em}
+  \small We changed byte 7 to \texttt{46} (= 70, Java 26): a JVM refuses class files \textbf{newer} than itself, but runs all older ones.
+  Fix: run with a newer JDK, or compile with \texttt{--release 21}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Start-up]{Start-up and Profiling}{}{}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
@@ -202,213 +286,267 @@ jpackage --type dmg --name Hello \
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Where start-up time goes}
-  \begin{columns}[T]
-    \begin{column}{0.5\textwidth}
-      \small Before \texttt{main} runs, the JVM must
-      \begin{enumerate}\small
-        \item start (memory, GC, threads)
-        \item \textbf{load, verify and link} hundreds of classes
-        \item run static initializers; the code is \textbf{interpreted} until the JIT compiles hot methods
-      \end{enumerate}
-      \textbf{CDS} (class data sharing) stores step 2's result in an archive that is memory-mapped at start.
-      The JDK ships one for its own classes; \textbf{AppCDS} adds your application's classes.
-    \end{column}
-    \begin{column}{0.46\textwidth}
-      \begin{block}{Two runs (Java 13+)}
-        \footnotesize
-        \texttt{java -XX:ArchiveClassesAtExit=app.jsa -jar app.jar}\\
-        \texttt{java -XX:SharedArchiveFile=app.jsa -jar app.jar}\\[3pt]
-        or one flag (Java 19+): \texttt{-XX:+AutoCreateSharedArchive -XX:SharedArchiveFile=app.jsa}
-      \end{block}
-      \small Further: Project Leyden (ahead-of-time class loading and linking, JDK 24+), GraalVM \texttt{native-image}
-      (compiles to a native executable; closed-world limits on reflection).
-    \end{column}
-  \end{columns}
-\end{frame}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+\begin{frame}[t,fragile] \frametitle{Faster start-up with an application CDS archive}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Cds.txt}
 
-
-
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Measuring CDS and AppCDS}
-  \begin{columns}[T]
-    \begin{column}{0.56\textwidth}
-      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/CDS/src/app/Startup.java}{Java}
-    \end{column}
-    \begin{column}{0.42\textwidth}
-      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/CDS.txt}}
-    \end{column}
-  \end{columns}
-
-  \vspace{0.2em}
-  \small Over 800 classes come from the JDK's CDS archive; without it start-up nearly doubles.
-  AppCDS helps most with thousands of classes (frameworks). One run each; PowerShell: \texttt{Measure-Command}.
-\end{frame}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\hSection[Diagnostics]{Diagnosing a Running JVM}{}{}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[jcmd]{jps, jcmd, JFR}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
-
-
-
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Tools for a running JVM}
+  \vspace{0.1em}
   \small
-  \begin{tabular}{@{}L{0.32\textwidth}L{0.6\textwidth}@{}}
+  Five runs each (times differ from machine to machine). \texttt{-Xshare:off} disables the JDK's archive;
+  \texttt{-XX:ArchiveClassesAtExit} (Java 13+) records the classes of one run, \texttt{-XX:SharedArchiveFile} maps them next time.
+  Projects Leyden (Java 24+: \texttt{-XX:AOTCache}) and GraalVM \texttt{native-image} go further.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[JFR]{Flight Recorder}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Profiling from the command line: JFR}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Jfr/Work.java}{Java}
+    \end{column}
+    \begin{column}{0.56\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Jfr.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small The \textbf{JDK Flight Recorder} is built into the JVM with about 1\,\% overhead, so it can stay on in production.
+  \texttt{jcmd <pid> JFR.start} attaches it to a running JVM; JDK Mission Control (a separate GUI) opens the \texttt{.jfr} file.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Security]{Trust and Supply Chain}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Reproducible]{Reproducible builds}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Same sources, same JAR? \texttt{jar --date}}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Reproducible.txt}
+
+  \vspace{0.1em}
+  \small
+  A JAR is a ZIP file that stores each entry's time, so two builds differ. \texttt{--date} (Java 19+) fixes all
+  timestamps: anyone can rebuild and compare checksums. Maven: \texttt{project.build.outputTimestamp}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Checksums]{Checksums}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Checking a download}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Checksum.txt}
+  \vspace{0.2em}
+  Every JDK download page publishes a SHA-256 checksum. Compare before installing:
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Windows (Command Prompt)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\scriptsize]
+certutil -hashfile OpenJDK21.msi SHA256
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{macOS (Terminal)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\scriptsize]
+shasum -a 256 OpenJDK21.pkg
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Signing]{Signed JARs}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Signing and tampering}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Signing.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{jarsigner} stores a digest of every entry (\texttt{META-INF/*.SF}) and a signature (\texttt{*.RSA}).
+  After we replaced \texttt{App.class}, verification and start-up both fail. Here the certificate is self-signed: real signing uses a
+  certificate from a certificate authority. On \mac{} the \emph{installer} must also be signed and notarized (\texttt{jpackage --mac-sign}).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Other risks on the command line}
+  \begin{itemize}\small
+    \item \textbf{Class path order}: a JAR placed \emph{before} yours can replace any of your classes; modules forbid split packages.
+    \item \textbf{\texttt{CLASSPATH} and \texttt{JAVA\_TOOL\_OPTIONS}}: an attacker who can set the environment controls the JVM
+      (\texttt{-javaagent:evil.jar}). Check them in CI logs: the JVM prints \emph{Picked up \dots}.
+    \item \textbf{\texttt{PATH}}: which \texttt{java} runs? (\texttt{where java}, \texttt{which -a java})
+    \item \textbf{Old JDKs}: only the latest update of an LTS gets security fixes (21.0.\emph{x}); update monthly or with each quarterly release.
+    \item \textbf{Security Manager}: deprecated in Java 17 and permanently disabled in Java 24; isolate untrusted code with
+      operating system processes or containers instead.
+    \item \textbf{Secrets}: never on the command line (\texttt{-Dpassword=\dots} is visible in \texttt{ps} and \texttt{jcmd VM.command\_line}).
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Delivery]{Delivery Beyond the Laptop}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A container image with a jlink runtime}
+  \begin{columns}[T]
+    \begin{column}{0.6\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\tiny]
+# ---- stage 1: build with a full JDK
+FROM eclipse-temurin:21-jdk AS build
+WORKDIR /src
+COPY src src
+RUN javac -d mods --module-source-path src -m com.greet,com.app \
+ && jlink -p mods --add-modules com.app --strip-debug \
+          --no-header-files --no-man-pages --output /rt
+
+# ---- stage 2: only the runtime and the application
+FROM debian:bookworm-slim
+COPY --from=build /rt /opt/app
+USER 1000
+ENTRYPOINT ["/opt/app/bin/java", "-m", "com.app/com.app.Main"]
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+    \end{column}
+    \begin{column}{0.38\textwidth}
+      \small
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\scriptsize]
+docker build -t hello .
+docker run --rm hello
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      Same commands on \win{} and \mac{} with Docker Desktop.
+      The JVM sees the container's CPU and memory limits; tune with \texttt{-XX:MaxRAMPercentage=75}.
+      \hRemark{Not run here.}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Native executables: GraalVM \texttt{native-image}}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\scriptsize]
+javac -d out App.java
+native-image -cp out App app
+./app            # starts in milliseconds
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \small \hRemark{Not run here} (needs GraalVM). On \win{} it needs the Visual Studio C++ build tools and makes \texttt{app.exe};
+      on \mac{} the Xcode command line tools.
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{center}\scriptsize
+      \begin{tabular}{lcc}
+        \toprule
+                          & JVM               & native image \\
+        \midrule
+        start-up          & 50--500 ms        & 1--50 ms \\
+        peak speed        & JIT, very high    & good \\
+        build time        & seconds           & minutes \\
+        reflection        & free              & must be declared \\
+        one binary for    & every OS          & one OS + CPU \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Debugging]{Remote Debugging and Diagnostics}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Diagnostics without an IDE}
+  \begin{center}\tiny
+  \begin{tabular}{ll}
     \toprule
-    \textbf{Command}                                & \textbf{Shows} \\
+    need                         & command \\
     \midrule
-    \texttt{jps -l}                                 & Java processes of this user (pid, main class) \\
-    \texttt{jcmd <pid|class> help}                  & all diagnostic commands of that JVM \\
-    \texttt{jcmd ... Thread.print}                  & stack of every thread (like \texttt{jstack}): hangs, deadlocks \\
-    \texttt{jcmd ... GC.heap\_info}, \texttt{GC.class\_histogram} & heap use, objects per class: memory leaks \\
-    \texttt{jcmd ... GC.heap\_dump file.hprof}      & full heap dump for a profiler (Eclipse MAT, VisualVM) \\
-    \texttt{jcmd ... JFR.start}, \texttt{JFR.dump}   & start/save a flight recording in production \\
-    \texttt{jfr summary/print rec.jfr}              & read a recording; or open it in JDK Mission Control \\
+    wait for a debugger          & \texttt{java -agentlib:jdwp=transport=dt\_socket,server=y,suspend=y,address=*:5005 -jar app.jar} \\
+    debug in the terminal        & \texttt{jdb -attach 5005} (or attach an IDE to port 5005) \\
+    thread dump                  & \texttt{jcmd <pid> Thread.print}; macOS/Linux also \texttt{kill -3 <pid>}; \win{} \texttt{Ctrl+Break} \\
+    heap dump                    & \texttt{jcmd <pid> GC.heap\_dump heap.hprof} \\
+    dump on crash                & \texttt{-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=dumps} \\
+    garbage collector log        & \texttt{-Xlog:gc*:file=gc.log:time,uptime} \\
+    record a profile             & \texttt{-XX:StartFlightRecording=duration=60s,filename=r.jfr} \\
+    JVM settings of a process    & \texttt{jcmd <pid> VM.flags}, \texttt{VM.system\_properties}, \texttt{VM.command\_line} \\
     \bottomrule
   \end{tabular}
-
-  \vspace{0.5em}
-  \small Same commands on Windows and macOS. They attach only to JVMs of the \textbf{same user}; in containers run them inside the container.
-\end{frame}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
-
-
-
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Inspecting a busy program}
-  \begin{columns}[T]
-    \begin{column}{0.34\textwidth}
-      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/proj/Diagnose/Busy.java}{Java}
-    \end{column}
-    \begin{column}{0.64\textwidth}
-      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Diagnose.txt}}
-    \end{column}
-  \end{columns}
-
-  \vspace{0.2em}
-  \small \texttt{jcmd} accepts the main class instead of a pid. \texttt{jfr view} (Java 21) summarizes the recording:
-  every CPU sample is in \texttt{Busy.work}. JFR costs about 1\,\% overhead, so it is used in production.
-\end{frame}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[Hooks]{Shutting down}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
-
-
-
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Stopping cleanly: signals and shutdown hooks}
-  \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/proj/Hooks/Server.java}{Java}
-  \uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Hooks.txt}}
-
-  \vspace{0.2em}
-  \small \texttt{kill -TERM} (and \texttt{Ctrl}+\texttt{C}, \texttt{docker stop}) runs the shutdown hooks; exit code $143 = 128 + 15$ (SIGTERM).
-  \texttt{kill -9} skips them. On Windows, \texttt{Ctrl}+\texttt{C} runs the hooks, \texttt{taskkill /F} does not.
-\end{frame}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\hSection[Supply]{Supply Chain and Builds}{}{}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[Sign]{Signing jars}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
-
-
-
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Signing and verifying a jar}
-  \lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Sign.txt}
-
-  \vspace{0.2em}
-  \small The signature covers every entry's digest. After tampering, verification fails. Real releases use a CA-issued
-  certificate and a \textbf{timestamp} (\texttt{-tsa}) so signatures stay valid after the certificate expires.
-\end{frame}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[Repro]{Reproducible builds}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
-
-
-
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Reproducible jars (\texttt{jar --date}, since JDK 17.0.3)}
-  \lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Repro.txt}
-
-  \vspace{0.2em}
-  \small Jars store file times, so two builds of the same code differ (\texttt{a}, \texttt{b}). With a fixed \texttt{--date}
-  the bytes are identical (\texttt{c}, \texttt{d}): anyone can check that a published jar came from the published source.
-  macOS: \texttt{shasum -a 256}; Windows: \texttt{certutil -hashfile c.jar SHA256}.
-\end{frame}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
-
-
-
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Supply-chain checklist}
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \begin{block}{Build}
-        \small
-        \begin{itemize}
-          \item Pin the JDK version (\texttt{--release}, CI image, toolchains)
-          \item Pin dependency versions; verify checksums or signatures
-          \item Reproducible output (\texttt{jar --date}, Maven \texttt{project.build.outputTimestamp})
-          \item Generate an SBOM (software bill of materials, CycloneDX)
-        \end{itemize}
-      \end{block}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \begin{block}{Run}
-        \small
-        \begin{itemize}
-          \item Smallest runtime that works (\texttt{jlink}): fewer modules, smaller attack surface
-          \item Keep the JDK patched (quarterly updates for LTS releases)
-          \item Do not run as root/Administrator
-          \item Secrets via environment or files, never as \texttt{-D} on the command line (visible in \texttt{ps}, \texttt{jcmd VM.system\_properties})
-        \end{itemize}
-      \end{block}
-    \end{column}
-  \end{columns}
-\end{frame}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\hSection[Containers]{Java in Containers}{}{}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[Memory]{Memory and CPUs}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
-
-
-
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{The JVM reads container limits}
-  \lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Container.txt}
-
-  \vspace{0.2em}
-  \small The JVM detects cgroup memory and CPU limits (\texttt{UseContainerSupport}, on by default). The default heap is only
-  25\,\% of the limit; services often use \texttt{-XX:MaxRAMPercentage=75}. Docker Desktop on Windows and macOS runs a Linux VM,
-  so these flags behave the same there.
+  \end{center}
+  \small \texttt{address=*:5005} opens a port to the network: on a server use \texttt{localhost:5005} and an SSH tunnel.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -416,37 +554,23 @@ jpackage --type dmg --name Hello \
 \hSection[Summary]{Summary}{}{}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[Cheat sheet]{Cheat sheet}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
-
 
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Cheat sheet}
-  \footnotesize
-  \begin{tabular}{@{}L{0.56\textwidth}L{0.36\textwidth}@{}}
-    \toprule
-    \textbf{Command} & \textbf{Does} \\
-    \midrule
-    \texttt{jpackage --type app-image|msi|dmg|deb ...}            & self-contained app or installer \\
-    \texttt{jpackage ... --runtime-image rt}                       & use a small \texttt{jlink} runtime \\
-    \texttt{java -XX:ArchiveClassesAtExit=a.jsa ...}               & create an AppCDS archive \\
-    \texttt{java -XX:SharedArchiveFile=a.jsa ...}                  & start faster with it \\
-    \texttt{jps -l}, \texttt{jcmd <pid> Thread.print}              & find a JVM, dump its threads \\
-    \texttt{java -XX:StartFlightRecording=filename=r.jfr ...}      & record; \texttt{jfr summary r.jfr} \\
-    \texttt{keytool -genkeypair ...}, \texttt{jarsigner}           & sign and verify jars \\
-    \texttt{jar --date=2026-01-01T00:00:00Z ...}                   & reproducible jar \\
-    \texttt{java -XX:MaxRAMPercentage=75 ...}                      & heap relative to container memory \\
-    \bottomrule
-  \end{tabular}
+\begin{frame}[t,fragile] \frametitle{Big ideas}
+  \begin{itemize}
+    \item The \texttt{java} command is a small native launcher; options can come from the command line, \texttt{@files},
+      \texttt{JDK\_JAVA\_OPTIONS} and \texttt{JAVA\_TOOL\_OPTIONS}.
+    \item Classes are loaded on demand by three loaders; CDS archives make start-up fast.
+    \item A class file carries its version: newer class files do not run on older JVMs.
+    \item Builds should be \textbf{reproducible}, downloads \textbf{checked}, artifacts \textbf{signed}.
+    \item Delivery options grow from JAR to \texttt{jlink} image, installer, container and native executable;
+      each one trades size, start-up and portability.
+    \item The JDK's own tools (\texttt{jcmd}, \texttt{jfr}, \texttt{jdb}, \texttt{-Xlog}) diagnose a JVM anywhere a terminal exists.
+  \end{itemize}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[Projects]{Projects}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 
 
@@ -454,12 +578,14 @@ jpackage --type dmg --name Hello \
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Projects}
   \begin{enumerate}\small
-    \item Ship a course project three ways: executable jar, \texttt{jlink} image, \texttt{jpackage} installer (on your OS); compare size and start-up.
-    \item Write one CI workflow (e.g.\ GitHub Actions) that builds \texttt{.msi} on a Windows runner and \texttt{.dmg} on a macOS runner.
-    \item Measure start-up of a larger program (e.g.\ with many classes) with and without AppCDS; repeat 10 times and report mean and spread.
-    \item Introduce a deadlock between two threads; find it with \texttt{jcmd <pid> Thread.print}.
-    \item Make your build reproducible end to end; prove it by building on Windows and macOS and comparing SHA-256 hashes.
-    \item Run a service in a container with \texttt{--memory=256m}; find the heap the JVM chose, then tune it.
+    \item Write \texttt{build.sh} and \texttt{build.bat} that build the books application reproducibly; prove it with two
+      checksums on two different computers (one Windows, one macOS).
+    \item Measure start-up of the books application as a JAR, with AppCDS, as a \texttt{jlink} image and (optionally) as a
+      native image. Report median times of 20 runs.
+    \item Sign the JAR, change one byte, and explain every line printed by \texttt{jarsigner -verify -verbose}.
+    \item Record a JFR file of \texttt{Work}, find the hottest method with \texttt{jfr print}, make it faster, record again.
+    \item Write a launcher script that picks the newest installed JDK $\geq 21$ on Windows (\texttt{where}) and macOS
+      (\texttt{java\_home}) and prints a clear message if none exists.
   \end{enumerate}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
