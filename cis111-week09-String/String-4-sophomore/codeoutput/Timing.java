@@ -1,7 +1,7 @@
 public class Timing {
     static String plus(int n) {
         String s = "";
-        for (int i = 0; i < n; i++) s += "x";        // copies s each time
+        for (int i = 0; i < n; i++) {s += "x"};        // copies s each time
         return s;
     }
     static String builder(int n) {

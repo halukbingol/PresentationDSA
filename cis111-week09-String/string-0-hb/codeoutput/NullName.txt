@@ -1,0 +1,3 @@
+name is null
+Exception in thread "main" java.lang.NullPointerException: Cannot invoke "String.length()" because "NullName.name" is null
+	at NullName.main(NullName.java:6)

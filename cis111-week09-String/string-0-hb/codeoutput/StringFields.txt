@@ -1,0 +1,4 @@
+private final byte[] value
+private final byte coder
+private int hash
+private boolean hashIsZero

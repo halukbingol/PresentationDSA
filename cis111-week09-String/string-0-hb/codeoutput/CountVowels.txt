@@ -1,0 +1,2 @@
+Bilgisayar Mühendisliği
+vowels: 9

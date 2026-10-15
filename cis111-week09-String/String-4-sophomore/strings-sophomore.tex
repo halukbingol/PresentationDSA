@@ -156,7 +156,8 @@ public final class String
     \begin{column}{0.5\textwidth}
       \textbf{The contract} (\texttt{java.lang.Object})
       \begin{enumerate}\small
-        \item \texttt{a.equals(b)} $\Rightarrow$ \texttt{a.hashCode() == b.hashCode()}
+        \item \texttt{a.equals(b)}\\ 
+        		$\Rightarrow$ \texttt{a.hashCode() == b.hashCode()}
         \item The converse need \textbf{not} hold: different strings may share a hash (a \textbf{collision})
         \item \texttt{hashCode} must not change while the object is in a hash table
       \end{enumerate}
@@ -205,6 +206,9 @@ public final class String
   \small \texttt{StringBuilder} has no \texttt{equals}/\texttt{hashCode} of its own and can change: \hRemark{use \texttt{String} keys}.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \hSection[Efficiency]{Building Strings Efficiently}{}{}

@@ -1,0 +1,7 @@
+5 chars, 4 code points
+U+0048 U+0069 U+0020 U+1F600 
+pair kept by reverse(): true
+ROOT lower: \u0069\u0307
+tr   lower: \u0069
+\u00E9 vs \u0065\u0301: false
+after NFC: true

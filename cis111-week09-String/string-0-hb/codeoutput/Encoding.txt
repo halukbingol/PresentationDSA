@@ -1,0 +1,6 @@
+UTF-8      6 bytes: 41 C4 9F 61 C3 A7 
+ISO-8859-9 4 bytes: 41 F0 61 E7 
+UTF-16BE   8 bytes: 00 41 01 1F 00 61 00 E7 
+AÄŸaÃ§
+Ağaç
+default charset: UTF-8
