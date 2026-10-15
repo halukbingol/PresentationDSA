@@ -1,0 +1,2 @@
+call stack, top first: [c:8, b:5, a:4, main:15]
+caller of c(): class Walker

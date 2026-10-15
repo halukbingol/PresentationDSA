@@ -1,0 +1,4 @@
+61 11F 61 E7           chars=4 code points=4 graphemes=4
+43 61 66 65 301        chars=5 code points=5 graphemes=4
+61 1F44D 1F3FD 62      chars=6 code points=4 graphemes=3
+charAt(1) = d83d (half of a surrogate pair)

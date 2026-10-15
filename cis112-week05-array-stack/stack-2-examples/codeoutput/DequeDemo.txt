@@ -1,0 +1,8 @@
+[c, b, a]  peek c
+pop  c b a
+poll null
+peek null
+Exception in thread "main" java.util.NoSuchElementException
+	at java.base/java.util.ArrayDeque.removeFirst(ArrayDeque.java:361)
+	at java.base/java.util.ArrayDeque.pop(ArrayDeque.java:592)
+	at DequeDemo.main(DequeDemo.java:14)

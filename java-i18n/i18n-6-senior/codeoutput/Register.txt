@@ -1,0 +1,4 @@
+$ echo admin | java Register.java
+rejected: reserved name
+$ echo admin | LANG=tr_TR.UTF-8 java Register.java
+created user 'admin'

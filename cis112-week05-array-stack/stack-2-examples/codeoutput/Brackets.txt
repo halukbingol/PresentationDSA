@@ -1,0 +1,6 @@
+(a[i] + b)       balanced
+{ [ ( ) ] }      balanced
+( ]              '(' closed by ']' at 2
+( ( )            1 left open
+) (              extra ')' at 0
+f(a[0], {1, 2})  balanced

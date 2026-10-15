@@ -1,0 +1,477 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Trees -- Junior Level: Balance, Performance and Special Trees
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+% algorithm2e set-up (the package is loaded by hblibPresentation)
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetKwProg{Fn}{function}{}{end}
+\SetKw{KwError}{error}
+
+% ---------------------------------------------------------------------
+\title{Trees}
+\subtitle{Junior Level: Balance, Performance and Special Trees}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-3}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={4-6}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Height]{Height Is Everything}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Same keys, very different trees}
+  \begin{columns}[T]
+    \begin{column}{0.3\textwidth}
+      \centering
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=1.6cm}, level 2/.style={sibling distance=0.8cm}, scale=1.0, transform shape]
+  \node[hnode] {4} child {node[hnode] {2} child {node[hnode] {1}} child {node[hnode] {3}}} child {node[hnode] {6} child {node[hnode] {5}} child {node[hnode] {7}}};
+\end{tikzpicture}\\
+      \small insert \texttt{4 2 6 1 3 5 7}: height 2
+    \end{column}
+    \begin{column}{0.3\textwidth}
+      \centering
+      \begin{tikzpicture}[htree, level distance=0.55cm, level 1/.style={sibling distance=0.7cm}, level 2/.style={sibling distance=0.7cm}, level 3/.style={sibling distance=0.7cm}, level 4/.style={sibling distance=0.7cm}, scale=0.85, transform shape]
+  \node[hnode] {1} child[missing] child {node[hnode] {2} child[missing] child {node[hnode] {3} child[missing] child {node[hnode] {4} child[missing] child {node[hnode] {5}}}}};
+\end{tikzpicture}\\
+      \small insert \texttt{1 2 3 4 5}: height 4
+    \end{column}
+    \begin{column}{0.36\textwidth}
+      \begin{itemize}\small
+        \item Search, insert and delete in a BST cost $O(h)$.
+        \item Best case $h = \lfloor \log_{2} n \rfloor$; worst case $h = n - 1$: a linked list.
+        \item Sorted input is \textbf{common}: ids, dates, already-sorted files.
+        \item Fix: keep the tree \textbf{balanced} after every change.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{PlainBst: an iterative search tree}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=15]{codeoutput/PlainBst.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=16, firstnumber=16]{codeoutput/PlainBst.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Measuring heights}
+  \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Degenerate.java}{Java}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Measuring heights: the result}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Degenerate.txt}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item Sorted input: $h = n - 1$, a linked list.
+        \item Random input: here 1.8 to 2.4 times $\log_{2} n$ (in theory $\approx 4.31 \ln n \approx 3 \log_{2} n$ for very large $n$).
+        \item AVL, even with sorted input: under $1.44 \log_{2} n$.
+        \item \texttt{Random(2026)}: a fixed seed, so the run can be repeated.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[AVL]{Balancing: AVL Trees}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Rotations}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.9cm, level 1/.style={sibling distance=1.4cm}, level 2/.style={sibling distance=0.8cm}]
+        \node[hnode, hhot] {y} child {node[hnode] {x} child {node[hsquare] {$A$}} child {node[hsquare] {$B$}}} child {node[hsquare] {$C$}};
+      \end{tikzpicture}
+      \quad $\Longleftrightarrow$ \quad
+      \begin{tikzpicture}[htree, level distance=0.9cm, level 1/.style={sibling distance=1.4cm}, level 2/.style={sibling distance=0.8cm}]
+        \node[hnode] {x} child {node[hsquare] {$A$}} child {node[hnode, hhot] {y} child {node[hsquare] {$B$}} child {node[hsquare] {$C$}}};
+      \end{tikzpicture}
+      \end{center}
+      \small right rotation at \texttt{y} $\to$ \quad $\leftarrow$ left rotation at \texttt{x}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \begin{itemize}\small
+        \item Inorder stays $A\ x\ B\ y\ C$: a rotation keeps the \textbf{BST order}.
+        \item Only 3 links change: $O(1)$.
+        \item One side gets one level shorter, the other one level taller.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \vspace{0.3em}
+  \small \textbf{AVL rule} (Adelson-Velsky and Landis, 1962): at every node, the heights of the two subtrees differ by at most 1.
+  After an insert, walk back up; where the rule breaks, one or two rotations repair it.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{An AVL tree in Java: heights and rotations}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=13]{codeoutput/Avl.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=14, firstnumber=14, lastline=29]{codeoutput/Avl.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{An AVL tree in Java: insert}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=30, lastline=49, firstnumber=30]{codeoutput/Avl.java}{Java}
+  \small An ordinary BST insert, then on the way back up: update the height, check the balance, rotate.
+  Left-right case: first rotate the child left, then the node right.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Inserting 1 to 7 in order}
+  \lstcoderightstep[0.58][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/AvlDemo.java}{Java}{codeoutput/AvlDemo.txt}
+
+  \vspace{0.2em}
+  \small Sorted input, yet the result is the perfect tree of height 2: 4 rotations were enough.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Why AVL trees are $O(\log n)$}
+  Let $N(h)$ be the fewest nodes an AVL tree of height $h$ can have. The thinnest tree has subtrees of heights $h - 1$ and $h - 2$:
+  \[
+  	N(h) = 1 + N(h-1) + N(h-2), \qquad N(0) = 1, \; N(1) = 2
+  \]
+  This grows like the Fibonacci numbers, $N(h) \ge \varphi^{h}$ with $\varphi = \frac{1 + \sqrt{5}}{2} \approx 1.618$, so
+  \[
+  	h \le \log_{\varphi} n \approx 1.44 \log_{2} n
+  \]
+  \begin{itemize}\small
+    \item Search, insert, delete: $O(\log n)$ in the \textbf{worst} case.
+    \item Red-black trees (Java's \texttt{TreeMap}, \texttt{TreeSet}) allow $h \le 2 \log_{2}(n + 1)$ but rotate less on updates.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A plain BST, AVL and \texttt{TreeMap} on sorted input}
+  \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Timing.java}{Java}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Sorted input: the times}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Timing.txt}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item Numbers from one run (JDK 21, Linux): they change from run to run, the ratios do not.
+        \item The plain BST does about $\frac{n^{2}}{2} = 2 \times 10^{8}$ comparisons; AVL and \texttt{TreeMap} about $n \log_{2} n \approx 3 \times 10^{5}$.
+        \item Three rounds, the last one printed: the first rounds include JIT warm-up.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Memory]{Traversal and Memory}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Deep trees break recursion}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=21]{codeoutput/Deep/Deep.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Deep.txt}}
+      \begin{itemize}\small
+        \item Recursive traversal uses $O(h)$ call-stack frames: a degenerate tree of $10^{6}$ nodes overflows it.
+        \item \textbf{Morris traversal} temporarily links each node's inorder predecessor back to it (a \emph{thread}),
+              walks on, and removes the link: $O(1)$ extra memory, $O(n)$ time, the tree is restored.
+        \item Or: an explicit stack (sophomore deck), limited only by the heap.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Tries]{An N-ary Tree for Words: the Trie}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A trie stores words letter by letter}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.7cm, level 1/.style={sibling distance=2.6cm}, level 2/.style={sibling distance=1.3cm}, level 3/.style={sibling distance=0.75cm}, level 4/.style={sibling distance=0.5cm}, level 5/.style={sibling distance=0.4cm}, scale=0.8, transform shape]
+  \node[hnode] {$\cdot$} child {node[hnode] {a} child {node[hnode] {ğ} child {node[hnode] {a} child {node[hnode] {ç}}} child {node[hnode] {ı} child {node[hnode] {r}} child {node[hnode] {z}}}} child {node[hnode] {l} child {node[hnode] {a} child {node[hnode] {n}}}}} child {node[hnode] {e} child {node[hnode] {l} child {node[hnode] {i} child {node[hnode] {f}}} child {node[hnode] {m} child {node[hnode] {a}}}}};
+\end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}\small
+        \item Each edge is a letter; a path from the root spells a prefix.
+        \item Words: ağaç, ağır, ağız, al, ala, alan, el, elif, elma (a node can end a word and still have children).
+        \item Lookup costs $O(\text{length of the word})$, \textbf{independent of} the number of words.
+        \item Used for autocomplete, spell checkers, IP routing tables.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A trie in Java}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=22]{codeoutput/Trie.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=23, firstnumber=23]{codeoutput/Trie.java}{Java}
+    \end{column}
+  \end{columns}
+
+  \small \texttt{TreeMap<Character, Trie>} keeps the children sorted, so preorder prints the words alphabetically (by \texttt{char} code).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A trie in Java: the output}
+  \lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Trie.txt}
+  \begin{itemize}\small
+    \item The order is by \texttt{char} code: \texttt{ç}, \texttt{ı}, \texttt{ğ} come after \texttt{z}. For Turkish alphabetical order use
+          \texttt{java.text.Collator.getInstance(Locale.of("tr"))} as the map's comparator.
+    \item \texttt{countWithPrefix} walks down the prefix, then counts the subtree: autocomplete.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Heaps]{Complete Trees in Arrays: Heaps}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{PriorityQueue} is a binary heap}
+  \lstcoderightstep[0.56][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/Heap.java}{Java}{codeoutput/Heap.txt}
+
+  \vspace{0.2em}
+  \small A complete binary tree in an array (children at $2i + 1$, $2i + 2$) where every parent is $\le$ its children:
+  the smallest element is at index 0. \texttt{add} and \texttt{poll} move one element along one path: $O(\log n)$.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The heap behind the array}
+  \begin{columns}[T]
+    \begin{column}{0.44\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=2.4cm}, level 2/.style={sibling distance=1.2cm}, scale=1.0, transform shape]
+  \node[hnode, hhot, horder=0] {10} child {node[hnode, horder=1] {30} child {node[hnode, horder=3] {50}} child {node[hnode, horder=4] {40}}} child {node[hnode, horder=2] {20} child {node[hnode, horder=5] {70}} child {node[hnode, horder=6] {60}}};
+\end{tikzpicture}
+      \end{center}
+      \small red: the index in the array
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \begin{center}
+      \begin{tikzpicture}\hString[0.55]{10,30,20,50,40,70,60}\end{tikzpicture}
+      \end{center}
+      \begin{itemize}\small
+        \item The \texttt{toString} of \texttt{PriorityQueue} shows this array, \textbf{not} a sorted list.
+        \item Parent $\le$ children on every edge; siblings are in any order.
+        \item No references, no nodes: the shape is always complete, so the height is $\lfloor \log_{2} n \rfloor$.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Big ideas}
+  \begin{itemize}
+    \item Tree operations cost $O(h)$: keep $h = O(\log n)$.
+    \item Sorted input makes a plain BST a list; balancing (AVL, red-black) uses $O(1)$ rotations per step.
+    \item AVL: heights of sibling subtrees differ by $\le 1$, so $h \le 1.44 \log_{2} n$ (Fibonacci argument).
+    \item Use \texttt{TreeMap}/\texttt{TreeSet} in practice; write your own to understand them.
+    \item Recursion needs $O(h)$ stack; Morris traversal needs $O(1)$ extra memory.
+    \item Special trees: tries for strings (N-ary, cost by key length), heaps in arrays for priority queues.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Add \texttt{delete} to \texttt{Avl}. Which rotations can a delete need, and how many?
+    \item Count comparisons instead of time in \texttt{Timing}; compare with $\frac{n^{2}}{2}$ and $n \log_{2} n$.
+    \item Measure the \textbf{average depth} of a random BST for $n = 10^{3} \dots 10^{6}$ and compare with $2 \ln n$.
+    \item Write Morris \textbf{preorder}. Prove that the tree is restored at the end.
+    \item Make the trie sort Turkish words correctly with a \texttt{Collator}; add \texttt{delete(word)}.
+    \item Implement a binary heap with \texttt{int[]}: \texttt{add}, \texttt{poll}, and heapsort.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

@@ -1,0 +1,10 @@
+$ javac Typo.java
+Typo.java:4: error: incompatible types: int cannot be converted to IntNode
+        root.left = 3;
+                    ^
+Typo.java:5: error: cannot find symbol
+        root.rigth = new IntNode(10);
+            ^
+  symbol:   variable rigth
+  location: variable root of type IntNode
+2 errors

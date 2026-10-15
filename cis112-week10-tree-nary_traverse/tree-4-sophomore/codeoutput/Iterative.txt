@@ -1,0 +1,3 @@
+preorder  [A, B, D, E, C, F, G]  same as recursive: true
+inorder   [D, B, E, A, C, G, F]  same as recursive: true
+levels    [[A], [B, C], [D, E, F], [G]]

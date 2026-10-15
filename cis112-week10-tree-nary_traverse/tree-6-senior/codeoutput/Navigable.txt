@@ -1,0 +1,9 @@
+42 -> FF
+55 -> DC
+68 -> CB
+79 -> BB
+90 -> AA
+100 -> AA
+pass marks: [60, 65, 70, 80, 90]
+descending: [AA, BA, BB, CB, CC, DC, DD, FF]
+ceiling(66) = 70, lower(60) = 55

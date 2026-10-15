@@ -1,0 +1,4 @@
+[3, 2, 1]  peek=3  peekFirst=3  peekLast=1
+pop=3  pollFirst=2  now [1]
+empty: poll=null  peek=null
+push(null): NullPointerException

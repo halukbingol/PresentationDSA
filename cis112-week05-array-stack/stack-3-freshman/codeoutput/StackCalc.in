@@ -1,0 +1,9 @@
+push 4
+push 9
+peek
+pop
+pop
+pop
+size
+jump
+quit

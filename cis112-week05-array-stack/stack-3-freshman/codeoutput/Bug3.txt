@@ -1,0 +1,4 @@
+1
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index -1 out of bounds for length 3
+	at Bug3.pop(Bug3.java:8)
+	at Bug3.main(Bug3.java:14)

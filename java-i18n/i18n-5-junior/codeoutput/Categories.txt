@@ -1,0 +1,9 @@
+$ java Cat.java
+DISPLAY=en_US FORMAT=en_US
+French (France) | 1,234.50 | October 15, 2026
+$ java -Duser.language.format=tr -Duser.country.format=TR Cat.java
+DISPLAY=en_US FORMAT=tr_TR
+French (France) | 1.234,50 | 15 Ekim 2026
+$ java -Duser.language.display=de Cat.java
+DISPLAY=de_US FORMAT=en_US
+Französisch (Frankreich) | 1,234.50 | October 15, 2026

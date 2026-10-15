@@ -1,0 +1,13 @@
+$ ls
+Hello.java
+Messages_de.properties
+Messages.properties
+Messages_tr.properties
+$ java Hello.java tr
+[tr] Merhaba, Ayşe! | Kaydet | Çıkış
+$ java Hello.java de
+[de] Hallo, Ayşe! | Speichern | Quit
+$ java Hello.java fr
+[] Hello, Ayşe! | Save | Quit
+$ java Hello.java en-GB
+[] Hello, Ayşe! | Save | Quit

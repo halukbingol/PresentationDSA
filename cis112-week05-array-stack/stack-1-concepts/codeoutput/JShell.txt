@@ -1,0 +1,5 @@
+$ jshell -q try.jsh
+stack: [30, 20, 10]   top = 30
+pop -> 30
+pop -> 20
+stack: [10]   size = 1

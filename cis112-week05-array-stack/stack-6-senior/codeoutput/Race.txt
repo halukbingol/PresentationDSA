@@ -1,0 +1,3 @@
+unsynchronized array stack: 355,278 elements
+java.util.Stack:            400,000 elements
+ConcurrentLinkedDeque:      400,000 elements

@@ -1,13 +1,7 @@
 # PresentationDSA
 
 
-1. upload libraries
-	- `hblibCodeoutput.sty`
-	- `hblibDatastructures.sty`
-	- `hblibPresentation.sty`
-
-1. upload template
-	- `hbCisLaTeXTemplate.tex`
+1. upload `hblib.zip`
 
 1. prompt
 	> Consider the libraries 
@@ -17,7 +11,9 @@
 	> `hblibPresentation.sty`
 	>
 	> and template
-	> `hbCisLaTeXTemplate.tex`.
+	> `Template/hblibTemplate.tex`
+	>
+	> in `hblib.zip`.
 	
 	> Provide
 	>
@@ -30,26 +26,33 @@
 	>
 	> level 6 LaTeX presentations on
 	>
-	> the topic.
-	
-	of course replacing the topic.
+	> the topic 
+	> applying the rules given in 
+	> `0hb-Rules-of-LaTeX-Beamer-v2.md`.
 	
 # Example
 
 ```
-Consider the libraries
-hblibCodeoutput.sty, hblibDatastructures.sty, hblibPresentation.sty
-and template 
-hbCisLaTeXTemplate.tex.
+Consider the libraries 
+- `hblibCodeoutput.sty`,
+- `hblibDatastructures.sty`,
+- `hblibPresentation.sty`
+
+and template
+- `Template/hblibTemplate.tex`
+
+in `hblib.zip`.
 
 Provide
+- conseptual then
+- with examples and
+- for freshmen
+- for sophomore
+- for junior
+- for senior
 
-    conseptual then
-    with examples and
-    for freshmen
-    for sophomore
-    for junior
-    for senior
-
-level 6 LaTeX presentations on String in Java
+level 6 LaTeX presentations on
+internationalization in java 
+applying the rules given in 
+- `0hb-Rules-of-LaTeX-Beamer-v2.md`.
 ```

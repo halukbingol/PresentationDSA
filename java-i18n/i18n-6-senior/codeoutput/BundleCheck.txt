@@ -1,0 +1,4 @@
+$ java BundleCheck.java Messages
+./Messages_de.properties: unknown key extra
+./Messages_tr.properties: missing bye
+./Messages_tr.properties: items has 1 values, base has 2

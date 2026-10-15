@@ -1,0 +1,4 @@
+$ java Deep 2>&1 | head -3
+Morris:    sum = 500000500000
+Exception in thread "main" java.lang.StackOverflowError
+	at Deep.inorderRecursive(Deep.java:7)

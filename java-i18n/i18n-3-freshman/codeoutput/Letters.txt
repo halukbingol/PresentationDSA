@@ -1,0 +1,8 @@
+$ java Letters.java
+Çağrı Şükrü Ilgın, İzmir
+$ java -Dstdout.encoding=US-ASCII Letters.java
+?a?r? ??kr? Ilg?n, ?zmir
+$ java Letters.java | od -An -tx1 | head -1
+ c3 87 61 c4 9f 72 c4 b1 20 c5 9e c3 bc 6b 72 c3
+$ java -Dstdout.encoding=ISO-8859-9 Letters.java | od -An -tx1 | head -1
+ c7 61 f0 72 fd 20 de fc 6b 72 fc 20 49 6c 67 fd

@@ -1,0 +1,7 @@
+time zone data: 2026b
+Istanbul 2015-01-15: UTC+02:00
+Istanbul 2015-07-15: UTC+03:00
+Istanbul 2017-01-15: UTC+03:00
+Istanbul 2026-07-15: UTC+03:00
+Berlin 02:30 offsets: [+02:00, +01:00]
+earlier: 2026-10-25T00:30:00Z  later: 2026-10-25T01:30:00Z

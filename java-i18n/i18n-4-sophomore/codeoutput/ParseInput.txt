@@ -1,0 +1,6 @@
+1.234,5   tr_TR  -> 1234.5
+1.234,5   en_US  -> error at 5
+12,5 kg   tr_TR  -> error at 4
+15.10.2026 tr_TR  -> 2026-10-15
+10/15/26   en_US  -> 2026-10-15
+15.10.2026 en_US  -> not a date

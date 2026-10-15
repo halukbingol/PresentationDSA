@@ -1,0 +1,468 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Trees -- Learning by Example
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+% algorithm2e set-up (the package is loaded by hblibPresentation)
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetKwProg{Fn}{function}{}{end}
+\SetKw{KwError}{error}
+
+% ---------------------------------------------------------------------
+\title{Trees}
+\subtitle{Learning by Example}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-4}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={5-8}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Setup]{How to Use These Examples}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Running the examples}
+  \small Every program is a file in \texttt{codeoutput/}; the output shown is what it really printed (Java 21).
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Windows (Command Prompt)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\scriptsize]
+cd tree-2-examples\codeoutput
+javac Traversals.java
+java Traversals
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{macOS (Terminal)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\scriptsize]
+cd tree-2-examples/codeoutput
+javac Traversals.java
+java Traversals
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \begin{itemize}\small
+    \item \texttt{javac Traversals.java} also compiles \texttt{Node.java}, which it uses.
+    \item \texttt{bash run\_examples.sh} reruns every program (\mac: Terminal; \win: Git Bash).
+    \item Code first, output on the next click: \hRemark{predict the output before you click.}
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Binary]{A Binary Tree in Java}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The \texttt{Node} class and our example tree}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Node.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=2.2cm}, level 2/.style={sibling distance=1.1cm}, level 3/.style={sibling distance=0.6cm}, scale=1.0, transform shape]
+  \node[hnode] {A} child {node[hnode] {B} child {node[hnode] {D}} child {node[hnode] {E}}} child {node[hnode] {C} child[missing] child {node[hnode] {F} child {node[hnode] {G}} child[missing]}};
+\end{tikzpicture}
+      \end{center}
+      \small The programs build it from the leaves up, in one expression (\texttt{Traversals.java}, lines 38--40).
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Traversal]{Traversals}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Four traversals}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=25]{codeoutput/Traversals.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=26, firstnumber=26]{codeoutput/Traversals.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Four traversals: the output}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=2.2cm}, level 2/.style={sibling distance=1.1cm}, level 3/.style={sibling distance=0.6cm}, scale=1.0, transform shape]
+  \node[hnode] {A} child {node[hnode] {B} child {node[hnode] {D}} child {node[hnode] {E}}} child {node[hnode] {C} child[missing] child {node[hnode] {F} child {node[hnode] {G}} child[missing]}};
+\end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.56\textwidth}
+      \lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Traversals.txt}
+      \begin{itemize}\small
+        \item The three recursive methods differ only in \textbf{where} the \texttt{print} is.
+        \item Level order needs a \textbf{queue}: \texttt{ArrayDeque} as a \texttt{Queue}.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Size, height, leaves, depth}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=16]{codeoutput/Measures.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=17, firstnumber=17]{codeoutput/Measures.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Size, height, leaves, depth: the output}
+  \begin{columns}[T]
+    \begin{column}{0.44\textwidth}
+      \lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Measures.txt}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \begin{itemize}\small
+        \item Each method is the recursive definition written in Java.
+        \item \texttt{null} is the empty tree: the \textbf{base case} of every method.
+        \item \texttt{height} returns $-1$ for the empty tree, so a leaf has height $0$.
+        \item \texttt{depth} searches the left subtree first, then the right one.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Expressions]{Expression Trees}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{An expression tree}
+  \begin{columns}[T]
+    \begin{column}{0.3\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=1.8cm}, level 2/.style={sibling distance=0.9cm}, scale=1.0, transform shape]
+  \node[hsquare] {*} child {node[hsquare] {+} child {node[hnode] {3}} child {node[hnode] {4}}} child {node[hsquare] {-} child {node[hnode] {5}} child {node[hnode] {2}}};
+\end{tikzpicture}
+      \end{center}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Expr.txt}}
+    \end{column}
+    \begin{column}{0.68\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=26]{codeoutput/Expr.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Array]{A Tree in an Array}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A complete binary tree in an array}
+  \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/ArrayTree.java}{Java}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A complete binary tree in an array: the output}
+  \begin{columns}[T]
+    \begin{column}{0.6\textwidth}
+      \lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/ArrayTree.txt}
+    \end{column}
+    \begin{column}{0.36\textwidth}
+      \begin{itemize}\small
+        \item No \texttt{Node} objects: the shape is in the index arithmetic.
+        \item \texttt{i >= a.length} plays the role of \texttt{null}.
+        \item Level order is simply the array from left to right.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[N-ary]{N-ary Trees}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A node with a list of children}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=24]{codeoutput/Nary.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=25, firstnumber=25]{codeoutput/Nary.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A node with a list of children: the output}
+  \begin{columns}[T]
+    \begin{column}{0.44\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=1.8cm}, level 2/.style={sibling distance=0.7cm}, scale=1.0, transform shape]
+  \node[hnode] {R} child {node[hnode] {A} child {node[hnode] {D}} child {node[hnode] {E}}} child {node[hnode] {B}} child {node[hnode] {C} child {node[hnode] {F}} child {node[hnode] {G}} child {node[hnode] {H}}};
+\end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Nary.txt}
+      \small \texttt{outline} is preorder with indentation: the way folders are shown in an editor.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Folders and files: preorder names, postorder sizes}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/FileTree/FileTree.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/FileTree.txt}}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[BST]{Binary Search Trees}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Binary search tree: left smaller, right larger}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=16]{codeoutput/Bst.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=17, firstnumber=17]{codeoutput/Bst.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Binary search tree: the output}
+  \begin{columns}[T]
+    \begin{column}{0.34\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=2.0cm}, level 2/.style={sibling distance=1.1cm}, level 3/.style={sibling distance=0.8cm}, scale=0.75, transform shape]
+  \node[hsquare] {mango} child {node[hsquare] {fig} child {node[hsquare] {apple} child[missing] child {node[hsquare] {banana}}} child {node[hsquare] {kiwi}}} child {node[hsquare] {pear} child[missing] child {node[hsquare] {plum}}};
+\end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Bst.txt}
+    \end{column}
+    \begin{column}{0.22\textwidth}
+      \begin{itemize}\small
+        \item \texttt{sideways}: right subtree first, so the right is on top.
+        \item \textbf{Inorder} gives the words \textbf{sorted}.
+        \item A search follows \textbf{one path}: at most height $+ 1$ nodes.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What we saw}
+  \begin{center}\small
+  \begin{tabular}{lL{0.3\textwidth}L{0.36\textwidth}}
+    \toprule
+    \textbf{Program}   & \textbf{Shows}                         & \textbf{Key idea} \\
+    \midrule
+    \texttt{Node}      & a binary tree node                     & \texttt{null} is the empty tree \\
+    \texttt{Traversals}& pre-, in-, post-, level order          & where the visit is; a queue for levels \\
+    \texttt{Measures}  & size, height, leaves, depth            & recursion follows the definition \\
+    \texttt{Expr}      & expression trees                       & postorder evaluates \\
+    \texttt{ArrayTree} & a complete tree in an array            & children at $2i + 1$, $2i + 2$ \\
+    \texttt{Nary}      & a list of children                     & a loop over the children \\
+    \texttt{FileTree}  & a real folder tree                     & preorder names, postorder sizes \\
+    \texttt{Bst}       & binary search tree                     & inorder is sorted \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Add \texttt{countInternal(Node t)} and \texttt{sum(Node t)} for a tree of numbers.
+    \item Print the tree level by level, one level per line (hint: the queue's size at the start of a level).
+    \item Add \texttt{\%} to \texttt{Expr}. What does \texttt{eval} do with a division by zero?
+    \item Write \texttt{mirror(Node t)} that swaps every left and right child; check with inorder.
+    \item Run \texttt{FileTree} on one of your own folders (\win{} and \mac). Add the number of files per folder.
+    \item Insert \texttt{1 2 3 4 5 6 7} into a BST in that order. What is its height? Why is that bad?
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

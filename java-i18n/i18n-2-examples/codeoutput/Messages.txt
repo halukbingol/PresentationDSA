@@ -1,0 +1,8 @@
+Ali sent 3 files (1,234.5 KB).
+Ali, 3 dosya gönderdi (1.234,5 KB).
+no files
+one file
+2 files
+1,500 files
+Dont open {0}
+Don't open x.txt

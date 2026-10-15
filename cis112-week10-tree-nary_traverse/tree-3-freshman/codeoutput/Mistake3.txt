@@ -1,0 +1,1 @@
+leaves: 3  (expected 4: 1, 6, 12, 16)

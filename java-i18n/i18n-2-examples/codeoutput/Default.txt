@@ -1,0 +1,12 @@
+$ java Default.java
+default locale: en_US
+pi = 3.14, big = 1,234,567
+fixed: 3.14
+$ LANG=tr_TR.UTF-8 java Default.java
+default locale: tr_TR
+pi = 3,14, big = 1.234.567
+fixed: 3.14
+$ java -Duser.language=de -Duser.country=DE Default.java
+default locale: de_DE
+pi = 3,14, big = 1.234.567
+fixed: 3.14

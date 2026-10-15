@@ -1,0 +1,15 @@
+$ javac FileTree.java
+$ java FileTree course
+course/
+  README.md  (50 bytes)
+  week1/
+    Hello.java  (300 bytes)
+    notes.txt  (1200 bytes)
+  = week1/ total 1500 bytes
+  week2/
+    lab/
+      Tree.java  (450 bytes)
+    = lab/ total 450 bytes
+    slides.pdf  (2500 bytes)
+  = week2/ total 2950 bytes
+= course/ total 4500 bytes

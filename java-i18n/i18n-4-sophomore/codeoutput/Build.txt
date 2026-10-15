@@ -1,0 +1,23 @@
+$ find src -type f | sort
+src/edu/yeditepe/shop/i18n/Messages_de.properties
+src/edu/yeditepe/shop/i18n/Messages.properties
+src/edu/yeditepe/shop/i18n/Messages_tr.properties
+src/edu/yeditepe/shop/Main.java
+$ javac -d out src/edu/yeditepe/shop/Main.java
+$ mkdir -p out/edu/yeditepe/shop/i18n
+$ cp src/edu/yeditepe/shop/i18n/*.properties out/edu/yeditepe/shop/i18n/
+$ find out -type f | sort
+out/edu/yeditepe/shop/i18n/Messages_de.properties
+out/edu/yeditepe/shop/i18n/Messages.properties
+out/edu/yeditepe/shop/i18n/Messages_tr.properties
+out/edu/yeditepe/shop/Main.class
+$ java -cp out edu.yeditepe.shop.Main en-US
+Order summary
+3 items
+Total: TRY3,749.70
+Delivery on October 20, 2026
+$ java -cp out edu.yeditepe.shop.Main tr-TR
+Sipariş özeti
+3 ürün
+Toplam: ₺3.749,70
+20 Ekim 2026 tarihinde teslim

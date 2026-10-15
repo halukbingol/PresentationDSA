@@ -1,0 +1,4 @@
+20,000 sorted inserts
+plain BST      381 ms   height 19,999
+AVL              4 ms   height 14
+TreeMap          1 ms   (red-black tree)

@@ -1,0 +1,11 @@
+R
+  A
+    D
+    E
+  B
+  C
+    F
+    G
+    H
+postorder: D E A B F G H C R 
+height: 2, children of the root: 3

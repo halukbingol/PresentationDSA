@@ -1,0 +1,4 @@
+codeoutput/GenericArray.java:2: error: generic array creation
+    private T[] a = new T[10];             // not allowed
+                    ^
+1 error

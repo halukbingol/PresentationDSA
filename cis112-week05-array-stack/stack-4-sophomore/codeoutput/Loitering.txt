@@ -1,0 +1,2 @@
+popped from leaky stack still in memory: true
+popped from clean stack still in memory: false

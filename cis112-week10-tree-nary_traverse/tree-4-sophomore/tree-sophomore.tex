@@ -1,0 +1,481 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Trees -- Sophomore Level: Generic Trees, Iterative Traversals and Search Trees
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+% algorithm2e set-up (the package is loaded by hblibPresentation)
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetKwProg{Fn}{function}{}{end}
+\SetKw{KwError}{error}
+
+% ---------------------------------------------------------------------
+\title{Trees}
+\subtitle{Sophomore Level: Generic Trees, Iterative Traversals and Search Trees}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-4}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={5-8}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Generic]{A Generic Binary Tree}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{Node<T>}: a tree of anything}
+  \begin{columns}[T]
+    \begin{column}{0.6\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Node.java}{Java}
+    \end{column}
+    \begin{column}{0.38\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=2.0cm}, level 2/.style={sibling distance=1.0cm}, level 3/.style={sibling distance=0.55cm}, scale=0.9, transform shape]
+  \node[hnode] {A} child {node[hnode] {B} child {node[hnode] {D}} child {node[hnode] {E}}} child {node[hnode] {C} child[missing] child {node[hnode] {F} child {node[hnode] {G}} child[missing]}};
+\end{tikzpicture}
+      \end{center}
+      \begin{itemize}\small
+        \item \texttt{T}: \texttt{String}, \texttt{Integer}, \texttt{Student}, \dots
+        \item \texttt{leaf} is a \textbf{generic method}: \texttt{<T>} before the return type.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Traversals with a visitor}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=26]{codeoutput/Walk.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=27, firstnumber=27]{codeoutput/Walk.java}{Java}
+    \end{column}
+  \end{columns}
+
+  \small \texttt{Consumer<T> visit}: the traversal decides the \textbf{order}, the caller decides \textbf{what to do} with each value.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Passing actions as lambdas}
+  \lstcoderightstep[0.64][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/UseWalk.java}{Java}{codeoutput/UseWalk.txt}
+
+  \vspace{0.2em}
+  \small \texttt{out::add}, \texttt{v -> count[0]++}: one traversal, many uses. (A lambda cannot change a local \texttt{int}, so \texttt{count} is an array.)
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Iterative]{Traversals without Recursion}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Preorder and inorder with a stack}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=16]{codeoutput/Iterative.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=17, firstnumber=17, lastline=29]{codeoutput/Iterative.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Levels with a queue}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=30, firstnumber=30, lastline=46]{codeoutput/Iterative.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=47, firstnumber=47]{codeoutput/Iterative.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{How the iterative versions work}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Iterative.txt}
+      \begin{itemize}\small
+        \item \textbf{preorder}: pop a node, visit it, push right then left: left is popped first.
+        \item \textbf{inorder}: go left as far as possible pushing nodes; pop, visit, then continue with its right subtree.
+        \item \textbf{levels}: the queue's size at the start of a level is the number of nodes in that level.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \small Stack contents during \textbf{iterative inorder} (top on the right):
+      \begin{center}\scriptsize
+      \begin{tabular}{lll}
+        \toprule
+        \textbf{step}             & \textbf{stack}    & \textbf{output} \\
+        \midrule
+        push A, B, D              & A B D             & \\
+        pop D                     & A B               & D \\
+        pop B, push E             & A E               & D B \\
+        pop E                     & A                 & D B E \\
+        pop A, push C             & C                 & \dots{} A \\
+        pop C, push F, G          & F G               & \dots{} C \\
+        pop G, pop F              &                   & \dots{} G F \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+      \small No recursion: the depth is limited by the heap, not by the call stack.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{An iterator: inorder, one value at a time}
+  \begin{columns}[T]
+    \begin{column}{0.6\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/InorderIterator.java}{Java}
+    \end{column}
+    \begin{column}{0.38\textwidth}
+      \begin{itemize}\small
+        \item The iterative inorder, cut into pieces: \texttt{next()} does one step.
+        \item The stack holds at most $h + 1$ nodes: $O(h)$ memory, no list of all values.
+        \item Each node is pushed and popped once: all of \texttt{next()} together are $O(n)$, so $O(1)$ \textbf{amortized} per call.
+        \item With \texttt{Iterable}, a tree works in a for-each loop.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[BST]{Binary Search Trees}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{Bst<K>}: insert and search}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=14]{codeoutput/Bst.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=15, firstnumber=15, lastline=24]{codeoutput/Bst.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{Bst<K>}: delete, iterate, print}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=25, firstnumber=25, lastline=42]{codeoutput/Bst.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=43, firstnumber=43]{codeoutput/Bst.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Deleting a node with two children}
+  \begin{columns}[T]
+    \begin{column}{0.32\textwidth}
+      \centering
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=1.9cm}, level 2/.style={sibling distance=1.0cm}, level 3/.style={sibling distance=0.55cm}, scale=0.8, transform shape]
+  \node[hnode, hhot] {50} child {node[hnode] {30} child {node[hnode] {20}} child {node[hnode] {40} child {node[hnode] {35}} child[missing]}} child {node[hnode] {70} child {node[hnode, hdone] {60}} child {node[hnode] {80}}};
+\end{tikzpicture}\\
+      \small before: delete \texttt{50}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \centering
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=1.9cm}, level 2/.style={sibling distance=1.0cm}, level 3/.style={sibling distance=0.55cm}, scale=0.8, transform shape]
+  \node[hnode, hhot] {60} child {node[hnode] {30} child {node[hnode] {20}} child {node[hnode] {40} child {node[hnode] {35}} child[missing]}} child {node[hnode] {70} child[missing] child {node[hnode] {80}}};
+\end{tikzpicture}\\
+      \small after: \texttt{60} moved up
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \begin{enumerate}\small
+        \item no child: remove the node
+        \item one child: the child takes its place
+        \item two children: copy the \textbf{smallest key of the right subtree} (the inorder successor, red) into the node, then delete it there; it has no left child, so case 1 or 2
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Using the search tree}
+  \lstcoderightstep[0.6][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/UseBst.java}{Java}{codeoutput/UseBst.txt}
+
+  \vspace{0.2em}
+  \small All operations follow one path from the root: $O(h)$. For random keys the average depth is about $1.39 \log_{2} n$; for sorted keys $h = n - 1$ (junior deck).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Checking the BST property: a classic bug}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=14]{codeoutput/CheckBst.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=15, firstnumber=15]{codeoutput/CheckBst.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Checking the BST property: the output}
+  \begin{columns}[T]
+    \begin{column}{0.3\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=1.8cm}, level 2/.style={sibling distance=1.0cm}, scale=1.0, transform shape]
+  \node[hnode] {50} child {node[hnode] {30} child {node[hnode] {20}} child {node[hnode, hhot] {60}}} child {node[hnode] {70}};
+\end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.66\textwidth}
+      \lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/CheckBst.txt}
+      \begin{itemize}\small
+        \item Every parent--child pair is in order, but \texttt{60} is in the \textbf{left} subtree of \texttt{50}.
+        \item The BST rule is about \textbf{all} nodes of a subtree: pass the allowed range $(lo, hi)$ down.
+        \item Equivalent test: the inorder sequence must be strictly increasing.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Rebuild]{Rebuilding and Saving Trees}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Preorder + inorder determine the tree}
+  \lstcoderightstep[0.62][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Rebuild.java}{Java}{codeoutput/Rebuild.txt}
+
+  \vspace{0.2em}
+  \small The first preorder value is the root; its position in inorder splits the rest into left and right. (Preorder alone, or pre- and postorder, are not enough.)
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Writing a tree to text and reading it back}
+  \lstcoderightstep[0.6][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Serialize.java}{Java}{codeoutput/Serialize.txt}
+
+  \vspace{0.2em}
+  \small Preorder \textbf{with markers for \texttt{null}} is enough on its own: the \texttt{\#} tell the reader where each subtree ends.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[N-ary]{Generic N-ary Trees}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{TreeNode<T>} with a list of children}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=18]{codeoutput/TreeNode.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=19, firstnumber=19]{codeoutput/TreeNode.java}{Java}
+    \end{column}
+  \end{columns}
+
+  \small \texttt{add} returns \texttt{this}, so calls can be chained. The visitor also gets the \textbf{depth}, for indentation.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A table of contents is an N-ary tree}
+  \lstcoderightstep[0.6][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/UseNary.java}{Java}{codeoutput/UseNary.txt}
+
+  \vspace{0.2em}
+  \small Preorder with indentation is exactly how a table of contents is printed.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Recipes}
+  \begin{center}\footnotesize
+  \begin{tabular}{ll}
+    \toprule
+    \textbf{Goal} & \textbf{How} \\
+    \midrule
+    a tree of any type             & \texttt{class Node<T>}, generic methods \texttt{static <T> \dots} \\
+    one traversal, many actions    & pass a \texttt{Consumer<T>} (lambda or method reference) \\
+    no recursion                   & preorder/inorder with an \texttt{ArrayDeque} as a stack; levels with a queue \\
+    one level per line             & \texttt{for (int k = q.size(); k > 0; k--)} \\
+    for-each over a tree           & an \texttt{Iterator} with a stack: $O(h)$ memory \\
+    search tree operations         & follow one path: $O(h)$; delete with two children: inorder successor \\
+    check a search tree            & pass the range $(lo, hi)$ down \\
+    rebuild / save a tree          & preorder + inorder; or preorder with \texttt{null} markers \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Write iterative \textbf{postorder} with two stacks (or one stack and a ``last visited'' node).
+    \item Add \texttt{min()}, \texttt{max()}, \texttt{floor(k)} and \texttt{height()} to \texttt{Bst}.
+    \item Make \texttt{InorderIterator} support \texttt{remove()}. What is difficult?
+    \item Rebuild a tree from \textbf{inorder and postorder}. Why do the values have to be distinct?
+    \item Write \texttt{TreeNode.levelOrder()} and \texttt{TreeNode.postorder(\dots)}.
+    \item Write JUnit tests for \texttt{Bst}: empty tree, one key, duplicates, delete in all three cases.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

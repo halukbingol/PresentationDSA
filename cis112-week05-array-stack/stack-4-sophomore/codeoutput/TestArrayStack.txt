@@ -1,0 +1,8 @@
+PASS new stack is empty
+PASS push then peek
+PASS push then pop
+PASS 1000 pushes
+PASS LIFO order
+PASS pop on empty throws
+PASS iterator goes top to bottom
+7 passed, 0 failed

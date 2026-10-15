@@ -1,0 +1,4 @@
+one: 43 61 66 E9   length 4
+two: 43 61 66 65 301   length 5
+equal? false
+after NFC: 43 61 66 E9  equal? true

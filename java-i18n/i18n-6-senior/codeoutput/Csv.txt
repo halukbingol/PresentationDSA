@@ -1,0 +1,8 @@
+$ java Report.java > en.csv
+$ LANG=tr_TR.UTF-8 java Report.java > tr.csv
+$ cat en.csv tr.csv
+tea,12.50,3
+tea,12,50,3
+$ awk -F, '{ print FILENAME ": " NF " fields" }' en.csv tr.csv
+en.csv: 3 fields
+tr.csv: 4 fields

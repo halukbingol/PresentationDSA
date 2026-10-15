@@ -1,0 +1,5 @@
+en  | 1 million         | 2 million         | 5 million         | 22 million        | 25 million       
+tr  | 1 milyon          | 2 milyon          | 5 milyon          | 22 milyon         | 25 milyon        
+de  | 1 Million         | 2 Millionen       | 5 Millionen       | 22 Millionen      | 25 Millionen     
+fr  | 1 million         | 2 millions        | 5 millions        | 22 million        | 25 million       
+pl  | 1 milion          | 2 miliony         | 5 milionów        | 22 milionów       | 25 milionów      

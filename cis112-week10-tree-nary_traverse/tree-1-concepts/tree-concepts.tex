@@ -1,0 +1,905 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Trees -- The Concepts
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+% algorithm2e set-up (the package is loaded by hblibPresentation)
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetKwProg{Fn}{function}{}{end}
+\SetKw{KwError}{error}
+
+% ---------------------------------------------------------------------
+\title{Trees}
+\subtitle{The Concepts}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-5}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={6-9}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Trees]{What Is a Tree?}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Trees are everywhere}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=2.2cm}, level 2/.style={sibling distance=1.1cm}, scale=0.85, transform shape]
+  \node[hsquare] {/} child {node[hsquare] {Users} child {node[hsquare] {ali}} child {node[hsquare] {ayse}}} child {node[hsquare] {Applications}} child {node[hsquare] {System} child {node[hsquare] {Library}}};
+\end{tikzpicture}
+
+      \small a file system (\mac: \texttt{/Users/ali}; \win: \texttt{C:\textbackslash Users\textbackslash ali})
+      \end{center}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item folders inside folders
+        \item a company: managers and their teams
+        \item a web page: \texttt{<html>} contains \texttt{<body>} contains \texttt{<p>} \dots{} (the DOM)
+        \item an arithmetic expression: \texttt{(3 + 4) * (5 - 2)}
+        \item a family tree, a tournament, a book with chapters and sections
+      \end{itemize}
+      \vspace{0.3em}
+      \small Data where each item belongs to \textbf{exactly one} ``parent'' item: a \textbf{hierarchy}.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Definition}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \begin{block}{Recursive definition}
+        A \textbf{tree} is either
+        \begin{itemize}
+          \item \textbf{empty}, or
+          \item a \textbf{root} node with zero or more \textbf{subtrees}, each of them a tree.
+        \end{itemize}
+      \end{block}
+      \begin{block}{As a graph}
+        \small A connected graph with no cycles; one node is chosen as the root. Every node except the root has exactly one parent.
+      \end{block}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.8cm, level 1/.style={sibling distance=2.2cm}, level 2/.style={sibling distance=1.1cm}, level 3/.style={sibling distance=0.6cm}, scale=0.75, transform shape]
+  \node[hnode] {A} child {node[hnode] {B} child {node[hnode] {D}} child {node[hnode] {E}}} child {node[hnode] {C} child[missing] child {node[hnode] {F} child {node[hnode] {G}} child[missing]}};
+\end{tikzpicture}\\
+      \small \textbf{tree}: 7 nodes, 6 edges
+      \end{center}
+      \begin{center}
+      \begin{tikzpicture}[scale=0.7, transform shape]
+        \node[hnode] (x) at (0,0) {X}; \node[hnode] (y) at (-0.8,-0.9) {Y}; \node[hnode] (z) at (0.8,-0.9) {Z};
+        \node[hnode] (w) at (0,-1.8) {W};
+        \draw[thick, gray!70] (x) -- (y) (x) -- (z) (y) -- (w) (z) -- (w);
+      \end{tikzpicture}\\
+      \small \hRemark{not a tree}: \texttt{W} has two parents (a cycle)
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Terms]{Terminology}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Words for the parts of a tree}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=2.2cm}, level 2/.style={sibling distance=1.1cm}, level 3/.style={sibling distance=0.6cm}, scale=1.0, transform shape]
+  \node[hnode, hhot] {A} child {node[hnode] {B} child {node[hnode, hleaf] {D}} child {node[hnode, hleaf] {E}}} child {node[hnode] {C} child[missing] child {node[hnode] {F} child {node[hnode, hleaf] {G}} child[missing]}};
+\end{tikzpicture}
+      \end{center}
+      \small green: the root; yellow: the leaves
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \small
+      \begin{tabular}{lL{0.62\textwidth}}
+        \toprule
+        \textbf{root}            & the top node, no parent: \texttt{A} \\
+        \textbf{parent, child}   & \texttt{B} is the parent of \texttt{D}; \texttt{D} is a child of \texttt{B} \\
+        \textbf{siblings}        & same parent: \texttt{D} and \texttt{E} \\
+        \textbf{leaf}            & no children: \texttt{D}, \texttt{E}, \texttt{G} \\
+        \textbf{internal node}   & has a child: \texttt{A}, \texttt{B}, \texttt{C}, \texttt{F} \\
+        \textbf{ancestors}       & on the way up to the root: of \texttt{G} are \texttt{F}, \texttt{C}, \texttt{A} \\
+        \textbf{descendants}     & everything below: of \texttt{C} are \texttt{F}, \texttt{G} \\
+        \textbf{subtree}         & a node with all its descendants \\
+        \textbf{degree}          & number of children: \texttt{deg(B) = 2}, \texttt{deg(C) = 1} \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Depth, level and height}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=2.2cm}, level 2/.style={sibling distance=1.1cm}, level 3/.style={sibling distance=0.6cm}, scale=1.0, transform shape]
+  \node[hnode] {A} child {node[hnode] {B} child {node[hnode] {D}} child {node[hnode] {E}}} child {node[hnode] {C} child[missing] child {node[hnode] {F} child {node[hnode] {G}} child[missing]}};
+\end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \begin{itemize}\small
+        \item \textbf{depth} of a node: number of edges from the root. \texttt{depth(A) = 0}, \texttt{depth(G) = 3}.
+        \item \textbf{level} $k$: all nodes with depth $k$. Level 1: \texttt{B}, \texttt{C}.
+        \item \textbf{height} of a node: edges on the longest path down to a leaf. \texttt{height(C) = 2}, \texttt{height(D) = 0}.
+        \item \textbf{height of the tree} = height of the root = 3.
+        \item The empty tree has height $-1$ (so that a single node has height 0).
+      \end{itemize}
+      \begin{center}\small
+      \begin{tabular}{lccccccc}
+        \toprule
+        node   & A & B & C & D & E & F & G \\
+        \midrule
+        depth  & 0 & 1 & 1 & 2 & 2 & 2 & 3 \\
+        height & 3 & 1 & 2 & 0 & 0 & 1 & 0 \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Two facts}
+  \begin{block}{A tree with $n$ nodes has $n - 1$ edges}
+    \small Every node except the root has exactly one edge to its parent.
+  \end{block}
+  \begin{block}{Between any two nodes there is exactly one path}
+    \small Go up from both to their lowest common ancestor, then down. Two different paths would make a cycle.
+  \end{block}
+  \vspace{0.3em}
+  \small Height and size are defined \textbf{recursively}, like the tree itself:
+  \[
+  	\mathrm{size}(t) = 1 + \sum_{c \text{ child of } t} \mathrm{size}(c)
+  \]
+  \[
+  	\mathrm{height}(t) = 1 + \max_{c \text{ child of } t} \mathrm{height}(c), \qquad \mathrm{height}(\text{empty}) = -1
+  \]
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Binary]{Binary Trees}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Binary tree: at most two children, left and right}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Definition}
+        A \textbf{binary tree} is either empty, or a root with a \textbf{left} subtree and a \textbf{right} subtree, both binary trees.
+      \end{block}
+      \begin{itemize}\small
+        \item Left and right are \textbf{different}: the two trees on the right are not the same binary tree.
+        \item Each node has 0, 1 or 2 children.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=1.4cm}, scale=1.0, transform shape]
+  \node[hnode] {P} child {node[hnode] {Q}} child[missing];
+\end{tikzpicture}\qquad
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=1.4cm}, scale=1.0, transform shape]
+  \node[hnode] {P} child[missing] child {node[hnode] {Q}};
+\end{tikzpicture}\\[0.3em]
+      \small \texttt{Q} is the \textbf{left} child \quad\quad \texttt{Q} is the \textbf{right} child
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Shapes of binary trees}
+  \begin{columns}[T]
+    \begin{column}{0.24\textwidth}
+      \centering
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=1.2cm}, level 2/.style={sibling distance=0.6cm}, scale=0.75, transform shape]
+  \node[hnode] {1} child {node[hnode] {2} child {node[hnode] {4}} child {node[hnode] {5}}} child {node[hnode] {3}};
+\end{tikzpicture}\\
+      \small \textbf{full}: every node has 0 or 2 children
+    \end{column}
+    \begin{column}{0.24\textwidth}
+      \centering
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=1.2cm}, level 2/.style={sibling distance=0.6cm}, scale=0.75, transform shape]
+  \node[hnode] {1} child {node[hnode] {2} child {node[hnode] {4}} child {node[hnode] {5}}} child {node[hnode] {3} child {node[hnode] {6}} child[missing]};
+\end{tikzpicture}\\
+      \small \textbf{complete}: all levels full, the last filled from the left
+    \end{column}
+    \begin{column}{0.24\textwidth}
+      \centering
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=1.2cm}, level 2/.style={sibling distance=0.6cm}, scale=0.75, transform shape]
+  \node[hnode] {1} child {node[hnode] {2} child {node[hnode] {4}} child {node[hnode] {5}}} child {node[hnode] {3} child {node[hnode] {6}} child {node[hnode] {7}}};
+\end{tikzpicture}\\
+      \small \textbf{perfect}: all leaves at the same depth
+    \end{column}
+    \begin{column}{0.24\textwidth}
+      \centering
+      \begin{tikzpicture}[htree, level distance=0.6cm, level 1/.style={sibling distance=0.8cm}, level 2/.style={sibling distance=0.8cm}, level 3/.style={sibling distance=0.8cm}, scale=0.75, transform shape]
+  \node[hnode] {1} child[missing] child {node[hnode] {2} child[missing] child {node[hnode] {3} child[missing] child {node[hnode] {4}}}};
+\end{tikzpicture}\\
+      \small \textbf{degenerate}: a list in disguise
+    \end{column}
+  \end{columns}
+  \vspace{0.5em}
+  \small (Some books use ``complete'' for what is called ``perfect'' here; check the definitions in your textbook.)
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{How many nodes? How high?}
+  For a binary tree of height $h$ with $n$ nodes:
+  \[
+  	\text{at most } 2^{k} \text{ nodes at level } k
+  \]
+  \[
+  	h + 1 \le n \le 2^{h+1} - 1
+  \]
+  \[
+  	\lfloor \log_{2} n \rfloor \le h \le n - 1
+  \]
+  \begin{itemize}\small
+    \item A perfect tree of height 19 has $2^{20} - 1 \approx$ one million nodes: any node is at most 19 steps from the root.
+    \item A degenerate tree with a million nodes has height 999\,999.
+    \item Fast tree algorithms keep $h$ close to $\log_{2} n$: \textbf{balanced} trees (AVL, red-black; junior deck).
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[N-ary]{N-ary Trees}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Trees with more children}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=2.0cm}, level 2/.style={sibling distance=0.75cm}, scale=1.0, transform shape]
+  \node[hnode] {R} child {node[hnode] {A} child {node[hnode] {D}} child {node[hnode] {E}}} child {node[hnode] {B}} child {node[hnode] {C} child {node[hnode] {F}} child {node[hnode] {G}} child {node[hnode] {H}}};
+\end{tikzpicture}
+      \end{center}
+      \small a general tree: \texttt{C} has 3 children, \texttt{B} none
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}\small
+        \item \textbf{$k$-ary tree}: every node has at most $k$ children (binary: $k = 2$, ternary: $k = 3$).
+        \item \textbf{general} (N-ary) tree: any number of children, kept in an \textbf{ordered list}.
+        \item At most $k^{d}$ nodes at depth $d$; a perfect $k$-ary tree of height $h$ has $\frac{k^{h+1} - 1}{k - 1}$ nodes.
+        \item Examples: folders, the DOM, a trie of words (up to 29 children for the Turkish alphabet), B-trees in databases (hundreds of children).
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Representation]{Representing Trees}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Linked nodes}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Binary tree}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=Java, basicstyle=\ttfamily\scriptsize]
+class Node {
+    int value;
+    Node left, right;     // null: no child
+}
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+      \begin{block}{N-ary tree}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=Java, basicstyle=\ttfamily\scriptsize]
+class Node {
+    String name;
+    List<Node> children = new ArrayList<>();
+}
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[box/.style={draw, thick, minimum width=0.55cm, minimum height=0.45cm, font=\small}]
+        \node[box, fill=colorTop!50] (a) at (0,0) {A};
+        \node[box] (al) at (-0.55,0) {}; \node[box] (ar) at (0.55,0) {};
+        \node[box, fill=red!20] (b) at (-1.6,-1.4) {B};
+        \node[box] (bl) at (-2.15,-1.4) {}; \node[box] (br) at (-1.05,-1.4) {};
+        \node[box, fill=red!20] (c) at (1.6,-1.4) {C};
+        \node[box] (cl) at (1.05,-1.4) {}; \node[box] (cr) at (2.15,-1.4) {};
+        \draw[-latex, thick] (al.center) -- (b.north);
+        \draw[-latex, thick] (ar.center) -- (c.north);
+        \node[font=\tiny] at (-2.15,-1.9) {null}; \node[font=\tiny] at (-1.05,-1.9) {null};
+        \node[font=\tiny] at (1.05,-1.9) {null};  \node[font=\tiny] at (2.15,-1.9) {null};
+      \end{tikzpicture}
+      \end{center}
+      \small Each node: a value and two references. A missing child is \texttt{null}.
+      The tree is just a reference to the root.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A complete binary tree fits in an array}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=2.0cm}, level 2/.style={sibling distance=1.0cm}, scale=1.0, transform shape]
+  \node[hnode, horder=0] {A} child {node[hnode, horder=1] {B} child {node[hnode, horder=3] {D}} child {node[hnode, horder=4] {E}}} child {node[hnode, horder=2] {C} child {node[hnode, horder=5] {F}} child[missing]};
+\end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.56\textwidth}
+      \begin{center}
+      \begin{tikzpicture}\hString[0.55]{A,B,C,D,E,F}\end{tikzpicture}
+      \end{center}
+      Store the nodes level by level; for the node at index $i$:
+      \[
+      	\mathrm{left}(i) = 2i + 1, \qquad \mathrm{right}(i) = 2i + 2
+      \]
+      \[
+      	\mathrm{parent}(i) = \left\lfloor \frac{i - 1}{2} \right\rfloor
+      \]
+      \begin{itemize}\small
+        \item No references at all: compact and fast.
+        \item Only for \textbf{complete} trees; gaps waste space. Used by heaps (\texttt{PriorityQueue}).
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{N-ary trees as binary trees: first child, next sibling}
+  \begin{columns}[T]
+    \begin{column}{0.44\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=2.0cm}, level 2/.style={sibling distance=0.75cm}, scale=1.0, transform shape]
+  \node[hnode] {R} child {node[hnode] {A} child {node[hnode] {D}} child {node[hnode] {E}}} child {node[hnode] {B}} child {node[hnode] {C} child {node[hnode] {F}} child {node[hnode] {G}} child {node[hnode] {H}}};
+\end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[every node/.style={hnode}, scale=0.85, transform shape]
+        \node (r) at (0,0) {R};
+        \node (a) at (0,-1) {A}; \node (b) at (1.2,-1) {B}; \node (c) at (2.4,-1) {C};
+        \node (d) at (0,-2) {D}; \node (e) at (1.2,-2) {E};
+        \node (f) at (2.4,-2) {F}; \node (g) at (3.6,-2) {G}; \node (h) at (4.8,-2) {H};
+        \draw[-latex, thick, blue] (r) -- (a); \draw[-latex, thick, blue] (a) -- (d); \draw[-latex, thick, blue] (c) -- (f);
+        \draw[-latex, thick, red] (a) -- (b); \draw[-latex, thick, red] (b) -- (c);
+        \draw[-latex, thick, red] (d) -- (e); \draw[-latex, thick, red] (f) -- (g); \draw[-latex, thick, red] (g) -- (h);
+      \end{tikzpicture}
+      \end{center}
+      \small \textcolor{blue}{blue}: first child, \textcolor{red}{red}: next sibling. Every node needs only \textbf{two} references,
+      whatever its number of children: an N-ary tree stored as a binary tree.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Traversal]{Tree Traversal}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Depth first]{Depth first}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Visiting every node: three depth-first orders}
+  \begin{columns}[T]
+    \begin{column}{0.32\textwidth}
+      \centering
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=1.8cm}, level 2/.style={sibling distance=0.9cm}, level 3/.style={sibling distance=0.5cm}, scale=0.8, transform shape]
+  \node[hnode, horder=1] {A} child {node[hnode, horder=2] {B} child {node[hnode, horder=3] {D}} child {node[hnode, horder=4] {E}}} child {node[hnode, horder=5] {C} child[missing] child {node[hnode, horder=6] {F} child {node[hnode, horder=7] {G}} child[missing]}};
+\end{tikzpicture}\\
+      \textbf{preorder}: node, left, right\\ \small\texttt{A B D E C F G}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \centering
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=1.8cm}, level 2/.style={sibling distance=0.9cm}, level 3/.style={sibling distance=0.5cm}, scale=0.8, transform shape]
+  \node[hnode, horder=4] {A} child {node[hnode, horder=2] {B} child {node[hnode, horder=1] {D}} child {node[hnode, horder=3] {E}}} child {node[hnode, horder=5] {C} child[missing] child {node[hnode, horder=7] {F} child {node[hnode, horder=6] {G}} child[missing]}};
+\end{tikzpicture}\\
+      \textbf{inorder}: left, node, right\\ \small\texttt{D B E A C G F}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \centering
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=1.8cm}, level 2/.style={sibling distance=0.9cm}, level 3/.style={sibling distance=0.5cm}, scale=0.8, transform shape]
+  \node[hnode, horder=7] {A} child {node[hnode, horder=3] {B} child {node[hnode, horder=1] {D}} child {node[hnode, horder=2] {E}}} child {node[hnode, horder=6] {C} child[missing] child {node[hnode, horder=5] {F} child {node[hnode, horder=4] {G}} child[missing]}};
+\end{tikzpicture}\\
+      \textbf{postorder}: left, right, node\\ \small\texttt{D E B G F C A}
+    \end{column}
+  \end{columns}
+  \vspace{0.6em}
+  \small The red numbers give the visit order. The name says \textbf{when the node itself} is visited: before (\emph{pre}), between (\emph{in}) or after (\emph{post}) its subtrees.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The three orders as algorithms}
+  \begin{columns}[T]
+    \begin{column}{0.32\textwidth}
+      \SetAlFnt{\small}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V alg
+%: -Alg. 
+\begin{algorithm}[H]
+  \caption{Preorder($t$)}
+  \lIf{$t$ is empty}{\Return}
+  visit($t$)\;
+  Preorder($t.left$)\;
+  Preorder($t.right$)\;
+\end{algorithm}
+% +++++++++++++++++++++++++++++++++++++++ A alg
+
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \SetAlFnt{\small}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V alg
+%: -Alg. 
+\begin{algorithm}[H]
+  \caption{Inorder($t$)}
+  \lIf{$t$ is empty}{\Return}
+  Inorder($t.left$)\;
+  visit($t$)\;
+  Inorder($t.right$)\;
+\end{algorithm}
+% +++++++++++++++++++++++++++++++++++++++ A alg
+
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \SetAlFnt{\small}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V alg
+%: -Alg. 
+\begin{algorithm}[H]
+  \caption{Postorder($t$)}
+  \lIf{$t$ is empty}{\Return}
+  Postorder($t.left$)\;
+  Postorder($t.right$)\;
+  visit($t$)\;
+\end{algorithm}
+% +++++++++++++++++++++++++++++++++++++++ A alg
+
+    \end{column}
+  \end{columns}
+  \begin{itemize}\small
+    \item Only the position of \texttt{visit} changes. Each node is visited once: $O(n)$ time.
+    \item The recursion uses the call stack: $O(h)$ extra memory, $h$ the height.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A trick: walk around the tree}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=1.2cm, level 1/.style={sibling distance=2.6cm}, level 2/.style={sibling distance=1.3cm},
+                          dot/.style={circle, inner sep=1.6pt}]
+        \node[hnode] (A) {A}
+          child {node[hnode] (B) {B} child {node[hnode] (D) {D}} child {node[hnode] (E) {E}}}
+          child {node[hnode] (C) {C} child[missing] child {node[hnode] (F) {F}}};
+        \foreach \n in {A, B, C, D, E, F} {
+          \node[dot, fill=blue]  at ($(\n)+(-0.45,0)$) {};
+          \node[dot, fill=green!60!black] at ($(\n)+(0,-0.45)$) {};
+          \node[dot, fill=red]   at ($(\n)+(0.45,0)$) {};
+        }
+      \end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      Walk around the outside of the tree, counter-clockwise, starting left of the root (the \textbf{Euler tour}). You pass each node three times:
+      \begin{itemize}\small
+        \item its \textcolor{blue}{\textbf{left}} dot: preorder \texttt{A B D E C F}
+        \item its \textcolor{green!60!black}{\textbf{bottom}} dot: inorder \texttt{D B E A C F}
+        \item its \textcolor{red}{\textbf{right}} dot: postorder \texttt{D E B F C A}
+      \end{itemize}
+      \small Useful for checking an answer by hand.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Breadth first]{Breadth first}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Level order: breadth first, with a queue}
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \centering
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=1.8cm}, level 2/.style={sibling distance=0.9cm}, level 3/.style={sibling distance=0.5cm}, scale=0.85, transform shape]
+  \node[hnode, horder=1] {A} child {node[hnode, horder=2] {B} child {node[hnode, horder=4] {D}} child {node[hnode, horder=5] {E}}} child {node[hnode, horder=3] {C} child[missing] child {node[hnode, horder=6] {F} child {node[hnode, horder=7] {G}} child[missing]}};
+\end{tikzpicture}\\
+      \small level order: \texttt{A B C D E F G}
+    \end{column}
+    \begin{column}{0.62\textwidth}
+      \SetAlFnt{\small}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V alg
+%: -Alg. 
+\begin{algorithm}[H]
+  \caption{LevelOrder($t$)}
+  \lIf{$t$ is empty}{\Return}
+  $Q \gets$ a queue containing $t$\;
+  \While{$Q$ is not empty}{
+    $n \gets$ \textsc{Dequeue}$(Q)$\;
+    visit($n$)\;
+    \lForEach{child $c$ of $n$, from left to right}{\textsc{Enqueue}$(Q, c)$}
+  }
+\end{algorithm}
+% +++++++++++++++++++++++++++++++++++++++ A alg
+
+      \small A \textbf{queue} (FIFO) gives level order; the same loop with a \textbf{stack} (LIFO) gives a depth-first order.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Traversing N-ary trees}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=1.8cm}, level 2/.style={sibling distance=0.7cm}, scale=1.0, transform shape]
+  \node[hnode, horder=1] {R} child {node[hnode, horder=2] {A} child {node[hnode, horder=3] {D}} child {node[hnode, horder=4] {E}}} child {node[hnode, horder=5] {B}} child {node[hnode, horder=6] {C} child {node[hnode, horder=7] {F}} child {node[hnode, horder=8] {G}} child {node[hnode, horder=9] {H}}};
+\end{tikzpicture}
+      \end{center}
+      \small preorder: \texttt{R A D E B C F G H}\\
+      postorder: \texttt{D E A B F G H C R}\\
+      level order: \texttt{R A B C D E F G H}
+    \end{column}
+    \begin{column}{0.56\textwidth}
+      \SetAlFnt{\small}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V alg
+%: -Alg. 
+\begin{algorithm}[H]
+  \caption{Preorder and postorder of an N-ary tree}
+  \Fn{\textsc{Pre}($n$)}{
+    visit($n$)\;
+    \lForEach{child $c$ of $n$}{\textsc{Pre}($c$)}
+  }
+  \Fn{\textsc{Post}($n$)}{
+    \lForEach{child $c$ of $n$}{\textsc{Post}($c$)}
+    visit($n$)\;
+  }
+\end{algorithm}
+% +++++++++++++++++++++++++++++++++++++++ A alg
+
+      \small There is no natural \emph{inorder}: with three children, ``between'' is not defined.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Uses]{Which Traversal for What?}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{An expression tree, three ways}
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=2.0cm}, level 2/.style={sibling distance=1.0cm}, scale=1.0, transform shape]
+  \node[hsquare] {*} child {node[hsquare] {+} child {node[hnode] {3}} child {node[hnode] {4}}} child {node[hsquare] {-} child {node[hnode] {5}} child {node[hnode] {2}}};
+\end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.6\textwidth}
+      \begin{center}\small
+      \begin{tabular}{lll}
+        \toprule
+        \textbf{traversal} & \textbf{gives}            & \textbf{notation} \\
+        \midrule
+        preorder           & \texttt{* + 3 4 - 5 2}    & prefix (Polish) \\
+        inorder            & \texttt{3 + 4 * 5 - 2}    & infix, needs brackets \\
+        postorder          & \texttt{3 4 + 5 2 - *}    & postfix (reverse Polish) \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+      \begin{itemize}\small
+        \item To \textbf{evaluate}, a node needs the values of its children first: postorder. $(3 + 4) \times (5 - 2) = 21$.
+        \item Inorder must add brackets around each operator node: \texttt{((3 + 4) * (5 - 2))}.
+        \item Compilers build such trees (\emph{abstract syntax trees}) from your Java code.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Choosing a traversal}
+  \begin{center}\small
+  \begin{tabular}{lL{0.5\textwidth}}
+    \toprule
+    \textbf{traversal} & \textbf{when the task \dots} \\
+    \midrule
+    preorder           & handles a node \textbf{before} its children: print an outline with indentation, copy a tree, \texttt{mkdir} folders \\
+    inorder            & needs a binary search tree's keys \textbf{in sorted order} \\
+    postorder          & needs the children's results \textbf{first}: size of a folder, height, evaluate, delete a tree \\
+    level order        & works \textbf{level by level}: nearest first, print by levels, shortest number of steps \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.3em}
+  \begin{center}\small
+  \begin{tabular}{lll}
+    \toprule
+                 & \textbf{time} & \textbf{extra memory} \\
+    \midrule
+    depth first (recursion or a stack) & $O(n)$ & $O(h)$: the height \\
+    breadth first (a queue)            & $O(n)$ & $O(w)$: the widest level \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Java]{Trees in Java}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Where Java uses trees}
+  \begin{center}\small
+  \begin{tabular}{lL{0.5\textwidth}}
+    \toprule
+    \textbf{class}                        & \textbf{tree} \\
+    \midrule
+    \texttt{java.util.TreeMap}, \texttt{TreeSet} & a red-black tree: a balanced binary search tree, keys kept sorted \\
+    \texttt{java.util.PriorityQueue}      & a binary heap: a complete binary tree in an array \\
+    \texttt{java.nio.file.Files.walk}     & visits the file tree (preorder) \\
+    \texttt{org.w3c.dom.Node}             & an XML document as an N-ary tree \\
+    \texttt{javax.swing.JTree}            & shows a tree in a window \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.3em}
+  \small There is no general \texttt{Tree} class in the JDK: for your own data you write a small \texttt{Node} class (next decks).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Trying it: a \texttt{TreeMap} in \texttt{jshell}}
+  \small Open a terminal (\win: \emph{Command Prompt}; \mac: \emph{Terminal}), type \texttt{jshell}, then these lines (\texttt{try.jsh}):
+  \lstcode[basicstyle=\ttfamily\tiny, numbers=none]{codeoutput/JShell/try.jsh}{Java}
+
+  \lstterminal[basicstyle=\ttfamily\footnotesize]{codeoutput/JShell.txt}
+
+  \vspace{0.1em}
+  \small
+  The keys come out \textbf{sorted}: \texttt{TreeMap} walks its tree in inorder.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Big ideas}
+  \begin{itemize}
+    \item A tree is a hierarchy: one root, every other node has exactly one parent, no cycles; $n$ nodes, $n - 1$ edges.
+    \item Binary trees: left and right child. Height between $\lfloor \log_{2} n \rfloor$ and $n - 1$.
+    \item N-ary trees: a list of children, or first child / next sibling.
+    \item Complete binary trees fit in an array: children at $2i + 1$, $2i + 2$.
+    \item Traversals: preorder, inorder, postorder (depth first, $O(h)$ memory), level order (queue, $O(w)$ memory); all $O(n)$.
+    \item Pick the traversal by \textbf{when} a node must be handled relative to its children.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Check yourself}
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=2.0cm}, level 2/.style={sibling distance=1.0cm}, level 3/.style={sibling distance=0.6cm}, scale=1.0, transform shape]
+  \node[hnode] {M} child {node[hnode] {F} child {node[hnode] {B}} child {node[hnode] {H} child {node[hnode] {G}} child[missing]}} child {node[hnode] {S} child[missing] child {node[hnode] {W}}};
+\end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.6\textwidth}
+      \begin{enumerate}\small
+        \item Give the root, the leaves, the height, and the depth of \texttt{G}.
+        \item Write the preorder, inorder, postorder and level order.
+        \item Is it full? complete? Why is its inorder sorted?
+        \item Store it in an array as if it were complete. Which slots stay empty?
+        \item Draw the expression tree of \texttt{2 * (3 + 4) - 10 / 5}; write its postfix form.
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

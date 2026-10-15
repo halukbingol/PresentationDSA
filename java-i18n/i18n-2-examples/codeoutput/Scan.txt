@@ -1,0 +1,7 @@
+$ echo "3.5 4" | java Average.java
+average = 3.75
+$ echo "3.5 4" | LANG=tr_TR.UTF-8 java Average.java 2>&1 | head -2
+Exception in thread "main" java.util.InputMismatchException
+	at java.base/java.util.Scanner.throwFor(Scanner.java:947)
+$ echo "3,5 4" | LANG=tr_TR.UTF-8 java Average.java
+average = 3.75

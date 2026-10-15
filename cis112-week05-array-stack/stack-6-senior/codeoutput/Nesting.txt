@@ -1,0 +1,3 @@
+with a stack:     100000
+with a limit:     nesting deeper than 1000
+recursive:        StackOverflowError: the parser (and maybe the server) is down

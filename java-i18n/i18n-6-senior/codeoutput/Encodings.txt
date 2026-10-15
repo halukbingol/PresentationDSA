@@ -1,0 +1,16 @@
+$ for l in en_US.UTF-8 tr_TR.UTF-8 tr_TR; do echo "== LANG=$l"; LANG=$l java -XshowSettings:properties -version 2>&1 | grep -E "^ +(file|native|stdout|sun.jnu).encoding"; done
+== LANG=en_US.UTF-8
+    file.encoding = UTF-8
+    native.encoding = UTF-8
+    stdout.encoding = UTF-8
+    sun.jnu.encoding = UTF-8
+== LANG=tr_TR.UTF-8
+    file.encoding = UTF-8
+    native.encoding = UTF-8
+    stdout.encoding = UTF-8
+    sun.jnu.encoding = UTF-8
+== LANG=tr_TR
+    file.encoding = UTF-8
+    native.encoding = ISO-8859-9
+    stdout.encoding = ISO-8859-9
+    sun.jnu.encoding = ISO-8859-9

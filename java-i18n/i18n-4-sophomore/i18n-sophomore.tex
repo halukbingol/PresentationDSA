@@ -1,0 +1,494 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Internationalization in Java -- Sophomore Level: A Localized Application
+%  ---------------------------------------------------------------------
+%  Built on Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs, terminal sessions and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program        codeoutput/<Name>.sh   a session
+%     codeoutput/<Name>/      the session's project folder
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\definecolor{gitred}{RGB}{240,80,50}
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+% algorithm2e set-up (the package is loaded by hblibPresentation), as in the template
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\DontPrintSemicolon
+
+% .properties files (resource bundles)
+\lstdefinelanguage{properties}{morecomment=[l]{\#}, morecomment=[l]{!}}
+
+% ---------------------------------------------------------------------
+\title{Internationalization in Java}
+\subtitle{Sophomore Level: A Localized Application}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-3}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={4-20}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Project]{A Localized Application}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Layout]{Project layout}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The project}
+  \lstterminal[basicstyle=\ttfamily\scriptsize, lastline=6]{codeoutput/Build.txt}
+  \begin{itemize}\small
+    \item Bundles are \textbf{resources}: they live in a package (\texttt{edu.yeditepe.shop.i18n}) next to the code.
+    \item The \textbf{base name} is the full name: \texttt{edu.yeditepe.shop.i18n.Messages}.
+    \item One file per language; the base file (no suffix) is English and has every key.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The bundles}
+  \lstcode[basicstyle=\ttfamily\tiny, numbers=none]{codeoutput/Shop/src/edu/yeditepe/shop/i18n/Messages.properties}{properties}
+  \lstcode[basicstyle=\ttfamily\tiny, numbers=none]{codeoutput/Shop/src/edu/yeditepe/shop/i18n/Messages_tr.properties}{properties}
+  \lstcode[basicstyle=\ttfamily\tiny, numbers=none]{codeoutput/Shop/src/edu/yeditepe/shop/i18n/Messages_de.properties}{properties}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The code: no text, no format in it}
+  \lstcode[basicstyle=\ttfamily\tiny, firstline=13, lastline=35, firstnumber=13]{codeoutput/Shop/src/edu/yeditepe/shop/Main.java}{Java}
+  \vspace{0.1em}
+  \small Every text comes from the bundle; every number, amount and date is formatted for the locale \texttt{l}.
+  The Turkish \texttt{items} has no \texttt{1\#} case: \emph{1 ürün}, \emph{3 ürün}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Build]{Build and run}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Building: the bundles must be copied}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Build.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{javac} only writes \texttt{.class} files. The \texttt{.properties} files must be copied into \texttt{out}
+  (Maven and Gradle do this for \texttt{src/main/resources}). \win: \texttt{mkdir} and \texttt{copy} with \texttt{\textbackslash}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{In a JAR}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Jar.txt}
+
+  \vspace{0.1em}
+  \small
+  The bundles travel inside the JAR. Without an argument the program uses the default locale:
+  \texttt{de-AT} has no file, so it uses \texttt{Messages\_de}; the money format is Austrian (\texttt{TRY 3.749,70}).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Lookup]{How Bundles Are Found}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The search order}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \small Request \texttt{de-CH}, default locale \texttt{tr-TR}:
+      \begin{enumerate}\small
+        \item \texttt{Messages\_de\_CH}
+        \item \texttt{Messages\_de}
+        \item \texttt{Messages\_tr\_TR} \hRemark{(default locale!)}
+        \item \texttt{Messages\_tr}
+        \item \texttt{Messages}
+      \end{enumerate}
+      \small The first file that \textbf{exists} is returned. Its \emph{parents} are the later files of the
+      same language and the base file, so missing keys are still found.
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Only when nothing matches}
+        \small Steps 3--4 are tried only if neither \texttt{\_de\_CH} nor \texttt{\_de} exists.
+        Then a French user on a Turkish server gets \textbf{Turkish}.
+      \end{block}
+      \begin{block}{Each file can be}
+        \small a \texttt{.properties} file, or a class \texttt{Messages\_de extends ListResourceBundle}
+        (for values that are not text, e.g.\ images or objects). Classes are tried first.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The default-locale trap}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Trap.txt}
+
+  \vspace{0.1em}
+  \small
+  The same request \texttt{fr-FR}: on an English server the texts are English (base file); on a Turkish server
+  they are \textbf{Turkish}, while money and date are French. Mixed languages on one screen.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Turning the fallback off}
+  \begin{columns}[T]
+    \begin{column}{0.58\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Lookup/Lookup.java}{Java}
+    \end{column}
+    \begin{column}{0.40\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Lookup.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small \texttt{Control.getNoFallbackControl} skips the default locale: unknown languages get the base file,
+  whatever the server's locale is. Servers that serve many users should use it.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Files]{Bundle Files and Encodings}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Encoding of \texttt{.properties} files}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Encoding.txt}
+  \vspace{0.1em}
+  \begin{itemize}\small
+    \item Since Java 9 bundles are read as \textbf{UTF-8}. If a file is not valid UTF-8, Java reads it as
+      ISO-8859-1: a Turkish ISO-8859-9 file shows \texttt{Çýkýþ}.
+    \item \texttt{\textbackslash u0131} escapes work everywhere (the only way before Java 9).
+    \item Save bundle files as UTF-8 in the editor (\win: Notepad \emph{Save as, Encoding: UTF-8}).
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Messages]{MessageFormat in Depth}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Pitfalls of \texttt{MessageFormat}}
+  \begin{columns}[T]
+    \begin{column}{0.62\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Pitfalls.java}{Java}
+    \end{column}
+    \begin{column}{0.36\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Pitfalls.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small A number argument is formatted with grouping: \texttt{2,026}. A single \texttt{'} quotes text, so
+  \texttt{It's} loses its apostrophe and \texttt{'\{0\}'} is printed literally. Translators must know these rules.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Argument types}
+  \begin{center}\small
+  \begin{tabular}{ll}
+    \toprule
+    \textbf{pattern} & \textbf{meaning} \\
+    \midrule
+    \texttt{\{0\}}                        & \texttt{toString()}, numbers and dates localized \\
+    \texttt{\{0,number\}}, \texttt{\{0,number,integer\}}, \texttt{\{0,number,percent\}} & numbers \\
+    \texttt{\{0,number,\#.\#\#\}}          & a \texttt{DecimalFormat} pattern \\
+    \texttt{\{0,date,long\}}, \texttt{\{0,time,short\}} & \texttt{java.util.Date} only, not \texttt{java.time} \\
+    \texttt{\{0,choice,0\#none|1\#one|1<\{0\} many\}} & select a text by a number \\
+    \texttt{''}                           & one apostrophe \\
+    \texttt{'\{'}                         & a literal brace \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \small Format \texttt{java.time} values with \texttt{DateTimeFormatter} first and pass the \texttt{String}, as \texttt{Main} does.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Input]{Reading Localized Input}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Parsing numbers and dates safely}
+  \begin{columns}[T]
+    \begin{column}{0.66\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=10, firstnumber=10]{codeoutput/ParseInput.java}{Java}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/ParseInput.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small \texttt{parse(s, pos)} tells how far it got: \texttt{12,5 kg} is not a number, although plain \texttt{parse}
+  would return \texttt{12.5}. Dates in a short style are ambiguous: \texttt{10/15/26} only makes sense in the US.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Sorting]{Comparing Text}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Collator strength}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Strength.java}{Java}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Strength.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small PRIMARY: only base letters (\texttt{c} = \texttt{ç} is false in Turkish: different letters!).
+  SECONDARY: accents count. TERTIARY: case counts too. Use PRIMARY for search, TERTIARY for sorting.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Testing]{Testing in Many Locales}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{One loop, seven locales}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/AllLocales.txt}
+
+  \vspace{0.1em}
+  \small
+  Run every test in several locales: at least English, Turkish (case and comma) and German or French (long words, spaces).
+  \texttt{de-CH} and \texttt{pt-BR} have no own file: they reuse \texttt{\_de} and the base file.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Pseudo-localization: a small tool}
+  \lstcode[basicstyle=\ttfamily\tiny, firstline=8, lastline=22, firstnumber=8]{codeoutput/Pseudo/Pseudo.java}{Java}
+  \vspace{0.1em}
+  \small A fake language that everyone can still read. Lines 23--30 (not shown) apply \texttt{pseudo} to every
+  value of \texttt{Messages.properties} and write \texttt{Messages\_en\_XA.properties}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Pseudo-localization: the result}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Pseudo.txt}
+
+  \vspace{0.1em}
+  \small
+  Hard-coded texts would stay plain (easy to spot); accents test fonts and encodings; \texttt{\textasciitilde\textasciitilde}
+  makes texts longer to test the layout. \texttt{\{...\}} is kept, so values still work (texts inside \texttt{choice} stay plain).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{With Maven or Gradle}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\scriptsize]
+src/main/java/edu/yeditepe/shop/Main.java
+src/main/resources/edu/yeditepe/shop/i18n/
+    Messages.properties
+    Messages_tr.properties
+    Messages_de.properties
+src/test/java/...      # tests in several locales
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}\small
+        \item Resources are copied to the class path and packed into the JAR automatically.
+        \item Set the encoding once:\\ \texttt{<project.build.sourceEncoding>UTF-8</...>}
+        \item Run the tests with another locale:\\ \texttt{mvn test -DargLine="-Duser.language=tr"}
+      \end{itemize}
+      \small \hRemark{Not run here} (Maven needs the internet).
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Recipes}
+  \begin{center}\scriptsize
+  \begin{tabular}{L{0.3\textwidth}L{0.62\textwidth}}
+    \toprule
+    \textbf{goal} & \textbf{how} \\
+    \midrule
+    texts of a package     & \texttt{getBundle("edu.yeditepe.shop.i18n.Messages", l)} \\
+    texts with values      & \texttt{new MessageFormat(rb.getString(key), l).format(values)} \\
+    plurals                & \texttt{\{0,choice,0\#\dots|1\#\dots|1<\{0,number,integer\} \dots\}} \\
+    money                  & \texttt{getCurrencyInstance(l)} + \texttt{setCurrency(...)}, \texttt{BigDecimal} \\
+    dates                  & \texttt{ofLocalizedDate(FormatStyle.LONG).withLocale(l)}, then pass the \texttt{String} \\
+    no default-locale fallback & \texttt{Control.getNoFallbackControl(Control.FORMAT\_DEFAULT)} \\
+    safe parsing           & \texttt{parse(s, pos)} and check \texttt{pos.getIndex() == s.length()} \\
+    search vs.\ sort       & \texttt{Collator} strength PRIMARY vs.\ TERTIARY \\
+    bundle encoding        & UTF-8 (Java 9+), or \texttt{\textbackslash uXXXX} \\
+    find missing texts     & pseudo-localization, tests in several locales \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Add \texttt{Messages\_fr.properties} and run \texttt{AllLocales} again.
+    \item Give \texttt{Main} a \texttt{--currency EUR} option. What must change in the bundles? (Nothing!)
+    \item Make the shop use \texttt{getNoFallbackControl} and repeat the trap experiment.
+    \item Translate \emph{``\{0\} sent \{1\} files to \{2\}''} into Turkish and German with numbered placeholders.
+    \item Write a test that fails when a key exists in \texttt{Messages} but not in \texttt{Messages\_tr}.
+    \item Use \texttt{Collator} with PRIMARY strength to search names in a list without caring about case.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

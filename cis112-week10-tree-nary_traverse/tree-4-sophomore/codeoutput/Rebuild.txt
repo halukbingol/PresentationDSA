@@ -1,0 +1,2 @@
+postorder of the rebuilt tree: [D, E, B, G, F, C, A]
+same as the original:          true

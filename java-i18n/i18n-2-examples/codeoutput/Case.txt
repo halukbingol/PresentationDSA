@@ -1,0 +1,5 @@
+title  -> TİTLE   TITLE
+TITLE  -> tıtle   title
+FILE equals file? false
+straße -> STRASSE
+ılık   -> ILIK   İSTANBUL -> istanbul

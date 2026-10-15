@@ -1,0 +1,7 @@
+input          NFC            NFD            NFKC
+E9             E9             65 301         E9
+65 301         E9             65 301         E9
+FB01 6C 65     FB01 6C 65     FB01 6C 65     66 69 6C 65
+FF21 FF22 FF11 FF21 FF22 FF11 FF21 FF22 FF11 41 42 31
+78 B2          78 B2          78 B2          78 32
+2163           2163           2163           49 56

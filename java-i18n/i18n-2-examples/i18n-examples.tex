@@ -1,0 +1,470 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Internationalization in Java -- Learning by Example
+%  ---------------------------------------------------------------------
+%  Built on Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs, terminal sessions and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program        codeoutput/<Name>.sh   a session
+%     codeoutput/<Name>/      the session's project folder
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\definecolor{gitred}{RGB}{240,80,50}
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+% algorithm2e set-up (the package is loaded by hblibPresentation), as in the template
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\DontPrintSemicolon
+
+% .properties files (resource bundles)
+\lstdefinelanguage{properties}{morecomment=[l]{\#}, morecomment=[l]{!}}
+
+% ---------------------------------------------------------------------
+\title{Internationalization in Java}
+\subtitle{Learning by Example}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-3}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={4-20}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{How to read these slides}
+  \begin{itemize}\small
+    \item Every program is a file in \texttt{codeoutput/}; the output is what it really printed with Java 21.
+    \item The programs run on an English (US) system in Istanbul, unless the command line says otherwise
+      (\texttt{-Duser.language=tr}, \texttt{LANG=tr\_TR.UTF-8}).
+    \item The code comes first; the output appears on the next click. \hRemark{Predict it first.}
+  \end{itemize}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Windows (Command Prompt)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\scriptsize]
+chcp 65001
+javac -encoding UTF-8 -d build codeoutput\Numbers.java
+java -Dstdout.encoding=UTF-8 -cp build Numbers
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{macOS (Terminal)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\scriptsize]
+javac -d build codeoutput/Numbers.java
+java -cp build Numbers
+bash run_examples.sh        # all of them
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \small \texttt{chcp 65001} switches the Windows console to UTF-8, so Turkish letters print correctly.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Locales]{Locales}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Making locales}
+  \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Locales.java}{Java}
+  \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Locales.txt}}
+
+  \vspace{0.1em}
+  \small \texttt{toLanguageTag()} gives the standard tag; \texttt{getDisplayName(l)} is what a language menu should show.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The default locale}
+  \begin{columns}[T]
+    \begin{column}{0.44\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Default/Default.java}{Java}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Default.txt}}
+    \end{column}
+  \end{columns}
+  \vspace{0.1em}
+  \small The same program, three answers. \texttt{LANG} is how macOS and Linux pass the regional setting;
+  on \win{} Java reads the \emph{Regional format} of the user. \texttt{-D} overrides both.
+  \hRemark{Locale.ROOT} gives the same output everywhere.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Numbers]{Numbers and Money}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Numbers in five locales}
+  \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Numbers.java}{Java}
+  \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Numbers.txt}}
+
+  \vspace{0.1em}
+  \small One value, five spellings: French groups with a narrow space, Swiss German with \texttt{'}; Turkish writes \texttt{\%25}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Currencies}
+  \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Money.java}{Java}
+  \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Money.txt}}
+
+  \vspace{0.1em}
+  \small Turkish format, other currencies. \hRemark{The yen has no decimals}, but \texttt{setCurrency} kept two: set them too.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reading numbers typed by people}
+  \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Parse.java}{Java}
+  \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Parse.txt}}
+
+  \vspace{0.1em}
+  \small \texttt{parse} stops at the first character it does not understand: with US rules \texttt{"1.234,5"} is \texttt{1.234}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Short numbers: 1.2K, 1 Mn}
+  \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Compact.java}{Java}
+  \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Compact.txt}}
+
+  \vspace{0.1em}
+  \small \texttt{CompactNumberFormat} (Java 12): for dashboards and social media counts.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Dates]{Dates and Times}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Dates in three locales}
+  \begin{columns}[T]
+    \begin{column}{0.66\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Dates.java}{Java}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Dates.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small \texttt{ofLocalizedDate}: order, names, separators of the locale. \texttt{ofPattern} still needs a locale for names.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{One moment, four time zones}
+  \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Zones.java}{Java}
+  \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Zones.txt}}
+
+  \vspace{0.1em}
+  \small Same moment, other wall clocks. Last line: 02:30 does not exist that night (daylight saving), so 03:30.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Messages]{Translated Messages}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A resource bundle}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Bundle/Hello.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, numbers=none]{codeoutput/Bundle/Messages.properties}{properties}
+      \lstcode[basicstyle=\ttfamily\tiny, numbers=none]{codeoutput/Bundle/Messages_tr.properties}{properties}
+      \lstcode[basicstyle=\ttfamily\tiny, numbers=none]{codeoutput/Bundle/Messages_de.properties}{properties}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Which file answers?}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Bundle.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{de}: \texttt{quit} is missing in German, so it comes from the base file. \texttt{fr} and \texttt{en-GB}:
+  no file, so the \textbf{default locale} is tried (\texttt{en\_US}, no file either) and then the base file:
+  \texttt{rb.getLocale()} is empty.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Values in messages: \texttt{MessageFormat}}
+  \begin{columns}[T]
+    \begin{column}{0.68\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Messages.java}{Java}
+    \end{column}
+    \begin{column}{0.30\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Messages.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small Each language puts \texttt{\{0\}}, \texttt{\{1\}} where its grammar wants them.
+  \texttt{choice} selects a text by number. A single \texttt{'} quotes, so write \texttt{''} for an apostrophe.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Text]{Working with Text}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Upper and lower case}
+  \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Case.java}{Java}
+  \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Case.txt}}
+
+  \vspace{0.1em}
+  \small Turkish has \texttt{i}/\texttt{İ} and \texttt{ı}/\texttt{I}. \texttt{"FILE".toLowerCase()}
+  on a Turkish computer is \texttt{"fıle"}: never use it to compare keywords; use \texttt{Locale.ROOT}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Sorting words}
+  \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Sort.java}{Java}
+  \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Sort.txt}}
+
+  \vspace{0.1em}
+  \small 1: code points (\texttt{Ö}, \texttt{ç}, \texttt{ı}, \texttt{ş} last). 2: Turkish alphabet. 3: English rules (\texttt{ı} last).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Two ways to write é}
+  \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Normal.java}{Java}
+  \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Normal.txt}}
+
+  \vspace{0.1em}
+  \small They look the same but are different strings until both are normalized to NFC.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Strings and bytes}
+  \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Bytes.java}{Java}
+  \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Bytes.txt}}
+
+  \vspace{0.1em}
+  \small \texttt{ğ}: 2 bytes in UTF-8, 1 in ISO-8859-9. The wrong charset gives \emph{mojibake}: always name it.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Input]{Reading Input}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{Scanner} uses the default locale}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Scan/Average.java}{Java}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Scan.txt}}
+    \end{column}
+  \end{columns}
+  \vspace{0.1em}
+  \small On a Turkish computer \texttt{nextDouble} expects \texttt{3,5}. A program that reads \emph{data files}
+  should fix the locale: \texttt{new Scanner(in).useLocale(Locale.ROOT)}. A program that reads what
+  \emph{people} type may keep the default.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What the examples showed}
+  \begin{center}\scriptsize
+  \begin{tabular}{L{0.3\textwidth}L{0.6\textwidth}}
+    \toprule
+    \textbf{task} & \textbf{use} \\
+    \midrule
+    choose a locale         & \texttt{Locale.of("tr", "TR")}, \texttt{Locale.forLanguageTag("tr-TR")} \\
+    machine-readable output & \texttt{String.format(Locale.ROOT, ...)} \\
+    numbers, money          & \texttt{NumberFormat.getNumberInstance/getCurrencyInstance(l)}, \texttt{BigDecimal} \\
+    read numbers            & \texttt{NumberFormat.getInstance(l).parse(s)}; \texttt{Scanner.useLocale(l)} \\
+    dates                   & \texttt{DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).withLocale(l)} \\
+    time zones              & \texttt{ZonedDateTime}, \texttt{withZoneSameInstant} \\
+    texts                   & \texttt{ResourceBundle.getBundle("Messages", l)} \\
+    texts with values       & \texttt{MessageFormat}, \texttt{\{0,choice,...\}} \\
+    case, sorting           & \texttt{toUpperCase(l)}, \texttt{Collator.getInstance(l)} \\
+    compare text            & \texttt{Normalizer.normalize(s, Form.NFC)} \\
+    bytes                   & \texttt{getBytes(StandardCharsets.UTF\_8)}, \texttt{new String(b, cs)} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Run \texttt{Numbers} for \texttt{en-IN}, \texttt{es-MX} and \texttt{sv-SE}. What is different?
+    \item Change \texttt{Money} so that every currency is shown in its home locale.
+    \item Add \texttt{Messages\_fr.properties} and run \texttt{Hello} with \texttt{fr} again.
+    \item Write the plural message for Turkish. Why does it need only one form?
+    \item Find three words that \texttt{Collator.getInstance(Locale.of("tr"))} sorts differently from \texttt{compareTo}.
+    \item Make \texttt{Average} work for both \texttt{3.5} and \texttt{3,5}, whatever the default locale is.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

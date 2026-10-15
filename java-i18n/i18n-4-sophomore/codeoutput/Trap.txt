@@ -1,0 +1,10 @@
+$ java -cp out edu.yeditepe.shop.Main fr-FR
+Order summary
+3 items
+Total: 3 749,70 TRY
+Delivery on 20 octobre 2026
+$ java -Duser.language=tr -Duser.country=TR -cp out edu.yeditepe.shop.Main fr-FR
+Sipariş özeti
+3 ürün
+Toplam: 3 749,70 TRY
+20 octobre 2026 tarihinde teslim

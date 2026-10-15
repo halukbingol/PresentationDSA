@@ -1,0 +1,3 @@
+size 6
+sum  42
+max  14

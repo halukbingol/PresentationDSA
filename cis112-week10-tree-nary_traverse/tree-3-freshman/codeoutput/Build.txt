@@ -1,0 +1,5 @@
+root:            8
+root.left:       3
+root.right:      10
+root.left.right: 6
+root.right.left: null

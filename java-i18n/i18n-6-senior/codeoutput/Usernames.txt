@@ -1,0 +1,5 @@
+61 64 6D 69 6E       key=61 64 6D 69 6E       same as admin
+41 44 4D 49 4E       key=61 64 6D 69 6E       same as admin
+FF41 64 6D 69 6E     key=61 64 6D 69 6E       same as admin
+61 64 217F 69 6E     key=61 64 6D 69 6E       same as admin
+430 64 6D 69 6E      key=430 64 6D 69 6E      different

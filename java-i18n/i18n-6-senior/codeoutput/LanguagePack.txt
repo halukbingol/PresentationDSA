@@ -1,0 +1,13 @@
+$ find src -type f | sort
+src/app/com/app/i18n/Messages.properties
+src/app/com/app/i18n/spi/MessagesProvider.java
+src/app/com/app/Main.java
+src/app/module-info.java
+src/app.tr/com/app/tr/Messages_tr.properties
+src/app.tr/com/app/tr/TurkishMessages.java
+src/app.tr/module-info.java
+$ javac -d out --module-source-path src -m app,app.tr
+$ java -p out/app -m app/com.app.Main tr
+[] Hello from the app module
+$ java -p out/app:out/app.tr -m app/com.app.Main tr
+[tr] Türkçe dil paketinden merhaba

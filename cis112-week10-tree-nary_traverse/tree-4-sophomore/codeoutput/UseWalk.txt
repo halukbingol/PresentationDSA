@@ -1,0 +1,5 @@
+preorder  [A, B, D, E, C, F, G]
+inorder   [D, B, E, A, C, G, F]
+postorder [D, E, B, G, F, C, A]
+lower case, preorder: abdecfg
+counted 7 nodes

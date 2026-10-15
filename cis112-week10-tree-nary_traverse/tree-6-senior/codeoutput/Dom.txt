@@ -1,0 +1,8 @@
+course id=CSE211
+  week id=1
+    topic
+    lab
+  week id=2
+    topic
+[Fatal Error] :1:31: DOCTYPE is disallowed when the feature "http://apache.org/xml/features/disallow-doctype-decl" set to true.
+rejected: DOCTYPE is disallowed when the feature "http://apache.org/xm...

@@ -1,0 +1,5 @@
+tr_TR    tr-TR       Turkish (Türkiye)              Türkçe (Türkiye)
+de_CH    de-CH       German (Switzerland)           Deutsch (Schweiz)
+fr_FR    fr-FR       French (France)                français (France)
+pt_BR    pt-BR       Portuguese (Brazil)            português (Brasil)
+sr_RS_#Latn sr-Latn-RS  Serbian (Latin, Serbia)        srpski (latinica, Srbija)

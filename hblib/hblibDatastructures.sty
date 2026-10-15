@@ -1,6 +1,6 @@
 % !TEX spellcheck = en_US
 
-% v20240314T0000
+% v20261015T1700
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 % (NC) 2024 Haluk Bingol
@@ -11,7 +11,7 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{hblibDatastructures}[2026/10/02 data structure library]
+\ProvidesPackage{hblibDatastructures}[2026/10/15 data structure library: queue, stack, string, tree styles]
 
 \RequirePackage{xparse}
 \RequirePackage{xcolor} % color
@@ -253,6 +253,30 @@
 	}%
 } % \hString
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A String
+
+
+
+
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V Tree
+% TikZ styles for trees drawn with TikZ's child syntax:
+%   \begin{tikzpicture}[htree]
+%     \node[hnode] {A} child {node[hnode, hhot] {B}} child[missing] child {node[hnode, horder=3] {C}};
+%   \end{tikzpicture}
+% htree        level distance and edges           hnode   a round node
+% hhot         highlighted (the current node)     hdone   already visited
+% hleaf        a leaf                             horder=k  small visit number k at the node
+% hsquare      a square node (e.g. an operator or a folder)
+\tikzset{
+	htree/.style={level distance=0.95cm, edge from parent/.style={draw, thick, gray!70},
+		every node/.style={font=\small}},
+	hnode/.style={circle, draw, thick, fill=white, minimum size=0.58cm, inner sep=1pt},
+	hsquare/.style={rectangle, draw, thick, fill=white, minimum size=0.55cm, inner sep=2pt, rounded corners=1pt},
+	hhot/.style={fill=colorTop},
+	hdone/.style={fill=colorUsed!55},
+	hleaf/.style={fill=colorHead!45},
+	horder/.style={label={[font=\scriptsize\bfseries, text=red!75!black, inner sep=1pt]above right:#1}}
+}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A Tree
 
 
 \endinput

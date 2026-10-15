@@ -1,0 +1,7 @@
+push(5)  [5] <- top
+push(8)  [5, 8] <- top
+pop()  = 8    [5] <- top
+push(2)  [5, 2] <- top
+push(7)  [5, 2, 7] <- top
+peek() = 7    [5, 2, 7] <- top
+size() = 3

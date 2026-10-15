@@ -1,0 +1,16 @@
+en-US
+  FULL   Thursday, October 15, 2026
+  MEDIUM Oct 15, 2026
+  SHORT  10/15/26
+  time   2:30 PM
+tr-TR
+  FULL   15 Ekim 2026 Perşembe
+  MEDIUM 15 Eki 2026
+  SHORT  15.10.2026
+  time   14:30
+de-DE
+  FULL   Donnerstag, 15. Oktober 2026
+  MEDIUM 15.10.2026
+  SHORT  15.10.26
+  time   14:30
+Perşembe, 15 Ekim 2026

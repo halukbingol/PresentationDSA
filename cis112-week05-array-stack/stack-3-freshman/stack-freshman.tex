@@ -1,0 +1,487 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Stacks -- Freshman Level: Your First Stack in Java
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+% algorithm2e set-up (the package is loaded by hblibPresentation)
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetKwProg{Fn}{function}{}{end}
+\SetKw{KwError}{error}
+\lstdefinelanguage{text}{}
+
+% ---------------------------------------------------------------------
+\title{Stacks}
+\subtitle{Freshman Level: Your First Stack in Java}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-3}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={4-6}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Setup]{Getting Ready}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What you need}
+  \begin{itemize}
+    \item A \textbf{JDK} (Java Development Kit) 17 or newer: it has \texttt{javac} (compiler) and \texttt{java} (runner).
+    \item A terminal and a text editor (or an IDE such as Eclipse or IntelliJ IDEA).
+    \item One folder for this week, e.g.\ \texttt{stack}, with all \texttt{.java} files in it.
+  \end{itemize}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Windows (Command Prompt)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\scriptsize]
+winget install EclipseAdoptium.Temurin.21.JDK
+rem open a NEW Command Prompt, then:
+mkdir stack
+cd stack
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{macOS (Terminal)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\scriptsize]
+brew install --cask temurin@21
+# or the .pkg from adoptium.net
+mkdir stack
+cd stack
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Check.txt}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Idea]{The Idea}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A stack in one picture}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item \textbf{push}: put on top
+        \item \textbf{pop}: take from the top
+        \item \textbf{peek}: look at the top
+        \item last in, first out (\textbf{LIFO})
+      \end{itemize}
+      \vspace{0.5em}
+      We keep the elements in an \textbf{array} \texttt{a} and remember where the top is in \texttt{top}.
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \small empty: \texttt{top = -1}\\
+      \begin{tikzpicture}\hStack{0}{4}{-1}{}[0.6][0.5]\end{tikzpicture}\\[0.5em]
+      \texttt{push(5)}: \texttt{top = 0}\\
+      \begin{tikzpicture}\hStack{0}{4}{0}{5}[0.6][0.5]\end{tikzpicture}\\[0.5em]
+      \texttt{push(8)}: \texttt{top = 1}\\
+      \begin{tikzpicture}\hStack{0}{4}{1}{5,8}[0.6][0.5]\end{tikzpicture}\\[0.5em]
+      \texttt{pop()} returns 8: \texttt{top = 0}\\
+      \begin{tikzpicture}\hStack{0}{4}{0}{5}[0.6][0.5]\end{tikzpicture}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Build]{Building IntStack Step by Step}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Step 1: the data}
+  \lstcode[basicstyle=\ttfamily\scriptsize, lastline=8]{codeoutput/IntStack.java}{Java}
+  \begin{itemize}\small
+    \item \hCode{a}: the array; \hCode{final} means we never replace it with another array.
+    \item \hCode{top}: index of the top element. \hCode{-1} means ``no element''.
+    \item The \textbf{constructor} makes an array of the size the user asks for: \hCode{new IntStack(5)}.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Step 2: push and pop}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=10, lastline=18, firstnumber=10]{codeoutput/IntStack.java}{Java}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{\texttt{a[++top] = x}}
+        \small 1. \texttt{top} becomes \texttt{top + 1}\\ 2. store \texttt{x} at the new \texttt{top}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{\texttt{return a[top--]}}
+        \small 1. read \texttt{a[top]}\\ 2. \texttt{top} becomes \texttt{top - 1}\\ 3. return what was read
+      \end{block}
+    \end{column}
+  \end{columns}
+  \small \hRemark{Check first}: if the stack is full or empty, \texttt{throw} an exception with a clear message.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Step 3: the small helpers}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=20, firstnumber=20]{codeoutput/IntStack.java}{Java}
+  \small \texttt{toString} is what \texttt{System.out.println(s)} prints: the elements from the bottom to the top.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Compile]{Compile and run}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Tracing the program}
+  \lstcoderightstep[0.52][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/Trace.java}{Java}{codeoutput/Trace.txt}
+  \small Before you click: write down \texttt{a} and \texttt{top} after each line, then compare.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Compile and run in the terminal}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Compile.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{javac Trace.java} also compiles \texttt{IntStack.java}, because \texttt{Trace} uses it. Same commands on \win{} and \mac.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The same trace on paper}
+  \begin{center}\small
+  \begin{tabular}{llll}
+    \toprule
+    \textbf{statement} & \texttt{top} & \textbf{array} \texttt{a} (capacity 4) & \textbf{returns} \\
+    \midrule
+    \texttt{new IntStack(4)} & $-1$ & \begin{tikzpicture}\hStack{0}{4}{-1}{}[0.4][0.35]\end{tikzpicture} & \\
+    \texttt{push(5)}         & 0    & \begin{tikzpicture}\hStack{0}{4}{0}{5}[0.4][0.35]\end{tikzpicture} & \\
+    \texttt{push(8)}         & 1    & \begin{tikzpicture}\hStack{0}{4}{1}{5,8}[0.4][0.35]\end{tikzpicture} & \\
+    \texttt{pop()}           & 0    & \begin{tikzpicture}\hStack{0}{4}{0}{5,8}[0.4][0.35]\end{tikzpicture} & 8 \\
+    \texttt{push(2)}         & 1    & \begin{tikzpicture}\hStack{0}{4}{1}{5,2}[0.4][0.35]\end{tikzpicture} & \\
+    \texttt{push(7)}         & 2    & \begin{tikzpicture}\hStack{0}{4}{2}{5,2,7}[0.4][0.35]\end{tikzpicture} & \\
+    \texttt{peek()}          & 2    & \begin{tikzpicture}\hStack{0}{4}{2}{5,2,7}[0.4][0.35]\end{tikzpicture} & 7 \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \small In row 4 the \texttt{8} is still in the array, but it is above \texttt{top}: it does not belong to the stack and \texttt{push(2)} overwrites it.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Use]{Using the Stack}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A stack you can type to}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=15]{codeoutput/StackCalc.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=16, firstnumber=16]{codeoutput/StackCalc.java}{Java}
+    \end{column}
+  \end{columns}
+  \small \hCode{in.next()} reads one word; \hCode{in.nextInt()} reads the number after \hCode{push}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Running it}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \small Typed commands (here from the file \texttt{StackCalc.in}):
+      \lstcode[basicstyle=\ttfamily\scriptsize, numbers=none]{codeoutput/StackCalc.in}{text}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/StackCalc.txt}}
+    \end{column}
+  \end{columns}
+  \small \win{} and \mac: \texttt{java StackCalc} and type, or \texttt{java StackCalc < StackCalc.in} to read the file.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exceptions keep the stack safe}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}\small
+        \item \texttt{pop} on an empty stack \textbf{throws} \texttt{IllegalStateException}.
+        \item \texttt{StackCalc} \textbf{catches} it and prints the message, then asks for the next command.
+        \item Without \texttt{try}/\texttt{catch} the program would stop with a stack trace.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \lstoutput[basicstyle=\ttfamily\scriptsize, firstline=5, lastline=7]{codeoutput/StackCalc.txt}
+    \end{column}
+  \end{columns}
+  \vspace{0.5em}
+  \small Good rule: a method that cannot do its job \textbf{throws}; the caller decides what to do.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Mistakes]{Common Mistakes}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Mistake 1: \texttt{a[top++]} instead of \texttt{a[++top]}}
+  \lstcoderightstep[0.55][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Bug1.java}{Java}{codeoutput/Bug1.txt}
+
+  \vspace{0.2em}
+  \small \hCode{top} is still \texttt{-1} when it is used: \texttt{a[-1]}. Read the message: \emph{Index -1 out of bounds}, line 6.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Mistake 2: forgetting to move \texttt{top}}
+  \lstcoderightstep[0.55][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/Bug2.java}{Java}{codeoutput/Bug2.txt}
+
+  \vspace{0.2em}
+  \small \hCode{pop} returns the top but leaves it there: the same element comes out forever.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Mistake 3: no check for an empty stack}
+  \lstcoderightstep[0.55][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Bug3.java}{Java}{codeoutput/Bug3.txt}
+
+  \vspace{0.2em}
+  \small The second \hCode{pop} reads \texttt{a[-1]}. A check with a clear message (\texttt{underflow}) is easier to understand.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Mistake 4: the wrong ``full'' test}
+  \lstcoderightstep[0.55][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Bug4.java}{Java}{codeoutput/Bug4.txt}
+
+  \vspace{0.2em}
+  \small With the \hCode{top} convention the stack is full at \hCode{top == a.length - 1}. The test came one step too late.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Mistake 5: printing the whole array}
+  \lstcoderightstep[0.6][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/Bug5.java}{Java}{codeoutput/Bug5.txt}
+
+  \vspace{0.2em}
+  \small Popped elements stay in the array. Only \texttt{a[0..top]} is the stack: the output should be \texttt{1}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Mistakes the compiler finds}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Typos.txt}
+
+  \vspace{0.1em}
+  \small
+  Fix the \emph{first} error first: after adding the \texttt{;}, \texttt{javac} finds the next one. Java is \textbf{case sensitive}:
+  \texttt{Push} is not \texttt{push}, and \texttt{java trace} is not \texttt{java Trace}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{center}\small
+      \begin{tabular}{ll}
+        \toprule
+        \textbf{Operation} & \textbf{Code} \\
+        \midrule
+        empty?   & \texttt{top == -1} \\
+        full?    & \texttt{top == a.length - 1} \\
+        push     & \texttt{a[++top] = x;} \\
+        pop      & \texttt{return a[top--];} \\
+        peek     & \texttt{return a[top];} \\
+        size     & \texttt{return top + 1;} \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Do}
+        \small check empty/full first; draw \texttt{a} and \texttt{top} on paper; test with an empty stack
+      \end{block}
+      \begin{block}{Don't}
+        \small use \texttt{top++} for push; print the whole array; forget \texttt{top-{}-} in pop
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Draw \texttt{a} and \texttt{top} after: \texttt{push(3); push(1); pop(); push(4); push(1); pop(); pop();}
+    \item Add \texttt{isFull()} to \texttt{IntStack} and use it in \texttt{push}.
+    \item Add a command \texttt{clear} to \texttt{StackCalc}.
+    \item Write \texttt{CharStack} (a stack of \texttt{char}) and use it to reverse your name.
+    \item Read numbers until \texttt{0} and print them in reverse order using \texttt{IntStack}.
+    \item Fix \texttt{Bug1} \dots{} \texttt{Bug5}; run them again and compare the output.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

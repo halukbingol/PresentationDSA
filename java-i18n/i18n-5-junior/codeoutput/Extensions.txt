@@ -1,0 +1,7 @@
+en-US                        October 15, 2026             $1,234.50   SUNDAY
+en-US-u-ca-buddhist          October 15, 2569 BE          $1,234.50   SUNDAY
+en-US-u-ca-japanese          October 15, 8 Reiwa          $1,234.50   SUNDAY
+tr-TR-u-ca-islamic-umalqura  Hicri 4 Cemaziyelevvel 1448  ₺1.234,50   MONDAY
+en-US-u-cu-eur               October 15, 2026             €1,234.50   SUNDAY
+en-US-u-fw-mon               October 15, 2026             $1,234.50   MONDAY
+en-US-u-rg-trzzzz            October 15, 2026             TRY1,234.50 MONDAY

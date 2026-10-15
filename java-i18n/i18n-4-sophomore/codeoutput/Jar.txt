@@ -1,0 +1,20 @@
+$ jar --create --file shop.jar --main-class edu.yeditepe.shop.Main -C out .
+$ jar tf shop.jar | grep properties
+edu/yeditepe/shop/i18n/Messages.properties
+edu/yeditepe/shop/i18n/Messages_de.properties
+edu/yeditepe/shop/i18n/Messages_tr.properties
+$ java -jar shop.jar
+Order summary
+3 items
+Total: TRY3,749.70
+Delivery on October 20, 2026
+$ LANG=tr_TR.UTF-8 java -jar shop.jar
+Sipariş özeti
+3 ürün
+Toplam: ₺3.749,70
+20 Ekim 2026 tarihinde teslim
+$ java -Duser.language=de -Duser.country=AT -jar shop.jar
+Bestellübersicht
+3 Artikel
+Summe: TRY 3.749,70
+Lieferung am 20. Oktober 2026

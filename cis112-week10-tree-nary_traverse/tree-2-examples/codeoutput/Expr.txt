@@ -1,0 +1,4 @@
+infix   ((3 + 4) * (5 - 2))
+prefix  * + 3 4 - 5 2
+postfix 3 4 + 5 2 - *
+value   21

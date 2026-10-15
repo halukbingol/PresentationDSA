@@ -1,0 +1,6 @@
+$ java Show.java en-US tr-TR de-DE fr-FR de-CH
+en-US  1,234,567.891  $1,234.50         25%   October 15, 2026
+tr-TR  1.234.567,891  ₺1.234,50         %25   15 Ekim 2026
+de-DE  1.234.567,891  1.234,50 €        25 %  15. Oktober 2026
+fr-FR  1 234 567,891  1 234,50 €        25 %  15 octobre 2026
+de-CH  1’234’567.891  CHF 1’234.50      25%   15. Oktober 2026

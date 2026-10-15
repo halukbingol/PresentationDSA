@@ -1,0 +1,11 @@
+$ java Pseudo.java out/edu/yeditepe/shop/i18n
+$ grep -v "^#" out/edu/yeditepe/shop/i18n/Messages_en_XA.properties
+title=[Ørdér sümmàry ~~~~]
+items=[{0,choice,0#no items|1#one item|1<{0,number,integer} items} ~~~~~~~~~~~~~~~~~~~]
+total=[Tötàl: {0} ~~~]
+delivery=[Délïvéry ön {0} ~~~~~]
+$ java -cp out edu.yeditepe.shop.Main en-XA
+[Ørdér sümmàry ~~~~]
+[3 items ~~~~~~~~~~~~~~~~~~~]
+[Tötàl: TRY3,749.70 ~~~]
+[Délïvéry ön October 20, 2026 ~~~~~]

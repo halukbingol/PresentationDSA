@@ -1,0 +1,6 @@
+tr-TR       [tr_TR, tr, ]
+de-CH-1996  [de_CH_1996, de_CH, de, ]
+sr-Latn-RS  [sr_RS_#Latn, sr__#Latn, sr_RS, sr, ]
+zh-TW       [zh_TW_#Hant, zh__#Hant, zh_TW, zh, ]
+nb-NO       [nb_NO, no_NO, nb, no, ]
+bundle name: Messages_sr_Latn_RS

@@ -1,0 +1,14 @@
+insert 1: height 0, rotations so far 0
+insert 2: height 1, rotations so far 0
+insert 3: height 1, rotations so far 1
+insert 4: height 2, rotations so far 1
+insert 5: height 2, rotations so far 2
+insert 6: height 2, rotations so far 3
+insert 7: height 2, rotations so far 4
+      7
+   6
+      5
+4
+      3
+   2
+      1

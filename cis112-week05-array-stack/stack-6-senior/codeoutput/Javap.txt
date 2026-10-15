@@ -1,0 +1,16 @@
+$ javac Calc.java
+$ java Calc
+14
+$ javap -c Calc | sed -n '/static int f/,/ireturn/p'
+  static int f(int, int);
+    Code:
+       0: iload_0
+       1: iload_1
+       2: iadd
+       3: iconst_2
+       4: imul
+       5: ireturn
+$ javap -v Calc | grep "stack="
+      stack=1, locals=1, args_size=1
+      stack=2, locals=2, args_size=2
+      stack=3, locals=1, args_size=1

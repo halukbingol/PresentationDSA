@@ -1,0 +1,13 @@
+$ file *.properties
+Escaped_tr.properties: ASCII text
+Texts_tr.properties:   ISO-8859 text
+Utf8_tr.properties:    Unicode text, UTF-8 text
+$ java Show.java Texts
+Texts: Çýkýþ
+$ java Show.java Escaped
+Escaped: Çıkış
+$ java Show.java Utf8
+Utf8: Çıkış
+$ iconv -f ISO-8859-9 -t UTF-8 Texts_tr.properties > tmp && mv tmp Texts_tr.properties
+$ java Show.java Texts
+Texts: Çıkış

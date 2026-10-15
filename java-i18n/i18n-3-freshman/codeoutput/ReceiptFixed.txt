@@ -1,0 +1,4 @@
+$ LANG=tr_TR.UTF-8 java Receipt.java
+for a file:   1249.90
+for a person: 1.249,90 TL
+default:      1.249,90

@@ -1,0 +1,507 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Stacks -- Sophomore Level: Generic Stacks, Interfaces and Tests
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+% algorithm2e set-up (the package is loaded by hblibPresentation)
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetKwProg{Fn}{function}{}{end}
+\SetKw{KwError}{error}
+
+% ---------------------------------------------------------------------
+\title{Stacks}
+\subtitle{Sophomore Level: Generic Stacks, Interfaces and Tests}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-4}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={5-7}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Design]{Interface and Implementation}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Separate \emph{what} from \emph{how}}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/StackADT.java}{Java}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/StackUnderflowException.java}{Java}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item The \textbf{interface} is the ADT: the operations, nothing about arrays.
+        \item Callers write \texttt{StackADT<String> s = new ArrayStack<>()}; switching to a linked implementation changes \textbf{one} line.
+        \item \texttt{extends Iterable<T>}: every stack works in a for-each loop.
+        \item An \textbf{unchecked} exception (\texttt{RuntimeException}): popping an empty stack is a programming error, like an array index error.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{ArrayStack<T>}: the implementation}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=17]{codeoutput/ArrayStack.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=18, lastline=33, firstnumber=18]{codeoutput/ArrayStack.java}{Java}
+    \end{column}
+  \end{columns}
+  \small \texttt{@Override} asks the compiler to check that the method really is in \texttt{StackADT}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Iterating from the top}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=34, firstnumber=34]{codeoutput/ArrayStack.java}{Java}
+  \begin{itemize}\small
+    \item An \textbf{anonymous class} implements \texttt{Iterator<T>}; it can read \texttt{a} and \texttt{size} of the stack.
+    \item It starts at the top (\texttt{size - 1}) and walks down: the order \texttt{pop} would give, without removing anything.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Programming to the interface}
+  \lstcoderightstep[0.6][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/UseStack.java}{Java}{codeoutput/UseStack.txt}
+
+  \vspace{0.2em}
+  \small The iterator and \texttt{toString} go from the \textbf{top}: the order in which \texttt{pop} would return the elements.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Generics]{Generics and Arrays}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Why not \texttt{new T[n]}?}
+  \lstcoderightstep[0.5][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\tiny]{codeoutput/GenericArray.java}{Java}{codeoutput/GenericArray.txt}
+
+  \vspace{0.2em}
+  \small Generic types are \textbf{erased} at run time: the JVM does not know what \texttt{T} is, so it cannot create a \texttt{T[]}.
+  We create \texttt{Object[]} and cast it to \texttt{T[]} once, with \texttt{@SuppressWarnings("unchecked")}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The cast is safe here, but only inside}
+  \begin{itemize}
+    \item \hCode{(T[]) new Object[2]} is an \hCode{Object[]} that \emph{pretends} to be a \hCode{T[]}.
+    \item It is safe as long as the array \textbf{never leaves} the class: only \hCode{T}s are put in, only \hCode{T}s come out.
+    \item A method \hCode{T[] toArray() \{ return a; \}} would break: the caller gets an \hCode{Object[]} and a \hCode{ClassCastException}.
+    \item Alternatives: keep \hCode{Object[] a} and cast each element on the way out, or use \hCode{ArrayList<T>} inside.
+  \end{itemize}
+  \begin{block}{Primitive types}
+    \small \hCode{ArrayStack<int>} is not allowed; \hCode{ArrayStack<Integer>} \textbf{boxes} every \hCode{int} into an object.
+    For many numbers, a special \hCode{IntStack} with \hCode{int[]} is faster and smaller (junior deck).
+  \end{block}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Memory]{Resizing and Memory}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Copies]{How much copying?}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Counting the copies}
+  \lstcode[basicstyle=\ttfamily\tiny, lastline=15]{codeoutput/CopyCount.java}{Java}
+  \lstcode[basicstyle=\ttfamily\tiny, firstline=16, firstnumber=16]{codeoutput/CopyCount.java}{Java}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Counting the copies: the result}
+  \lstoutput[basicstyle=\ttfamily\footnotesize]{codeoutput/CopyCount.txt}
+  \begin{itemize}\small
+    \item Doubling copies fewer than $2n$ elements, growing by 1.5 about $2n$ to $3n$: $O(n)$ in total, $O(1)$ per push.
+    \item Adding 100 each time copies about $\frac{n^{2}}{200}$ elements: 5 billion for a million pushes.
+    \item The program only counts; it does not allocate the arrays.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Amortized cost of doubling}
+  For $n$ pushes with doubling, the copies are $1 + 2 + 4 + \dots + 2^{k}$ with $2^{k} < n$, so
+  \[
+  	\sum_{i=0}^{k} 2^{i} = 2^{k+1} - 1 < 2n
+  \]
+  \[
+  	\text{cost of } n \text{ pushes} \le n + 2n = 3n \quad\Rightarrow\quad \text{amortized cost per push} \le 3 = O(1)
+  \]
+  With growth by a constant $c$, the copies are $c + 2c + 3c + \dots$:
+  \[
+  	\sum_{i=1}^{n/c} i \cdot c \approx \frac{n^{2}}{2c} = O(n^{2})
+  \]
+  \begin{itemize}\small
+    \item In \texttt{CopyCount}: doubling copied $1.05n$ elements, adding 100 copied $5\,000n$ for $n = 10^{6}$.
+    \item Any growth by a \textbf{factor} ($\times 2$, $\times 1.5$) gives $O(1)$ amortized; a factor near 1 copies more often, but wastes less memory.
+    \item Shrink to half at one quarter full: after a resize the array is half full, so at least $\frac{n}{4}$ operations pass before the next one.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Loitering]{Loitering}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Loitering: popped, but not garbage}
+  \lstcoderightstep[0.62][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/Loitering.java}{Java}{codeoutput/Loitering.txt}
+
+  \vspace{0.2em}
+  \small A popped slot that still points to the object keeps it alive: a \textbf{memory leak} in Java. \texttt{a[size] = null} fixes it.
+  (Whether \hCode{System.gc()} runs at once depends on the JVM; with the default G1 collector it does.)
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Testing]{Testing a Stack}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Tests without a framework}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=18]{codeoutput/TestArrayStack.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=19, firstnumber=19]{codeoutput/TestArrayStack.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Test results}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/TestArrayStack.txt}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}\small
+        \item Each test checks one rule of the ADT.
+        \item Test the \textbf{edges}: the empty stack, one element, the moment the array grows (2, 4, 8, \dots).
+        \item 1000 pushes force 9 resizes; 1000 pops force the shrinking.
+        \item Run the tests after \textbf{every} change.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The same tests with JUnit 5}
+  \small Each \texttt{check} becomes a method marked \texttt{@Test}:
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=Java, basicstyle=\ttfamily\scriptsize]
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+class ArrayStackTest {
+    @Test void newStackIsEmpty() { assertTrue(new ArrayStack<Integer>().isEmpty()); }
+
+    @Test void lifoOrder() {
+        StackADT<Integer> s = new ArrayStack<>();
+        for (int i = 0; i < 1000; i++) s.push(i);
+        for (int i = 999; i >= 0; i--) assertEquals(i, s.pop());
+    }
+
+    @Test void popOnEmptyThrows() {
+        assertThrows(StackUnderflowException.class, () -> new ArrayStack<Integer>().pop());
+    }
+}
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+  \small \hRemark{Not run here} (JUnit is downloaded by Maven or Gradle). In Eclipse or IntelliJ: \emph{Run As, JUnit Test},
+  the same on \win{} and \mac.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Shunting yard]{Infix to Postfix}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Dijkstra's shunting-yard algorithm}
+  \begin{columns}[T]
+    \begin{column}{0.6\textwidth}
+      \SetAlFnt{\footnotesize}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V alg
+%: -Alg. 
+\begin{algorithm}[H]
+  \caption{InfixToPostfix}
+  \KwIn{tokens of an infix expression}
+  \KwOut{the same expression in postfix}
+  $ops \gets$ empty stack\;
+  \ForEach{token $t$}{
+    \uIf{$t$ is a number}{output $t$\;}
+    \uElseIf{$t$ is \texttt{(}}{push $t$\;}
+    \uElseIf{$t$ is \texttt{)}}{pop and output until \texttt{(}; pop the \texttt{(}\;}
+    \Else{
+      \While{top of $ops$ is an operator with precedence $\ge$ that of $t$}{pop and output\;}
+      push $t$\;
+    }
+  }
+  pop and output the rest\;
+\end{algorithm}
+% +++++++++++++++++++++++++++++++++++++++ A alg
+
+    \end{column}
+    \begin{column}{0.36\textwidth}
+      \begin{itemize}\small
+        \item Operators wait on a stack until an operator with \textbf{lower} precedence comes.
+        \item $\ge$ makes \texttt{-} and \texttt{/} \textbf{left associative}: \texttt{10 - 4 - 3} is \texttt{(10 - 4) - 3}.
+        \item Brackets: \texttt{(} waits on the stack, \texttt{)} empties it back to the \texttt{(}.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Shunting yard in Java}
+  \lstcode[basicstyle=\ttfamily\tiny, lastline=24]{codeoutput/InfixToPostfix.java}{Java}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Infix, postfix, value}
+  \lstcoderightstep[0.5][basicstyle=\ttfamily\tiny, firstline=26, firstnumber=26][basicstyle=\ttfamily\tiny]{codeoutput/InfixToPostfix.java}{Java}{codeoutput/InfixToPostfix.txt}
+
+  \vspace{0.2em}
+  \small Two stacks: one of \texttt{String} for the operators, one of \texttt{Integer} for the values; the same \texttt{ArrayStack} class.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Library]{The Library: Deque}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{Deque} methods for a stack}
+  \begin{center}\small
+  \begin{tabular}{llll}
+    \toprule
+    \textbf{Stack operation} & \textbf{\texttt{Deque} method} & \textbf{same as}         & \textbf{when empty} \\
+    \midrule
+    push                     & \hCode{push(x)}               & \hCode{addFirst(x)}     & -- \\
+    pop                      & \hCode{pop()}                 & \hCode{removeFirst()}   & \texttt{NoSuchElementException} \\
+    pop, no exception        & \hCode{poll()}                & \hCode{pollFirst()}     & returns \texttt{null} \\
+    peek                     & \hCode{peek()}                & \hCode{peekFirst()}     & returns \texttt{null} \\
+    peek, with exception     & \hCode{element()}             & \hCode{getFirst()}      & \texttt{NoSuchElementException} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.3em}
+  \begin{itemize}\small
+    \item \hCode{Deque<T> s = new ArrayDeque<>();} the top is the \textbf{first} element.
+    \item \hCode{ArrayDeque} does not accept \texttt{null}: \hCode{null} is the ``empty'' answer of \texttt{poll} and \texttt{peek}.
+    \item \hCode{ArrayDeque} is not thread safe; \hCode{java.util.Stack} is, but slower (senior deck).
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{Deque} in action}
+  \lstcodedownstep[basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/DequeMethods.java}{Java}{codeoutput/DequeMethods.txt}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Recipes}
+  \begin{center}\footnotesize
+  \begin{tabular}{ll}
+    \toprule
+    \textbf{Goal} & \textbf{How} \\
+    \midrule
+    a stack of anything            & \texttt{interface StackADT<T>}, \texttt{class ArrayStack<T> implements StackADT<T>} \\
+    a generic array                & \texttt{(T[]) new Object[n]} with \texttt{@SuppressWarnings("unchecked")} \\
+    $O(1)$ amortized push          & double when full; halve at one quarter \\
+    no memory leak                 & \texttt{a[size] = null} after pop \\
+    for-each over a stack          & \texttt{extends Iterable<T>}, an \texttt{Iterator} from the top \\
+    clear errors                   & own unchecked \texttt{StackUnderflowException} \\
+    infix to postfix               & shunting yard: operators wait on a stack \\
+    in real programs               & \texttt{Deque<T> s = new ArrayDeque<>()} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Write \texttt{LinkedStack<T> implements StackADT<T>}; run \texttt{TestArrayStack} on it by changing one line.
+    \item Add \texttt{T[] toArray(T[] proto)} to \texttt{ArrayStack} that returns a correct array (hint: \texttt{Arrays.copyOf(a, size, \dots)}).
+    \item Change \texttt{CopyCount} to also count the copies made when shrinking during $n$ pops.
+    \item Add \texttt{\textasciicircum} (power, \textbf{right} associative) to \texttt{InfixToPostfix}. Which comparison changes?
+    \item Make the iterator \textbf{fail-fast}: throw \texttt{ConcurrentModificationException} if the stack changes during a for-each.
+    \item Port the tests to JUnit 5 and run them in your IDE.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

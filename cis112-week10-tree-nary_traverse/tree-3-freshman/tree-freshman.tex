@@ -1,0 +1,483 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Trees -- Freshman Level: Your First Binary Tree in Java
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+% algorithm2e set-up (the package is loaded by hblibPresentation)
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetKwProg{Fn}{function}{}{end}
+\SetKw{KwError}{error}
+
+% ---------------------------------------------------------------------
+\title{Trees}
+\subtitle{Freshman Level: Your First Binary Tree in Java}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-4}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={5-7}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Setup]{Getting Ready}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What you need}
+  \begin{itemize}
+    \item A JDK 17 or newer (\texttt{javac} and \texttt{java}), a terminal and an editor or IDE.
+    \item One folder, e.g.\ \texttt{trees}, with all \texttt{.java} files of this deck.
+  \end{itemize}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Windows (Command Prompt)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\scriptsize]
+java -version
+cd trees
+javac Build.java
+java Build
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{macOS (Terminal)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\scriptsize]
+java -version
+cd trees
+javac Build.java
+java Build
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Check.txt}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Idea]{The Idea}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A binary tree of numbers}
+  \begin{columns}[T]
+    \begin{column}{0.44\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=2.4cm}, level 2/.style={sibling distance=1.2cm}, scale=1.0, transform shape]
+  \node[hnode, hhot] {8} child {node[hnode] {3} child {node[hnode, hleaf] {1}} child {node[hnode, hleaf] {6}}} child {node[hnode] {10} child[missing] child {node[hnode, hleaf] {14}}};
+\end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \begin{itemize}
+        \item The \textbf{root} is \texttt{8} (green).
+        \item Every node has a \textbf{left} and a \textbf{right} child, each may be missing.
+        \item \texttt{1}, \texttt{6}, \texttt{14} have no children: \textbf{leaves} (yellow).
+        \item \texttt{10} has only a right child.
+        \item Below each node hangs a smaller tree: a \textbf{subtree}.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Build]{Building a Tree in Java}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Step 1: a class for one node}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/IntNode.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[box/.style={draw, thick, minimum width=0.9cm, minimum height=0.55cm, font=\small}]
+        \node[box, fill=colorTop!50] (v) at (0,0) {8};
+        \node[box] (l) at (-0.9,0) {left}; \node[box] (r) at (0.9,0) {right};
+        \node[font=\scriptsize] at (-0.9,-0.6) {\texttt{null}}; \node[font=\scriptsize] at (0.9,-0.6) {\texttt{null}};
+      \end{tikzpicture}
+      \end{center}
+      \begin{itemize}\small
+        \item \texttt{left} and \texttt{right} are \textbf{references} to other \texttt{IntNode} objects.
+        \item A new node has no children: both are \texttt{null}.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Step 2: make the nodes, then link them}
+  \lstcoderightstep[0.6][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Build.java}{Java}{codeoutput/Build.txt}
+
+  \vspace{0.2em}
+  \small \texttt{root.left.right} follows two references: from \texttt{8} go left to \texttt{3}, then right to \texttt{6}. \texttt{10} has no left child: \texttt{null}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Recursion]{Thinking Recursively}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A tree is made of smaller trees}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=2.4cm}, level 2/.style={sibling distance=1.2cm}, scale=1.0, transform shape]
+  \node[hnode] {8} child {node[hnode, hdone] {3} child {node[hnode, hdone] {1}} child {node[hnode, hdone] {6}}} child {node[hnode] {10} child[missing] child {node[hnode] {14}}};
+\end{tikzpicture}
+      \end{center}
+      \small red: the left subtree of \texttt{8}
+    \end{column}
+    \begin{column}{0.56\textwidth}
+      To count the nodes of a tree:
+      \begin{enumerate}\small
+        \item if the tree is \textbf{empty} (\texttt{null}): 0 \hfill \emph{base case}
+        \item otherwise: 1 (the root) $+$ the nodes of the left subtree $+$ the nodes of the right subtree \hfill \emph{recursive case}
+      \end{enumerate}
+      \[
+      	\mathrm{size}(8) = 1 + \mathrm{size}(3) + \mathrm{size}(10) = 1 + 3 + 2 = 6
+      \]
+      \small The method trusts itself for the smaller trees. Every call is on a \textbf{smaller} tree, so it ends at the \texttt{null}s.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Size, sum and maximum}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=18]{codeoutput/Recursion.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=19, firstnumber=19]{codeoutput/Recursion.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Size, sum and maximum: the output}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Recursion.txt}
+    \end{column}
+    \begin{column}{0.56\textwidth}
+      \begin{itemize}\small
+        \item Same pattern three times: handle the empty tree, then combine the root with the answers of the two subtrees.
+        \item \texttt{max} has no answer for the empty tree, so it checks the children before calling itself.
+        \item $\mathrm{sum} = 8 + 3 + 10 + 1 + 6 + 14 = 42$.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Traversal]{Visiting Every Node}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Watching preorder work}
+  \lstcoderightstep[0.56][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/TracePre.java}{Java}{codeoutput/TracePre.txt}
+
+  \vspace{0.2em}
+  \small Each level of indentation is one level deeper in the recursion. Every node and every \texttt{null} is reached exactly once.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Three orders}
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=2.2cm}, level 2/.style={sibling distance=1.1cm}, scale=1.0, transform shape]
+  \node[hnode] {8} child {node[hnode] {3} child {node[hnode] {1}} child {node[hnode] {6}}} child {node[hnode] {10} child[missing] child {node[hnode] {14}}};
+\end{tikzpicture}
+      \end{center}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/ThreeOrders.txt}}
+    \end{column}
+    \begin{column}{0.62\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=20]{codeoutput/ThreeOrders.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Doing it on paper}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=2.2cm}, level 2/.style={sibling distance=1.1cm}, scale=1.0, transform shape]
+  \node[hnode, horder=1] {8} child {node[hnode, horder=2] {3} child {node[hnode, horder=3] {1}} child {node[hnode, horder=4] {6}}} child {node[hnode, horder=5] {10} child[missing] child {node[hnode, horder=6] {14}}};
+\end{tikzpicture}
+      \end{center}
+      \small numbers: the preorder
+    \end{column}
+    \begin{column}{0.56\textwidth}
+      \begin{itemize}\small
+        \item \textbf{preorder}: write the node \emph{when you arrive}, then do the left side, then the right side.
+        \item \textbf{inorder}: finish the whole \emph{left} side first, write the node, then the right side.
+        \item \textbf{postorder}: finish \emph{both} sides first, write the node last. The root is always last.
+        \item Check: the root is first in preorder and last in postorder.
+        \item Here inorder gives \texttt{1 3 6 8 10 14}: sorted, because every left subtree is smaller and every right subtree larger
+              (a \emph{binary search tree}).
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Mistakes]{Common Mistakes}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Mistake 1: forgetting the \texttt{null} check}
+  \lstcoderightstep[0.5][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Mistake1.java}{Java}{codeoutput/Mistake1.txt}
+
+  \vspace{0.2em}
+  \small Java names the problem: \texttt{"t" is null}. A missing child is \texttt{null}, and \texttt{null.left} is impossible. Base case first!
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Mistake 2: recursion that does not get smaller}
+  \lstcoderightstep[0.54][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny, lastline=6]{codeoutput/Mistake2.java}{Java}{codeoutput/Mistake2.txt}
+
+  \vspace{0.2em}
+  \small \texttt{size(t)} calls \texttt{size(t)} again and again: the call stack fills up. Every recursive call must be on a \textbf{smaller} tree. (The real trace has 1024 lines.)
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Mistake 3: \texttt{||} instead of \texttt{\&\&}}
+  \lstcoderightstep[0.6][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Mistake3.java}{Java}{codeoutput/Mistake3.txt}
+
+  \vspace{0.2em}
+  \small Tree: our tree plus \texttt{12} and \texttt{16} below \texttt{14}. \texttt{10} has one child, so \texttt{||} calls it a leaf and never looks below it. A leaf has \textbf{no} children: both \texttt{null}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Mistake 4: linking to the wrong side}
+  \lstcoderightstep[0.54][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Mistake4.java}{Java}{codeoutput/Mistake4.txt}
+
+  \vspace{0.2em}
+  \small The second assignment \textbf{replaces} the first: \texttt{3} is lost and \texttt{root.right} is still \texttt{null}. Draw the tree after every link.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Mistakes the compiler finds}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Typos.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{left} holds an \texttt{IntNode}, not an \texttt{int}: write \texttt{root.left = new IntNode(3)}. Field names must be spelled exactly: \texttt{right}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=Java, basicstyle=\ttfamily\footnotesize]
+static int f(IntNode t) {
+    if (t == null) return ...;      // empty tree
+    ... t.value ...                 // the root
+    ... f(t.left) ... f(t.right)    // the subtrees
+}
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \small This pattern solves most tree problems: size, sum, height, search, printing.
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \begin{block}{Do}
+        \small check \texttt{null} first; draw the tree; trace small examples; test the empty tree and a single node
+      \end{block}
+      \begin{block}{Don't}
+        \small call the method on the same node; use \texttt{||} for ``leaf''; overwrite a link by accident
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Draw the tree that \texttt{Build} makes; write its preorder, inorder and postorder by hand, then run \texttt{ThreeOrders}.
+    \item Write \texttt{min(IntNode t)} and \texttt{countEven(IntNode t)}.
+    \item Write \texttt{height(IntNode t)} (the empty tree has height $-1$). What is the height of the tree on these slides?
+    \item Write \texttt{contains(IntNode t, int x)}: is \texttt{x} somewhere in the tree?
+    \item Build the tree for the numbers \texttt{5 2 9 1 4} by hand, so that inorder prints them sorted.
+    \item Fix \texttt{Mistake1} \dots{} \texttt{Mistake4} and run them again.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

@@ -1,0 +1,5 @@
+UTF-8      61 C4 9F 61 C3 A7 
+ISO-8859-9 61 F0 61 E7 
+UTF-16BE   00 61 01 1F 00 61 00 E7 
+read as Windows-1252: aÄŸaÃ§
+read as UTF-8:        ağaç

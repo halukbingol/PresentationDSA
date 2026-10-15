@@ -1,0 +1,7 @@
+73 74 72 61 DF 65          upper=STRASSE     lower(tr)=straße      length 6 -> 7 / 6
+FB01 6C 65                 upper=FILE        lower(tr)=ﬁle         length 3 -> 4 / 3
+130 73 74 61 6E 62 75 6C   upper=İSTANBUL    lower(tr)=istanbul    length 8 -> 8 / 9
+44 130 59 41 52 42 41 4B 49 52 upper=DİYARBAKIR  lower(tr)=diyarbakır  length 10 -> 10 / 11
+İ lower(ROOT): 69 307
+char level:    ß (no change)
+straße equalsIgnoreCase STRASSE: false

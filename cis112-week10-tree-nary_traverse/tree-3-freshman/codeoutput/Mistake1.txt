@@ -1,0 +1,5 @@
+Exception in thread "main" java.lang.NullPointerException: Cannot read field "left" because "t" is null
+	at Mistake1.size(Mistake1.java:3)
+	at Mistake1.size(Mistake1.java:3)
+	at Mistake1.size(Mistake1.java:3)
+	at Mistake1.main(Mistake1.java:9)

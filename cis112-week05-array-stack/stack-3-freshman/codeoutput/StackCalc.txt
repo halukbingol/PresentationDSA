@@ -1,0 +1,10 @@
+commands: push N, pop, peek, size, quit
+push 4  -> [4] <- top
+push 9  -> [4, 9] <- top
+peek    -> 9
+pop     -> 9, now [4] <- top
+pop     -> 4, now [] <- top
+pop     -> error: underflow: stack is empty
+size    -> 0
+jump    -> unknown command
+bye

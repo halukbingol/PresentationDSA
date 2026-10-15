@@ -1,0 +1,5 @@
+4 3 2 1   ArrayDeque: no error, 99 not visited; now [99, 4, 3, 2, 1]
+1 2 3 Exception in thread "main" java.util.ConcurrentModificationException
+	at java.base/java.util.Vector$Itr.checkForComodification(Vector.java:1292)
+	at java.base/java.util.Vector$Itr.next(Vector.java:1248)
+	at FailFast.main(FailFast.java:17)

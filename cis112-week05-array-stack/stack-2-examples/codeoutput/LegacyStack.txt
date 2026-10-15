@@ -1,0 +1,8 @@
+Stack      [a, b, c]   peek c
+ArrayDeque [c, b, a]   peek c
+old.search("a") = 3
+after add(0, "z"): [z, a, b, c]
+Exception in thread "main" java.util.EmptyStackException
+	at java.base/java.util.Stack.peek(Stack.java:103)
+	at java.base/java.util.Stack.pop(Stack.java:85)
+	at LegacyStack.main(LegacyStack.java:19)

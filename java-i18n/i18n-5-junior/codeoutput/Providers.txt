@@ -1,0 +1,11 @@
+$ java -XshowSettings:locale -version 2>&1 | head -4
+Locale settings:
+    default locale = English (United States)
+    default display locale = English (United States)
+    default format locale = English (United States)
+$ java Prov.java
+1’234’567.5 | 2 Millionen | 15 Ekim 2026 Perşembe
+$ java -Djava.locale.providers=COMPAT Prov.java
+Oct 15, 2026 12:11:10 PM sun.util.locale.provider.LocaleProviderAdapter <clinit>
+WARNING: COMPAT locale provider will be removed in a future release
+1'234'567.5 | 2 million | 15 Ekim 2026 Perşembe

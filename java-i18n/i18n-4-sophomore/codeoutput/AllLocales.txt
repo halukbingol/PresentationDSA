@@ -1,0 +1,22 @@
+$ for tag in en-US en-GB tr-TR de-DE de-CH fr-FR pt-BR; do echo "== $tag"; java -cp out edu.yeditepe.shop.Main $tag | tail -2; done
+== en-US
+Total: TRY3,749.70
+Delivery on October 20, 2026
+== en-GB
+Total: TRY3,749.70
+Delivery on 20 October 2026
+== tr-TR
+Toplam: ₺3.749,70
+20 Ekim 2026 tarihinde teslim
+== de-DE
+Summe: 3.749,70 TRY
+Lieferung am 20. Oktober 2026
+== de-CH
+Summe: TRY 3’749.70
+Lieferung am 20. Oktober 2026
+== fr-FR
+Total: 3 749,70 TRY
+Delivery on 20 octobre 2026
+== pt-BR
+Total: TRY 3.749,70
+Delivery on 20 de outubro de 2026

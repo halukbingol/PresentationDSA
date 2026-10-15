@@ -1,0 +1,6 @@
+Deque iterates top first:    [c, b, a]
+Stack iterates bottom first: [a, b, c]
+deque.reversed():            [a, b, c]
+stack.reversed():            [c, b, a]
+getFirst / getLast:          c c
+after add(1, X), remove(a):  [X, b, c]

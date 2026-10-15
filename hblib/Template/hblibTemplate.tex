@@ -22,6 +22,13 @@
 
 \documentclass[aspectratio=169,10pt,compress]{beamer}
 
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstcodedown, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V beamer
 	\useoutertheme{split}
 	\useinnertheme{rounded}
@@ -32,11 +39,6 @@
 	% "i / N" on every frame comes from hblibPresentation.sty (\insertshorttitle)
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A beamer
 
-%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
-	\usepackage{../../hblib/hblibPresentation} % lib presentation 
-	\usepackage{../../hblib/hblibCodeoutput} % lib code listing
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
-
 
 % xcolor, array, listings, tikz and algorithm2e come from the hblib libraries
 \usepackage[T1]{fontenc}
@@ -46,14 +48,14 @@
 % ---------------------------------------------------------------------
 %  algorithm2e set-up (the package is loaded by hblibPresentation)
 % ---------------------------------------------------------------------
-\SetAlCapFnt{\small}
-\SetAlCapNameFnt{\small}
-\DontPrintSemicolon
-\SetKwProg{Fn}{function}{}{end}
-\SetKwFunction{FDijkstra}{Dijkstra}
-\SetKwFunction{FExtractMin}{ExtractMin}
-\SetKwFunction{FDecreaseKey}{DecreaseKey}
-\SetKw{KwNil}{nil}
+%\SetAlCapFnt{\small}
+%\SetAlCapNameFnt{\small}
+%\DontPrintSemicolon
+%\SetKwProg{Fn}{function}{}{end}
+%\SetKwFunction{FDijkstra}{Dijkstra}
+%\SetKwFunction{FExtractMin}{ExtractMin}
+%\SetKwFunction{FDecreaseKey}{DecreaseKey}
+%\SetKw{KwNil}{nil}
 
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 
@@ -63,8 +65,11 @@
 %\newcommand{\cmd}[1]{\texttt{\color{gitred}#1}}
 
 % ---------------------------------------------------------------------
-\title{hb Cis \LaTeX\ Template}
-\subtitle{A Template That Reads Both from Files}
+\title{
+	\LaTeX\ Template for \\
+	cis11x Presentations
+}
+%\subtitle{A Template That Reads Both from Files}
 \author[Bingol]{Haluk O. Bingol}
 
 \institute[FCIS]{
@@ -91,7 +96,14 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Outline}
-  \tableofcontents[hideallsubsections]
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-4}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={5-20}, hideallsubsections]
+    \end{column}
+  \end{columns}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -235,6 +247,63 @@
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Naive]{The naive algorithm}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The naive algorithm}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \SetAlFnt{\small}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V alg
+%: -Alg. 
+
+\SetKw{KwAnd}{and}
+
+\begin{algorithm}[H]
+  \caption{NaiveMatcher($T$, $P$)}
+  $n \leftarrow |T|$, \quad $m \leftarrow |P|$\;
+  \For{$s \leftarrow 0$ \KwTo $n - m$}{
+    $j \leftarrow 0$\;
+    \While{$j < m$ \KwAnd $T[s + j] = P[j]$}{
+      $j \leftarrow j + 1$\;
+    }
+    \If{$j = m$}{
+      report a match at shift $s$\;
+    }
+    
+      								\tcp*{this and the following two lines are dummy}
+      $a \gets b$						\tcp*{a comment}
+      $a \gets b$						\tcp*{very very long comment}
+
+  }
+\end{algorithm}
+% +++++++++++++++++++++++++++++++++++++++ A alg
+
+
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item Try every shift; compare left to right until a mismatch
+        \item \textbf{Worst case} $\Theta((n - m + 1) m)$: $T = \texttt{a}^{n-1}\texttt{b}$, $P = \texttt{a}^{m-1}\texttt{b}$
+        \item \textbf{Typical text}: mismatches come early, so it is fast in practice
+        \item Java's \texttt{String.indexOf} is essentially this (with tuned, vectorized loops)
+        \item The weakness: after a mismatch it \textbf{forgets} what it has already seen
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \subsection[Dijkstra]{Dijkstra's algorithm}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
@@ -250,6 +319,16 @@
 
 % +++++++++++++++++++++++++++++++++++++++ V alg
 %: -Alg. 
+
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\DontPrintSemicolon
+\SetKwProg{Fn}{function}{}{end}
+\SetKwFunction{FDijkstra}{Dijkstra}
+\SetKwFunction{FExtractMin}{ExtractMin}
+\SetKwFunction{FDecreaseKey}{DecreaseKey}
+\SetKw{KwNil}{nil}
+
 \begin{algorithm}[H]
   \caption{Dijkstra's algorithm}
   \KwIn{graph $G = (V, E)$, weights $w(u, v) \ge 0$, source $s$}

@@ -1,0 +1,8 @@
+a[0] = A   left B   right C   parent -
+a[1] = B   left D   right E   parent A
+a[2] = C   left F   right -   parent A
+a[3] = D   left -   right -   parent B
+a[4] = E   left -   right -   parent B
+a[5] = F   left -   right -   parent C
+preorder:    A B D E C F 
+level order: the array itself, A B C D E F

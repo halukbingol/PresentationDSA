@@ -1,0 +1,4 @@
+1
+Exception in thread "main" java.lang.IllegalStateException: underflow: stack is empty
+	at IntStack.pop(IntStack.java:16)
+	at Underflow.main(Underflow.java:6)

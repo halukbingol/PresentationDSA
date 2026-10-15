@@ -1,0 +1,16 @@
+$ mkdir other
+$ cd other
+$ echo Ali | java ../Greeter.java 2>&1 | head -2
+Exception in thread "main" java.util.MissingResourceException: Can't find bundle for base name Texts, locale en_US
+	at java.base/java.util.ResourceBundle.throwMissingResourceException(ResourceBundle.java:2059)
+$ cd ..
+$ grep Merhaba Texts_tr.properties
+helo=Merhaba
+$ echo Ali | java -Duser.language=tr Greeter.java
+Adınız nedir? Hello, Ali!
+$ grep getString Greeter.java
+        System.out.print(text.getString("ask") + " ");
+        System.out.println(text.getString("bye") + ", " + name + "!");
+$ echo Ali | java -Duser.language=tr Greeter.java 2>&1 | head -2
+Adınız nedir? Exception in thread "main" java.util.MissingResourceException: Can't find resource for bundle java.util.PropertyResourceBundle, key bye
+	at java.base/java.util.ResourceBundle.getObject(ResourceBundle.java:567)

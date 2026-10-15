@@ -1,0 +1,10 @@
+$ ls
+Greeter.java
+Texts.properties
+Texts_tr.properties
+$ echo Ayşe | java Greeter.java
+What is your name? Hello, Ayşe!
+$ echo Ayşe | LANG=tr_TR.UTF-8 java Greeter.java
+Adınız nedir? Merhaba, Ayşe!
+$ echo Ayşe | java -Duser.language=tr Greeter.java
+Adınız nedir? Merhaba, Ayşe!

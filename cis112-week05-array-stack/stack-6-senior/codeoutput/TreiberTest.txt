@@ -1,0 +1,3 @@
+sum pushed 40,000,400,000
+sum popped + left 40,000,400,000
+nothing lost

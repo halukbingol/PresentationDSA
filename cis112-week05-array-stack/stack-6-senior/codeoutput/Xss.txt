@@ -1,0 +1,8 @@
+$ java -Xss256k Depth
+depth reached: 1,795
+$ java -Xss1m Depth
+depth reached: 10,732
+$ java -Xss8m Depth
+depth reached: 206,806
+$ java -XX:+PrintFlagsFinal -version 2>/dev/null | grep -E " ThreadStackSize "
+     intx ThreadStackSize                          = 1024                                   {pd product} {default}

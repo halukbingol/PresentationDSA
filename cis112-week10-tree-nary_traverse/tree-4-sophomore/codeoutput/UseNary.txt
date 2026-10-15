@@ -1,0 +1,10 @@
+Book  (3 children)
+  1 Trees  (2 children)
+    1.1 Terms
+    1.2 Binary trees
+  2 Traversal  (3 children)
+    2.1 Depth first
+    2.2 Breadth first
+    2.3 N-ary trees
+  3 Exercises
+size 9, height 2

@@ -1,0 +1,10 @@
+        plum
+    pear
+mango
+        kiwi
+    fig
+            banana
+        apple
+inorder: apple banana fig kiwi mango pear plum 
+search kiwi: mango fig kiwi  -> true
+search lime: mango fig kiwi null  -> false

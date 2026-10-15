@@ -1,0 +1,5 @@
+al ala alan ağaç ağır ağız el elif elma 
+words starting with "ağ": 3
+words starting with "al": 3
+words starting with "el": 3
+words starting with "x": 0

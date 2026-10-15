@@ -1,0 +1,4 @@
+TRY  digits=2  symbol(en)=TRY   Türk Lirası            ₺1.234,50
+EUR  digits=2  symbol(en)=€     Euro                   €1.234,50
+USD  digits=2  symbol(en)=$     ABD Doları             $1.234,50
+JPY  digits=0  symbol(en)=¥     Japon Yeni             ¥1.234,50

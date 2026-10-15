@@ -1,0 +1,4 @@
+$ jshell -q try.jsh
+{apple=5, fig=1, kiwi=2, pear=3}
+first apple, last pear
+keys before kiwi: {apple=5, fig=1}

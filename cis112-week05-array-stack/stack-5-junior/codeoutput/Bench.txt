@@ -1,0 +1,7 @@
+2,000,000 pushes + 2,000,000 pops, best of 7 rounds
+IntArrayStack (int[])          3 ms
+ArrayStack<Integer>           69 ms
+ArrayDeque<Integer>           56 ms
+java.util.Stack<Integer>     186 ms
+LinkedStack<Integer>          42 ms
+LinkedList<Integer>           38 ms

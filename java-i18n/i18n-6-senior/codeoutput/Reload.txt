@@ -1,0 +1,5 @@
+$ cat texts/Texts_tr.properties
+hi=Merhaba
+$ java Reload.java
+Merhaba
+Selam

@@ -1,0 +1,7 @@
+$ java Deep 2>&1 | head -3
+with a stack: 1000000
+Exception in thread "main" java.lang.StackOverflowError
+	at Deep.lengthRecursive(Deep.java:8)
+$ java -Xss64m Deep
+with a stack: 1000000
+recursive:    1000000

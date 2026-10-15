@@ -1,0 +1,3 @@
+1000 push/pop pairs on a full stack of 1024
+shrink at 1/2 full:  2,048,000 copies
+shrink at 1/4 full:      1,024 copies

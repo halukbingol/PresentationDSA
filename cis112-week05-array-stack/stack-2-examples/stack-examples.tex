@@ -1,0 +1,467 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Stacks -- Learning by Example
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+% algorithm2e set-up (the package is loaded by hblibPresentation)
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetKwProg{Fn}{function}{}{end}
+\SetKw{KwError}{error}
+
+% ---------------------------------------------------------------------
+\title{Stacks}
+\subtitle{Learning by Example}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-3}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={4-6}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Setup]{How to Use These Examples}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Running the examples}
+  \small Every program on these slides is a file in \texttt{codeoutput/}; the output shown is what it really printed (Java 21).
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Windows (Command Prompt)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\scriptsize]
+cd stack-2-examples\codeoutput
+javac PushPop.java
+java PushPop
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{macOS (Terminal)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\scriptsize]
+cd stack-2-examples/codeoutput
+javac PushPop.java
+java PushPop
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \begin{itemize}\small
+    \item \texttt{javac PushPop.java} also compiles \texttt{IntStack.java}: it finds the class it needs in the same folder.
+    \item \texttt{bash run\_examples.sh} reruns every program (\mac{}: Terminal; \win: Git Bash).
+    \item Code first, output on the next click: \hRemark{predict the output before you click.}
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What it looks like in a terminal}
+  \lstterminal[basicstyle=\ttfamily\footnotesize]{codeoutput/Run.txt}
+
+  \vspace{0.1em}
+  \small
+  Two \texttt{.class} files: \texttt{javac} compiled \texttt{IntStack} because \texttt{PushPop} uses it.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[IntStack]{A Stack of int in an Array}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Class]{The class}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{IntStack}: a fixed array and \texttt{top}}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=19]{codeoutput/IntStack.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=20, firstnumber=20]{codeoutput/IntStack.java}{Java}
+      \begin{center}\begin{tikzpicture}\hStack{0}{5}{2}{10,20,30}[0.45][0.45]\end{tikzpicture}\\ \small \texttt{top = 2}, \texttt{size() = 3}\end{center}
+    \end{column}
+  \end{columns}
+  \small \texttt{a[++top] = x}: move \texttt{top} up, then store. \texttt{a[top--]}: read, then move \texttt{top} down.
+  Every method checks before it touches the array; \texttt{toString} prints from the bottom to the top.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Use]{Using it}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Push, peek, pop}
+  \lstcoderightstep[0.58][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/PushPop.java}{Java}{codeoutput/PushPop.txt}
+
+  \vspace{0.2em}
+  \small \texttt{pop} returns the elements in the \textbf{reverse} order of \texttt{push}: 30, 20, then 40, 10.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Errors]{Errors}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Underflow: pop on an empty stack}
+  \lstcoderightstep[0.5][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\tiny]{codeoutput/Underflow.java}{Java}{codeoutput/Underflow.txt}
+
+  \vspace{0.2em}
+  \small The exception names the problem (\texttt{underflow}) and the stack trace shows the line: \texttt{Underflow.java:6}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Overflow: push on a full stack}
+  \lstcoderightstep[0.6][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Overflow.java}{Java}{codeoutput/Overflow.txt}
+
+  \vspace{0.2em}
+  \small Catching \texttt{IllegalStateException} lets the program continue. The stack is unchanged after the failed push.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Growing]{A Generic Stack That Grows}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{ArrayStack<T>}: any type, no fixed size}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=20]{codeoutput/ArrayStack.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=21, firstnumber=21]{codeoutput/ArrayStack.java}{Java}
+    \end{column}
+  \end{columns}
+  \small The \textbf{other} convention: the top is \texttt{a[size - 1]}. Full: \textbf{double}; one quarter full: \textbf{halve}.
+  Java cannot make \texttt{new T[n]}: we make \texttt{Object[]} and cast.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Watching the capacity}
+  \lstcoderightstep[0.6][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Growing.java}{Java}{codeoutput/Growing.txt}
+
+  \vspace{0.2em}
+  \small The capacity doubles at sizes 1, 2, 4, 8 and halves when the stack is one quarter full: 16 $\to$ 8 at size 4, 8 $\to$ 4 at size 2, 4 $\to$ 2 at size 1.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Applications]{Applications}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Reverse]{Reversing}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reversing a word}
+  \lstcoderightstep[0.64][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Reverse.java}{Java}{codeoutput/Reverse.txt}
+
+  \vspace{0.2em}
+  \small Push every letter, then pop them all: last in, first out reverses the order. Turkish letters are \texttt{char}s too.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Brackets]{Brackets}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Checking brackets}
+  \lstcoderightstep[0.64][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/Brackets.java}{Java}{codeoutput/Brackets.txt}
+
+  \vspace{0.2em}
+  \small \texttt{"([\{".indexOf(open) != ")]\}".indexOf(c)}: an opening and a closing bracket match when they are at the same position.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Postfix]{Postfix}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Evaluating postfix expressions}
+  \lstcoderightstep[0.64][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Postfix.java}{Java}{codeoutput/Postfix.txt}
+
+  \vspace{0.2em}
+  \small The trace shows the stack after each token. \texttt{b} is popped \textbf{first}: for \texttt{3 -} that is the right operand.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Binary]{Number bases}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Decimal to binary}
+  \lstcoderightstep[0.6][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/Binary.java}{Java}{codeoutput/Binary.txt}
+
+  \vspace{0.2em}
+  \small Remainders are produced from the last digit to the first; the stack turns them around.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Undo]{Undo and redo}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Undo and redo with two stacks}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=27]{codeoutput/Undo.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=28, firstnumber=28]{codeoutput/Undo.java}{Java}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Undo.txt}}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Undo and redo: what happened}
+  \lstoutput[basicstyle=\ttfamily\footnotesize]{codeoutput/Undo.txt}
+  \begin{itemize}\small
+    \item Each stack holds whole texts: the state \emph{before} each change.
+    \item \texttt{undo} moves the current text to \emph{redo}; \texttt{redo} moves it back to \emph{undo}.
+    \item After \texttt{undo, undo, redo}, typing \texttt{" Java"} clears the redo stack: the \texttt{"!"} can never come back.
+    \item Editors store \emph{changes} (commands) instead of whole texts, to save memory.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Calls]{The call stack}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The call stack of the JVM}
+  \lstcoderightstep[0.54][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/CallStack.java}{Java}{codeoutput/CallStack.txt}
+
+  \vspace{0.2em}
+  \small Calls go in, returns come out in the reverse order. Without a base case the call stack overflows; the exact depth depends on the JVM and on \texttt{-Xss}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Library]{Stacks from the Java Library}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{ArrayDeque} as a stack}
+  \lstcoderightstep[0.56][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/DequeDemo.java}{Java}{codeoutput/DequeDemo.txt}
+
+  \vspace{0.2em}
+  \small \texttt{push}, \texttt{pop}, \texttt{peek} work on the \textbf{front}. \texttt{poll} and \texttt{peek} return \texttt{null} on an empty deque; \texttt{pop} throws.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The old \texttt{java.util.Stack}}
+  \lstcoderightstep[0.6][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/LegacyStack.java}{Java}{codeoutput/LegacyStack.txt}
+
+  \vspace{0.2em}
+  \small \texttt{Stack} prints bottom-first, \texttt{ArrayDeque} top-first. \texttt{search} counts from the top (1 = top). Being a \texttt{Vector}, \texttt{Stack} even lets you insert at the bottom: not a real stack.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What we saw}
+  \begin{center}\small
+  \begin{tabular}{lL{0.28\textwidth}L{0.36\textwidth}}
+    \toprule
+    \textbf{Program}       & \textbf{Shows}                       & \textbf{Key line} \\
+    \midrule
+    \texttt{IntStack}      & fixed array, \texttt{top}            & \texttt{a[++top] = x}, \texttt{return a[top--]} \\
+    \texttt{ArrayStack}    & generic, grows and shrinks           & \texttt{if (size == a.length) resize(2 * a.length)} \\
+    \texttt{Reverse}       & LIFO reverses                        & push all, pop all \\
+    \texttt{Brackets}      & matching pairs                       & pop must match the closing bracket \\
+    \texttt{Postfix}       & evaluating expressions               & pop \texttt{b}, pop \texttt{a}, push \texttt{a op b} \\
+    \texttt{Binary}        & reversing digits                     & push \texttt{n \% 2} \\
+    \texttt{Undo}          & two stacks                           & a new edit clears \emph{redo} \\
+    \texttt{CallStack}     & the JVM's own stack                  & \texttt{StackOverflowError} \\
+    \texttt{ArrayDeque}    & the library stack                    & \texttt{Deque<T> s = new ArrayDeque<>()} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Add a method \texttt{clear()} to \texttt{IntStack}. Why is \texttt{top = -1} enough?
+    \item Change \texttt{IntStack} to the \texttt{size} convention. Which lines change?
+    \item In \texttt{Growing}, push 100 elements. How many times is the array copied? How many elements are copied in total?
+    \item Extend \texttt{Postfix} with \texttt{\%} and \texttt{\textasciicircum} (power). What happens with \texttt{"1 +"}?
+    \item Make \texttt{Brackets} ignore brackets inside string literals \texttt{"..."}.
+    \item Rewrite \texttt{Undo} with \texttt{ArrayStack<String>}. Which methods do you need?
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

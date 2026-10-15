@@ -1,0 +1,6 @@
+f(x)    = (3 * x * x + (2 * x + 1))
+f(2)    = 17.0
+f'(x)   = ((0 * x * x + 3 * (1 * x + x * 1)) + ((0 * x + 2 * 1) + 0))
+simpler = (3 * (x + x) + 2)
+f'(2)   = 14.0
+records compare by value: f equals simplify(f)

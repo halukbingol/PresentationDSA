@@ -1,0 +1,12 @@
+$ ls
+IntStack.java
+PushPop.java
+$ javac PushPop.java
+$ ls *.class
+IntStack.class
+PushPop.class
+$ java PushPop | head -4
+new        [] <- top
+3 pushes   [10, 20, 30] <- top   size 3
+peek()   = 30
+pop()    = 30

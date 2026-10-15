@@ -1,0 +1,14 @@
+$ ls
+Lookup.java
+Texts_de.properties
+Texts.properties
+Texts_tr.properties
+$ java Lookup.java de-CH
+default control: [de] Hallo
+no fallback:     [de] Hallo
+$ java Lookup.java fr
+default control: [] Hello
+no fallback:     [] Hello
+$ java -Duser.language=tr Lookup.java fr
+default control: [tr] Merhaba
+no fallback:     [] Hello

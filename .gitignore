@@ -15,12 +15,17 @@
 /test*.pdf
 
 # ~~~~~~~~~~~~~~~~~~~~~ V generated
+*-hb.pdf
+*-hb-2*.pdf 
 *-concepts.pdf
 *-examples.pdf
 *-freshman.pdf
 *-sophomore.pdf
 *-junior.pdf
 *-senior.pdf
+
+hblib-202*.zip
+*.zip
 # ~~~~~~~~~~~~~~~~~~~~~ A generated
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V specific

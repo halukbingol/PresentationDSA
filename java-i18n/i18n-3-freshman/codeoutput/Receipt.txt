@@ -1,0 +1,8 @@
+$ java Receipt.java
+Price: 1249.90
+Total: 3,749.70
+Plain: 3749.7000000000003
+$ LANG=tr_TR.UTF-8 java Receipt.java
+Price: 1249,90
+Total: 3.749,70
+Plain: 3749.7000000000003

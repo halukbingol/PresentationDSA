@@ -1,0 +1,2 @@
+sum 35,184,367,894,528 = 35,184,367,894,528
+sequential 51 ms, parallel 62 ms on 2 processors

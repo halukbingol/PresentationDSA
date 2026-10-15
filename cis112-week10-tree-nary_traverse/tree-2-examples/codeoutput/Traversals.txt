@@ -1,0 +1,4 @@
+preorder:    A B D E C F G 
+inorder:     D B E A C G F 
+postorder:   D E B G F C A 
+level order: A B C D E F G 

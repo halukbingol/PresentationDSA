@@ -1,0 +1,3 @@
+PRIMARY   ilaç=İlaç:true   cam=çam:false  ilik=ılık:false  Ankara=ankara:true   
+SECONDARY ilaç=İlaç:true   cam=çam:false  ilik=ılık:false  Ankara=ankara:true   
+TERTIARY  ilaç=İlaç:false  cam=çam:false  ilik=ılık:false  Ankara=ankara:false  

@@ -1,0 +1,540 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Internationalization in Java -- Junior Level: Unicode, Locale Data and Time in Depth
+%  ---------------------------------------------------------------------
+%  Built on Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs, terminal sessions and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program        codeoutput/<Name>.sh   a session
+%     codeoutput/<Name>/      the session's project folder
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\definecolor{gitred}{RGB}{240,80,50}
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+% algorithm2e set-up (the package is loaded by hblibPresentation), as in the template
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\DontPrintSemicolon
+
+% .properties files (resource bundles)
+\lstdefinelanguage{properties}{morecomment=[l]{\#}, morecomment=[l]{!}}
+
+% ---------------------------------------------------------------------
+\title{Internationalization in Java}
+\subtitle{Junior Level: Unicode, Locale Data and Time in Depth}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-3}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={4-20}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Unicode]{Unicode in Depth}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Units]{Bytes, chars, code points, graphemes}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Four ways to count a string}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \begin{center}\scriptsize
+      \begin{tabular}{ll}
+        \toprule
+        \textbf{unit} & \textbf{Java} \\
+        \midrule
+        byte       & \texttt{getBytes(UTF\_8).length} \\
+        \texttt{char} (UTF-16 unit) & \texttt{length()}, \texttt{charAt(i)} \\
+        code point & \texttt{codePointCount}, \texttt{codePoints()} \\
+        grapheme   & \texttt{BreakIterator.getCharacterInstance()} \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+      \small A \textbf{grapheme} is what a reader sees as one character: \texttt{é} written as \texttt{e} + accent,
+      or a thumbs-up with a skin tone (2 code points, 4 \texttt{char}s).
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{itemize}\small
+        \item Code points above U+FFFF (most emoji, historic scripts, rare CJK) need \textbf{two} \texttt{char}s:
+          a \emph{surrogate pair}.
+        \item \texttt{substring}, \texttt{charAt}, \texttt{reverse} can cut a character in half.
+        \item Cursor movement, ``max 20 characters'', truncation with \dots{} should count \textbf{graphemes}.
+        \item Since Java 20, \texttt{BreakIterator} follows the Unicode rules for emoji sequences.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Counting in practice}
+  \lstcode[basicstyle=\ttfamily\tiny, firstline=9, firstnumber=9]{codeoutput/Units.java}{Java}
+  \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Units.txt}}
+
+  \vspace{0.1em}
+  \small
+  Thumbs-up + skin tone: 6 \texttt{char}s, 4 code points, 3 graphemes.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Normalization]{Normalization forms}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Four normalization forms}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=4, firstnumber=4]{codeoutput/Forms.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Forms.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small \textbf{NFC} composes, \textbf{NFD} decomposes. The \textbf{K} forms also replace
+  \emph{compatibility} characters: ligature \texttt{FB01}\,$\to$\,\texttt{fi}, full-width \texttt{FF21 FF22 FF11}\,$\to$\,\texttt{AB1},
+  \texttt{x²}\,$\to$\,\texttt{x2}. Store NFC; compare identifiers (user names) after NFKC.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Case]{Case mapping}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Case mapping is not one-to-one}
+  \lstcode[basicstyle=\ttfamily\tiny, firstline=10, firstnumber=10]{codeoutput/Mapping.java}{Java}
+  \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Mapping.txt}}
+
+  \vspace{0.1em}
+  \small
+  The length can change (\texttt{ß}\,$\to$\,\texttt{SS}); \texttt{İ} lower-cased with \texttt{ROOT} is \texttt{i} + U+0307;
+  \texttt{equalsIgnoreCase} works char by char and misses \texttt{ß}/\texttt{SS}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Locale data]{Locale Data in Depth}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Extensions]{Unicode extensions}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Unicode locale extensions: \texttt{-u-}}
+  \lstcode[basicstyle=\ttfamily\tiny, firstline=8, firstnumber=8]{codeoutput/Extensions.java}{Java}
+  \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Extensions.txt}}
+
+  \vspace{0.1em}
+  \small
+  \texttt{ca} calendar, \texttt{cu} currency, \texttt{fw} first day, \texttt{rg} region; \texttt{localizedBy} (Java 10) applies them.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Categories]{Display and format}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Two default locales}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Categories/Cat.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Categories.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small \texttt{Locale.Category.DISPLAY} names things (languages, months in menus),
+  \texttt{FORMAT} formats values. A user may want English menus with Turkish numbers:
+  \texttt{-Duser.language.format=tr} (or \texttt{Locale.setDefault(Category.FORMAT, l)}).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Providers]{Where the data comes from}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Locale data providers: CLDR and COMPAT}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Providers/Prov.java}{Java}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Providers.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small Since Java 9 the data comes from \textbf{CLDR}. The old JRE data (\texttt{COMPAT}) is deprecated
+  in Java 21 and removed in Java 23. Upgrading Java can change formatted output: never parse your own UI text in tests.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Plurals]{Plural Rules}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{CLDR plural rules in the JDK}
+  \lstcode[basicstyle=\ttfamily\tiny, firstline=4, firstnumber=4]{codeoutput/Plurals.java}{Java}
+  \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Plurals.txt}}
+
+  \vspace{0.1em}
+  \small
+  English and German: 2 forms; Turkish uses one; Polish has 3 (\emph{milion}, \emph{miliony}, \emph{milionów}:
+  1 / 2--4, 22 / 5, 25). \texttt{ChoiceFormat} cannot express Polish or Arabic rules; use ICU4J or keep messages simple.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Messages with real plural rules}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=Java, basicstyle=\ttfamily\scriptsize]
+// ICU4J (com.ibm.icu:icu4j), not in the JDK
+MessageFormat m = new MessageFormat(
+    "{n, plural, one {# dosya} other {# dosya}}",
+    ULocale.forLanguageTag("tr"));
+// Polish: one / few / many / other
+"{n, plural, one {# plik} few {# pliki} many {# plików} other {# pliku}}"
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \small \hRemark{Not run here} (ICU4J comes from Maven Central).
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{itemize}\small
+        \item CLDR categories: \texttt{zero}, \texttt{one}, \texttt{two}, \texttt{few}, \texttt{many}, \texttt{other}.
+        \item Each language uses some of them; the translator fills in the forms.
+        \item The JDK has the rules (used by \texttt{CompactNumberFormat}) but no public plural API;
+          \texttt{java.text.ListFormat} (\emph{a, b and c}) arrived in Java 22.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Lookup]{Bundle Lookup in Detail}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Candidate locales}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Candidates.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Candidates.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small Script and variant are tried first; special cases: \texttt{zh-TW} implies the script \texttt{Hant},
+  Norwegian Bokmål \texttt{nb} also tries the old code \texttt{no}. The empty locale is the base bundle.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{ResourceBundle.getBundle}}
+% +++++++++++++++++++++++++++++++++++++++ V alg
+%: -Alg. 
+\begin{algorithm}[H]
+  \caption{\textsc{GetBundle}$(b, \ell)$ (default \texttt{Control})}
+  \KwIn{base name $b$, locale $\ell$, default locale $\delta$, class loader}
+  \For{$t \gets \ell, \delta$}{
+    \ForEach{$c$ in \textsc{CandidateLocales}$(b, t)$}{
+      \tcp{e.g.\ \texttt{tr\_TR}, \texttt{tr}, the empty locale}
+      \lIf{the cache has bundle $(b, c)$}{use it}
+      \lElse{try class \texttt{b\_c}, then file \texttt{b\_c.properties}; cache the result (also ``not found'')}
+      link the found bundles: each one's parent is the next found candidate\;
+    }
+    \lIf{a bundle other than the base was found for $t$}{\Return{the first one}}
+    \lIf{$t = \delta$ or \textsc{FallbackLocale}$(b, \ell) = $ none}{\textbf{break}}
+  }
+  \Return{the base bundle, or throw \texttt{MissingResourceException}}\;
+\end{algorithm}
+% +++++++++++++++++++++++++++++++++++++++ A alg
+
+  \small Bundles are \textbf{cached}; \texttt{ResourceBundle.clearCache()} or a \texttt{Control} with a time-to-live reloads them.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Time]{Time Zones in Depth}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Time zone rules change}
+  \lstcode[basicstyle=\ttfamily\tiny, firstline=8, firstnumber=8]{codeoutput/TimeRules.java}{Java}
+  \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/TimeRules.txt}}
+
+  \vspace{0.1em}
+  \small
+  Zone rules are law (Türkiye: no clock changes since 2016). Autumn: \texttt{02:30} happens twice.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Which type for what?}
+  \begin{center}\small
+  \begin{tabular}{L{0.22\textwidth}L{0.38\textwidth}L{0.3\textwidth}}
+    \toprule
+    \textbf{type} & \textbf{meaning} & \textbf{use for} \\
+    \midrule
+    \texttt{Instant}        & a point on the time line (UTC)        & logs, database, events \\
+    \texttt{ZonedDateTime}  & instant + zone rules                  & meetings, display, arithmetic over DST \\
+    \texttt{OffsetDateTime} & instant + fixed offset                & data exchange (ISO 8601) \\
+    \texttt{LocalDateTime}  & wall clock, no zone                   & ``every day at 09:00'', forms \\
+    \texttt{LocalDate}      & a day                                 & birthdays, holidays \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \begin{itemize}\small
+    \item Store \texttt{Instant}s; keep the user's \texttt{ZoneId} as a preference; convert only to show.
+    \item For a future appointment store the local time \emph{and} the zone: the law may change before the date.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Threads]{Formatters and Threads}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Formatters and threads}
+  \lstcode[basicstyle=\ttfamily\tiny, firstline=8, firstnumber=8]{codeoutput/Unsafe.java}{Java}
+  \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Unsafe.txt}}
+
+  \vspace{0.1em}
+  \small
+  \texttt{SimpleDateFormat} keeps state: shared between threads it mixes results. \texttt{DateTimeFormatter} is immutable.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Rules for formatters}
+  \begin{center}\small
+  \begin{tabular}{lll}
+    \toprule
+    \textbf{class} & \textbf{thread-safe?} & \textbf{how to share} \\
+    \midrule
+    \texttt{DateTimeFormatter}           & yes  & \texttt{static final} \\
+    \texttt{Locale}, \texttt{Currency}, \texttt{ZoneId} & yes & anywhere \\
+    \texttt{ResourceBundle}               & yes (read only) & cache per locale \\
+    \texttt{NumberFormat}, \texttt{DecimalFormat} & no & new per use, or \texttt{ThreadLocal} \\
+    \texttt{SimpleDateFormat}, \texttt{MessageFormat} & no & replace by \texttt{java.time}, new per use \\
+    \texttt{Collator}                     & no  & \texttt{clone()} per thread; \texttt{CollationKey} for big sorts \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \small \texttt{getInstance(l)} methods return a \emph{new} object each time, built from cached data: cheap enough for most code.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Direction]{Text Direction}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Right-to-left languages}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \begin{itemize}\small
+        \item Arabic, Hebrew, Persian, Urdu are written \textbf{right to left}; numbers and Latin words inside
+          them still run left to right: \emph{bidirectional} text.
+        \item The \textbf{Unicode Bidi Algorithm} decides the display order; the stored order is the reading order.
+        \item \texttt{java.text.Bidi} computes the levels; Swing uses
+          \texttt{ComponentOrientation.getOrientation(locale)} to mirror whole windows.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{block}{Design for it}
+        \small
+        \begin{itemize}
+          \item use \emph{start}/\emph{end}, not \emph{left}/\emph{right}
+          \item mirror arrows and progress bars
+          \item never build a sentence from fragments: the order changes
+          \item test with a right-to-left locale (\texttt{ar}, \texttt{he})
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Big ideas}
+  \begin{itemize}\small
+    \item A string has bytes, \texttt{char}s, code points and graphemes: count what you mean.
+    \item Normalize (NFC to store, NFKC to compare identifiers) before comparing text from outside.
+    \item Case mapping may change the length and depends on the language.
+    \item Locales carry extensions (calendar, currency, first day, numbering); \texttt{localizedBy} uses them.
+    \item Locale data comes from CLDR and changes between Java versions; time zone rules change by law.
+    \item Plural rules differ widely; the JDK has them only inside \texttt{CompactNumberFormat}.
+    \item Know which formatters are thread-safe; prefer \texttt{java.time}.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Write \texttt{truncate(s, n)} that keeps at most \texttt{n} graphemes and never cuts a surrogate pair.
+    \item Check whether two user names are ``the same'' (NFKC + case folding). Which pairs surprise you?
+    \item Print next month's calendar with the right first day of the week for \texttt{en-US}, \texttt{tr-TR}, \texttt{ar-SA}.
+    \item Find a date and zone where \texttt{LocalDateTime} + one day $\neq$ \texttt{ZonedDateTime} + one day.
+    \item Make \texttt{Unsafe} correct with a \texttt{ThreadLocal<SimpleDateFormat>}; measure the cost.
+    \item Run your sophomore project with \texttt{-Djava.locale.providers=COMPAT}: what changes?
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

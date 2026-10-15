@@ -1,0 +1,449 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Trees -- Senior Level: Modern Java, Persistence, Parallelism and Real Trees
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+% algorithm2e set-up (the package is loaded by hblibPresentation)
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetKwProg{Fn}{function}{}{end}
+\SetKw{KwError}{error}
+
+% ---------------------------------------------------------------------
+\title{Trees}
+\subtitle{Senior Level: Modern Java, Persistence, Parallelism and Real Trees}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-3}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={4-6}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Modern Java]{Trees in Modern Java}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Sealed types and records: an algebraic data type}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=7]{codeoutput/Expr.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=8, firstnumber=8, lastline=25]{codeoutput/Expr.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What the new Java features do}
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=2.8cm}, level 2/.style={sibling distance=1.5cm}, level 3/.style={sibling distance=0.8cm}, scale=0.7, transform shape]
+  \node[hsquare] {Add} child {node[hsquare] {Mul} child {node[hnode] {3}} child {node[hsquare] {Mul} child {node[hnode] {x}} child {node[hnode] {x}}}} child {node[hsquare] {Add} child {node[hsquare] {Mul} child {node[hnode] {2}} child {node[hnode] {x}}} child {node[hnode] {1}}};
+\end{tikzpicture}\\
+      \small $3x^{2} + 2x + 1$ as \texttt{Expr} records
+      \end{center}
+    \end{column}
+    \begin{column}{0.6\textwidth}
+      \begin{itemize}\small
+        \item \texttt{sealed \dots{} permits}: these four records are \textbf{all} the node kinds (Java 17).
+        \item Records: immutable nodes with \texttt{equals}, \texttt{hashCode} and \texttt{toString} for free (Java 16).
+        \item \texttt{case Add(Expr l, Expr r)}: a \textbf{record pattern} takes a node apart (Java 21).
+        \item No \texttt{default}: a \texttt{switch} that forgets a node kind does not \textbf{compile}, so adding a node kind shows every place to update.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Transforming trees: derivative and simplification}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=26, firstnumber=26, lastline=34]{codeoutput/Expr.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=35, firstnumber=35]{codeoutput/Expr.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Symbolic differentiation}
+  \lstcoderightstep[0.6][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/UseExpr.java}{Java}{codeoutput/UseExpr.txt}
+
+  \vspace{0.2em}
+  \small \texttt{derive} builds a new tree in one traversal; \texttt{simplify} works \textbf{postorder}: children are simplified before their parent is examined.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Pattern matching or the Visitor pattern?}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=Java, basicstyle=\ttfamily\scriptsize]
+interface Visitor<R> {
+    R visitNum(Num n);
+    R visitAdd(Add a);
+    R visitMul(Mul m);
+}
+interface Expr { <R> R accept(Visitor<R> v); }
+record Add(Expr l, Expr r) implements Expr {
+    public <R> R accept(Visitor<R> v) { return v.visitAdd(this); }
+}
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{itemize}\small
+        \item The classic \textbf{Visitor} (Gang of Four, 1994) adds operations without changing the node classes, through double dispatch.
+        \item With sealed types and pattern matching, each operation is \textbf{one method with a switch}: shorter, checked for completeness.
+        \item Visitors are still common in older code bases: \texttt{javax.lang.model}, ASM, ANTLR, \texttt{Files.walkFileTree}.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Persistence]{Immutable and Persistent Trees}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Path copying}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=21]{codeoutput/Persistent.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=22, firstnumber=22]{codeoutput/Persistent.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Path copying: the result}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=2.6cm}, level 2/.style={sibling distance=1.3cm}, level 3/.style={sibling distance=0.65cm}, scale=0.8, transform shape]
+  \node[hnode, hhot] {50} child {node[hnode] {30} child {node[hnode] {20} child {node[hnode] {10}} child {node[hnode] {25}}} child {node[hnode] {40} child {node[hnode] {35}} child {node[hnode] {45}}}} child {node[hnode, hhot] {70} child {node[hnode, hhot] {60} child[missing] child {node[hnode, hhot] {65}}} child {node[hnode] {80}}};
+\end{tikzpicture}
+      \end{center}
+      \small green: new nodes in \texttt{v2}; white: shared with \texttt{v1}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Persistent.txt}
+      \begin{itemize}\small
+        \item Only the \textbf{path} from the root to the new key is copied: $O(h)$ new nodes; the rest is shared.
+        \item \texttt{v1} is unchanged and still usable: every version is \emph{persistent}.
+        \item Safe to share between threads without locks; undo for free; used in functional languages, Git, and databases (copy-on-write B-trees).
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Parallel]{Parallel Traversal}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Fork/join: sum a tree in parallel}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=15]{codeoutput/ParallelSum.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=16, firstnumber=16, lastline=29]{codeoutput/ParallelSum.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Fork/join: timing both versions}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=30, firstnumber=30]{codeoutput/ParallelSum.java}{Java}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Fork/join: the result}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/ParallelSum.txt}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item The two subtrees are independent: \texttt{fork()} one, compute the other, \texttt{join()}.
+        \item Below depth 6 the work is done sequentially: tasks must not be too small.
+        \item Times are from one run. On this 2-processor machine the parallel sum was \textbf{not} faster: adding numbers is too little work per node, so memory, not the processors, is the limit.
+        \item \texttt{availableProcessors()} counts the processors the JVM may use, e.g.\ in a container.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Library]{Trees in the Java Library}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{TreeMap} as a \texttt{NavigableMap}}
+  \lstcoderightstep[0.62][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Navigable.java}{Java}{codeoutput/Navigable.txt}
+
+  \vspace{0.2em}
+  \small A red-black tree answers ``nearest key'' questions in $O(\log n)$: \texttt{floorEntry} turns a score into a letter grade without any \texttt{if}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Which sorted structure?}
+  \begin{center}\small
+  \begin{tabular}{L{0.38\textwidth}L{0.3\textwidth}L{0.22\textwidth}}
+    \toprule
+    \textbf{class}                    & \textbf{structure}                    & \textbf{use} \\
+    \midrule
+    \texttt{TreeMap}, \texttt{TreeSet} & red-black tree                       & sorted, single thread \\
+    \texttt{ConcurrentSkipListMap}    & skip list (not a tree)                & sorted, many threads, no locks \\
+    \texttt{Collections.synchronizedSortedMap} & a \texttt{TreeMap} with one lock & simple, but every call locks \\
+    \texttt{PriorityQueue}            & binary heap in an array               & only the smallest element \\
+    \texttt{HashMap}                  & hash table; a bin with 8 or more keys becomes a red-black tree & no order, $O(1)$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \small Since Java 8, \texttt{HashMap} turns long collision chains into small trees, so many keys with the same hash cost $O(\log n)$ instead of $O(n)$: a defence against hash-flooding attacks.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Real trees]{Real Trees: Documents and Databases}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{XML is an N-ary tree: the DOM}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=21]{codeoutput/Dom.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=22, firstnumber=22]{codeoutput/Dom.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The DOM: the result}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Dom.txt}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item \texttt{getFirstChild} / \texttt{getNextSibling}: the DOM is stored as \textbf{first child, next sibling}.
+        \item Text and whitespace are nodes too; the walk prints only elements. The \texttt{[Fatal Error]} line is printed by the parser itself.
+        \item \hRemark{Security}: a \texttt{DOCTYPE} can make the parser read local files or expand entities exponentially (XXE, ``billion laughs). Disallow it for untrusted XML (OWASP).
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Why databases use trees with many children}
+  A \textbf{B-tree} node holds hundreds of keys and children, sized to one disk or memory page. With fan-out $m$ and $n$ keys,
+  \[
+  	h \approx \log_{m} n = \frac{\log_{2} n}{\log_{2} m}
+  \]
+  \begin{center}\small
+  \begin{tabular}{lccc}
+    \toprule
+    $n = 10^{9}$ keys          & binary ($m = 2$) & $m = 100$ & $m = 1000$ \\
+    \midrule
+    levels (page reads)        & 30               & 5         & 3 \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \begin{itemize}\small
+    \item Reading a page costs far more than comparing keys inside it: minimise the \textbf{height}, not the comparisons.
+    \item B+-trees (keys in the leaves, leaves linked for range scans) index almost every relational database:
+          PostgreSQL, MySQL InnoDB, SQLite; file systems such as NTFS (\win), APFS (\mac), btrfs.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Big ideas}
+  \begin{itemize}
+    \item Sealed interfaces, records and pattern matching make tree code short and \textbf{checked} by the compiler.
+    \item Immutable trees with path copying give persistent versions in $O(h)$ extra nodes each.
+    \item Independent subtrees can be processed in parallel with fork/join; keep tasks large enough.
+    \item \texttt{TreeMap} is a red-black tree with a rich navigation API; \texttt{HashMap} uses trees inside bins.
+    \item Real data is tree-shaped (XML, JSON, file systems); parse untrusted documents defensively.
+    \item High fan-out trees (B-trees) minimise page reads: databases and file systems.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Projects}
+  \begin{enumerate}\small
+    \item Extend \texttt{Expr} with \texttt{Sub}, \texttt{Div}, \texttt{Pow} and a parser from text; make \texttt{simplify} reach a fixed point.
+    \item Make \texttt{Persistent} balanced (a persistent red-black or AVL tree) and keep 1000 versions; measure the shared nodes.
+    \item Compare fork/join and sequential traversal for trees of $2^{10} \dots 2^{24}$ nodes; find the best cut-off depth.
+    \item Implement a B-tree of order $m$ in memory with insert and search; measure height for $m = 3, 16, 128$.
+    \item Walk a JSON document (e.g.\ with the \texttt{jakarta.json} API) and report its maximum depth; reject documents deeper than 100.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

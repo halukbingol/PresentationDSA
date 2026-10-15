@@ -1,0 +1,7 @@
+type "Hello"  "Hello"              undo 1 redo 0
+type " world" "Hello world"        undo 2 redo 0
+type "!"      "Hello world!"       undo 3 redo 0
+undo          "Hello world"        undo 2 redo 1
+undo          "Hello"              undo 1 redo 2
+redo          "Hello world"        undo 2 redo 1
+type " Java"  "Hello world Java"   undo 3 redo 0

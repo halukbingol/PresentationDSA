@@ -1,0 +1,7 @@
+Turkish rules: 1234.5
+US rules:      1.234
+Exception in thread "main" java.lang.NumberFormatException: For input string: "3,5"
+	at java.base/jdk.internal.math.FloatingDecimal.readJavaFormatString(FloatingDecimal.java:2054)
+	at java.base/jdk.internal.math.FloatingDecimal.parseDouble(FloatingDecimal.java:110)
+	at java.base/java.lang.Double.parseDouble(Double.java:792)
+	at Parse.main(Parse.java:12)

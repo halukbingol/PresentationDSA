@@ -1,0 +1,13 @@
+$ jlink --add-modules java.base --strip-debug --no-man-pages --no-header-files --output rt-base
+$ jlink --add-modules java.base,jdk.localedata --strip-debug --no-man-pages --no-header-files --output rt-all
+$ jlink --add-modules java.base,jdk.localedata --include-locales=en,tr --strip-debug --no-man-pages --no-header-files --output rt-en-tr
+$ du -sh rt-base rt-all rt-en-tr
+52M	rt-base
+80M	rt-all
+53M	rt-en-tr
+$ rt-base/bin/java -cp classes Today
+5 locales: tr-TR = 2026 Oct 15, Thu   de-DE = 2026 Oct 15, Thu   
+$ rt-all/bin/java -cp classes Today
+1069 locales: tr-TR = 15 Ekim 2026 Perşembe   de-DE = Donnerstag, 15. Oktober 2026   
+$ rt-en-tr/bin/java -cp classes Today
+114 locales: tr-TR = 15 Ekim 2026 Perşembe   de-DE = 2026 Oct 15, Thu   

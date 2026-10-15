@@ -1,0 +1,3 @@
+[Ali, cam, ilaç, ok, sabun, zil, Ömer, çay, ılık, şeker]
+[Ali, cam, çay, ılık, ilaç, ok, Ömer, sabun, şeker, zil]
+[Ali, cam, çay, ilaç, ok, Ömer, sabun, şeker, zil, ılık]

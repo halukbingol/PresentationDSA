@@ -1,0 +1,10 @@
+new        [] <- top
+3 pushes   [10, 20, 30] <- top   size 3
+peek()   = 30
+pop()    = 30
+pop()    = 20
+now        [10] <- top
+push(40)   [10, 40] <- top
+pop()    = 40
+pop()    = 10
+isEmpty  = true

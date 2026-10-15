@@ -1,0 +1,6 @@
+size     7
+height   3
+leaves   3
+depth(G) 3
+depth(X) -1
+height of the empty tree -1

@@ -1,0 +1,4 @@
+top [not, or, be, to]  size 4
+not or be to 
+not or be to 
+caught: peek() on an empty stack
