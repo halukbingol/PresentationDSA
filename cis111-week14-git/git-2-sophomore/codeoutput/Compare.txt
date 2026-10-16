@@ -1,0 +1,26 @@
+$ cd ayse
+$ git switch -q -c report
+$ echo "sales 120" > report.txt
+$ git add report.txt
+$ git commit -q -m "Add sales report"
+$ echo "sales 135" > report.txt
+$ git commit -q -am "Update sales"
+$ git switch -q main
+$ echo "Tel 0216" >> README.md
+$ git commit -q -am "Add phone"
+$ git log --oneline main..report
+5a2e70a (report) Update sales
+61f9afc Add sales report
+$ git log --oneline report..main
+408fd9d (HEAD -> main) Add phone
+$ git diff --stat main...report
+ report.txt | 1 +
+ 1 file changed, 1 insertion(+)
+$ git merge-base main report
+c068ee456e96c47b853aac7caf1d3ecacd199815
+$ git log --oneline --all --graph
+* 408fd9d (HEAD -> main) Add phone
+| * 5a2e70a (report) Update sales
+| * 61f9afc Add sales report
+|/  
+* c068ee4 (origin/main) Start the shop

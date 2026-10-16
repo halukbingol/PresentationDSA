@@ -1,0 +1,16 @@
+$ cat .git/hooks/pre-commit
+#!/bin/sh
+# refuse commits that still contain TODO in staged Java files
+if git diff --cached -U0 -- '*.java' | grep -q '^+.*TODO'; then
+    echo "pre-commit: remove the TODOs first" >&2
+    exit 1
+fi
+$ echo "class App { } // TODO: write it" > App.java
+$ git add App.java
+$ git commit -m "Add App"
+pre-commit: remove the TODOs first
+$ echo "class App { }" > App.java
+$ git add App.java
+$ git commit -q -m "Add App"
+$ git log --oneline
+3d9e4ba (HEAD -> main) Add App

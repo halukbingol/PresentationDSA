@@ -1,0 +1,21 @@
+$ git log --oneline -- stock.txt
+ec69b7d (HEAD -> main) Add kiwis
+af7e491 More pears
+7411830 Start the shop
+$ git log -p -1 --format="%h %an %s"
+ec69b7d Ali Kaya Add kiwis
+
+diff --git a/stock.txt b/stock.txt
+index 1972418..2a3b308 100644
+--- a/stock.txt
++++ b/stock.txt
+@@ -1,3 +1,4 @@
+ apples 3
+ pears 9
+ figs 2
++kiwis 6
+$ git blame stock.txt
+^7411830 (Ayşe Yılmaz 2026-09-21 17:14:20 +0300 1) apples 3
+af7e491b (Ayşe Yılmaz 2026-09-21 17:15:20 +0300 2) pears 9
+^7411830 (Ayşe Yılmaz 2026-09-21 17:14:20 +0300 3) figs 2
+ec69b7da (Ali Kaya    2026-09-21 17:16:20 +0300 4) kiwis 6

@@ -1,0 +1,31 @@
+$ cd ali
+$ echo "Open 9-18" >> README.md
+$ git commit -q -am "Add opening hours"
+$ git push -q
+$ cd ../ayse
+$ echo "Closed on Sunday" > HOURS.txt
+$ git add HOURS.txt
+$ git commit -q -m "Add Sunday rule"
+$ git push
+To ../server.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to '../server.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+$ git pull --no-edit
+From ../server
+   c068ee4..febcdcd  main       -> origin/main
+Merge made by the 'ort' strategy.
+ README.md | 1 +
+ 1 file changed, 1 insertion(+)
+$ git push -q
+$ git log --oneline --graph
+*   30464c3 (HEAD -> main, origin/main) Merge branch 'main' of ../server
+|\  
+| * febcdcd Add opening hours
+* | 0c35093 Add Sunday rule
+|/  
+* c068ee4 Start the shop

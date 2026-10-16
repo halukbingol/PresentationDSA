@@ -1,0 +1,21 @@
+$ git log --oneline -S "pears"
+db8969b B: pears
+$ git log --oneline -G "pears [0-9]+"
+eb19e32 D: more pears
+db8969b B: pears
+$ git log --format="%h %s" -L 2,2:stock.txt
+eb19e32 D: more pears
+
+diff --git a/stock.txt b/stock.txt
+--- a/stock.txt
++++ b/stock.txt
+@@ -2,1 +2,1 @@
+-pears 5
++pears 9
+db8969b B: pears
+
+diff --git a/stock.txt b/stock.txt
+--- a/stock.txt
++++ b/stock.txt
+@@ -2,0 +2,1 @@
++pears 5

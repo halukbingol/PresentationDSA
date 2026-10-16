@@ -1,0 +1,16 @@
+$ git clone -q --filter=blob:none --sparse file://$PWD/mono work
+$ cd work
+$ ls
+README.md
+$ git rev-list --objects --all --missing=print | grep -c "^?"
+9
+$ git sparse-checkout set backend
+$ ls
+README.md
+backend
+$ ls backend
+part1.txt
+part2.txt
+part3.txt
+$ git rev-list --objects --all --missing=print | grep -c "^?"
+6

@@ -1,0 +1,616 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Git -- Senior Level: Git at Scale, Security and Team Workflows
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+% algorithm2e set-up (the package is loaded by hblibPresentation)
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetKwProg{Fn}{function}{}{end}
+\SetKw{KwError}{error}
+
+% ---------------------------------------------------------------------
+\title{Git}
+\subtitle{Senior Level: Git at Scale, Security and Team Workflows}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-4}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={5-7}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Plumbing]{Plumbing: Git without Porcelain}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Porcelain and plumbing}
+  \begin{center}\small
+  \begin{tabular}{lll}
+    \toprule
+    \textbf{porcelain} (for people) & \textbf{plumbing} (for scripts)         & \textbf{what it does} \\
+    \midrule
+    \texttt{git add FILE}            & \texttt{hash-object -w}, \texttt{update-index} & store a blob, stage it \\
+    \texttt{git commit}              & \texttt{write-tree}, \texttt{commit-tree}       & snapshot the index, make a commit \\
+    \texttt{git branch}, \texttt{reset} & \texttt{update-ref}                          & move a ref \\
+    \texttt{git log}                 & \texttt{rev-list}, \texttt{cat-file}            & walk the graph, read objects \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \begin{itemize}\small
+    \item Plumbing output is stable across versions: scripts and CI tools should use it (or \texttt{-{}-porcelain} formats).
+    \item Porcelain output is for humans and may change between versions.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Building a commit by hand}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, lastline=9]{codeoutput/Plumbing.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=10]{codeoutput/Plumbing.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  Four plumbing commands do what \texttt{add} + \texttt{commit} do. The working tree was never touched, so \texttt{status} reports
+  \texttt{hello.txt} as deleted until \texttt{restore} writes it from the index.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{SHA-1 and SHA-256 repositories}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Sha256.txt}
+
+  \vspace{0.1em}
+  \small
+  SHA-1 is broken for chosen collisions (SHAttered, 2017); Git uses a hardened SHA-1 that detects that attack, and supports
+  SHA-256 repositories. \hRemark{Check first}: SHA-1 and SHA-256 repositories cannot exchange history, and not every hosting service accepts SHA-256.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Storage]{Storage and Large Repositories}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Loose objects and packfiles}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize, lastline=10]{codeoutput/Pack.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize, firstline=11]{codeoutput/Pack.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  40 versions of a growing file: 120 loose objects, each compressed on its own. \texttt{gc} packs them and stores
+  39 objects as \textbf{deltas} against a similar object; \texttt{git maintenance start} schedules this in the background.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Partial clone and sparse checkout}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, lastline=6]{codeoutput/Partial.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=7]{codeoutput/Partial.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  \texttt{-{}-filter=blob:none}: clone commits and trees, fetch file contents on demand. \texttt{-{}-sparse}: check out only the top
+  folder; \texttt{sparse-checkout set} adds folders. Missing blobs: 9, then 6.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Two branches checked out at once: \texttt{worktree}}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Worktree.txt}
+
+  \vspace{0.1em}
+  \small
+  A second working tree shares the same repository: no second clone, no stash. \texttt{+} marks a branch checked out in another worktree.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Merging]{Merging at Scale}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Merge strategies and options}
+  \begin{center}\small
+  \begin{tabular}{lL{0.62\textwidth}}
+    \toprule
+    \textbf{command}                   & \textbf{effect} \\
+    \midrule
+    \texttt{git merge B}               & strategy \texttt{ort} (default since Git 2.34): three-way merge, detects renames \\
+    \texttt{git merge -X ours B}       & on \emph{conflicting hunks} keep our side; other changes of \texttt{B} still merge \\
+    \texttt{git merge -s ours B}       & record a merge but keep our tree completely: ``\texttt{B} is superseded'' \\
+    \texttt{git merge A B C}           & \texttt{octopus}: many branches at once, only if there are no conflicts \\
+    \texttt{git merge -{}-squash B}    & apply all changes of \texttt{B} as one new commit, no merge link \\
+    \texttt{git merge -{}-ff-only B}   & refuse unless the branch can simply move forward \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \small \hRemark{Careful:} \texttt{-X ours} and \texttt{-s ours} sound alike but do very different things.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reuse recorded resolution: \texttt{rerere}}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Rerere.txt}
+
+  \vspace{0.1em}
+  \small
+  With \texttt{rerere.enabled}, Git remembers how you resolved a conflict and replays it the next time the same conflict appears:
+  useful when a long-lived branch is merged or rebased again and again. Check, then \texttt{git add}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Comparing two versions of a branch: \texttt{range-diff}}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, lastline=8]{codeoutput/RangeDiff.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=9]{codeoutput/RangeDiff.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  After a rebase every hash changes. \texttt{range-diff} pairs old and new commits: \texttt{=} same change, \texttt{!} changed, with a diff of the diffs.
+  Reviewers use it to see what changed between two rounds of a pull request.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Security]{Security}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A secret in history stays in history}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, lastline=8]{codeoutput/Secret.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=9]{codeoutput/Secret.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  Deleting the file in a new commit does not help: every clone has the old commit. Anyone who cloned or forked the repository has the password.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{When a secret was pushed}
+  \begin{enumerate}\small
+    \item \textbf{Rotate the secret first}: change the password or revoke the key. Assume it is already known.
+    \item Rewrite history, e.g.\ with \texttt{git filter-repo} (a separate tool, recommended by the Git project over \texttt{filter-branch}):
+  \end{enumerate}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\scriptsize]
+git filter-repo --invert-paths --path db.properties
+git push --force --all
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+  \begin{enumerate}\small \setcounter{enumi}{2}
+    \item Everybody re-clones; hosting services may keep cached views and forks: ask their support to purge them.
+    \item Prevent: \texttt{.gitignore} for config files, environment variables or a secret manager, secret scanning in a pre-commit hook and on the server
+          (GitHub \emph{push protection}).
+  \end{enumerate}
+  \small \hRemark{Not run here}: \texttt{git-filter-repo} is not installed in the environment used for these slides.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Signing commits with an SSH key}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Windows (Command Prompt)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\tiny]
+ssh-keygen -t ed25519 -C "ayse@example.com"
+git config --global gpg.format ssh
+git config --global user.signingkey %USERPROFILE%\.ssh\id_ed25519.pub
+git config --global commit.gpgsign true
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{macOS (Terminal)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\tiny]
+ssh-keygen -t ed25519 -C "ayse@example.com"
+git config --global gpg.format ssh
+git config --global user.signingkey ~/.ssh/id_ed25519.pub
+git config --global commit.gpgsign true
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \begin{itemize}\small
+    \item Anyone can write any name in \texttt{user.name}; a signature proves which key made the commit.
+    \item Upload the public key to the hosting service as a \emph{signing key}; it then shows commits as \emph{Verified}.
+          Locally, \texttt{git log -{}-show-signature} needs \texttt{gpg.ssh.allowedSignersFile}.
+    \item \hRemark{Not run here}: \texttt{ssh-keygen} is not installed in the environment used for these slides.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Config]{Configuration at Scale}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Config scopes and conditional includes}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Scopes.txt}
+
+  \vspace{0.1em}
+  \small
+  Scopes: \texttt{system} $<$ \texttt{global} ($\sim$\texttt{/.gitconfig}) $<$ \texttt{local} (\texttt{.git/config}) $<$ \texttt{worktree}; the last value wins.
+  \texttt{includeIf "gitdir:\textasciitilde/work/"} gives every repository under \texttt{\textasciitilde/work} the company e-mail.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Settings worth knowing}
+  \begin{center}\small
+  \begin{tabular}{lL{0.58\textwidth}}
+    \toprule
+    \textbf{setting}                         & \textbf{why} \\
+    \midrule
+    \texttt{core.autocrlf} (\win: \texttt{true}) & convert line endings; better: a \texttt{.gitattributes} with \texttt{* text=auto} in the repository \\
+    \texttt{pull.rebase true}                & no merge commits for simple pulls \\
+    \texttt{rebase.autoStash true}           & stash and re-apply local edits around a rebase \\
+    \texttt{fetch.prune true}                & forget remote branches deleted on the server \\
+    \texttt{rerere.enabled true}             & reuse conflict resolutions \\
+    \texttt{core.hooksPath tools/hooks}      & shared hooks committed to the repository \\
+    \texttt{push.autoSetupRemote true}       & first \texttt{git push} of a new branch sets its upstream \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \small Repository-wide rules belong in committed files (\texttt{.gitattributes}, \texttt{.gitignore}, hooks folder), not in each person's config.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Workflow]{Team Workflows and Releases}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Branching models}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[scale=0.8, transform shape]
+  \node[hcommit] (a1) at (0.0,0.0) {a1};
+  \node[hcommit] (b2) at (1.15,0.0) {b2};
+  \node[hcommit] (c3) at (2.3,0.0) {c3};
+  \node[hcommit, hhot] (d4) at (3.4499999999999997,0.0) {d4};
+  \node[hcommit, hdone] (f1) at (1.15,-0.9) {f1};
+  \node[hcommit, hdone] (g1) at (2.3,-0.9) {g1};
+  \draw[hparent] (b2) -- (a1);
+  \draw[hparent] (c3) -- (b2);
+  \draw[hparent] (d4) -- (c3);
+  \draw[hparent] (f1) -- (a1);
+  \draw[hparent] (g1) -- (b2);
+  \draw[hparent] (c3) -- (f1);
+  \draw[hparent] (d4) -- (g1);
+  \node[hbranch, right=3pt of d4] (L0) {main};
+\end{tikzpicture}
+      \end{center}
+      \small \textbf{Trunk-based}: short branches (hours to a day), merged to \texttt{main} behind tests and feature flags; release from \texttt{main} or tags.
+      Long-lived branches drift apart and make merges painful; integrate often.
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{center}\scriptsize
+      \begin{tabular}{lL{0.27\textwidth}}
+        \toprule
+        \textbf{model}  & \textbf{fits} \\
+        \midrule
+        trunk-based     & continuous delivery, web services \\
+        GitHub flow     & one \texttt{main}, a pull request per change \\
+        GitFlow         & scheduled releases, several versions supported \\
+        release branches & long-term support of old versions \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Guarding \texttt{main}}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}\small
+        \item \textbf{Branch protection}: no direct pushes, no force-pushes, required reviews and status checks.
+        \item \texttt{CODEOWNERS}: the owners of a folder must review changes to it.
+        \item \textbf{Merge queue}: test each pull request on top of the latest \texttt{main} before merging.
+        \item One style per team: merge commits, squash or rebase-and-merge.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\scriptsize]
+# .github/CODEOWNERS
+*               @team-leads
+/backend/       @ayse @ali
+/docs/          @tech-writers
+*.sql           @dba-team
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Continuous integration for a Java repository}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\tiny]
+# .github/workflows/ci.yml
+name: ci
+on: [push, pull_request]
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 21 }
+      - run: mvn -B verify
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \begin{itemize}\small
+        \item Every push and pull request is built and tested on \win, \mac{} and Linux.
+        \item The required status check blocks merging a red build.
+        \item GitLab CI, Jenkins and others use the same idea.
+        \item \hRemark{Not run here}: it runs on GitHub's servers.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Versions from tags: \texttt{git describe}}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, lastline=8]{codeoutput/Describe.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=9]{codeoutput/Describe.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  \texttt{v1.0.0-2-g\dots}: 2 commits after tag \texttt{v1.0.0}, at commit \texttt{g}+hash. With \emph{Conventional Commits}
+  (\texttt{feat:}, \texttt{fix:}) tools derive the next \emph{semantic version}: a \texttt{feat} raises the minor number, \texttt{1.0.0} $\to$ \texttt{1.1.0}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Big ideas}
+  \begin{itemize}
+    \item Porcelain is built on a few plumbing commands over objects and refs; scripts should use plumbing.
+    \item Packfiles store deltas; partial clone, sparse checkout and worktrees keep huge repositories usable.
+    \item \texttt{ort}, \texttt{rerere} and \texttt{range-diff} make repeated merging and reviewing of rebased work manageable.
+    \item History is forever: rotate leaked secrets, then rewrite; sign commits to prove authorship.
+    \item Put team rules in the repository and on the server: \texttt{.gitattributes}, hooks, branch protection, CI.
+    \item Choose a branching model that matches how you release; integrate often.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Build a commit with two files and a parent using only plumbing; check it with \texttt{git log -{}-stat}.
+    \item Clone a large public repository with \texttt{-{}-filter=blob:none} and compare the size of \texttt{.git} with a full clone.
+    \item Create a conflict, resolve it with \texttt{rerere} on, then rebase again and watch the resolution being reused.
+    \item Commit a fake password, push to a private test repository, remove it with \texttt{git filter-repo}, and verify with \texttt{log -S}.
+    \item Set up CI with a \win, \mac{} and Linux matrix for one of your Java projects and protect its \texttt{main} branch.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

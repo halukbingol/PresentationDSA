@@ -1,0 +1,27 @@
+$ git init -q demo
+$ cd demo
+$ echo "Merhaba" > hello.txt
+$ git add hello.txt
+$ find .git/objects -type f
+.git/objects/41/979c4ebe928f5fe22a06edc6af95798b951285
+$ echo "Merhaba" | git hash-object --stdin
+41979c4ebe928f5fe22a06edc6af95798b951285
+$ git cat-file -t 41979c4
+blob
+$ git cat-file -p 41979c4
+Merhaba
+$ git commit -q -m "Add hello"
+$ git cat-file -p HEAD
+tree 9f2b43af3b99ab7f2a5aa3c8575f8eb4976dce40
+author Ayşe Yılmaz <ayse@example.com> 1790000060 +0300
+committer Ayşe Yılmaz <ayse@example.com> 1790000060 +0300
+
+Add hello
+$ git cat-file -p "HEAD^{tree}"
+100644 blob 41979c4ebe928f5fe22a06edc6af95798b951285	hello.txt
+$ cp hello.txt copy.txt
+$ git add copy.txt
+$ git cat-file -p :copy.txt
+Merhaba
+$ find .git/objects -type f | wc -l
+3

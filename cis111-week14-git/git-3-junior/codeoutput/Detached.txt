@@ -1,0 +1,18 @@
+$ git switch --detach HEAD~1
+HEAD is now at db8969b B: pears
+$ echo "kiwis 6" >> stock.txt
+$ git commit -q -am "Experiment: kiwis"
+$ git switch main
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  bf808d2 Experiment: kiwis
+
+Switched to branch 'main'
+$ git branch experiment bf808d2
+$ git log --oneline --graph --all
+* bf808d2 (experiment) Experiment: kiwis
+| * 511429d (HEAD -> main) C: figs
+|/  
+* db8969b B: pears
+* efa27f5 A: apples

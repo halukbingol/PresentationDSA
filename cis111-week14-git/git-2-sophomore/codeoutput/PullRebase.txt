@@ -1,0 +1,19 @@
+$ cd ali
+$ echo "Open 9-18" >> README.md
+$ git commit -q -am "Add opening hours"
+$ git push -q
+$ cd ../ayse
+$ echo "Closed on Sunday" > HOURS.txt
+$ git add HOURS.txt
+$ git commit -q -m "Add Sunday rule"
+$ git pull --rebase
+From ../server
+   c068ee4..febcdcd  main       -> origin/main
+Rebasing (1/1)
+
+Successfully rebased and updated refs/heads/main.
+$ git log --oneline --graph
+* 330b225 (HEAD -> main) Add Sunday rule
+* febcdcd (origin/main) Add opening hours
+* c068ee4 Start the shop
+$ git push -q

@@ -1,0 +1,19 @@
+$ git log --oneline
+511429d (HEAD -> main) C: figs
+db8969b B: pears
+efa27f5 A: apples
+$ git reset --hard HEAD~2
+HEAD is now at efa27f5 A: apples
+$ git log --oneline
+efa27f5 (HEAD -> main) A: apples
+$ git reflog
+efa27f5 (HEAD -> main) HEAD@{0}: reset: moving to HEAD~2
+511429d HEAD@{1}: commit: C: figs
+db8969b HEAD@{2}: commit: B: pears
+efa27f5 (HEAD -> main) HEAD@{3}: commit (initial): A: apples
+$ git reset --hard HEAD@{1}
+HEAD is now at 511429d C: figs
+$ git log --oneline
+511429d (HEAD -> main) C: figs
+db8969b B: pears
+efa27f5 A: apples

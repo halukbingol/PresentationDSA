@@ -1,0 +1,35 @@
+$ git log --oneline
+8b46646 (HEAD -> main) Version 8
+d7e849b Version 7
+96969a4 Version 6
+42db4f2 Version 5
+5078427 Version 4
+1fb93b4 Version 3
+2049a25 Version 2
+c7c006a Version 1
+$ cat test.sh
+grep -q "return 4" Calc.java
+$ git bisect start HEAD HEAD~7
+Bisecting: 3 revisions left to test after this (roughly 2 steps)
+[507842761803c10bcb787a0197892ef66c956980] Version 4
+$ git bisect run sh test.sh
+running 'sh' 'test.sh'
+Bisecting: 1 revision left to test after this (roughly 1 step)
+[96969a406a7407ca94ce3c72226367af133c01d5] Version 6
+running 'sh' 'test.sh'
+Bisecting: 0 revisions left to test after this (roughly 0 steps)
+[42db4f2bdddd8f678c78d4318fd333fb7701b398] Version 5
+running 'sh' 'test.sh'
+96969a406a7407ca94ce3c72226367af133c01d5 is the first bad commit
+commit 96969a406a7407ca94ce3c72226367af133c01d5
+Author: Ayşe Yılmaz <ayse@example.com>
+Date:   Mon Sep 21 17:19:20 2026 +0300
+
+    Version 6
+
+ Calc.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+bisect found first bad commit
+$ git bisect reset
+Previous HEAD position was 42db4f2 Version 5
+Switched to branch 'main'

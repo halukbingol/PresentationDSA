@@ -1,0 +1,7 @@
+$ git config --global user.name "Ayşe Yılmaz"
+$ git config --global user.email "ayse@example.com"
+$ git config --global init.defaultBranch main
+$ git config --global --list
+user.name=Ayşe Yılmaz
+user.email=ayse@example.com
+init.defaultbranch=main

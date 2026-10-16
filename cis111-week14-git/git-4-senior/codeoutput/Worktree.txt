@@ -1,0 +1,12 @@
+$ git worktree add -q -b hotfix ../shop-hotfix HEAD~1
+$ git worktree list
+~/project/shop         0d9a213 [main]
+~/project/shop-hotfix  efa27f5 [hotfix]
+$ cd ../shop-hotfix
+$ sed -i 's/apples 3/apples 30/' stock.txt
+$ git commit -q -am "Fix apples"
+$ cd ../shop
+$ git branch -v
++ hotfix 17f88da Fix apples
+* main   0d9a213 B: pears (half done)
+$ git worktree remove ../shop-hotfix

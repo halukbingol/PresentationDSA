@@ -1,0 +1,19 @@
+$ cat .gitignore
+# compiled code
+*.class
+bin/
+build/
+# logs, but keep one
+*.log
+!keep.log
+# macOS and Windows clutter
+.DS_Store
+Thumbs.db
+$ git status --short --untracked-files=all
+?? .gitignore
+?? docs/notes.md
+?? keep.log
+?? src/App.java
+$ git check-ignore -v keep.log debug.log src/App.java
+.gitignore:7:!keep.log	keep.log
+.gitignore:6:*.log	debug.log

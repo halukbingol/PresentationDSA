@@ -1,0 +1,11 @@
+$ echo "garbage" >> Hello.java
+$ git status --short
+ M Hello.java
+$ git restore Hello.java
+$ git status --short
+$ echo "// by Ayse" >> Hello.java
+$ git commit -q -am "Add autor"
+$ git commit -q --amend -m "Add author"
+$ git log --oneline
+78a697a (HEAD -> main) Add author
+adbfbcd Add Hello program

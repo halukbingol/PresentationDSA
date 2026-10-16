@@ -1,0 +1,25 @@
+$ git branch topic-v1
+$ git rebase -q main
+$ sed -i "s/^5$/five/" y.txt
+$ git commit -q -a --amend -m "Add y (reviewed)"
+$ git range-diff main~1..topic-v1 main..topic
+1:  39b6a58 = 1:  988fbc3 Add x
+2:  04d67ef ! 2:  ce3b9b3 Add y
+    @@ Metadata
+     Author: Ayşe Yılmaz <ayse@example.com>
+     
+      ## Commit message ##
+    -    Add y
+    +    Add y (reviewed)
+     
+      ## y.txt (new) ##
+     @@
+    @@ y.txt (new)
+     +2
+     +3
+     +4
+    -+5
+    ++five
+     +6
+     +7
+     +8

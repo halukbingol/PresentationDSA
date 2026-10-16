@@ -1,0 +1,21 @@
+$ cd ayse
+$ git switch -q -c typo-fixes
+$ echo "x" > a.txt && git add a.txt && git commit -q -m "wip"
+$ echo "y" >> a.txt && git commit -q -am "wip 2"
+$ echo "z" >> a.txt && git commit -q -am "fix"
+$ git switch -q main
+$ git merge --squash typo-fixes
+Updating c068ee4..a03ec83
+Fast-forward
+Squash commit -- not updating HEAD
+ a.txt | 3 +++
+ 1 file changed, 3 insertions(+)
+ create mode 100644 a.txt
+$ git commit -q -m "Add a.txt (squashed)"
+$ git log --oneline --graph --all
+* c3dce41 (HEAD -> main) Add a.txt (squashed)
+| * a03ec83 (typo-fixes) fix
+| * 01f2ba2 wip 2
+| * d0fc332 wip
+|/  
+* c068ee4 (origin/main) Start the shop

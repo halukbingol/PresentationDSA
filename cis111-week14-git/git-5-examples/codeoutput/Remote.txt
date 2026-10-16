@@ -1,0 +1,23 @@
+$ git init -q --bare ../server.git
+$ git remote add origin ../server.git
+$ git push -u origin main
+To ../server.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+$ cd ..
+$ git clone -q server.git ali-shop
+$ cd ali-shop
+$ echo "kiwis 6" >> stock.txt
+$ git commit -q -am "Add kiwis"
+$ git push -q
+$ cd ../shop
+$ git pull
+From ../server
+   7411830..feb4d15  main       -> origin/main
+Updating 7411830..feb4d15
+Fast-forward
+ stock.txt | 1 +
+ 1 file changed, 1 insertion(+)
+$ git log --format="%h %an: %s"
+feb4d15 Ali Kaya: Add kiwis
+7411830 Ayşe Yılmaz: Start the shop

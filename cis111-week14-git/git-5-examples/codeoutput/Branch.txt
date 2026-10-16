@@ -1,0 +1,24 @@
+$ git branch
+* main
+$ git switch -c sale
+Switched to a new branch 'sale'
+$ echo "SALE: figs half price" >> README.md
+$ git commit -q -am "Announce the fig sale"
+$ git log --oneline --graph --all
+* 430cb74 (HEAD -> sale) Announce the fig sale
+* 7411830 (main) Start the shop
+$ git switch main
+Switched to branch 'main'
+$ cat README.md
+Shop
+====
+$ git merge sale
+Updating 7411830..430cb74
+Fast-forward
+ README.md | 1 +
+ 1 file changed, 1 insertion(+)
+$ git log --oneline --graph --all
+* 430cb74 (HEAD -> main, sale) Announce the fig sale
+* 7411830 Start the shop
+$ git branch -d sale
+Deleted branch sale (was 430cb74).

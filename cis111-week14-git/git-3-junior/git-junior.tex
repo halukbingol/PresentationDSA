@@ -1,0 +1,477 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Git -- Junior Level: Internals, Rewriting History and Automation
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+% algorithm2e set-up (the package is loaded by hblibPresentation)
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetKwProg{Fn}{function}{}{end}
+\SetKw{KwError}{error}
+
+% ---------------------------------------------------------------------
+\title{Git}
+\subtitle{Junior Level: Internals, Rewriting History and Automation}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-3}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={4-6}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Objects]{The Object Database}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Looking inside \texttt{.git/objects}}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, lastline=19]{codeoutput/Objects.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=20]{codeoutput/Objects.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  \texttt{git add} already writes the \textbf{blob}; its name is the SHA-1 of \texttt{"blob 8\textbackslash 0Merhaba\textbackslash n"}, so
+  \texttt{hash-object} gives the same name. The copy adds \textbf{no} new object: same content, same blob.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{From a commit to the bytes of a file}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[ob/.style={draw, thick, rounded corners=2pt, minimum width=2.2cm, minimum height=0.7cm, font=\scriptsize, align=center}]
+        \node[ob, fill=gray!20]  (h) at (0,1.4)   {\texttt{HEAD}\\ \texttt{ref: refs/heads/main}};
+        \node[ob, fill=colorHead!50] (m) at (3.2,1.4) {\texttt{refs/heads/main}\\ commit hash};
+        \node[ob, fill=red!15]   (c) at (3.2,0)   {commit\\ tree, parent, author};
+        \node[ob, fill=blue!12]  (t) at (3.2,-1.4) {tree\\ \texttt{hello.txt} $\to$ blob};
+        \node[ob, fill=green!15] (b) at (0,-1.4)  {blob \texttt{41979c4}\\ \texttt{Merhaba}};
+        \draw[-latex, thick] (h) -- (m);
+        \draw[-latex, thick] (m) -- (c);
+        \draw[-latex, thick] (c) -- (t);
+        \draw[-latex, thick] (t) -- (b);
+      \end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{itemize}\small
+        \item \textbf{Refs} (branches, tags, \texttt{HEAD}) are tiny text files with a hash or another ref's name.
+        \item \textbf{Objects} are compressed files named by their hash: immutable.
+        \item Every Git command is a walk over this graph; \texttt{cat-file} and \texttt{rev-parse} let you do it by hand.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Refs and \texttt{HEAD}}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, lastline=12]{codeoutput/Refs.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=13]{codeoutput/Refs.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  \texttt{HEAD~1}: the parent; \texttt{HEAD\textasciicircum\{tree\}}: its snapshot. On a branch, \texttt{HEAD} holds \texttt{ref: refs/heads/\dots};
+  detached, it holds a commit hash.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Reset]{Moving Branches: reset and reflog}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Three kinds of reset}
+  \begin{center}\small
+  \begin{tabular}{llll}
+    \toprule
+    \texttt{git reset \dots{} C} & moves the branch to \texttt{C} & staging area & working tree \\
+    \midrule
+    \texttt{-{}-soft}            & yes                            & unchanged     & unchanged \\
+    \texttt{-{}-mixed} (default) & yes                            & reset to \texttt{C} & unchanged \\
+    \texttt{-{}-hard}            & yes                            & reset to \texttt{C} & \textbf{reset to \texttt{C}}: edits lost \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.3em}
+  \begin{itemize}\small
+    \item \texttt{reset -{}-soft HEAD\textasciitilde1}: ``uncommit'', keep everything staged; useful to redo the last commit.
+    \item \texttt{reset -{}-mixed}: unstage. \texttt{reset -{}-hard}: throw away uncommitted work. \hRemark{Uncommitted changes cannot be recovered.}
+    \item \texttt{reset} rewrites the branch: do not use it on commits already pushed; use \texttt{revert} there.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{reset in action}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, lastline=11]{codeoutput/Reset.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=12]{codeoutput/Reset.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  \texttt{-{}-soft}: the change of \texttt{D} is staged again (\texttt{M\ }); \texttt{-{}-mixed}: unstaged (\texttt{\ M}); \texttt{-{}-hard}: gone.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Lost commits are not lost: \texttt{reflog}}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, lastline=13]{codeoutput/Reflog.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=14]{codeoutput/Reflog.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  The \textbf{reflog} records every position of \texttt{HEAD} (entries kept 90 days by default, 30 for unreachable commits). Commits that no branch points to stay in the database until
+  garbage collection; \texttt{HEAD@\{1\}} is ``where HEAD was one step ago''.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Commits on a detached HEAD}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, lastline=11]{codeoutput/Detached.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=12]{codeoutput/Detached.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  Git warns when you leave commits behind and prints their hash; a branch on that commit saves them.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Rewrite]{Rewriting Local History}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{fixup} commits and \texttt{rebase -{}-autosquash}}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, lastline=18]{codeoutput/Autosquash.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=19]{codeoutput/Autosquash.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  \texttt{-{}-fixup=C} makes a commit ``\texttt{fixup! C}''; \texttt{rebase -i -{}-autosquash} moves it next to \texttt{C} and melts it in.
+  Here \texttt{GIT\_SEQUENCE\_EDITOR} only prints the todo list instead of opening an editor.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Interactive rebase: the todo list}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\scriptsize]
+pick   1a2b3c4 Add parser
+reword 5d6e7f8 Add tests     # edit the message
+squash 9a8b7c6 Fix tests     # melt into previous
+drop   3c4d5e6 Debug prints  # delete
+edit   7f8e9d0 Add docs      # stop to amend
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}\small
+        \item \texttt{git rebase -i HEAD\textasciitilde5} opens this list in your editor (\win: Notepad++ or VS Code if chosen in the installer; \mac: \texttt{vim} unless \texttt{core.editor} is set).
+        \item Reorder lines to reorder commits; change the first word to change what happens.
+        \item Every rewritten commit gets a \textbf{new hash}.
+        \item \texttt{git rebase -{}-abort} returns to the start.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Copying one commit: \texttt{cherry-pick}}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, lastline=10]{codeoutput/CherryPick.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=11]{codeoutput/CherryPick.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  A bug fixed on \texttt{main} is also needed on the \texttt{release} branch: \texttt{cherry-pick} applies the same change as a new commit.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Search]{Searching History}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Which commit broke it? \texttt{git bisect}}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, lastline=14]{codeoutput/Bisect.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=15]{codeoutput/Bisect.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  Binary search over history: 7 candidate commits need only 3 tests ($\lceil \log_{2} 7 \rceil$). \texttt{bisect run} calls the script:
+  exit code 0 = good, 1--127 = bad (125 = skip).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Searching contents: \texttt{-S}, \texttt{-G}, \texttt{-L}}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize, lastline=5]{codeoutput/Pickaxe.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize, firstline=6]{codeoutput/Pickaxe.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  \texttt{-S}: commits that change the \textbf{number} of occurrences of a string; \texttt{-G}: whose diff matches a regex; \texttt{-L}: history of a line range.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Hooks]{Automation with Hooks}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A pre-commit hook}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, lastline=8]{codeoutput/Hook.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=9]{codeoutput/Hook.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  Hooks are scripts in \texttt{.git/hooks}; a non-zero exit stops the action. They are \textbf{not} cloned: share them with
+  \texttt{git config core.hooksPath tools/hooks} or a tool such as \texttt{pre-commit}. On \win, Git Bash runs them with its own \texttt{sh}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Useful hooks}
+  \begin{center}\small
+  \begin{tabular}{lL{0.6\textwidth}}
+    \toprule
+    \textbf{hook}         & \textbf{typical use} \\
+    \midrule
+    \texttt{pre-commit}   & format code, run fast checks (no \texttt{TODO}, no secrets, no large files) \\
+    \texttt{commit-msg}   & enforce a message style, e.g.\ ``\texttt{JIRA-123: \dots}'' \\
+    \texttt{pre-push}     & run the unit tests before pushing \\
+    \texttt{post-merge}   & reinstall dependencies after a pull \\
+    server: \texttt{pre-receive} & reject pushes that break rules (GitHub: \emph{branch protection} instead) \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \small \texttt{git commit -{}-no-verify} skips client hooks: they help, but they are not security. Enforce rules on the server and in CI.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Big ideas}
+  \begin{itemize}
+    \item Git is a database of immutable, content-addressed objects (blob, tree, commit, tag) plus movable refs.
+    \item \texttt{reset} moves a branch; \texttt{-{}-soft}/\texttt{-{}-mixed}/\texttt{-{}-hard} decide what happens to the index and the files.
+    \item The reflog remembers where \texttt{HEAD} has been: committed work is very hard to lose.
+    \item Rewrite \textbf{local} history freely (amend, fixup, interactive rebase, cherry-pick); never rewrite shared history.
+    \item \texttt{bisect run} finds a bad commit in $O(\log n)$ tests; \texttt{-S}, \texttt{-G}, \texttt{-L} search contents.
+    \item Hooks automate checks locally; real enforcement belongs on the server and in CI.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Find the blob of a file of yours with \texttt{git rev-parse HEAD:FILE} and print it with \texttt{cat-file -p}.
+    \item Delete a branch with unmerged commits (\texttt{branch -D}) and recover it with the reflog.
+    \item Make three commits, then use \texttt{rebase -i} to squash them into one with a good message.
+    \item Write a test script for one of your projects and find a bug-introducing commit with \texttt{bisect run}.
+    \item Write a \texttt{commit-msg} hook that rejects summary lines longer than 50 characters; share it with \texttt{core.hooksPath}.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

@@ -1,0 +1,28 @@
+$ echo "plums 4" >> stock.txt
+$ git commit -q -am "D: plums"
+$ sed -i 's/pears 5/pears 50/' stock.txt
+$ git commit -q -a --fixup=HEAD~1
+$ git log --oneline
+e1267ae (HEAD -> main) fixup! C: figs
+7fb57fb D: plums
+511429d C: figs
+db8969b B: pears
+efa27f5 A: apples
+$ GIT_SEQUENCE_EDITOR="sed -n /^[a-z]/p" git rebase -i --autosquash HEAD~3
+pick 511429d C: figs
+fixup e1267ae fixup! C: figs
+pick 7fb57fb D: plums
+Rebasing (2/3)
+Rebasing (3/3)
+
+Successfully rebased and updated refs/heads/main.
+$ git log --oneline
+3920340 (HEAD -> main) D: plums
+0e712f2 C: figs
+db8969b B: pears
+efa27f5 A: apples
+$ cat stock.txt
+apples 3
+pears 50
+figs 2
+plums 4

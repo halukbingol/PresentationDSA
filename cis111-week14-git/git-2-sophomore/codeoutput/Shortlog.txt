@@ -1,0 +1,10 @@
+$ cd ayse
+$ git pull -q
+$ git shortlog -sn HEAD
+     2	Ali Kaya
+     2	Ayşe Yılmaz
+$ git log --oneline --author="Ali"
+68210a1 (HEAD -> main, origin/main) Ali 3: fix README
+d2dca7d Ali 1
+$ git log --oneline --grep="fix"
+68210a1 (HEAD -> main, origin/main) Ali 3: fix README

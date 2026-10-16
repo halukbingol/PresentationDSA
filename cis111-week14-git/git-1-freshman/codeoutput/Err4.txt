@@ -1,0 +1,4 @@
+$ echo "# Ödev 1" > README.md
+$ git add Readme.md
+fatal: pathspec 'Readme.md' did not match any files
+$ git add README.md

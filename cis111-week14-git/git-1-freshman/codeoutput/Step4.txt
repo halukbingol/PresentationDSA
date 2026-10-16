@@ -1,0 +1,21 @@
+$ sed -i 's/Merhaba Git/Merhaba Yeditepe/' Hello.java
+$ git status --short
+ M Hello.java
+$ git diff
+diff --git a/Hello.java b/Hello.java
+index b08522c..b959a55 100644
+--- a/Hello.java
++++ b/Hello.java
+@@ -1,5 +1,5 @@
+ public class Hello {
+     public static void main(String[] args) {
+-        System.out.println("Merhaba Git");
++        System.out.println("Merhaba Yeditepe");
+     }
+ }
+$ git commit -am "Greet Yeditepe"
+[main 01d555b] Greet Yeditepe
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+$ git log --oneline
+01d555b (HEAD -> main) Greet Yeditepe
+adbfbcd Add Hello program

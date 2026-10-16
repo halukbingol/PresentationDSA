@@ -1,0 +1,12 @@
+$ printf 'apples 3\npears 5\nfigs 10\n' > stock.txt
+$ git add stock.txt
+$ git status --short
+M  stock.txt
+$ git commit -q -m "Merge ali: figs restocked"
+$ git log --oneline --graph
+*   534b089 (HEAD -> main) Merge ali: figs restocked
+|\  
+| * 91c78fd (ali) Ali: figs 10
+* | daf8d93 Ayse: figs sold out
+|/  
+* 7411830 Start the shop

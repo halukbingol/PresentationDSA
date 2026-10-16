@@ -1,0 +1,26 @@
+$ git switch -q -c pears
+$ sed -i 's/pears 5/pears 9/' stock.txt
+$ git commit -q -am "More pears"
+$ git switch -q main
+$ echo "Open 9:00-18:00" >> README.md
+$ git commit -q -am "Add opening hours"
+$ git log --oneline --graph --all
+* 4a33c90 (HEAD -> main) Add opening hours
+| * 531ed35 (pears) More pears
+|/  
+* 7411830 Start the shop
+$ git merge -m "Merge branch pears" pears
+Merge made by the 'ort' strategy.
+ stock.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+$ git log --oneline --graph --all
+*   5d2c9b6 (HEAD -> main) Merge branch pears
+|\  
+| * 531ed35 (pears) More pears
+* | 4a33c90 Add opening hours
+|/  
+* 7411830 Start the shop
+$ cat stock.txt
+apples 3
+pears 9
+figs 2

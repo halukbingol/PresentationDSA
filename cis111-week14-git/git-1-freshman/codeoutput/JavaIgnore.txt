@@ -1,0 +1,13 @@
+$ javac Hello.java
+$ java Hello
+Merhaba Git
+$ git status --short
+?? Hello.class
+$ echo "*.class" > .gitignore
+$ git status --short
+?? .gitignore
+$ git add .gitignore
+$ git commit -q -m "Ignore class files"
+$ git status
+On branch main
+nothing to commit, working tree clean

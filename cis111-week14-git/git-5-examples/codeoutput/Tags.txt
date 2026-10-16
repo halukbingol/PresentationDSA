@@ -1,0 +1,22 @@
+$ git tag -a v1.0 -m "First release"
+$ echo "kiwis 6" >> stock.txt
+$ git commit -q -am "Add kiwis"
+$ git tag
+v1.0
+$ git describe
+v1.0-1-gbcc685c
+$ git log --oneline --decorate
+bcc685c (HEAD -> main) Add kiwis
+7411830 (tag: v1.0) Start the shop
+$ git show v1.0 --no-patch
+tag v1.0
+Tagger: Ayşe Yılmaz <ayse@example.com>
+Date:   Mon Sep 21 17:15:20 2026 +0300
+
+First release
+
+commit 7411830ba833afe48b8c5d0b9a64e1a2bf2506c2 (tag: v1.0)
+Author: Ayşe Yılmaz <ayse@example.com>
+Date:   Mon Sep 21 17:14:20 2026 +0300
+
+    Start the shop

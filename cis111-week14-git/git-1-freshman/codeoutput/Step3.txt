@@ -1,0 +1,13 @@
+$ git commit -m "Add Hello program"
+[main (root-commit) adbfbcd] Add Hello program
+ 1 file changed, 5 insertions(+)
+ create mode 100644 Hello.java
+$ git status
+On branch main
+nothing to commit, working tree clean
+$ git log
+commit adbfbcd54ce509b058cadb545d023c1fc2418907 (HEAD -> main)
+Author: Ayşe Yılmaz <ayse@example.com>
+Date:   Mon Sep 21 17:14:20 2026 +0300
+
+    Add Hello program

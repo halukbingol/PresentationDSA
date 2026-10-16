@@ -1,0 +1,20 @@
+$ echo "plums 4" >> stock.txt
+$ git add stock.txt
+$ git commit -q -m "D: plums"
+$ git reset --soft HEAD~1
+$ git status --short
+M  stock.txt
+$ git log --oneline -1
+511429d (HEAD -> main) C: figs
+$ git reset --mixed HEAD
+Unstaged changes after reset:
+M	stock.txt
+$ git status --short
+ M stock.txt
+$ git reset --hard HEAD
+HEAD is now at 511429d C: figs
+$ git status --short
+$ cat stock.txt
+apples 3
+pears 5
+figs 2

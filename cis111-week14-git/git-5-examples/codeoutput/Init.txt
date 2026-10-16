@@ -1,0 +1,36 @@
+$ git init shop
+Initialized empty Git repository in ~/project/shop/.git/
+$ cd shop
+$ git status
+On branch main
+
+No commits yet
+
+nothing to commit (create/copy files and use "git add" to track)
+$ echo "# Shop" > README.md
+$ echo "apples 3" > stock.txt
+$ git status --short
+?? README.md
+?? stock.txt
+$ git add README.md stock.txt
+$ git status
+On branch main
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+	new file:   README.md
+	new file:   stock.txt
+
+$ git commit -m "Start the shop"
+[main (root-commit) 04daf42] Start the shop
+ 2 files changed, 2 insertions(+)
+ create mode 100644 README.md
+ create mode 100644 stock.txt
+$ git log
+commit 04daf42873c86f9eadd0e4fc45b8c34e7fa7418b (HEAD -> main)
+Author: Ayşe Yılmaz <ayse@example.com>
+Date:   Mon Sep 21 17:14:20 2026 +0300
+
+    Start the shop

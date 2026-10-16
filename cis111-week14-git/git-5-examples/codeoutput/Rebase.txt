@@ -1,0 +1,20 @@
+$ git switch -q -c feature
+$ echo "kiwis 6" >> stock.txt
+$ git commit -q -am "Add kiwis"
+$ git switch -q main
+$ echo "Open 9:00-18:00" >> README.md
+$ git commit -q -am "Add opening hours"
+$ git log --oneline --graph --all
+* 4a33c90 (HEAD -> main) Add opening hours
+| * bcc685c (feature) Add kiwis
+|/  
+* 7411830 Start the shop
+$ git switch -q feature
+$ git rebase main
+Rebasing (1/1)
+
+Successfully rebased and updated refs/heads/feature.
+$ git log --oneline --graph --all
+* 72838cb (HEAD -> feature) Add kiwis
+* 4a33c90 (main) Add opening hours
+* 7411830 Start the shop

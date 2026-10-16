@@ -1,0 +1,13 @@
+$ git tag -a v1.0.0 -m "Release 1.0.0"
+$ echo "2" > v.txt
+$ git commit -q -am "fix: rounding error"
+$ echo "3" > v.txt
+$ git commit -q -am "feat: discounts"
+$ git describe
+v1.0.0-2-gd8886d7
+$ git log --oneline v1.0.0..HEAD
+d8886d7 (HEAD -> main) feat: discounts
+e569c96 fix: rounding error
+$ git tag -a v1.1.0 -m "Release 1.1.0"
+$ git describe
+v1.1.0

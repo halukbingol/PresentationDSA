@@ -1,0 +1,10 @@
+# compiled code
+*.class
+bin/
+build/
+# logs, but keep one
+*.log
+!keep.log
+# macOS and Windows clutter
+.DS_Store
+Thumbs.db

@@ -1,0 +1,20 @@
+$ git switch -q -c ali
+$ sed -i 's/figs 2/figs 10/' stock.txt
+$ git commit -q -am "Ali: figs 10"
+$ git switch -q main
+$ sed -i 's/figs 2/figs 0/' stock.txt
+$ git commit -q -am "Ayse: figs sold out"
+$ git merge ali
+Auto-merging stock.txt
+CONFLICT (content): Merge conflict in stock.txt
+Automatic merge failed; fix conflicts and then commit the result.
+$ git status --short
+UU stock.txt
+$ cat stock.txt
+apples 3
+pears 5
+<<<<<<< HEAD
+figs 0
+=======
+figs 10
+>>>>>>> ali

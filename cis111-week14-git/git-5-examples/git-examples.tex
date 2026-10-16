@@ -1,0 +1,397 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Git -- Learning by Example
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+% algorithm2e set-up (the package is loaded by hblibPresentation)
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetKwProg{Fn}{function}{}{end}
+\SetKw{KwError}{error}
+
+% ---------------------------------------------------------------------
+\title{Git}
+\subtitle{Learning by Example}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-4}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={5-8}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Setup]{How to Read These Examples}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Real sessions}
+  \begin{itemize}
+    \item Every terminal box is a \textbf{real} session (Git 2.43); lines starting with \texttt{\$} are the commands.
+    \item Commit hashes are real too: the sessions use a fixed author (Ayşe Yılmaz) and fixed dates, so they come out the same every time.
+          Your hashes will differ.
+    \item The same commands work in \win{} \emph{Git Bash} and in the \mac{} \emph{Terminal}. In the \win{} Command Prompt, \texttt{git} works
+          the same, but \texttt{echo}, \texttt{cat}, \texttt{sed} are Unix tools: use Git Bash.
+    \item \texttt{bash run\_examples.sh} reruns every session.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Basics]{The First Commits}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{init, status, add, commit, log}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, lastline=25]{codeoutput/Init.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=26]{codeoutput/Init.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  \texttt{git status} after every step: \emph{untracked} (\texttt{??}), \emph{staged} (``Changes to be committed''), then clean.
+  The first commit is the \emph{root-commit}: it has no parent.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Seeing changes: \texttt{diff}}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Diff.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{git diff} compares the working tree with the staging area: after \texttt{git add} it is empty, and \texttt{git diff -{}-staged} shows what will be committed.
+  \texttt{-}/\texttt{+} lines are removed/added; \texttt{M} = modified.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Ignoring files: \texttt{.gitignore}}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Ignore.txt}
+
+  \vspace{0.1em}
+  \small
+  Build output and secrets disappear from \texttt{git status}; \texttt{.gitignore} itself should be committed.
+  \texttt{check-ignore -v} tells which line ignores a file.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Branches]{Branches and Merging}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A branch, then a fast-forward merge}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Branch.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{main} had no new commits, so \texttt{merge} only moved \texttt{main} to \texttt{sale}'s commit: \emph{Fast-forward}, no merge commit.
+  \texttt{branch -d} deletes the name, not the commits.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Both branches moved: a merge commit}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, lastline=15]{codeoutput/Merge.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=16]{codeoutput/Merge.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  Different lines in different files: Git merges automatically with the \texttt{ort} strategy and records a commit with two parents.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A conflict}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize, lastline=10]{codeoutput/Conflict.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize, firstline=11]{codeoutput/Conflict.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  Both changed the \textbf{same line}. Git stops, marks the file \texttt{UU}, and writes both versions between \texttt{<<<<<<<}, \texttt{=======}, \texttt{>>>>>>>}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Resolving the conflict}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Resolve.txt}
+
+  \vspace{0.1em}
+  \small
+  Edit the file to the version you want (remove the markers), \texttt{git add} it, \texttt{git commit}. \texttt{git merge -{}-abort} gives up instead.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Rebase instead of merge}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Rebase.txt}
+
+  \vspace{0.1em}
+  \small
+  After \texttt{rebase}, \texttt{Add kiwis} sits on top of \texttt{main}, with a \textbf{new hash}: the history is a straight line.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Undo]{Undoing Things}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{restore, amend, revert}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Undo.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{restore}: throw away edits; \texttt{restore -{}-staged}: unstage; \texttt{commit -{}-amend}: replace the last commit (new hash);
+  \texttt{revert}: a \textbf{new} commit that undoes an old one, safe for shared history.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Put work aside: \texttt{stash}}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, lastline=8]{codeoutput/Stash.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=9]{codeoutput/Stash.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  \texttt{stash} saves uncommitted changes and cleans the working tree, e.g.\ to switch branches; \texttt{stash pop} brings them back.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Releases]{Tags and History}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Tags mark releases}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize, lastline=11]{codeoutput/Tags.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize, firstline=12]{codeoutput/Tags.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  An \emph{annotated} tag (\texttt{-a}) has its own author, date and message. \texttt{describe}: the latest tag, commits since, and the hash (\texttt{g} for git).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Who changed what: \texttt{log -p}, \texttt{blame}}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/History.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{log -{}- file}: only commits touching that file. \texttt{blame}: for each line, the last commit, author and date that changed it.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Remotes]{Working with a Remote}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{push, clone, pull}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Remote.txt}
+
+  \vspace{0.1em}
+  \small
+  A \emph{bare} repository (no working tree) plays the server; on GitHub it is the same with an \texttt{https://} or \texttt{git@} URL.
+  Ali clones, commits, pushes; Ayşe pulls: a fast-forward.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Commands we used}
+  \begin{center}\footnotesize
+  \begin{tabular}{ll}
+    \toprule
+    \textbf{Goal} & \textbf{Command} \\
+    \midrule
+    start / copy a repository      & \texttt{git init}, \texttt{git clone URL} \\
+    what changed?                  & \texttt{git status}, \texttt{git diff}, \texttt{git diff -{}-staged} \\
+    record                         & \texttt{git add FILE}, \texttt{git commit -m "\dots"} \\
+    history                        & \texttt{git log -{}-oneline -{}-graph -{}-all}, \texttt{git show}, \texttt{git blame} \\
+    branches                       & \texttt{git switch -c NAME}, \texttt{git merge NAME}, \texttt{git rebase main} \\
+    undo                           & \texttt{git restore}, \texttt{git restore -{}-staged}, \texttt{-{}-amend}, \texttt{git revert} \\
+    aside                          & \texttt{git stash}, \texttt{git stash pop} \\
+    releases                       & \texttt{git tag -a v1.0 -m "\dots"}, \texttt{git describe} \\
+    remotes                        & \texttt{git remote add}, \texttt{git push -u}, \texttt{git pull}, \texttt{git fetch} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Repeat the \texttt{Init} session in a folder of your own (\win: Git Bash; \mac: Terminal). Are your hashes the same? Why not?
+    \item Make a conflict on purpose with a friend's change, and resolve it keeping \textbf{both} values.
+    \item Add \texttt{*.log} and \texttt{out/} to \texttt{.gitignore}; check with \texttt{git check-ignore -v}.
+    \item Undo the last commit in two ways: with \texttt{revert} and with \texttt{reset -{}-soft HEAD\textasciitilde1}. What is the difference?
+    \item Push a repository to GitHub (or your university's GitLab) and clone it on another computer.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

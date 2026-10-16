@@ -1,0 +1,20 @@
+$ cat .git/HEAD
+ref: refs/heads/main
+$ cat .git/refs/heads/main
+511429d484d9d1dad58d36a58a105713beaedefa
+$ git branch idea
+$ ls .git/refs/heads
+idea
+main
+$ git rev-parse idea HEAD~1 "HEAD^{tree}"
+511429d484d9d1dad58d36a58a105713beaedefa
+db8969b0d9bdd83c023a3935c6f47decf52a3e72
+537be0e0e44aea8b52206988589f71ee7e3eaec6
+$ git switch -q idea
+$ cat .git/HEAD
+ref: refs/heads/idea
+$ git switch -q --detach HEAD~2
+$ cat .git/HEAD
+efa27f51bc25eebffbb896d7a5e3beb685be6a2a
+$ git status | head -1
+HEAD detached at efa27f5

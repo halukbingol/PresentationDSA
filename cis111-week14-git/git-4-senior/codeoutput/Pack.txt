@@ -1,0 +1,23 @@
+$ git count-objects -vH
+count: 120
+size: 696.00 KiB
+in-pack: 0
+packs: 0
+size-pack: 0 bytes
+prune-packable: 0
+garbage: 0
+size-garbage: 0 bytes
+$ git gc -q
+$ git count-objects -vH
+count: 0
+size: 0 bytes
+in-pack: 120
+packs: 1
+size-pack: 30.93 KiB
+prune-packable: 0
+garbage: 0
+size-garbage: 0 bytes
+$ git verify-pack -v .git/objects/pack/*.idx | grep -E "^(non delta|chain length)"
+non delta: 81 objects
+chain length = 1: 23 objects
+chain length = 2: 16 objects

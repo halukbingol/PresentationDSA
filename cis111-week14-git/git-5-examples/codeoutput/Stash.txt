@@ -1,0 +1,21 @@
+$ echo "plums 4" >> stock.txt
+$ git stash
+Saved working directory and index state WIP on main: 7411830 Start the shop
+$ git status --short
+$ cat stock.txt
+apples 3
+pears 5
+figs 2
+$ git stash list
+stash@{0}: WIP on main: 7411830 Start the shop
+$ git stash pop
+On branch main
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   stock.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
+Dropped refs/stash@{0} (f6f6e2af8fa77f4755693e5c2b0d828e59918533)
+$ git status --short
+ M stock.txt

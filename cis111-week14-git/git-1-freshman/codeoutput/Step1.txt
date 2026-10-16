@@ -1,0 +1,14 @@
+$ mkdir odev1
+$ cd odev1
+$ git init
+Initialized empty Git repository in ~/project/odev1/.git/
+$ ls -a
+.
+..
+.git
+$ git status
+On branch main
+
+No commits yet
+
+nothing to commit (create/copy files and use "git add" to track)

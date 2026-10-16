@@ -1,26 +1,40 @@
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V specific
+
+# folders
+/_old/
+/test*/
 
 
-/git-1-freshmen-.pdf
-/git-1-freshmen-.tex
-/git-2-sophomore-.tex
-/git-2-sophomore.md
-/git-3-junior-.tex
-/git-4-senior-.tex
-/git-Freshmen- A Beginner's Tutorial.md
-/git-Junior+Senior level.md
-/git-as-diff.md
+# files
+/*/*-orj.pdf
+/*.xlsx
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V specific
+
+
+
+
+
+# /git-1-freshmen-.pdf
+# /git-1-freshmen-.tex
+# /git-2-sophomore-.tex
+# /git-2-sophomore.md
+# /git-3-junior-.tex
+# /git-4-senior-.tex
+# /git-Freshmen- A Beginner's Tutorial.md
+# /git-Junior+Senior level.md
+# /git-as-diff.md
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V 
 /*.pptx
 
 # pdf generated
-/diff-by-example.pdf
-/git-1-freshmen.pdf
-/git-2-sophomore.pdf
-/git-3-junior.pdf
-/git-4-senior.pdf
-/git-as-diff.pdf
+# /diff-by-example.pdf
+# /git-1-freshmen.pdf
+# /git-2-sophomore.pdf
+# /git-3-junior.pdf
+# /git-4-senior.pdf
+# /git-as-diff.pdf
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A 
 
 

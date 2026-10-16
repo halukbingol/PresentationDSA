@@ -1,0 +1,24 @@
+$ cd ayse
+$ git switch -c feature/discount
+Switched to a new branch 'feature/discount'
+$ sed -i 's/return 10 \* n;/return n >= 10 ? 9 * n : 10 * n;/' Shop.java
+$ git commit -q -am "Give 10% discount for 10 or more"
+$ git push -u origin feature/discount
+To ../server.git
+ * [new branch]      feature/discount -> feature/discount
+branch 'feature/discount' set up to track 'origin/feature/discount'.
+$ git switch -q main
+$ git merge --no-ff -m "Merge pull request #1: discount" feature/discount
+Merge made by the 'ort' strategy.
+ Shop.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+$ git push -q
+$ git push -q origin --delete feature/discount
+$ git branch -d feature/discount
+Deleted branch feature/discount (was b9f23be).
+$ git log --oneline --graph
+*   a90b86f (HEAD -> main, origin/main) Merge pull request #1: discount
+|\  
+| * b9f23be Give 10% discount for 10 or more
+|/  
+* c068ee4 Start the shop

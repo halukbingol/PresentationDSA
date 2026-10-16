@@ -1,0 +1,13 @@
+$ git init -q --object-format=sha256 modern
+$ cd modern
+$ echo "Merhaba" > hello.txt
+$ git add hello.txt
+$ git commit -q -m "Add hello"
+$ git rev-parse --show-object-format
+sha256
+$ git log --oneline
+7be8979 (HEAD -> main) Add hello
+$ git rev-parse HEAD
+7be89790879574605b04d9b186b493b4334946f8f7a3b17d110c34a8d3a8512a
+$ git cat-file -p "HEAD^{tree}"
+100644 blob eaf361c63062fa65790df8305e56b05ed0abe8444fe5484d5e3b3da35a1cef00	hello.txt

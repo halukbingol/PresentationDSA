@@ -1,0 +1,6 @@
+#!/bin/sh
+# refuse commits that still contain TODO in staged Java files
+if git diff --cached -U0 -- '*.java' | grep -q '^+.*TODO'; then
+    echo "pre-commit: remove the TODOs first" >&2
+    exit 1
+fi

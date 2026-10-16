@@ -1,0 +1,17 @@
+$ git merge topic
+Auto-merging p.txt
+CONFLICT (content): Merge conflict in p.txt
+Recorded preimage for 'p.txt'
+Automatic merge failed; fix conflicts and then commit the result.
+$ echo "price 12" > p.txt
+$ git add p.txt
+$ git commit -q --no-edit
+Recorded resolution for 'p.txt'.
+$ git reset -q --hard HEAD~1
+$ git merge topic
+Auto-merging p.txt
+CONFLICT (content): Merge conflict in p.txt
+Resolved 'p.txt' using previous resolution.
+Automatic merge failed; fix conflicts and then commit the result.
+$ cat p.txt
+price 12

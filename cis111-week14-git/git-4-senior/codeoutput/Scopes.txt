@@ -1,0 +1,15 @@
+$ git config --global includeIf.gitdir:~/work/.path "~/.gitconfig-work"
+$ git init -q ~/hobby
+$ git init -q ~/work/shop
+$ git -C ~/hobby config user.email
+ayse@example.com
+$ git -C ~/work/shop config user.email
+ayse.yilmaz@company.com
+$ cd ~/work/shop
+$ git config user.email "release-bot@company.com"
+$ git config --show-scope --get-all user.email
+global	ayse@example.com
+global	ayse.yilmaz@company.com
+local	release-bot@company.com
+$ git config user.email
+release-bot@company.com

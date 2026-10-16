@@ -1,0 +1,17 @@
+$ git switch -q -c release HEAD~1
+$ git switch -q main
+$ sed -i 's/apples 3/apples 30/' stock.txt
+$ git commit -q -am "Fix: apples are 30, not 3"
+$ git switch -q release
+$ git cherry-pick main
+Auto-merging stock.txt
+[release 650fd8e] Fix: apples are 30, not 3
+ Date: Mon Sep 21 17:18:20 2026 +0300
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+$ git log --oneline --graph --all
+* 650fd8e (HEAD -> release) Fix: apples are 30, not 3
+| * f903d9c (main) Fix: apples are 30, not 3
+| * 511429d C: figs
+|/  
+* db8969b B: pears
+* efa27f5 A: apples

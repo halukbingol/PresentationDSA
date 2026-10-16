@@ -1,0 +1,23 @@
+$ cd ali
+$ sed -i 's/return 10 \* n;/return 12 * n;/' Shop.java
+$ git commit -q -am "Raise the price to 12"
+$ git push -q
+$ cd ../ayse
+$ sed -i 's/return 10 \* n;/return 11 * n;/' Shop.java
+$ git commit -q -am "Raise the price to 11"
+$ git pull --no-edit
+From ../server
+   c068ee4..b2f666b  main       -> origin/main
+Auto-merging Shop.java
+CONFLICT (content): Merge conflict in Shop.java
+Automatic merge failed; fix conflicts and then commit the result.
+$ cat Shop.java
+public class Shop {
+    static int price(int n) {
+<<<<<<< HEAD
+        return 11 * n;
+=======
+        return 12 * n;
+>>>>>>> b2f666b2455f0b7cb32a8e8fa3ed044e648a5494
+    }
+}

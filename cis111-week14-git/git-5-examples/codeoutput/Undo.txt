@@ -1,0 +1,24 @@
+$ echo "oops" >> stock.txt
+$ git restore stock.txt
+$ git status --short
+$ echo "kiwis 6" >> stock.txt
+$ git add stock.txt
+$ git restore --staged stock.txt
+$ git status --short
+ M stock.txt
+$ git add stock.txt
+$ git commit -q -m "Add kiwis (typo in mesage)"
+$ git commit -q --amend -m "Add kiwis"
+$ git log --oneline
+62ce932 (HEAD -> main) Add kiwis
+7411830 Start the shop
+$ git revert --no-edit HEAD
+[main 44b7b57] Revert "Add kiwis"
+ Date: Mon Sep 21 17:18:20 2026 +0300
+ 1 file changed, 1 deletion(-)
+$ git log --oneline
+44b7b57 (HEAD -> main) Revert "Add kiwis"
+62ce932 Add kiwis
+7411830 Start the shop
+$ tail -1 stock.txt
+figs 2

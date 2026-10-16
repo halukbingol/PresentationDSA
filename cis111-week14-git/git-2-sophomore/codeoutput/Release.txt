@@ -1,0 +1,16 @@
+$ cd ayse
+$ git tag -a v1.0.0 -m "First release"
+$ git push origin v1.0.0
+To ../server.git
+ * [new tag]         v1.0.0 -> v1.0.0
+$ echo "fix" >> README.md
+$ git commit -q -am "Fix README"
+$ git tag -a v1.0.1 -m "Bug fix release"
+$ git push -q --tags
+$ git ls-remote --tags origin
+475eaaf46fff1ccad932a4986c87e0e9563e00cd	refs/tags/v1.0.0
+c068ee456e96c47b853aac7caf1d3ecacd199815	refs/tags/v1.0.0^{}
+5d94ac62825ab502940cf17cda6ff1c2e36231f8	refs/tags/v1.0.1
+d4e0117bb694957a6b320d306c216de3aabf1d7e	refs/tags/v1.0.1^{}
+$ git describe
+v1.0.1

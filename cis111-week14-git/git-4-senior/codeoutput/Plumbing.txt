@@ -1,0 +1,27 @@
+$ git init -q raw
+$ cd raw
+$ blob=$(echo "Merhaba" | git hash-object -w --stdin)
+$ echo $blob
+41979c4ebe928f5fe22a06edc6af95798b951285
+$ git update-index --add --cacheinfo 100644,$blob,hello.txt
+$ tree=$(git write-tree)
+$ echo $tree
+9f2b43af3b99ab7f2a5aa3c8575f8eb4976dce40
+$ commit=$(echo "First commit, by hand" | git commit-tree $tree)
+$ echo $commit
+9beccca2773a529ed6ce6bf4c6214f5cc2dc5fc8
+$ git update-ref refs/heads/main $commit
+$ git log --stat
+commit 9beccca2773a529ed6ce6bf4c6214f5cc2dc5fc8 (HEAD -> main)
+Author: Ayşe Yılmaz <ayse@example.com>
+Date:   Mon Sep 21 17:14:20 2026 +0300
+
+    First commit, by hand
+
+ hello.txt | 1 +
+ 1 file changed, 1 insertion(+)
+$ git status --short
+ D hello.txt
+$ git restore hello.txt
+$ cat hello.txt
+Merhaba

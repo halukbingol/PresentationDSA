@@ -1,0 +1,12 @@
+$ mkdir -p build
+$ echo "class file" > build/Hello.class
+$ echo "secret=1234" > .env
+$ git status --short
+?? .env
+?? build/
+$ printf 'build/\n*.class\n.env\n' > .gitignore
+$ git status --short
+?? .gitignore
+$ git check-ignore -v build/Hello.class .env
+.gitignore:1:build/	build/Hello.class
+.gitignore:3:.env	.env

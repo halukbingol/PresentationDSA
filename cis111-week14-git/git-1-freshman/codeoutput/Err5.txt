@@ -1,0 +1,6 @@
+$ git init -q odev1
+$ cd odev1
+$ git remote add origin ../server.git
+$ git push -u origin main
+error: src refspec main does not match any
+error: failed to push some refs to '../server.git'
