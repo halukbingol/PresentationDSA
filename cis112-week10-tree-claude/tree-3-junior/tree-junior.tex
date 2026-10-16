@@ -97,16 +97,48 @@
 \begin{frame}[t,fragile] \frametitle{Same keys, very different trees}
   \begin{columns}[T]
     \begin{column}{0.3\textwidth}
-      \centering
-      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=1.6cm}, level 2/.style={sibling distance=0.8cm}, scale=1.0, transform shape]
-  \node[hnode] {4} child {node[hnode] {2} child {node[hnode] {1}} child {node[hnode] {3}}} child {node[hnode] {6} child {node[hnode] {5}} child {node[hnode] {7}}};
-\end{tikzpicture}\\
-      \small insert \texttt{4 2 6 1 3 5 7}: height 2
+	\centering
+	\begin{tikzpicture}[
+	      	htree, level distance=0.95cm, 
+		level 1/.style={sibling distance=1.6cm}, 
+		level 2/.style={sibling distance=0.8cm}, 
+		scale=1.0, transform shape
+	]
+	\node[hnode] {4} 
+		child {node[hnode] {2} 
+			child {node[hnode] {1}} 
+			child {node[hnode] {3}}
+		} 
+		child {node[hnode] {6} 
+			child {node[hnode] {5}} 
+			child {node[hnode] {7}}
+		};
+	\end{tikzpicture}\\
+	\small insert \texttt{4 2 6 1 3 5 7}: height 2
     \end{column}
     \begin{column}{0.3\textwidth}
       \centering
-      \begin{tikzpicture}[htree, level distance=0.55cm, level 1/.style={sibling distance=0.7cm}, level 2/.style={sibling distance=0.7cm}, level 3/.style={sibling distance=0.7cm}, level 4/.style={sibling distance=0.7cm}, scale=0.85, transform shape]
-  \node[hnode] {1} child[missing] child {node[hnode] {2} child[missing] child {node[hnode] {3} child[missing] child {node[hnode] {4} child[missing] child {node[hnode] {5}}}}};
+      \begin{tikzpicture}[
+	      	htree, level distance=0.55cm, 
+		level 1/.style={sibling distance=0.7cm}, 
+		level 2/.style={sibling distance=0.7cm}, 
+		level 3/.style={sibling distance=0.7cm}, 
+		level 4/.style={sibling distance=0.7cm}, 
+		scale=0.85, transform shape
+	]
+	\node[hnode] {1} 
+		child[missing] 
+		child {node[hnode] {2} 
+			child[missing] 
+			child {node[hnode] {3} 
+				child[missing] 
+				child {node[hnode] {4} 
+					child[missing] 
+					child {node[hnode] {5}
+				}
+			}
+		}
+	};
 \end{tikzpicture}\\
       \small insert \texttt{1 2 3 4 5}: height 4
     \end{column}
@@ -180,15 +212,40 @@
   \begin{columns}[T]
     \begin{column}{0.56\textwidth}
       \begin{center}
-      \begin{tikzpicture}[htree, level distance=0.9cm, level 1/.style={sibling distance=1.4cm}, level 2/.style={sibling distance=0.8cm}]
-        \node[hnode, hhot] {y} child {node[hnode] {x} child {node[hsquare] {$A$}} child {node[hsquare] {$B$}}} child {node[hsquare] {$C$}};
-      \end{tikzpicture}
-      \quad $\Longleftrightarrow$ \quad
-      \begin{tikzpicture}[htree, level distance=0.9cm, level 1/.style={sibling distance=1.4cm}, level 2/.style={sibling distance=0.8cm}]
-        \node[hnode] {x} child {node[hsquare] {$A$}} child {node[hnode, hhot] {y} child {node[hsquare] {$B$}} child {node[hsquare] {$C$}}};
-      \end{tikzpicture}
+	\begin{tikzpicture}[
+			htree, level distance=0.9cm, 
+			level 1/.style={sibling distance=1.4cm}, 
+			level 2/.style={sibling distance=0.8cm}
+		]
+		\node[hnode, hhot] {y} 
+			child {node[hnode] {x} 
+				child {node[hsquare] {$A$}} 
+				child {node[hsquare] {$B$}}
+			} 
+			child {node[hsquare] {$C$}};
+	\end{tikzpicture}
+	\quad $\Longleftrightarrow$ \quad
+	\begin{tikzpicture}[
+			htree, level distance=0.9cm, 
+			level 1/.style={sibling distance=1.4cm}, 
+			level 2/.style={sibling distance=0.8cm}
+		]
+		\node[hnode] {x} 
+			child {node[hsquare] {$A$}
+			} 
+			child {node[hnode, hhot] {y} 
+				child {node[hsquare] {$B$}
+				} 
+				child {node[hsquare] {$C$}
+				}
+			};
+	\end{tikzpicture}
+	
       \end{center}
-      \small right rotation at \texttt{y} $\to$ \quad $\leftarrow$ left rotation at \texttt{x}
+      \small 
+		\emph{right rotation} at \texttt{y} $\to$ 
+		\quad 
+		$\leftarrow$ \emph{left rotation} at \texttt{x}
     \end{column}
     \begin{column}{0.4\textwidth}
       \begin{itemize}\small

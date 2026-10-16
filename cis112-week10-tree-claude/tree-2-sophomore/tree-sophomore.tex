@@ -289,8 +289,25 @@
     \end{column}
     \begin{column}{0.32\textwidth}
       \centering
-      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=1.9cm}, level 2/.style={sibling distance=1.0cm}, level 3/.style={sibling distance=0.55cm}, scale=0.8, transform shape]
-  \node[hnode, hhot] {60} child {node[hnode] {30} child {node[hnode] {20}} child {node[hnode] {40} child {node[hnode] {35}} child[missing]}} child {node[hnode] {70} child[missing] child {node[hnode] {80}}};
+      \begin{tikzpicture}[
+	      	htree, 
+	      	level distance=0.95cm, 
+		level 1/.style={sibling distance=1.9cm}, 
+		level 2/.style={sibling distance=1.0cm}, 
+		level 3/.style={sibling distance=0.55cm}, 
+		scale=0.8, transform shape
+	]
+  	\node[hnode, hhot] {60} 
+		child {node[hnode] {30} 
+			child {node[hnode] {20}} 
+			child {node[hnode] {40} 
+				child {node[hnode] {35}} 
+				child[missing]}
+		} 
+		child {node[hnode] {70} 
+			child[missing] 
+			child {node[hnode] {80}}
+		};
 \end{tikzpicture}\\
       \small after: \texttt{60} moved up
     \end{column}
