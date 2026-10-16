@@ -1,0 +1,599 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  The Eclipse IDE -- Freshman Level: Your First Java Programs in Eclipse
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% theme, i/N, fonts (T1, lmodern), booktabs, xcolor, array (L{width} columns), listings, tikz,
+% algorithm2e (\small captions, \Fn) and the color gitred come from the hblib libraries
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+% ---------------------------------------------------------------------
+\title{The Eclipse IDE}
+\subtitle{Freshman Level: Your First Java Programs in Eclipse}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-3}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={4-6}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Install]{Installing Eclipse 2026-06}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Download from eclipse.org}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{\win}
+        \small
+        \begin{enumerate}
+          \item Open \texttt{eclipse.org/downloads}, choose \textbf{Download Packages}.
+          \item \emph{Eclipse IDE for Java Developers}, 2026-06, \textbf{Windows x86\_64}: a \texttt{.zip} file.
+          \item Unzip it, e.g.\ to \texttt{C:\textbackslash eclipse}; start \texttt{eclipse.exe}.
+        \end{enumerate}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{\mac}
+        \small
+        \begin{enumerate}
+          \item Open \texttt{eclipse.org/downloads}, choose \textbf{Download Packages}.
+          \item \emph{Eclipse IDE for Java Developers}, 2026-06, \textbf{AArch64} (Apple silicon) or \textbf{x86\_64} (Intel): a \texttt{.dmg}.
+          \item Open it, drag \emph{Eclipse} to \emph{Applications}; start it from there.
+        \end{enumerate}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \begin{itemize}\small
+    \item The package contains a Java runtime for Eclipse itself: nothing else to install to start.
+    \item Which chip does my Mac have? \menu{Apple menu > About This Mac}: ``Apple M\dots'' $\Rightarrow$ AArch64.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{First start: the workspace}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \begin{itemize}\small
+        \item Eclipse asks for a \textbf{workspace} folder: all your projects go there.
+        \item Choose one folder for the course, e.g.\\
+              \win: \texttt{C:\textbackslash Users\textbackslash ayse\textbackslash cis111-workspace}\\
+              \mac: \texttt{/Users/ayse/cis111-workspace}
+        \item Avoid cloud-synced folders (OneDrive, iCloud): they can lock files while Eclipse writes them.
+        \item Close the \emph{Welcome} tab: the \textbf{Java perspective} appears.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{block}{\mac: ``cannot be opened''}
+        \small If macOS refuses to open Eclipse the first time, open it with right click \menu{Open},
+        or allow it in \menu{System Settings > Privacy \& Security}.
+      \end{block}
+      \begin{block}{Which version do I have?}
+        \small \menu{Help > About Eclipse IDE} (\win), \menu{Eclipse > About Eclipse IDE} (\mac).
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[First program]{The First Program}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A Java project and a class}
+  \begin{enumerate}\small
+    \item \menu{File > New > Java Project}. Project name: \texttt{Hello}. Keep the JRE suggested by Eclipse.
+    \item \textbf{Uncheck} \emph{Create module-info.java file} (modules are for later; with it, some imports fail).
+    \item \textbf{Finish}. The Package Explorer shows \texttt{Hello} with \texttt{src} and \emph{JRE System Library}.
+    \item Right click \texttt{src}: \menu{New > Class}. Name: \texttt{Hello}; tick
+          \emph{public static void main(String[] args)}; \textbf{Finish}.
+    \item Type the body, save with \keys{Ctrl+S} (\win) / \keys{\cmd+S} (\mac).
+  \end{enumerate}
+  \vspace{0.3em}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Class names}
+        \small Start with a capital letter: \texttt{Hello}, \texttt{GradeCalculator}. The file is \texttt{Hello.java}.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Package}
+        \small Eclipse suggests a package name; for small exercises the default package is fine.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Run it}
+  \lstcoderightstep[0.62][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Hello.java}{Java}{codeoutput/Hello.txt}
+
+  \vspace{0.2em}
+  \small \menu{Run As > Java Application} (right click in the editor), or the green \emph{Run} button.
+  The output appears in the \textbf{Console} view below the editor.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Type less: templates and Content Assist}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{center}\footnotesize
+      \begin{tabular}{@{}ll@{}}
+        \toprule
+        \textbf{type, then \keys{Ctrl+Space}} & \textbf{you get} \\
+        \midrule
+        \texttt{main}    & a \texttt{main} method \\
+        \texttt{sysout}  & \texttt{System.out.println();} \\
+        \texttt{for}     & a \texttt{for} loop over an array \\
+        \texttt{System.} & the members of \texttt{System} \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item \keys{Ctrl+Space} is the same on \win{} and \mac.
+        \item After a dot, the list opens by itself; choose with arrows and \keys{\return}.
+        \item \keys{Tab} jumps to the next field of a template.
+        \item \mac: if \keys{Ctrl+Space} switches the keyboard language, change that shortcut in
+              \menu{System Settings > Keyboard > Keyboard Shortcuts > Input Sources}.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Shortcuts for the first weeks}
+  \begin{center}\small
+  \begin{tabular}{lll}
+    \toprule
+    \textbf{task}                   & \win                     & \mac \\
+    \midrule
+    save                            & \keys{Ctrl+S}            & \keys{\cmd+S} \\
+    run the last program again      & \keys{Ctrl+F11}          & \keys{\cmd+\shift+F11} \\
+    Quick Fix for an error          & \keys{Ctrl+1}            & \keys{\cmd+1} \\
+    format the code                 & \keys{Ctrl+\shift+F}     & \keys{\cmd+\shift+F} \\
+    add missing imports             & \keys{Ctrl+\shift+O}     & \keys{\cmd+\shift+O} \\
+    comment / uncomment lines       & \keys{Ctrl+/}            & \keys{\cmd+/} \\
+    delete the line                 & \keys{Ctrl+D}            & \keys{\cmd+D} \\
+    undo                            & \keys{Ctrl+Z}            & \keys{\cmd+Z} \\
+    show all shortcuts              & \keys{Ctrl+\shift+L}     & \keys{\cmd+\shift+L} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Console]{Input, Output and Arguments}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Keyboard input in the Console}
+  \lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Grade.java}{Java}{codeoutput/Grade.txt}
+
+  \vspace{0.2em}
+  \small Click into the Console before typing; your input appears in green. Here the input (60, 75) came from a file, so it is not shown.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Program arguments: Run Configurations}
+  \begin{columns}[T]
+    \begin{column}{0.55\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Greet.java}{Java}
+    \end{column}
+    \begin{column}{0.41\textwidth}
+      \begin{itemize}\small
+        \item \menu{Run > Run Configurations\dots}, choose \texttt{Greet}, tab \textbf{Arguments}.
+        \item \emph{Program arguments}: \texttt{Ayşe Ali}. \textbf{Run}.
+        \item They arrive in \texttt{args}, split at spaces.
+      \end{itemize}
+      \uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Greet.txt}}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Compile errors]{Reading Compile Errors}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Errors are shown while you type}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}\small
+        \item Red \textbf{x} in the margin and a red wavy line: an \textbf{error}; the program cannot run correctly.
+        \item Yellow \textbf{!}: a \textbf{warning}; it runs, but something looks wrong.
+        \item Hover over the line to read the message; all messages are in the \textbf{Problems} view.
+        \item Light bulb on the marker, or \keys{Ctrl+1} / \keys{\cmd+1}: \textbf{Quick Fix}.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{How to read a message}
+        \small
+        \begin{enumerate}
+          \item \textbf{Where}: file and line.
+          \item \textbf{What}: read the whole sentence.
+          \item Fix the \textbf{first} error first: one mistake can cause several messages.
+        \end{enumerate}
+      \end{block}
+      \small The next slides show the messages of Eclipse's compiler, \texttt{ecj}, exactly as the Problems view lists them.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{``Syntax error, insert ";"''}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Semicolon/src/Hello.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Semicolon.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small Eclipse tells you \textbf{what to insert}. The \texttt{\textasciicircum} points to where it is missing: the end of the line.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{``Scanner cannot be resolved to a type''}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Import/src/Grade.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Import.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small A missing \texttt{import java.util.Scanner;}. Quick Fix offers \emph{Import `Scanner' (java.util)}; \keys{Ctrl+\shift+O} / \keys{\cmd+\shift+O} adds it, too.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{``The public type Helo must be defined in its own file''}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/FileName/src/Hello.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/FileName.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small A \texttt{public class} must be in a file with the same name. Quick Fix: rename the class or the file
+  (better: \menu{Refactor > Rename}).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{``string cannot be resolved to a type''}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Case/src/Hello.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Case.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small Java is case sensitive: \texttt{String}, \texttt{System} start with capitals. Content Assist (\keys{Ctrl+Space}) never makes this mistake.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{``This method must return a result of type int''}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Return/src/Max.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Return.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small If \texttt{a == b}, no \texttt{return} is reached. Every path through the method must return a value.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{``The local variable sum may not have been initialized''}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Init/src/Sum.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Init.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small A local variable has no default value: write \texttt{int sum = 0;}. (Fields get default values, locals do not.)
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{``Syntax error, insert "\}" to complete ClassBody''}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Brace/src/Loop.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Brace.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small One \texttt{\}} is missing; the error is reported at the \textbf{end}, far from the real place.
+  \keys{Ctrl+\shift+F} / \keys{\cmd+\shift+F} (Format) shows the wrong indentation.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Warnings: the program runs, but \dots}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Warn/src/Area.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Warn.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small A variable that is never used is often a bug: here the value \texttt{pi} was meant to be used, but \texttt{Math.PI} is.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Run errors]{Errors While Running}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{``InputMismatchException'': wrong input}
+  \lstcoderightstep[0.5][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/GradeBad.java}{Java}{codeoutput/GradeBad.txt}
+
+  \vspace{0.2em}
+  \small Read the \textbf{stack trace} from the top: the exception, then \texttt{Grade\-Bad.java:9}: line 9 of our file.
+  In the Console the file names are links: a click opens the line.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{``ArrayIndexOutOfBoundsException'': no arguments}
+  \lstcoderightstep[0.56][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/GreetNone.java}{Java}{codeoutput/GreetNone.txt}
+
+  \vspace{0.2em}
+  \small Started with \menu{Run As > Java Application}, without program arguments: \texttt{args} is empty, \texttt{args[0]} does not exist.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Messages from Eclipse itself}
+  \begin{center}\small
+  \begin{tabular}{L{0.42\textwidth}L{0.5\textwidth}}
+    \toprule
+    \textbf{message}                                          & \textbf{what to do} \\
+    \midrule
+    \emph{Selection does not contain a main type}             & the class you right-clicked has no \texttt{main}; open the class that has one \\
+    \emph{Errors exist in required project(s). Proceed with launch?} & answer \textbf{Cancel} and fix the Problems view first \\
+    \emph{The import \dots{} is not accessible} / \emph{\dots{} is not visible} & the project has a \texttt{module-info.java}; delete it in small exercises \\
+    The Console is empty or gone                              & \menu{Window > Show View > Console} \\
+    Views moved or closed                                     & \menu{Window > Perspective > Reset Perspective} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet}
+  \begin{center}\footnotesize
+  \begin{tabular}{@{}ll@{}}
+    \toprule
+    \textbf{I want to \dots}   & \textbf{in Eclipse} \\
+    \midrule
+    start a program            & \menu{File > New > Java Project}, then \menu{New > Class} \\
+    run it                     & \menu{Run As > Java Application} \\
+    give it arguments          & \menu{Run > Run Configurations\dots} \\
+    fix an error               & read the Problems view; \keys{Ctrl+1} / \keys{\cmd+1} \\
+    tidy the code              & \keys{Ctrl+\shift+F} / \keys{\cmd+\shift+F} \\
+    get my views back          & \menu{Window > Perspective > Reset Perspective} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Do}
+        \small save often; fix the first error first; read the whole message; one workspace per course
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Don't}
+        \small ignore warnings; run while the Problems view shows errors; keep the workspace in a cloud folder
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Install Eclipse 2026-06, create the workspace \texttt{cis111-workspace} and a project \texttt{Week1}.
+    \item Write \texttt{Hello} using only templates (\texttt{main}, \texttt{sysout}) and Content Assist.
+    \item Make each compile error of section 4 happen on purpose, then fix it with Quick Fix where Eclipse offers one.
+    \item Run \texttt{Grade}, type a word instead of a number and find the line of the error from the stack trace.
+    \item Give \texttt{Greet} three names as program arguments, then a name with a space: \texttt{"Ayşe Nur"}. What changes?
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

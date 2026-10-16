@@ -1,0 +1,4 @@
+args.length = 2
+Merhaba Ayşe
+Merhaba Ali
+First: Ayşe

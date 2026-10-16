@@ -1,0 +1,8 @@
+$ ecj -17 -d before before/Report.java
+$ ecj -17 -d after after/Report.java
+$ java -cp before Report
+Average: 72.5
+Passed: 3
+$ java -cp after Report
+Average: 72.5
+Passed: 3

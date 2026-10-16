@@ -1,0 +1,22 @@
+$ java -cp b Circle
+12.56636
+12.56636
+$ java -cp a Circle
+12.56636
+12.56636
+$ diff before/Circle.java after/Circle.java
+1a2,3
+>     private static final double PI = 3.14159;
+> 
+3,5c5,11
+<         double r = 2;
+<         System.out.println(3.14159 * r * r);
+<         System.out.println(2 * 3.14159 * r);
+---
+>         double radius = 2;
+>         System.out.println(area(radius));
+>         System.out.println(2 * PI * radius);
+>     }
+> 
+>     private static double area(double radius) {
+>         return PI * radius * radius;

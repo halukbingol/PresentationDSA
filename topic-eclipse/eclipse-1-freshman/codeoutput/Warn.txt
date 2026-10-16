@@ -1,0 +1,8 @@
+$ ecj -17 -d bin src/Area.java
+----------
+1. WARNING in ~/project/src/Area.java (at line 4)
+	double pi = 3.14;
+	       ^^
+The value of the local variable pi is not used
+----------
+1 problem (1 warning)

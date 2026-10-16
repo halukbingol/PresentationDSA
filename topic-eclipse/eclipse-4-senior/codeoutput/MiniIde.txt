@@ -1,0 +1,12 @@
+$ java -cp $JDT:. MiniIde Hello.java
+compiled Hello.java: true
+Merhaba from code compiled in our own program
+$ java -cp $JDT:. MiniIde Broken.java
+compiled Broken.java: false
+----------
+1. ERROR in ~/project/Broken.java (at line 3)
+	int n = "three";
+	        ^^^^^^^
+Type mismatch: cannot convert from String to int
+----------
+1 problem (1 error)

@@ -1,0 +1,10 @@
+stop at Fact:3
+run
+where
+locals
+cont
+cont
+cont
+where
+locals
+cont

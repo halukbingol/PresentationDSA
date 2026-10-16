@@ -1,0 +1,6 @@
+stop at tr.edu.yeditepe.grades.GradeBook:18
+run
+locals
+print sum / students.size()
+print students.size()
+cont

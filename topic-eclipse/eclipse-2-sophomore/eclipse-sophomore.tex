@@ -1,0 +1,576 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  The Eclipse IDE -- Sophomore Level: Projects, Tests, Debugging and Refactoring
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% theme, i/N, fonts (T1, lmodern), booktabs, xcolor, array (L{width} columns), listings, tikz,
+% algorithm2e (\small captions, \Fn) and the color gitred come from the hblib libraries
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+% ---------------------------------------------------------------------
+\title{The Eclipse IDE}
+\subtitle{Sophomore Level: Projects, Tests, Debugging and Refactoring}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-4}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={5-8}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Projects]{Projects with Packages}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A project with packages}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}\small
+        \item \menu{File > New > Package}: \texttt{tr.edu.yeditepe.grades}. A package is a \textbf{folder}:
+              \texttt{src/tr/edu/yeditepe/grades/}.
+        \item Package names: reversed domain, lower case. They prevent name clashes between libraries.
+        \item Every file starts with its \texttt{package} line; Eclipse writes it and keeps it right when you
+              move a class (\menu{Refactor > Move}).
+        \item Package Explorer shows packages flat; \menu{Window > Show View > Navigator} shows the real folders.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/p/Student.java}{Java}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=13, firstnumber=13]{codeoutput/p/GradeBook.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What Eclipse builds: \texttt{src} $\to$ \texttt{bin}}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Layout.txt}
+
+  \vspace{0.1em}
+  \small
+  This is what \emph{Build Automatically} does on every save, done here by hand with the same compiler (\texttt{ecj}):
+  one \texttt{.class} file per class, in the same package folders. Is the average right?
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The project files: \texttt{.project} and \texttt{.classpath}}
+  \begin{columns}[T]
+    \begin{column}{0.44\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Grades/.project}{XML}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Grades/.classpath}{XML}
+    \end{column}
+  \end{columns}
+  \small \texttt{.project}: name and \emph{nature} (a Java project). \texttt{.classpath}: the \textbf{build path}: source folders,
+  JRE, libraries, output folder. Edit it with \menu{Build Path > Configure Build Path\dots}, not by hand.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The build path}
+  \begin{center}\small
+  \begin{tabular}{lll}
+    \toprule
+    \textbf{to use \dots}            & \textbf{in Configure Build Path}          & \textbf{becomes} \\
+    \midrule
+    a JAR file in the project      & \emph{Libraries} $\to$ \emph{Add JARs\dots}         & \texttt{kind="lib"} \\
+    a JAR file elsewhere           & \emph{Add External JARs\dots}                       & \texttt{kind="lib"} (absolute path) \\
+    JUnit 5                        & \emph{Add Library\dots} $\to$ JUnit                 & \texttt{kind="con"} \\
+    another project of the workspace & \emph{Projects} $\to$ \emph{Add\dots}             & \texttt{kind="src"} \\
+    another Java version           & \emph{JRE System Library} $\to$ \emph{Edit\dots}    & \texttt{kind="con"} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \begin{itemize}\small
+    \item Prefer JARs \textbf{inside} the project (e.g.\ a \texttt{lib/} folder): the project works on every computer.
+          An external path like \texttt{C:\textbackslash Users\textbackslash ayse\textbackslash Downloads} does not.
+    \item Real projects use Maven or Gradle to fetch libraries (junior level).
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Testing]{Unit Tests with JUnit 5}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A JUnit test class}
+  \begin{columns}[T]
+    \begin{column}{0.58\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/p/GradeBookTest.java}{Java}
+    \end{column}
+    \begin{column}{0.38\textwidth}
+      \begin{itemize}\small
+        \item Right click the class under test: \menu{New > JUnit Test Case}, \emph{New JUnit Jupiter test}.
+              Eclipse offers to add JUnit 5 to the build path.
+        \item Keep tests in a separate source folder \texttt{test}, same package.
+        \item \menu{Run As > JUnit Test}: the \textbf{JUnit view} shows a green or red bar.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A red bar}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/TestRed.txt}
+
+  \vspace{0.1em}
+  \small
+  Same tests, run by the JUnit console launcher; the JUnit view in Eclipse shows the same tree. Expected 72.5, but was 72.0:
+  where does the .5 go? Double-click the failure in the JUnit view to jump to the line.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Debugging]{Debugging}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Breakpoints that think}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}\small
+        \item \textbf{Conditional breakpoint}: right click the blue dot, \emph{Breakpoint Properties\dots},
+              \emph{Conditional}: \texttt{s.name().equals("Ali")}. It stops only then.
+        \item \textbf{Hit count} 100: stops the 100th time, e.g.\ in a long loop.
+        \item \textbf{Exception breakpoint}: \menu{Run > Add Java Exception Breakpoint\dots}, e.g.\
+              \texttt{NullPointerException}: stops where it is thrown.
+        \item \textbf{Watch}: select an expression, right click \emph{Watch}: it stays in the Expressions view.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{center}\footnotesize
+      \begin{tabular}{@{}lll@{}}
+        \toprule
+        \textbf{action}     & \win                 & \mac \\
+        \midrule
+        toggle breakpoint   & \keys{Ctrl+\shift+B} & \keys{\cmd+\shift+B} \\
+        debug last launch   & \keys{F11}           & \keys{\cmd+F11} \\
+        inspect selection   & \keys{Ctrl+\shift+I} & \keys{\cmd+\shift+I} \\
+        run to line         & \keys{Ctrl+R}        & \keys{\cmd+R} \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+      \small Stepping: \keys{F5} into, \keys{F6} over, \keys{F7} return, \keys{F8} resume.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Debugging the red test}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=13, firstnumber=13]{codeoutput/p/GradeBook.java}{Java}
+      \small In Eclipse: a breakpoint on line 18, \menu{Debug As > JUnit Test}, then look at the Variables view and
+      type the expression into the Expressions view. Here: \texttt{jdb} with the commands of \texttt{debug.txt}.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny, firstline=8]{codeoutput/Debug.txt}}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The same steps with the command-line debugger}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{center}\footnotesize
+      \begin{tabular}{@{}ll@{}}
+        \toprule
+        \textbf{Eclipse}                          & \textbf{\texttt{jdb}} \\
+        \midrule
+        breakpoint on line 18                    & \texttt{stop at \dots:18} \\
+        \menu{Debug As}                          & \texttt{run} \\
+        Variables view                           & \texttt{locals} \\
+        Expressions view                         & \texttt{print \dots} \\
+        \keys{F8} Resume                         & \texttt{cont} \\
+        \keys{F6} Step Over                      & \texttt{next} \\
+        \keys{F5} Step Into                      & \texttt{step} \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item The previous session is real: \texttt{jdb} talks to the program through the same JDWP as Eclipse.
+        \item \texttt{slowly} types one command per second, as a person would.
+        \item \texttt{sum / students.size()} is an \textbf{integer} division: \texttt{145 / 2 = 72}; the \texttt{.5} is lost before the result becomes \texttt{double}.
+        \item Fix: \texttt{(double) sum / students.size()}.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{After the fix: a green bar}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/TestGreen.txt}
+
+  \vspace{0.1em}
+  \small
+  Re-run the tests after every fix: \keys{Ctrl+F11} / \keys{\cmd+\shift+F11} re-runs the last launch, including JUnit runs.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Refactoring]{Refactoring}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Before: it works, but \dots}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Refactor/before/Report.java}{Java}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item Names say nothing: \texttt{g}, \texttt{s}, \texttt{c}, \texttt{x}.
+        \item One long \texttt{main} doing two jobs.
+        \item A magic number: \texttt{50}.
+      \end{itemize}
+      \vspace{0.3em}
+      \begin{center}\scriptsize
+      \begin{tabular}{@{}lll@{}}
+        \toprule
+        \textbf{refactoring}  & \win                & \mac \\
+        \midrule
+        Rename                & \keys{Alt+\shift+R} & \keys{Option+\cmd+R} \\
+        Extract Method        & \keys{Alt+\shift+M} & \keys{Option+\cmd+M} \\
+        Extract Constant      & \menu{Refactor}     & \menu{Refactor} \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{After: three refactorings}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Refactor/after/Report.java}{Java}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{enumerate}\small
+        \item \textbf{Rename} \texttt{g}, \texttt{s}, \texttt{c}, \texttt{x}: every use changes at once.
+        \item Select a loop, \textbf{Extract Method}: Eclipse finds the parameters and the return value.
+        \item Select \texttt{50}, \textbf{Extract Constant}: \texttt{PASS\_GRADE}.
+      \end{enumerate}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Refactor.txt}
+      \small Same output before and after: that is what \emph{refactoring} means.}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Let Eclipse write the routine code}
+  \begin{center}\small
+  \begin{tabular}{ll}
+    \toprule
+    \textbf{menu \menu{Source > \dots}}                  & \textbf{writes} \\
+    \midrule
+    Generate Constructor using Fields\dots             & a constructor that sets the chosen fields \\
+    Generate Getters and Setters\dots                  & \texttt{getName()}, \texttt{setName(\dots)} \\
+    Generate \texttt{toString()}\dots                  & a \texttt{toString} listing the fields \\
+    Generate \texttt{hashCode()} and \texttt{equals()}\dots & both, consistent with each other \\
+    Override/Implement Methods\dots                    & stubs for interface or superclass methods \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \begin{itemize}\small
+    \item Right click in the editor, or \keys{Alt+\shift+S} (\win) / \keys{Option+\cmd+S} (\mac).
+    \item For pure data classes, a Java \texttt{record} (like \texttt{Student}) gives all of these without any code.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Git]{Git in Eclipse}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The Team menu is Git}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \begin{center}\small
+      \begin{tabular}{ll}
+        \toprule
+        \textbf{Eclipse (EGit)}                       & \textbf{git} \\
+        \midrule
+        \menu{Team > Share Project\dots}             & \texttt{git init} \\
+        Git Staging view: drag to \emph{Staged}      & \texttt{git add} \\
+        \emph{Commit} button                         & \texttt{git commit} \\
+        \menu{Team > Pull}, \menu{Team > Push\dots}  & \texttt{git pull}, \texttt{git push} \\
+        \menu{Team > Show in History}                & \texttt{git log} \\
+        \menu{Team > Switch To}                      & \texttt{git switch} \\
+        \menu{File > Import > Git > Projects from Git} & \texttt{git clone} \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{itemize}\small
+        \item EGit is part of the Java package. Files show their state with small icons
+              (\texttt{>} changed, \texttt{?} untracked).
+        \item Commit \texttt{.project}, \texttt{.classpath}, \texttt{.settings/}: they \emph{are} the project.
+        \item Never commit \texttt{bin/} (built) or the workspace \texttt{.metadata/} (personal).
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{An Eclipse project in Git}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, lastline=17]{codeoutput/Git.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=18]{codeoutput/Git.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  One line of \texttt{.gitignore} keeps the compiled classes out; the project files stay in, so a classmate can
+  \emph{Import} the project and build it at once.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Export]{Running Outside Eclipse}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Export a runnable JAR}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \begin{enumerate}\small
+        \item \menu{File > Export > Java > Runnable JAR file}.
+        \item \emph{Launch configuration}: \texttt{Main - Grades} (made by the first run).
+        \item \emph{Export destination}: \texttt{grades.jar}. \textbf{Finish}.
+        \item Run it anywhere with Java:\\ \hCode{java -jar grades.jar}
+      \end{enumerate}
+      \small The JAR's manifest names the main class, so \texttt{java -jar} knows where to start.
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Jar.txt}
+      \small The same JAR made with the JDK's \texttt{jar} tool (Command Prompt on \win, Terminal on \mac).}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Habits]{Good Habits}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Habits that save hours}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Every save}
+        \small \textbf{Save Actions}: \menu{Window > Preferences > Java > Editor > Save Actions} (\mac: \menu{Eclipse > Settings\dots}):
+        format edited lines, organize imports.
+      \end{block}
+      \begin{block}{Every change}
+        \small Run the tests (\menu{Run As > JUnit Test}); keep the Problems view at zero errors and few warnings.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Every bug}
+        \small Write a failing test first, debug, fix, see it turn green. The test keeps the bug from coming back.
+      \end{block}
+      \begin{block}{Every day}
+        \small Commit small steps with clear messages; push to the course repository.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet}
+  \begin{center}\footnotesize
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    \textbf{task}           & \textbf{menu}                                   & \textbf{\win{} / \mac} \\
+    \midrule
+    new package / class     & \menu{File > New > Package}, \menu{Class}       & \\
+    build path              & \menu{Build Path > Configure Build Path\dots}   & \\
+    new test                & \menu{File > New > JUnit Test Case}             & \\
+    run tests               & \menu{Run As > JUnit Test}                      & \keys{Alt+\shift+X}, \keys{T} / \keys{Option+\cmd+X}, \keys{T} \\
+    toggle breakpoint       & \menu{Run > Toggle Breakpoint}                  & \keys{Ctrl+\shift+B} / \keys{\cmd+\shift+B} \\
+    rename                  & \menu{Refactor > Rename\dots}                   & \keys{Alt+\shift+R} / \keys{Option+\cmd+R} \\
+    extract method          & \menu{Refactor > Extract Method\dots}           & \keys{Alt+\shift+M} / \keys{Option+\cmd+M} \\
+    generate code           & \menu{Source}                                   & \keys{Alt+\shift+S} / \keys{Option+\cmd+S} \\
+    runnable JAR            & \menu{File > Export > Runnable JAR file}        & \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Create the project \texttt{Grades} with the package \texttt{tr.edu.yeditepe.grades} and the three classes of this deck.
+    \item Add the JUnit test class, see the red bar, debug with a breakpoint on line 18 and fix the bug.
+    \item Add a method \texttt{countPassed()} to \texttt{GradeBook}: first the test, then the code.
+    \item Refactor \texttt{Report} yourself with Rename, Extract Method and Extract Constant; compare with this deck.
+    \item Put the project into Git with EGit, push it to the course server, and import it on another computer.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

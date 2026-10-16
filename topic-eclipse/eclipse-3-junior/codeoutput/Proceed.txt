@@ -1,0 +1,17 @@
+$ ecj -17 -proceedOnError -d bin src/Shop.java
+----------
+1. ERROR in ~/project/src/Shop.java (at line 7)
+	return price(n) - "5";
+	       ^^^^^^^^^^^^^^
+The operator - is undefined for the argument type(s) int, String
+----------
+1 problem (1 error)
+$ ls bin
+Shop.class
+$ java -cp bin Shop
+price(3) = 30
+Exception in thread "main" java.lang.Error: Unresolved compilation problem: 
+	The operator - is undefined for the argument type(s) int, String
+
+	at Shop.discount(Shop.java:7)
+	at Shop.main(Shop.java:12)

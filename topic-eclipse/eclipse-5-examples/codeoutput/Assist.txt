@@ -1,0 +1,8 @@
+$ javap java.lang.Math | grep "static double s" | head -5
+  public static double sin(double);
+  public static double sqrt(double);
+  public static double signum(double);
+  public static double sinh(double);
+  public static double scalb(double, int);
+$ javap java.lang.String | grep -c "public"
+104

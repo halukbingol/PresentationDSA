@@ -1,0 +1,28 @@
+$ git init -q
+$ git status --short
+?? .classpath
+?? .project
+?? .settings/
+?? bin/
+?? src/
+$ printf 'bin/\n' > .gitignore
+$ git add .
+$ git status --short
+A  .classpath
+A  .gitignore
+A  .project
+A  .settings/org.eclipse.jdt.core.prefs
+A  src/tr/edu/yeditepe/grades/GradeBook.java
+A  src/tr/edu/yeditepe/grades/Main.java
+A  src/tr/edu/yeditepe/grades/Student.java
+$ git commit -q -m "Grades project"
+$ git log --oneline
+963d046 Grades project
+$ git ls-files
+.classpath
+.gitignore
+.project
+.settings/org.eclipse.jdt.core.prefs
+src/tr/edu/yeditepe/grades/GradeBook.java
+src/tr/edu/yeditepe/grades/Main.java
+src/tr/edu/yeditepe/grades/Student.java

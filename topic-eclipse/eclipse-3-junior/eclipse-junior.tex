@@ -1,0 +1,503 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  The Eclipse IDE -- Junior Level: Compiler Settings, Null Analysis, Builds and Remote Debugging
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% theme, i/N, fonts (T1, lmodern), booktabs, xcolor, array (L{width} columns), listings, tikz,
+% algorithm2e (\small captions, \Fn) and the color gitred come from the hblib libraries
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+% ---------------------------------------------------------------------
+\title{The Eclipse IDE}
+\subtitle{Junior Level: Compiler Settings, Null Analysis, Builds and Remote Debugging}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-4}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={5-8}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Compiler]{Compiler Settings}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Errors, warnings, ignore: you decide}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}\small
+        \item \menu{Window > Preferences > Java > Compiler > Errors/Warnings} (\mac: \menu{Eclipse > Settings\dots}):
+              many checks, each \emph{Error}, \emph{Warning}, \emph{Info} or \emph{Ignore}.
+        \item These are the workspace settings: they are \textbf{yours}, not the project's.
+        \item Better for a team: project properties, \menu{Java Compiler > Errors/Warnings}, tick
+              \emph{Enable project specific settings}.
+        \item Eclipse writes them to \texttt{.settings/org.eclipse.jdt.core.prefs}: commit it, and everybody gets the same checks.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Defaults/src/Orders.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The defaults}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Defaults.txt}
+
+  \vspace{0.1em}
+  \small
+  With the default settings: two raw types and two unused locals are warnings; the possible \texttt{null} in line 12 is \textbf{not} reported.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The same code with the project's settings file}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, lastline=17]{codeoutput/Prefs.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=18]{codeoutput/Prefs.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  \texttt{ecj -properties} reads the file Eclipse writes, so the command line, a build server and every team member's
+  Eclipse report the same problems.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Null]{Null Analysis}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Contracts with \texttt{@NonNull} and \texttt{@Nullable}}
+  \begin{columns}[T]
+    \begin{column}{0.44\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/NullAnn/src/app/Names.java}{Java}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/NullAnn.txt}}
+    \end{column}
+  \end{columns}
+  \small \texttt{@NonNull} parameter: callers must not pass \texttt{null}. \texttt{@Nullable} result: callers must check it first.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The annotations and the settings}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/NullAnn/src/ann/NonNull.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/NullAnn/null.prefs}{}
+      \begin{itemize}\small
+        \item \emph{Errors/Warnings $\to$ Null analysis $\to$ Enable annotation-based null analysis}.
+        \item Eclipse ships its own annotations (\texttt{org.eclipse.jdt.annotation}); Quick Fix adds the JAR.
+              Other names (e.g.\ JSpecify's) can be configured; here: two tiny annotations of our own.
+        \item The analysis is at \textbf{compile time}: no cost when the program runs.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Builds]{Maven and Gradle Projects}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Eclipse and build tools}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=XML, basicstyle=\ttfamily\tiny]
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>tr.edu.yeditepe</groupId>
+  <artifactId>grades</artifactId>
+  <version>1.0</version>
+  <properties>
+    <maven.compiler.release>21</maven.compiler.release>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>5.12.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item \textbf{m2e} (Maven) and \textbf{Buildship} (Gradle) come with the Java package.
+        \item \menu{File > Import > Maven > Existing Maven Projects}: Eclipse reads \texttt{pom.xml},
+              downloads the libraries and \textbf{writes} the build path for you.
+        \item After editing \texttt{pom.xml}: \menu{Maven > Update Project} (\keys{Alt+F5} / \keys{Option+F5}).
+        \item The build tool is the truth: the build server runs \hCode{mvn verify}, not Eclipse.
+      \end{itemize}
+      \small \hRemark{Not run here}: Maven needs the internet to download the libraries.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Errors]{Code With Errors Still Runs}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{``Errors exist \dots{} Proceed with launch?''}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Proceed/src/Shop.java}{Java}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Proceed.txt}}
+    \end{column}
+  \end{columns}
+  \small Unlike \texttt{javac}, \texttt{ecj} still writes the class: the broken method throws \texttt{Unresolved compilation problem}
+  when it is \textbf{called}. Eclipse uses this; that is why \emph{Proceed} ``works'' until it does not.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Compilers]{ecj and javac}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Two compilers, one language: javac}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Compare/Legacy.java}{Java}
+      \begin{itemize}\small
+        \item Both follow the Java Language Specification; the class files run on the same JVM.
+        \item Different programs: messages, warnings and some corner cases differ.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny, lastline=11]{codeoutput/Compare.txt}}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Two compilers, one language: ecj}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Compare/Legacy.java}{Java}
+      \begin{itemize}\small
+        \item Both follow the Java Language Specification; the class files run on the same JVM.
+        \item Different programs: messages, warnings and some corner cases differ.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny, firstline=12]{codeoutput/Compare.txt}}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Debugging]{Advanced Debugging}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Remote debugging}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}\small
+        \item Start the program with the debug agent: it \textbf{listens} on a port (here 5005) and waits (\texttt{suspend=y}).
+        \item Eclipse: \menu{Run > Debug Configurations\dots}, \emph{Remote Java Application}, host and port 5005, \textbf{Debug}.
+        \item Works for a server, a container, another computer \dots{} \hRemark{Never open a debug port to the internet: whoever connects controls the program.}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{center}\footnotesize
+      \begin{tabular}{@{}L{0.46\linewidth}L{0.5\linewidth}@{}}
+        \toprule
+        \textbf{agent option}  & \textbf{meaning} \\
+        \midrule
+        \texttt{transport=dt\_socket} & TCP connection \\
+        \texttt{server=y}      & the program waits for the debugger \\
+        \texttt{suspend=y}     & do not start before it connects \\
+        \texttt{address=5005}  & the port (\texttt{localhost} only by default) \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Attaching to a waiting program}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, lastline=16]{codeoutput/Remote.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=17]{codeoutput/Remote.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  \texttt{jdb -attach} does what Eclipse's \emph{Remote Java Application} does. The program printed its own lines into \texttt{server.log}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{More debugger tools}
+  \begin{center}\small
+  \begin{tabular}{L{0.3\textwidth}L{0.62\textwidth}}
+    \toprule
+    \textbf{tool}                       & \textbf{use} \\
+    \midrule
+    Exception breakpoint                & stop where an exception is thrown, even if it is caught later \\
+    Watchpoint (on a field)             & stop whenever a field is read or changed: who sets it to \texttt{null}? \\
+    Method breakpoint                   & stop on entry to or exit from a method (slower) \\
+    \emph{Drop to Frame}                & restart the current method with the current values \\
+    Hot code replace                    & edit a method body while stopped, save, continue with the new code \\
+    \emph{Display} view                 & run any Java snippet in the stopped program \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \small Hot code replace works only for method bodies; a change of fields or signatures needs a restart.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Navigation]{Working in Large Code}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Finding your way}
+  \begin{center}\small
+  \begin{tabular}{llll}
+    \toprule
+    \textbf{question}                    & \textbf{menu}                                & \win                  & \mac \\
+    \midrule
+    where is class \dots?                & \menu{Navigate > Open Type\dots}             & \keys{Ctrl+\shift+T}  & \keys{\cmd+\shift+T} \\
+    where is file \dots?                 & \menu{Navigate > Open Resource\dots}         & \keys{Ctrl+\shift+R}  & \keys{\cmd+\shift+R} \\
+    what is in this class?               & \menu{Navigate > Quick Outline}              & \keys{Ctrl+O}         & \keys{\cmd+O} \\
+    who uses this method?                & \menu{Search > References > Workspace}       & \keys{Ctrl+\shift+G}  & \keys{\cmd+\shift+G} \\
+    who calls whom?                      & \menu{Navigate > Open Call Hierarchy}        & \keys{Ctrl+Alt+H}     & menu \\
+    sub- and superclasses?               & \menu{Navigate > Open Type Hierarchy}        & \keys{F4}             & \keys{F4} \\
+    text anywhere?                       & \menu{Search > File\dots}                    & \keys{Ctrl+H}         & \keys{Ctrl+H} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \small \textbf{Working sets} (Package Explorer menu, \emph{Select Working Set\dots}) hide the projects you are not working on.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{When Eclipse itself misbehaves}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{\texttt{eclipse.ini}: memory and Java}
+        \small
+        \win: next to \texttt{eclipse.exe}.\\
+        \mac: \texttt{Eclipse.app/Contents/Eclipse/eclipse.ini}.\\
+        After the line \texttt{-vmargs}, e.g.\ \texttt{-Xmx4g} for big workspaces.
+      \end{block}
+      \begin{block}{The log}
+        \small \texttt{<workspace>/.metadata/.log}, or \menu{Help > About > Installation Details > Configuration > View Error Log}.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{In this order}
+        \small
+        \begin{enumerate}
+          \item \menu{Project > Clean\dots}: rebuild everything.
+          \item \menu{File > Refresh} (\keys{F5}): files changed outside Eclipse.
+          \item \menu{Maven > Update Project}.
+          \item Restart with \hCode{-clean} (plug-in caches).
+          \item New workspace, \menu{File > Import > Existing Projects into Workspace}.
+        \end{enumerate}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Recipes}
+  \begin{center}\footnotesize
+  \begin{tabular}{@{}L{0.36\textwidth}L{0.58\textwidth}@{}}
+    \toprule
+    \textbf{goal}                              & \textbf{recipe} \\
+    \midrule
+    same checks for the whole team             & project-specific compiler settings; commit \texttt{.settings/} \\
+    no more \texttt{NullPointerException}s     & annotation-based null analysis, errors not warnings \\
+    libraries without manual build paths       & Maven or Gradle project, \menu{Maven > Update Project} \\
+    debug a program that runs elsewhere        & \texttt{-agentlib:jdwp=\dots,server=y}, \emph{Remote Java Application} \\
+    find a bug that appears after an hour      & conditional breakpoint, watchpoint, exception breakpoint \\
+    Eclipse acts strange                       & Clean, Refresh, Update Project, \texttt{-clean}, the \texttt{.log} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Make ``potential null pointer access'' an error in a project of yours; commit \texttt{.settings/} and let a friend import the project.
+    \item Annotate a class with \texttt{@NonNull}/\texttt{@Nullable} (Eclipse's or JSpecify's) until there are no null warnings left.
+    \item Import a Maven project from GitHub into Eclipse; find where the downloaded JARs are stored.
+    \item Start a program with the debug agent in a terminal and attach Eclipse's debugger to it.
+    \item Use a watchpoint to find which method sets a field to \texttt{null} in a program of 5 or more classes.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

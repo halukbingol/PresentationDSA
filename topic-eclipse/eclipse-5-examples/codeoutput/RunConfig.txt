@@ -1,0 +1,7 @@
+$ java -cp bin Check 20
+age = 20
+$ java -cp bin Check -5
+age = -5
+$ java -ea -cp bin Check -5
+Exception in thread "main" java.lang.AssertionError: age must not be negative: -5
+	at Check.main(Check.java:4)

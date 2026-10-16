@@ -1,0 +1,4 @@
+stop at Average:8
+cont
+locals
+cont

@@ -1,5 +1,6 @@
 % !TEX spellcheck = en_US
 
+% v20261016T1814
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
@@ -29,47 +30,22 @@
 	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
 
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V beamer
-	\useoutertheme{split}
-	\useinnertheme{rounded}
-	\usecolortheme{whale}
-	\usecolortheme{orchid}
-	\setbeamertemplate{blocks}[rounded]
-	\setbeamertemplate{navigation symbols}{}
-	% "i / N" on every frame comes from hblibPresentation.sty (\insertshorttitle)
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A beamer
 
 
-% xcolor, array, listings, tikz and algorithm2e come from the hblib libraries
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage{booktabs}
 
-% ---------------------------------------------------------------------
-%  algorithm2e set-up (the package is loaded by hblibPresentation)
-% ---------------------------------------------------------------------
-%\SetAlCapFnt{\small}
-%\SetAlCapNameFnt{\small}
-%\DontPrintSemicolon
-%\SetKwProg{Fn}{function}{}{end}
-%\SetKwFunction{FDijkstra}{Dijkstra}
-%\SetKwFunction{FExtractMin}{ExtractMin}
-%\SetKwFunction{FDecreaseKey}{DecreaseKey}
-%\SetKw{KwNil}{nil}
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon %  in algorithms
+% +++++++++++++++++++++++++++++++++++++++ A specific
 
-\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
-
-\definecolor{gitred}{RGB}{240,80,50}
-
-
-%\newcommand{\cmd}[1]{\texttt{\color{gitred}#1}}
 
 % ---------------------------------------------------------------------
 \title{
-	\LaTeX\ Template for \\
-	cis11x Presentations
+	A \LaTeX\ Template for\\
+	cis111 and cis112 Presentations
 }
-%\subtitle{A Template That Reads Both from Files}
+\subtitle{
+	Using hblib libraries
+}
 \author[Bingol]{Haluk O. Bingol}
 
 \institute[FCIS]{
@@ -98,10 +74,10 @@
 \begin{frame}[t,fragile] \frametitle{Outline}
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}
-      \tableofcontents[sections={1-8}, hideallsubsections]
+      \tableofcontents[sections={1-7}, hideallsubsections]
     \end{column}
     \begin{column}{0.48\textwidth}
-      \tableofcontents[sections={9-16}, hideallsubsections]
+      \tableofcontents[sections={8-14}, hideallsubsections]
     \end{column}
   \end{columns}
 \end{frame}
@@ -111,6 +87,7 @@
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+%\hSection[General]{General}{}{}
 \hSection[General]{General}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
@@ -260,13 +237,18 @@
 
 
 % +++++++++++++++++++++++++++++++++++++++ V alg
-%: -Alg. 
+%: -Alg. NaiveMatcher
 
 \SetKw{KwAnd}{and}
 
 \begin{algorithm}[H]
   \caption{NaiveMatcher($T$, $P$)}
   $n \leftarrow |T|$, \quad $m \leftarrow |P|$\;
+      
+			\tcp*{comment}
+  $a \gets b$	\tcp*{a comment}
+  $a \gets b$	\tcp*{very very long comment}
+
   \For{$s \leftarrow 0$ \KwTo $n - m$}{
     $j \leftarrow 0$\;
     \While{$j < m$ \KwAnd $T[s + j] = P[j]$}{
@@ -275,11 +257,6 @@
     \If{$j = m$}{
       report a match at shift $s$\;
     }
-    
-      								\tcp*{this and the following two lines are dummy}
-      $a \gets b$						\tcp*{a comment}
-      $a \gets b$						\tcp*{very very long comment}
-
   }
 \end{algorithm}
 % +++++++++++++++++++++++++++++++++++++++ A alg
@@ -317,12 +294,8 @@
 
 
 % +++++++++++++++++++++++++++++++++++++++ V alg
-%: -Alg. 
+%: -Alg. Dijkstra
 
-\SetAlCapFnt{\small}
-\SetAlCapNameFnt{\small}
-\DontPrintSemicolon
-\SetKwProg{Fn}{function}{}{end}
 \SetKwFunction{FDijkstra}{Dijkstra}
 \SetKwFunction{FExtractMin}{ExtractMin}
 \SetKwFunction{FDecreaseKey}{DecreaseKey}
@@ -409,9 +382,9 @@ course/project/
       \begin{enumerate}\small
 %        \item Load the libraries: \verb|\usepackage{hblibCodeoutput}|, \verb|\usepackage{hblibPresentation}|
         \item Put each program in \texttt{codeoutput/}
-        \item Run \cmd{sh run\_examples.sh}. It runs every program and saves what it prints
+        \item Run \hCode{sh run\_examples.sh}. It runs every program and saves what it prints
               (stdout \emph{and} stderr) to \texttt{codeoutput/<name>.txt}
-        \item Compile the slides: \cmd{pdflatex hbCisLaTeXTemplate.tex}
+        \item Compile the slides: \hCode{pdflatex hblibTemplate.tex}
       \end{enumerate}
 
       \begin{block}{One source of truth}
@@ -529,7 +502,7 @@ course/project/
                       and put the files in its \texttt{tex/latex/hblib/}
                 \item macOS: \texttt{\textasciitilde/Library/texmf/tex/latex/hblib/}
               \end{itemize}
-        \item Check with \cmd{kpsewhich hblibCodeoutput.sty}
+        \item Check with \hCode{kpsewhich hblibCodeoutput.sty}
       \end{itemize}
     \end{column}
     \begin{column}{0.44\textwidth}
@@ -809,7 +782,7 @@ course/project/
         \item \textbf{New language?} Add a line to \texttt{run\_examples.sh}, and use any
               \texttt{listings} language name (\texttt{Python}, \texttt{C}, \texttt{Java},
               \texttt{bash}, \texttt{SQL}, \texttt{Haskell}, \dots)
-        \item \textbf{Run one program:} \cmd{sh run\_examples.sh primes.py}
+        \item \textbf{Run one program:} \hCode{sh run\_examples.sh primes.py}
         \item \textbf{Frames} must be \texttt{[fragile]} (they already are in this template)
       \end{itemize}
     \end{column}

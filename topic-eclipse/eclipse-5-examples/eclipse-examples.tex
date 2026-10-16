@@ -1,0 +1,377 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  The Eclipse IDE -- Learning by Example
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% theme, i/N, fonts (T1, lmodern), booktabs, xcolor, array (L{width} columns), listings, tikz,
+% algorithm2e (\small captions, \Fn) and the color gitred come from the hblib libraries
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+% ---------------------------------------------------------------------
+\title{The Eclipse IDE}
+\subtitle{Learning by Example}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-4}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={5-8}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Workspace]{A Workspace on Disk}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What Eclipse writes to the disk}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Workspace.txt}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{itemize}\small
+        \item A workspace with one project \texttt{Hello} after \emph{File > New > Java Project}, a class and one save.
+        \item \texttt{.metadata}: the workspace's own data (here shortened to one file).
+        \item \texttt{.classpath}: source folder, JRE, output folder.
+        \item Delete \texttt{bin/} and Eclipse rebuilds it: never edit it.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Build]{Why the Builder Recompiles Other Files}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Two classes, one changes}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/show/Shop.java}{Java}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/show/Buy.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/show/Shop2.java}{Java}
+      \small The new \texttt{Shop}: \texttt{price} now returns a \texttt{double}. Its \textbf{public shape} changed.
+      What happens if only \texttt{Shop.java} is compiled again?
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Compiling only the changed file is not enough}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Stale.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{Buy.class} still calls \texttt{int price(int)}, which no longer exists. Eclipse's incremental builder
+  recompiles every file that uses a changed signature, so this cannot happen inside Eclipse.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Problems]{The Problems View}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Errors and warnings of one file}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Markers/Temperature.java}{Java}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Markers.txt}}
+    \end{column}
+  \end{columns}
+  \small One error (red marker) and two warnings (yellow markers): the same list as Eclipse's Problems view.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Run]{Run Configurations}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Program arguments and VM arguments}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/show/Check.java}{Java}
+      \begin{itemize}\small
+        \item \emph{Program arguments} (\texttt{20}, \texttt{-5}) go to \texttt{args}.
+        \item \emph{VM arguments} (\texttt{-ea}) go to the JVM: \texttt{-ea} turns \texttt{assert} on.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/RunConfig.txt}}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Debug]{The Debug View: the Call Stack}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A recursive method}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Stack/Fact.java}{Java}
+      \small A breakpoint on line 3, then \texttt{run}, \texttt{where}, \texttt{locals} (commands in \texttt{stack.txt}).
+      \texttt{where} lists one line per active call: the \textbf{call stack}, as in Eclipse's \textbf{Debug} view.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny, firstline=12, lastline=30]{codeoutput/Stack.txt}}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The deepest call: four frames of \texttt{fact}}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Stack/Fact.java}{Java}
+      \small Three more \emph{Resume}s (\texttt{cont}): \texttt{n} is 3, 2, 1. At \texttt{n = 1} the stack has one
+      frame per active call. In Eclipse, click a frame to see its \texttt{n}.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=30]{codeoutput/Stack.txt}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Editing]{Quick Fix and Refactoring}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Quick Fix: \emph{Import 'List' (java.util)}}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/QuickFix/before/Names.java}{Java}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/QuickFix/after/Names.java}{Java}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/QuickFix.txt}}
+      \small \keys{Ctrl+1} / \keys{\cmd+1} on the error, or \keys{Ctrl+\shift+O} / \keys{\cmd+\shift+O}: Eclipse adds both imports.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Refactoring: Rename, Extract Constant, Extract Method}
+  \begin{columns}[T]
+    \begin{column}{0.44\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Rename/before/Circle.java}{Java}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Rename/after/Circle.java}{Java}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Rename.txt}
+      \small Same output, better code. The \texttt{diff} shows every change the three refactorings made.}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Assist]{Content Assist}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What Content Assist knows}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}\small
+        \item Type \texttt{Math.s} and press \keys{Ctrl+Space}: Eclipse lists the members of \texttt{Math} that start with \texttt{s}.
+        \item It reads them from the class files of the JDK, like \texttt{javap} does on the right.
+        \item \texttt{String} alone has more than 100 public members: nobody remembers them all.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Assist.txt}}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Tests]{Running Tests}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A green bar for \texttt{fact}}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Tests/FactTest.java}{Java}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Tests.txt}}
+      \small \menu{Run As > JUnit Test} shows the same tree in the JUnit view.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Which example shows which idea}
+  \begin{center}\small
+  \begin{tabular}{ll}
+    \toprule
+    \textbf{idea (concepts deck)}               & \textbf{example} \\
+    \midrule
+    workspace, project, \texttt{src}/\texttt{bin} & the files on disk \\
+    incremental build                           & \texttt{NoSuchMethodError} when a user of a changed method is not rebuilt \\
+    markers, Problems view                      & one error, two warnings \\
+    launch configuration                        & program arguments, \texttt{-ea} \\
+    debugger, call stack                        & \texttt{where} in a recursion \\
+    Quick Fix, refactoring                      & missing imports; Rename, Extract Constant, Extract Method \\
+    Content Assist                              & the members of \texttt{Math} \\
+    unit tests                                  & JUnit tree \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Repeat the \texttt{Shop}/\texttt{Buy} example inside Eclipse: change the return type and watch which files get markers.
+    \item In \texttt{Temperature}, fix the error, then make every warning disappear with Quick Fix.
+    \item Run \texttt{Check} with \texttt{-ea} from a launch configuration; then turn assertions on for every launch
+          (\menu{Preferences > Java > Installed JREs > Edit}, \emph{Default VM arguments}).
+    \item Debug \texttt{fact(4)}: at the deepest call, click each line of the Debug view and compare the values of \texttt{n}.
+    \item Add a test \texttt{fact(21)} to \texttt{FactTest}. Why does it fail? What would you change?
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

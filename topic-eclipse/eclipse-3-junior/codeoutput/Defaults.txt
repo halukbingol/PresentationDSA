@@ -1,0 +1,23 @@
+$ ecj -17 -d bin src/Orders.java
+----------
+1. WARNING in ~/project/src/Orders.java (at line 6)
+	List orders = new ArrayList();
+	^^^^
+List is a raw type. References to generic type List<E> should be parameterized
+----------
+2. WARNING in ~/project/src/Orders.java (at line 6)
+	List orders = new ArrayList();
+	     ^^^^^^
+The value of the local variable orders is not used
+----------
+3. WARNING in ~/project/src/Orders.java (at line 6)
+	List orders = new ArrayList();
+	                  ^^^^^^^^^
+ArrayList is a raw type. References to generic type ArrayList<E> should be parameterized
+----------
+4. WARNING in ~/project/src/Orders.java (at line 7)
+	int total = 0;
+	    ^^^^^
+The value of the local variable total is not used
+----------
+4 problems (4 warnings)

@@ -1,0 +1,8 @@
+$ ecj -17 -d bin src/Loop.java
+----------
+1. ERROR in ~/project/src/Loop.java (at line 6)
+	}
+	^
+Syntax error, insert "}" to complete ClassBody
+----------
+1 problem (1 error)

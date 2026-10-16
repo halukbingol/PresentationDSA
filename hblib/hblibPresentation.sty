@@ -1,6 +1,6 @@
 % !TEX spellcheck = en_US
 
-% v20261013T1900
+% v20261016T1150
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 % (NC) 2024 Haluk Bingol
@@ -11,7 +11,7 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{hblibPresentation}[2026/10/13 hbpresentation library]
+\ProvidesPackage{hblibPresentation}[2026/10/16 hbpresentation library]
 
 %: ~~~~~~~~~~~~~~~~ V HB packages
 \RequirePackage[utf8]{inputenc}   % unicode (default since LaTeX 2018, kept for older installations)
@@ -30,46 +30,32 @@
 \RequirePackage{array}            % tables, \newcolumntype
 \RequirePackage{listings}
 \RequirePackage[ruled,vlined,linesnumbered]{algorithm2e} % pseudo code
+\RequirePackage[T1]{fontenc}      % T1 fonts: < > | and accented letters print correctly
+\RequirePackage{lmodern}          % scalable Latin Modern fonts for T1
+\RequirePackage{booktabs}         % \toprule, \midrule, \bottomrule
 \@ifclassloaded{beamer}{}{\RequirePackage{enumitem}} % enumitem breaks beamer's lists (\labelenumi loops)
 
 % ~~~~~~~~~~~~~~~~ A HB packages
 
+%: ~~~~~~~~~~~~~~~~ V HB algorithm2e set-up
+% Captions in \small and \Fn{name}{body} for "function ... end".
+% A deck may add its own keywords (\SetKwFunction, \SetKw) and \DontPrintSemicolon.
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetKwProg{Fn}{function}{}{end}
+% ~~~~~~~~~~~~~~~~ A HB algorithm2e set-up
+
 %: ~~~~~~~~~~~~~~~~ V HB beamer theme
-
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V beamer
-	\useoutertheme{split}
-	\useinnertheme{rounded}
-	\usecolortheme{whale}
-	\usecolortheme{orchid}
-	\setbeamertemplate{blocks}[rounded]
-	\setbeamertemplate{navigation symbols}{}
-	\setbeamertemplate{navigation symbols}{}
-	\setbeamertemplate{page number in head/foot}[totalframenumber] % i / N
-	% "i / N" on every frame comes from hblibPresentation.sty (\insertshorttitle)
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A beamer
-
-
-% xcolor, array, listings, tikz and algorithm2e come from the hblib libraries
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage{booktabs}
-
-
-\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
-
-\definecolor{gitred}{RGB}{240,80,50}
-
 % Theme and "i / N" on every frame. Change after \usepackage{hblibPresentation},
 % e.g. \usecolortheme{beaver}
-%\@ifclassloaded{beamer}{%
-%%	\useoutertheme{split}
-%%	\useinnertheme{rounded} % also makes blocks rounded
-%%	\usecolortheme{whale}
-%%	\usecolortheme{orchid}
-%	\setbeamertemplate{navigation symbols}{}
-%	\setbeamertemplate{page number in head/foot}[totalframenumber] % i / N
-%}{}
+\@ifclassloaded{beamer}{%
+	\useoutertheme{split}
+	\useinnertheme{rounded} % also makes blocks rounded
+	\usecolortheme{whale}
+	\usecolortheme{orchid}
+	\setbeamertemplate{navigation symbols}{}
+	\setbeamertemplate{page number in head/foot}[totalframenumber] % i / N
+}{}
 % ~~~~~~~~~~~~~~~~ A HB beamer theme
 
 

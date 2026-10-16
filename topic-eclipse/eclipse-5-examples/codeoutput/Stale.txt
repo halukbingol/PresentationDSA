@@ -1,0 +1,11 @@
+$ ecj -17 -d bin Shop.java Buy.java
+$ java -cp bin Buy
+3 items: 30
+$ cp Shop2.java Shop.java
+$ ecj -17 -d bin Shop.java
+$ java -cp bin Buy
+Exception in thread "main" java.lang.NoSuchMethodError: 'int Shop.price(int)'
+	at Buy.main(Buy.java:3)
+$ ecj -17 -d bin Shop.java Buy.java
+$ java -cp bin Buy
+3 items: 28.5

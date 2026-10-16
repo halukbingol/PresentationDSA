@@ -1,0 +1,52 @@
+$ cat stack.txt
+stop at Fact:3
+run
+where
+locals
+cont
+cont
+cont
+where
+locals
+cont
+$ slowly stack.txt | jdb -classpath bin -sourcepath . Fact
+Initializing jdb ...
+> Deferring breakpoint Fact:3.
+It will be set after the class is loaded.
+> run Fact
+Set uncaught java.lang.Throwable
+Set deferred uncaught java.lang.Throwable
+> 
+VM Started: Set deferred breakpoint Fact:3
+
+Breakpoint hit: "thread=main", Fact.fact(), line=3 bci=0
+3            if (n <= 1) {
+
+main[1]   [1] Fact.fact (Fact.java:3)
+  [2] Fact.main (Fact.java:10)
+main[1] Method arguments:
+n = 4
+Local variables:
+main[1] > 
+Breakpoint hit: "thread=main", Fact.fact(), line=3 bci=0
+3            if (n <= 1) {
+
+main[1] > 
+Breakpoint hit: "thread=main", Fact.fact(), line=3 bci=0
+3            if (n <= 1) {
+
+main[1] > 
+Breakpoint hit: "thread=main", Fact.fact(), line=3 bci=0
+3            if (n <= 1) {
+
+main[1]   [1] Fact.fact (Fact.java:3)
+  [2] Fact.fact (Fact.java:6)
+  [3] Fact.fact (Fact.java:6)
+  [4] Fact.fact (Fact.java:6)
+  [5] Fact.main (Fact.java:10)
+main[1] Method arguments:
+n = 1
+Local variables:
+main[1] > 24
+
+The application exited

@@ -1,0 +1,15 @@
+$ cat src/Hello.java
+public class Hello {
+    public static void main(String[] args) {
+        int count = 3;
+        System.out.println("Merhaba Eclipse")
+    }
+}
+$ ecj -17 -d bin src/Hello.java
+----------
+1. ERROR in ~/project/src/Hello.java (at line 4)
+	System.out.println("Merhaba Eclipse")
+	                                    ^
+Syntax error, insert ";" to complete Statement
+----------
+1 problem (1 error)

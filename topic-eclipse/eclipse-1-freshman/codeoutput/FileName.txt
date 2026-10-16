@@ -1,0 +1,8 @@
+$ ecj -17 -d bin src/Hello.java
+----------
+1. ERROR in ~/project/src/Hello.java (at line 1)
+	public class Helo {
+	             ^^^^
+The public type Helo must be defined in its own file
+----------
+1 problem (1 error)

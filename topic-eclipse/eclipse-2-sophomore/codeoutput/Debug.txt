@@ -1,0 +1,28 @@
+$ cat debug.txt
+stop at tr.edu.yeditepe.grades.GradeBook:18
+run
+locals
+print sum / students.size()
+print students.size()
+cont
+$ slowly debug.txt | jdb -classpath bin -sourcepath src tr.edu.yeditepe.grades.Main
+Initializing jdb ...
+> Deferring breakpoint tr.edu.yeditepe.grades.GradeBook:18.
+It will be set after the class is loaded.
+> run tr.edu.yeditepe.grades.Main
+Set uncaught java.lang.Throwable
+Set deferred uncaught java.lang.Throwable
+> 
+VM Started: Set deferred breakpoint tr.edu.yeditepe.grades.GradeBook:18
+
+Breakpoint hit: "thread=main", tr.edu.yeditepe.grades.GradeBook.averageMidterm(), line=18 bci=41
+18            return sum / students.size();
+
+main[1] Method arguments:
+Local variables:
+sum = 145
+main[1]  sum / students.size() = 72
+main[1]  students.size() = 2
+main[1] > Midterm average: 72.0
+
+The application exited

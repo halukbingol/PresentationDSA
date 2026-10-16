@@ -1,0 +1,31 @@
+$ java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005 -cp bin Average > server.log 2>&1 &
+$ sleep 1
+$ cat attach.txt
+stop at Average:8
+cont
+locals
+cont
+$ slowly attach.txt | jdb -attach 5005 -sourcepath src
+Set uncaught java.lang.Throwable
+Set deferred uncaught java.lang.Throwable
+Initializing jdb ...
+> 
+VM Started: No frames on the current call stack
+
+Deferring breakpoint Average:8.
+It will be set after the class is loaded.
+main[1] main[1] > Set deferred breakpoint Average:8
+
+Breakpoint hit: "thread=main", Average.main(), line=8 bci=54
+8            double avg = sum / grades.length;
+
+main[1] Method arguments:
+args = instance of java.lang.String[0] (id=449)
+Local variables:
+grades = instance of int[3] (id=450)
+sum = 245
+main[1] > 
+The application exited
+$ cat server.log
+Listening for transport dt_socket at address: 5005
+Average: 81.0

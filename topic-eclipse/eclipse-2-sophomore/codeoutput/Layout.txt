@@ -1,0 +1,11 @@
+$ find src -name "*.java" | sort
+src/tr/edu/yeditepe/grades/GradeBook.java
+src/tr/edu/yeditepe/grades/Main.java
+src/tr/edu/yeditepe/grades/Student.java
+$ ecj -17 -d bin src
+$ find bin -name "*.class" | sort
+bin/tr/edu/yeditepe/grades/GradeBook.class
+bin/tr/edu/yeditepe/grades/Main.class
+bin/tr/edu/yeditepe/grades/Student.class
+$ java -cp bin tr.edu.yeditepe.grades.Main
+Midterm average: 72.0

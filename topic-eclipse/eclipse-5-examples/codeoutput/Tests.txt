@@ -1,0 +1,9 @@
+$ ecj -17 -cp $JUNIT -d bin Fact.java FactTest.java
+$ junit -cp bin --select-class FactTest
+.
+'-- JUnit Jupiter [OK]
+  '-- FactTest [OK]
+    +-- twenty() [OK]
+    +-- zero() [OK]
+    '-- small() [OK]
+

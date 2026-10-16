@@ -1,0 +1,18 @@
+$ ecj -17 -d bin Temperature.java
+----------
+1. WARNING in ~/project/Temperature.java (at line 5)
+	ArrayList list = new ArrayList();
+	^^^^^^^^^
+ArrayList is a raw type. References to generic type ArrayList<E> should be parameterized
+----------
+2. WARNING in ~/project/Temperature.java (at line 5)
+	ArrayList list = new ArrayList();
+	                     ^^^^^^^^^
+ArrayList is a raw type. References to generic type ArrayList<E> should be parameterized
+----------
+3. ERROR in ~/project/Temperature.java (at line 7)
+	int fahrenheit = celsius * 9 / 5 + 32;
+	                 ^^^^^^^^^^^^^^^^^^^^
+Type mismatch: cannot convert from double to int
+----------
+3 problems (1 error, 2 warnings)

@@ -1,0 +1,8 @@
+$ ecj -17 -d bin src/Hello.java
+----------
+1. ERROR in ~/project/src/Hello.java (at line 3)
+	System.out.println("Merhaba Eclipse!")
+	                                     ^
+Syntax error, insert ";" to complete BlockStatements
+----------
+1 problem (1 error)

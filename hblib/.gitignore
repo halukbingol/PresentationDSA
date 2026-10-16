@@ -3,6 +3,8 @@
 # folder
 /_old/
 
+/hblib-*/
+
 # files
 /forPrompt-2*.zip
 

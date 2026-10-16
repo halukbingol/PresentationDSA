@@ -1,0 +1,13 @@
+$ jar --create --file grades.jar --main-class tr.edu.yeditepe.grades.Main -C bin .
+$ jar --list --file grades.jar
+META-INF/
+META-INF/MANIFEST.MF
+tr/
+tr/edu/
+tr/edu/yeditepe/
+tr/edu/yeditepe/grades/
+tr/edu/yeditepe/grades/GradeBook.class
+tr/edu/yeditepe/grades/Main.class
+tr/edu/yeditepe/grades/Student.class
+$ java -jar grades.jar
+Midterm average: 72.5

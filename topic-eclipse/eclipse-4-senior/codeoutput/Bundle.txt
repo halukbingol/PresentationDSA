@@ -1,0 +1,19 @@
+$ unzip -l $JDT | tail -1
+ 16094736                     2258 files
+$ unzip -p $JDT META-INF/MANIFEST.MF | tr -d '\015' | grep -E "^Bundle-(SymbolicName|Version|Activator)"
+Bundle-SymbolicName: org.eclipse.jdt.core; singleton:=true
+Bundle-Version: 3.32.0.qualifier
+Bundle-Activator: org.eclipse.jdt.core.JavaCore
+$ unzip -p $JDT META-INF/MANIFEST.MF | tr -d '\015' | grep -A4 "^Require-Bundle"
+Require-Bundle: org.eclipse.core.resources;bundle-version="[3.18.0,4.0
+ .0)",org.eclipse.core.runtime;bundle-version="[3.13.0,4.0.0)",org.ecl
+ ipse.core.filesystem;bundle-version="[1.7.0,2.0.0)",org.eclipse.text;
+ bundle-version="[3.6.0,4.0.0)",org.eclipse.team.core;bundle-version="
+ [3.1.0,4.0.0)";resolution:=optional
+$ unzip -p $JDT plugin.xml | grep -A1 "<extension-point" | grep -o 'id="[^"]*"'
+id="classpathVariableInitializer"
+id="classpathContainerInitializer"
+id="codeFormatter"
+id="compilationParticipant"
+id="annotationProcessorManager"
+id="javaFormatter"
