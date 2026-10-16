@@ -1,4 +1,4 @@
-# Rules of LaTeX Beamer
+# Rules of LaTeX Beamer (v2)
 
 [toc]
 
@@ -61,6 +61,30 @@ where
 - Put all `\section`, `\subsection` tags into these comments as the following
 
 	```latex
+	
+	
+	
+	
+	% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+	\section{something}
+	% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+	```
+
+	```latex
+	
+	
+	
+	
+	% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+	\section{something}
+	% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+	```
+
+	```latex
+	
+	
+	
+	
 	% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 	\section{something}
 	% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
@@ -225,15 +249,19 @@ Anything that more than one deck needs goes into a library.
 - Frame order: title page, outline (`\tableofcontents[hideallsubsections]`, in two columns if long),
 the sections, a summary section, and a last frame with `\hRemark{\Huge Questions?}`.
 - Start every section with `\hSection[short]{Long}` (it also makes a title frame).
-- Folder layout of a set of decks:
+- Folder layout (one shared `hblib`, one folder per topic, no `decks/` level):
 
 	```
-	<set>/
-	  hblib/                      the three libraries
-	  decks/<prefix>-1-concepts/  <name>.tex, <name>.pdf, codeoutput/, run_examples.sh
-	  decks/<prefix>-2-examples/
-	  ...
-	  README.txt
+	home/
+	  hblib/                      the three libraries, shared by all topics
+	  <topic>/
+	    README.txt
+	    <topic>-0-concepts/       <name>.tex, <name>.pdf, codeoutput/, run_examples.sh
+	    <topic>-1-freshman/
+	    <topic>-2-sophomore/
+	    <topic>-3-junior/
+	    <topic>-4-senior/
+	    <topic>-5-examples/
 	```
 
 
@@ -241,12 +269,12 @@ the sections, a summary section, and a last frame with `\hRemark{\Huge Questions
 
 When a topic is asked for several audiences, make separate decks:
 
-1. **concepts**: ideas, pictures and tables, little or no code
-2. **examples**: the same ideas, each shown with a small real program or session
-3. **freshman**: first steps, the most common errors and how to read them
-4. **sophomore**: projects, libraries, tools, good habits
-5. **junior**: advanced features, performance, larger systems
-6. **senior**: internals, security, production use, open-ended projects
+- **concepts** (folder `<topic>-0-concepts`): ideas, pictures and tables, little or no code
+- **freshman** (`<topic>-1-freshman`): first steps, the most common errors and how to read them
+- **sophomore** (`<topic>-2-sophomore`): projects, libraries, tools, good habits
+- **junior** (`<topic>-3-junior`): advanced features, performance, larger systems
+- **senior** (`<topic>-4-senior`): internals, security, production use, open-ended projects
+- **examples** (`<topic>-5-examples`): the ideas of the concepts deck, each shown with a small real program or session
 
 Each level deck ends with a summary (cheat sheet or recipes table) and exercises or projects.
 
@@ -298,7 +326,8 @@ instead of making the font too small (smallest: `\tiny`).
 - Keep the author's own edits when merging library versions.
 - Inside a `.sty` use `\RequirePackage`, not `\usepackage`.
 - Do not load packages that break beamer (e.g. `enumitem` is loaded only when the class is not beamer).
-- After a library change, compile all decks that use it.
+- There is one `hblib` for all topics: after a library change, compile the decks of every topic.
+- Deliver libraries as `hblib/` with only the three `.sty` files, so the author's other files in `hblib/` are not overwritten.
 
 
 ## Rule check

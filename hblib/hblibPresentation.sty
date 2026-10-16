@@ -35,16 +35,41 @@
 % ~~~~~~~~~~~~~~~~ A HB packages
 
 %: ~~~~~~~~~~~~~~~~ V HB beamer theme
-% Theme and "i / N" on every frame. Change after \usepackage{hblibPresentation},
-% e.g. \usecolortheme{beaver}
-\@ifclassloaded{beamer}{%
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V beamer
 	\useoutertheme{split}
-	\useinnertheme{rounded} % also makes blocks rounded
+	\useinnertheme{rounded}
 	\usecolortheme{whale}
 	\usecolortheme{orchid}
+	\setbeamertemplate{blocks}[rounded]
+	\setbeamertemplate{navigation symbols}{}
 	\setbeamertemplate{navigation symbols}{}
 	\setbeamertemplate{page number in head/foot}[totalframenumber] % i / N
-}{}
+	% "i / N" on every frame comes from hblibPresentation.sty (\insertshorttitle)
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A beamer
+
+
+% xcolor, array, listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\definecolor{gitred}{RGB}{240,80,50}
+
+% Theme and "i / N" on every frame. Change after \usepackage{hblibPresentation},
+% e.g. \usecolortheme{beaver}
+%\@ifclassloaded{beamer}{%
+%%	\useoutertheme{split}
+%%	\useinnertheme{rounded} % also makes blocks rounded
+%%	\usecolortheme{whale}
+%%	\usecolortheme{orchid}
+%	\setbeamertemplate{navigation symbols}{}
+%	\setbeamertemplate{page number in head/foot}[totalframenumber] % i / N
+%}{}
 % ~~~~~~~~~~~~~~~~ A HB beamer theme
 
 

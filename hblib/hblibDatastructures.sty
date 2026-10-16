@@ -1,6 +1,6 @@
 % !TEX spellcheck = en_US
 
-% v20261015T1700
+% v20261015T2000
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 % (NC) 2024 Haluk Bingol
@@ -11,7 +11,7 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{hblibDatastructures}[2026/10/15 data structure library: queue, stack, string, tree styles]
+\ProvidesPackage{hblibDatastructures}[2026/10/15 data structure library: queue, stack, string, tree and commit-graph styles]
 
 \RequirePackage{xparse}
 \RequirePackage{xcolor} % color
@@ -277,6 +277,25 @@
 	horder/.style={label={[font=\scriptsize\bfseries, text=red!75!black, inner sep=1pt]above right:#1}}
 }
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A Tree
+
+
+
+
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V Commit graph
+% TikZ styles for commit graphs (version control):
+%   \node[hcommit] (c1) at (0,0) {a1}; \node[hcommit] (c2) at (1.2,0) {b2};
+%   \draw[hparent] (c2) -- (c1);                        % a commit points to its parent
+%   \node[hbranch, above=2pt of c2] {main};  \node[hheadref, above=2pt of ...] {HEAD};
+% hcommit   a commit              hbranch   a branch name       hheadref  HEAD
+% htag      a tag                 hparent   child -> parent     hhot / hdone  colour a commit
+\tikzset{
+	hcommit/.style={circle, draw, thick, fill=white, minimum size=0.62cm, inner sep=0pt, font=\ttfamily\scriptsize},
+	hbranch/.style={rectangle, rounded corners=2pt, draw, fill=colorHead!60, font=\ttfamily\scriptsize, inner sep=2pt},
+	hheadref/.style={hbranch, fill=colorTop!60},
+	htag/.style={hbranch, fill=gray!20, sharp corners},
+	hparent/.style={-latex, thick, gray!70!black}
+}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A Commit graph
 
 
 \endinput

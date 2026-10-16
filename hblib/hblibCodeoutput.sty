@@ -1,6 +1,6 @@
 % !TEX spellcheck = en_US
 
-% v20261013T1900
+% v20261015T1200
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 % (NC) 2026 Haluk Bingol
@@ -57,12 +57,15 @@
 %    firstline=4, lastline=9, firstnumber=4, basicstyle=\ttfamily\scriptsize
 %  "code width" is a fraction of \textwidth (default 0.56).
 %
+%  Characters: Turkish and Latin-1 letters, € £ ¥ ° quotes, dashes and no-break spaces
+%  print in code and output; the lira and rupee signs are drawn (\hbLira, \hbRupee).
+%
 %  Colors can be changed after \usepackage{hblibCodeoutput} with \definecolor:
 %    codebg codeframe codekw codestr codecmt termbg termfg termframe
 % =====================================================================
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{hblibCodeoutput}[2026/10/13 v1.8 Code and output from files for beamer]
+\ProvidesPackage{hblibCodeoutput}[2026/10/15 v1.9 Code and output from files for beamer]
 
 \RequirePackage{xparse} % \NewDocumentCommand on LaTeX older than 2020-10
 \RequirePackage{xcolor}
@@ -137,7 +140,30 @@
     {Á}{{\'A}}1   {À}{{\`A}}1   {Â}{{\^A}}1   {Ä}{{\"A}}1
     {Ã}{{\~A}}1   {Å}{{\AA}}1   {Î}{{\^I}}1   {Ó}{{\'O}}1
     {Û}{{\^U}}1   {Ÿ}{{\"Y}}1   {§}{{\S}}1
+    {ì}{{\`i}}1   {ò}{{\`o}}1   {ù}{{\`u}}1   {Ñ}{{\~N}}1
+    {ý}{{\'y}}1   {Ý}{{\'Y}}1   {þ}{{\th}}1   {Þ}{{\TH}}1   {ð}{{\dh}}1   {Ð}{{\DH}}1
+    {ï}{{\"i}}1   {Ï}{{\"I}}1   {ﬁ}{{fi}}1   {ﬂ}{{fl}}1   {œ}{{\oe}}1   {æ}{{\ae}}1   {ø}{{\o}}1   {Ø}{{\O}}1
+    {€}{{\texteuro}}1 {£}{{\pounds}}1 {¥}{{\textyen}}1 {₺}{{\hbLira}}1 {₹}{{\hbRupee}}1 {°}{{\textdegree}}1
+    {’}{{\textquoteright}}1 {‘}{{\textquoteleft}}1
+    {“}{{\textquotedblleft}}1 {”}{{\textquotedblright}}1
+    {«}{{\guillemetleft}}1 {»}{{\guillemetright}}1 {–}{{--}}1 {—}{{---}}1
+    { }{{\ }}1    % U+00A0 no-break space (e.g. "25 %" in German)
+    { }{{\,}}1    % U+202F narrow no-break space (e.g. "1 234" in French)
 }
+
+% the Turkish lira sign (U+20BA), drawn, since few TeX fonts have it; scales with the font
+% (also usable in text: \hbLira, \hbRupee)
+\providecommand{\hbLira}{\tikz[baseline=0pt, x=1em, y=1em, line width=0.07em, line cap=round]{%
+  \useasboundingbox (0,0) rectangle (0.62,0.72);
+  \draw (0.22,0.70) -- (0.22,0.02) .. controls (0.48,0.02) and (0.58,0.18) .. (0.58,0.42);
+  \draw (0.06,0.30) -- (0.42,0.46);
+  \draw (0.06,0.14) -- (0.42,0.30);}}
+% the Indian rupee sign (U+20B9), drawn
+\providecommand{\hbRupee}{\tikz[baseline=0pt, x=1em, y=1em, line width=0.07em, line cap=round, line join=round]{%
+  \useasboundingbox (0,0) rectangle (0.62,0.72);
+  \draw (0.08,0.70) -- (0.54,0.70);
+  \draw (0.08,0.56) -- (0.54,0.56);
+  \draw (0.16,0.70) .. controls (0.52,0.70) and (0.52,0.38) .. (0.12,0.38) -- (0.50,0.0);}}
 
 % common to code and output
 \lstdefinestyle{codeoutbase}{
