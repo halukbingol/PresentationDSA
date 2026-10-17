@@ -61,30 +61,6 @@ where
 - Put all `\section`, `\subsection` tags into these comments as the following
 
 	```latex
-	
-	
-	
-	
-	% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-	\section{something}
-	% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
-	```
-
-	```latex
-	
-	
-	
-	
-	% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-	\section{something}
-	% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
-	```
-
-	```latex
-	
-	
-	
-	
 	% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 	\section{something}
 	% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
