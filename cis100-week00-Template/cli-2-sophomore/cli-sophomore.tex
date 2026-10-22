@@ -1,0 +1,575 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Java on the Command Line -- Sophomore Level: Projects, Libraries and Builds
+%  ---------------------------------------------------------------------
+%  Built on hbCisLaTeXTemplate.tex with the libraries in ../../hblib/.
+%  Programs, terminal sessions and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program        codeoutput/<Name>.sh   a session
+%     codeoutput/<Name>/      the session's project folder
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\definecolor{gitred}{RGB}{240,80,50}
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+\lstdefinelanguage{CSV}{}
+
+% ---------------------------------------------------------------------
+\title{Java on the Command Line}
+\subtitle{Sophomore Level: Projects, Libraries and Builds}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-3}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={4-6}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Project]{A Real Project}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Layout]{Folder layout}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A library and an application}
+  \begin{columns}[T]
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Layout.txt}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \begin{itemize}\small
+        \item \texttt{util}: a small \textbf{library}, \texttt{edu.yeditepe.util.Table}, that prints aligned text tables
+        \item \texttt{app}: the \textbf{application} \texttt{edu.yeditepe.books}; it reads a book list and prints it with \texttt{Table}
+        \item \texttt{app/res}: \textbf{resources}, files the program reads at run time
+        \item \texttt{build}: generated \texttt{.class} files; \texttt{dist}: what we ship
+        \item \texttt{build.sh} / \texttt{build.bat}: the build as a script
+      \end{itemize}
+      \begin{block}{Rule}
+        \small Keep \textbf{sources} and \textbf{generated} files apart: you can delete \texttt{build} and \texttt{dist} at any time,
+        and never put them in Git.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The library}
+  \lstcode[basicstyle=\ttfamily\fontsize{4.6}{5.4}\selectfont]{codeoutput/Project/util/src/edu/yeditepe/util/Table.java}{Java}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The application: \texttt{main} and the data}
+  \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Project/app/src/edu/yeditepe/books/Book.java}{Java}
+  \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Project/app/src/edu/yeditepe/books/Main.java}{Java}
+  \lstcode[basicstyle=\ttfamily\tiny, numbers=none]{codeoutput/Project/app/res/books.csv}{CSV}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The application: reading a resource}
+  \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Project/app/src/edu/yeditepe/books/Catalog.java}{Java}
+
+  \vspace{0.1em}
+  \small \texttt{getResourceAsStream("/books.csv")} searches the \textbf{class path}, not the current folder,
+  so the file is found in a folder \emph{or} inside a JAR.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[By hand]{Building by hand}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Building step by step}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/ByHand.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{-sourcepath app/src}: \texttt{javac} finds \texttt{Catalog} and \texttt{Book} by itself. \texttt{-cp} names the library
+  when compiling \emph{and} when running; \texttt{app/res} is on the class path so \texttt{getResourceAsStream} finds \texttt{books.csv}.
+  \win: \texttt{-cp build\textbackslash app;app\textbackslash res;dist\textbackslash lib\textbackslash table.jar}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[javac]{Compiler Options}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Lint]{Warnings}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Warnings: \texttt{-Xlint}}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Lint/Old.java}{Java}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Lint.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small By default \texttt{javac} only prints a short \emph{Note}; \texttt{-Xlint:all} names every problem.
+  Add \texttt{-Werror} to treat warnings as errors in a build.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Encoding]{Source encoding}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Source file encoding: \texttt{-encoding}}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Encoding.txt}
+
+  \vspace{0.1em}
+  \small
+  The file was saved in the old Turkish encoding ISO-8859-9. Since Java 18 \texttt{javac} assumes \textbf{UTF-8} on every system, so
+  it rejects the bytes until we name the encoding, or convert the file (\texttt{iconv}; on \win{} use the editor's \emph{Save with encoding}). Older JDKs on Windows assumed Windows-1254 instead: the classic
+  ``works on my machine'' bug. \hRemark{Save sources as UTF-8 and pass} \texttt{-encoding UTF-8} \hRemark{in builds.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Release]{Target versions}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Compiling for an older Java: \texttt{--release}}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Release/Modern.java}{Java}
+    \end{column}
+    \begin{column}{0.56\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Release.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small \texttt{--release N} checks the language \textbf{and} the API of Java N and writes class files that Java N can run
+  (version 52 = Java 8, 55 = 11, 61 = 17, 65 = 21, 69 = 25).
+  Java 8 is \emph{obsolete} as a target: \texttt{-Xlint:-options} hides that warning.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Class path]{The Class Path in Depth}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Order]{Order, wildcards, CLASSPATH}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Order, wildcards and the \texttt{CLASSPATH} variable}
+  \begin{columns}[T]
+    \begin{column}{0.34\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/ClassPath/App.java}{Java}
+    \end{column}
+    \begin{column}{0.64\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/ClassPath.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small Two JARs with the same class: the \textbf{first} on the class path wins. \texttt{lib/*} means every JAR in \texttt{lib}
+  (quote it on macOS; Windows: \texttt{-cp ".;lib\textbackslash *"}). A \texttt{CLASSPATH} variable \textbf{replaces} the default \texttt{.},
+  so \texttt{App} itself disappears; prefer \texttt{-cp} and leave \texttt{CLASSPATH} unset.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Packaging]{Packaging}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Class-Path]{The Class-Path attribute}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Executable JAR with a library: \texttt{Class-Path}}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Manifest.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{Class-Path: lib/table.jar} is relative to the \textbf{JAR's folder}, not the current folder: ship \texttt{books.jar} with \texttt{lib/};
+  alone it fails. \texttt{manifest.txt} must end with a newline, or its last line is silently ignored.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Fat JAR]{Fat JARs}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A ``fat JAR: everything in one file}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/FatJar.txt}
+
+  \vspace{0.1em}
+  \small
+  One file is easy to ship, but you repackage other people's code (check licences), files with the same name collide,
+  and signed library JARs break. Build tools automate it (Maven Shade, Gradle Shadow).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Scripts]{Build scripts}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Build scripts for macOS and Windows}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Project/build.sh}{bash}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Project/build.bat}{command.com}
+    \end{column}
+  \end{columns}
+  \small Run with \hCode{sh build.sh} (macOS Terminal, Git Bash) or \hCode{build.bat} (Windows Command Prompt).
+  A script makes the build \textbf{repeatable}; a build tool (next section) adds dependencies, tests and conventions.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Quality]{Testing and Documentation}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Assertions]{Assertions}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Assertions are off by default: \texttt{-ea}}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Assert/test/TableTest.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Assert.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small Without \texttt{-ea} (\texttt{-enableassertions}) every \texttt{assert} is skipped and the broken test ``passes''.
+  The second assertion found a real bug: \texttt{render} pads the \textbf{last} column too. Real projects use JUnit.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[javadoc]{API documentation}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Documenting the library}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Docs.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{-sourcepath util/src edu.yeditepe.util} documents a whole package. The warnings list the missing tags: a method comment should
+  describe each parameter (\texttt{@param}) and the result (\texttt{@return}). Ship \texttt{docs} with the library or publish it on a web site.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Tools]{Build Tools}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Maven]{Maven}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Build tools: Maven}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=XML, basicstyle=\ttfamily\tiny]
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>edu.yeditepe</groupId>
+  <artifactId>books</artifactId>
+  <version>1.0</version>
+  <properties>
+    <maven.compiler.release>21</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>edu.yeditepe</groupId>
+      <artifactId>table</artifactId>
+      <version>1.0</version>
+    </dependency>
+  </dependencies>
+</project>
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \small \texttt{pom.xml} \emph{describes} the project; Maven knows the steps:
+      \vspace{0.2em}
+
+      \footnotesize
+      \begin{tabular}{@{}ll@{}}
+        \toprule
+        \textbf{Command} & \textbf{By hand} \\
+        \midrule
+        \texttt{mvn compile}  & \texttt{javac -d \dots} \\
+        \texttt{mvn test}     & run the tests \\
+        \texttt{mvn package}  & \texttt{jar --create \dots} \\
+        \texttt{mvn clean}    & \texttt{rm -rf target} \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.3em}
+      \small Sources go in \texttt{src/main/java}, resources in \texttt{src/main/resources}; libraries are downloaded from
+      Maven Central. Same commands on Windows and macOS.
+      \vspace{0.2em}
+
+      \footnotesize\hRemark{Not run here}: Maven needs the internet, which these examples could not reach.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Gradle]{Gradle}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Build tools: Gradle}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=Java, basicstyle=\ttfamily\scriptsize]
+// build.gradle.kts
+plugins {
+    application
+}
+
+java {
+    toolchain { languageVersion = JavaLanguageVersion.of(21) }
+}
+
+dependencies {
+    implementation(files("lib/table.jar"))
+}
+
+application {
+    mainClass = "edu.yeditepe.books.Main"
+}
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \footnotesize
+      \begin{tabular}{@{}ll@{}}
+        \toprule
+        \textbf{macOS} & \textbf{Windows} \\
+        \midrule
+        \texttt{./gradlew build}   & \texttt{gradlew build} \\
+        \texttt{./gradlew run}     & \texttt{gradlew run} \\
+        \texttt{./gradlew jar}     & \texttt{gradlew jar} \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.4em}
+      \small \texttt{gradlew} (the \emph{wrapper}) downloads the right Gradle version, so everyone builds the same way.
+      The \texttt{application} plugin also makes start scripts for Windows and macOS.
+      \vspace{0.2em}
+
+      \footnotesize\hRemark{Not run here} (needs the internet). Either tool replaces \texttt{build.sh}; the concepts on these slides stay the same.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}{}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Recipes]{Recipes}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Recipes}
+  \footnotesize
+  \begin{tabular}{@{}L{0.36\textwidth}L{0.58\textwidth}@{}}
+    \toprule
+    \textbf{Goal} & \textbf{Command (macOS; Windows: \texttt{;} and \texttt{\textbackslash})} \\
+    \midrule
+    compile a whole project         & \texttt{javac -d build -sourcepath src -encoding UTF-8 src/a/b/Main.java} \\
+    \dots\ against a library        & \texttt{javac -d build -cp lib/x.jar -sourcepath src src/a/b/Main.java} \\
+    \dots\ for an older Java        & \texttt{javac --release 17 \dots} \\
+    with all warnings               & \texttt{javac -Xlint:all -Werror \dots} \\
+    library JAR                     & \texttt{jar --create --file lib/x.jar -C build .} \\
+    executable JAR + library        & \texttt{jar --create --file app.jar --manifest m.txt -C build . -C res .} \\
+    run with libraries              & \texttt{java -cp "build:res:lib/*" a.b.Main} \\
+    run tests with assertions       & \texttt{java -ea -cp build:test Tests} \\
+    documentation                   & \texttt{javadoc -d docs -sourcepath src a.b} \\
+    \bottomrule
+  \end{tabular}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Exercises]{Exercises}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Add a column ``Pages'' to \texttt{books.csv} and print it; rebuild with \texttt{build.sh} or \texttt{build.bat}.
+    \item Fix the padding bug in \texttt{Table.render} so that \texttt{TableTest} passes with \texttt{-ea}.
+    \item Turn \texttt{TableTest} into a script step: the build must stop when a test fails (exit code).
+    \item Compile the project with \texttt{--release 17}. What changes? Can you go down to \texttt{--release 11}? (records!)
+    \item Ship the application as \texttt{dist/} (JAR + \texttt{lib/}) and as one fat JAR; compare sizes and startup.
+    \item Write the \texttt{pom.xml} for the project and build it with Maven on your own computer.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

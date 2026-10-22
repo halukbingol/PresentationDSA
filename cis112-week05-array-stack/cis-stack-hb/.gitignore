@@ -1,0 +1,20 @@
+# Stack
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V specific
+/cis112-Stack.pdf
+/cis112-Stack-202[0-9]*.pdf
+/hb-test.*
+/hb-test-beamer.*
+
+# 
+Figure/_*.*
+_*.*
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A specific
+
+
+/test-Beamer.pdf
+/test-Plain.pdf
+/stack-infix-prefix-postfix.xlsx
+/test-beamer-algorithm.tex
+/test-beamer-algorithm.pdf
+/HP-41CV_Calculator.jpg

@@ -1,0 +1,4 @@
+example_parsingCsv
+line:0	[aa, 45, cccc, dd]
+line:1	[ee, ffff, gggg]
+line:2	[12, 34, 789, 6543]

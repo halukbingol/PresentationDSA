@@ -1,0 +1,7 @@
+example_EuropeanNumberHandler
+european:EUR7.654.321,1234
+replaceFirst("EUR", ""):7.654.321,1234
+replaceAll("\\.", ""):7654321,1234
+replaceFirst(",", "."):7654321.1234
+(d + 3):7654324.1234
+european:EUR7.654.321,1234

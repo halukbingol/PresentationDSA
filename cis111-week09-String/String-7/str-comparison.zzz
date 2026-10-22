@@ -1,0 +1,10 @@
+comparison
+(s0):abc
+(s1):aBc
+(s2):abcd
+(s0.equals(s1)):false
+(s0.equals(s2)):false
+(s1.equals(s2)):false
+(s0.equalsIgnoreCase(s1)):true
+(s0.equalsIgnoreCase(s2)):false
+(s1.equalsIgnoreCase(s2)):false

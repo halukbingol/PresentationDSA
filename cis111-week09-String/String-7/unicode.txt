@@ -1,0 +1,6 @@
+unicode
+sA:Hello
+sB:ΨαΞ
+sSomeSpecialCharacters:çÇıİğĞ
+sAscii:ABC
+sΨαΞ: Psi, alpha, Xi

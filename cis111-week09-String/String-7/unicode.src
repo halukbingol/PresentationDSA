@@ -1,0 +1,17 @@
+		System.out.println("\nunicode");
+		String sA = "Hello";
+		String sB = "ΨαΞ";
+		System.out.println("sA:" + sA);
+		System.out.println("sB:" + sB);
+
+		char[] chSomeSpecialCharacters = { 'ç', 'Ç', 'ı', 'İ', 'ğ', 'Ğ' };
+		String sSomeSpecialCharacters = new String(chSomeSpecialCharacters);
+		System.out.println("sSomeSpecialCharacters:" + sSomeSpecialCharacters);
+
+		byte[] byASCII = { 65, 66, 67 };
+		String sAscii = new String(byASCII);
+		System.out.println("sAscii:" + sAscii);
+
+		// variable in unicode
+		String sΨαΞ = " Psi, alpha, Xi";
+		System.out.println("sΨαΞ:" + sΨαΞ);
