@@ -1,0 +1,19 @@
+$ javac -d bin -cp $JUNIT Grade.java GradeTest.java
+$ junit -cp bin --select-class GradeTest | head -17
+.
+'-- JUnit Jupiter [OK]
+  '-- GradeTest [OK]
+    +-- outOfRange(int) [OK]
+    | +-- [1] -1 [OK]
+    | '-- [2] 101 [OK]
+    '-- letterAtTheBorders(int, String) [OK]
+      +-- [1] 100, AA [OK]
+      +-- [2] 90, AA [OK]
+      +-- [3] 89, BB [OK]
+      +-- [4] 70, BB [OK]
+      +-- [5] 69, CC [OK]
+      +-- [6] 50, CC [OK]
+      +-- [7] 49, FF [OK]
+      '-- [8] 0, FF [OK]
+
+[         4 containers found      ]

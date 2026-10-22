@@ -1,0 +1,4 @@
+1. CSE 101
+2. CSE 211
+3. CSE 344
+Total: 3 courses

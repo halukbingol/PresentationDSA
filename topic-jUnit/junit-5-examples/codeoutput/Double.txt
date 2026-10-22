@@ -1,0 +1,8 @@
+$ javac -encoding UTF-8 -d bin -cp $JUNIT Greeter.java GreeterTest.java
+$ junit -cp bin --select-class GreeterTest | head -6
+.
+'-- JUnit Jupiter [OK]
+  '-- GreeterTest [OK]
+    +-- evening() [OK]
+    '-- morning() [OK]
+

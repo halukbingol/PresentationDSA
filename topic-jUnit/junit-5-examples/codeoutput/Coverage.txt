@@ -1,0 +1,8 @@
+$ javac -g -d bin -cp $JUNIT Grade.java GradeTest.java
+$ java -javaagent:jacocoagent.jar=destfile=jacoco.exec -jar $JUNIT execute -cp bin --select-class GradeTest --details=none --disable-banner
+$ java -cp tools:$JACOCO Coverage jacoco.exec bin/Grade.class
+Grade: lines 6/10, branches 6/10
+  never run: line 1
+  never run: line 4
+  never run: line 9
+  never run: line 11

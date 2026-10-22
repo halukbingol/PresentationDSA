@@ -1,0 +1,8 @@
+$ javac -d bin -cp $JUNIT Price.java PriceTest.java
+$ junit -cp bin --select-class PriceTest | head -6
+.
+'-- JUnit Jupiter [OK]
+  '-- PriceTest [OK]
+    +-- zeroStaysZero() [OK]
+    '-- addsTwentyPercent() [OK]
+

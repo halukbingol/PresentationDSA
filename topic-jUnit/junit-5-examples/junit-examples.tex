@@ -1,0 +1,520 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Unit Testing with JUnit -- Learning by Example
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% theme, i/N, fonts (T1, lmodern), booktabs, xcolor, array (L{width} columns), listings, tikz,
+% algorithm2e (\small captions, \Fn) and the color gitred come from the hblib libraries
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+% ---------------------------------------------------------------------
+\title{Unit Testing with JUnit}
+\subtitle{Learning by Example}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-5}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={6-10}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[AAA]{Arrange, Act, Assert}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The class under test}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize, lastline=11]{codeoutput/Aaa/IntStack.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize, firstline=12, firstnumber=12]{codeoutput/Aaa/IntStack.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Two tests, three parts each}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=17]{codeoutput/Aaa/IntStackTest.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=18, firstnumber=18]{codeoutput/Aaa/IntStackTest.java}{Java}
+    \end{column}
+  \end{columns}
+
+  \small \texttt{assertThrows} returns the exception, so the test can also check its message.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Running them}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Aaa.txt}
+    \end{column}
+    \begin{column}{0.40\textwidth}
+      \begin{itemize}\small
+        \item One test per behavior: the normal case and the error case.
+        \item The names say what is checked: a failing name is already half a bug report.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Lifecycle]{The Test Lifecycle}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Who runs when?}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=8, firstnumber=8, lastline=23]{codeoutput/Lifecycle/LifecycleTest.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=24, firstnumber=24]{codeoutput/Lifecycle/LifecycleTest.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The order of the calls}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Lifecycle.txt}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item \texttt{@BeforeAll} and \texttt{@AfterAll} are \texttt{static}: once, before the first object exists and after the last test.
+        \item A \textbf{new object} for every test: \texttt{counter} is 1 in both tests.
+        \item \texttt{@BeforeEach}/\texttt{@AfterEach} wrap every single test.
+        \item \texttt{second} ran before \texttt{first}: the order is fixed but not the source order.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Outcomes]{Test Outcomes}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Five tests, four outcomes}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=18]{codeoutput/Outcomes/OutcomesTest.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=19, firstnumber=19]{codeoutput/Outcomes/OutcomesTest.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Passed, failed, aborted, skipped}
+  \begin{columns}[T]
+    \begin{column}{0.6\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Outcomes.txt}
+    \end{column}
+    \begin{column}{0.36\textwidth}
+      \begin{itemize}\small
+        \item \texttt{[OK]} passed.
+        \item \texttt{[X]} failed: an assertion did not hold \emph{or} an unexpected exception was thrown.
+        \item \texttt{[A]} aborted: an assumption was false (here: no database configured).
+        \item \texttt{[S]} skipped: \texttt{@Disabled}, with the reason.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Messages]{Messages and \texttt{assertAll}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{One failure or all failures?}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=15]{codeoutput/Messages/MessagesTest.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=16, firstnumber=16]{codeoutput/Messages/MessagesTest.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{assertAll} reports every failure}
+  \begin{columns}[T]
+    \begin{column}{0.62\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Messages.txt}
+    \end{column}
+    \begin{column}{0.34\textwidth}
+      \begin{itemize}\small
+        \item \texttt{oneAtATime} stops at the first failing assertion: we never learn that the midterm is wrong, too.
+        \item \texttt{assertAll} runs all three and reports both failures.
+        \item The last argument (\texttt{"name"}) is the message: it says \emph{what} differs.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Params]{Parameterized Tests}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{One test, many inputs}
+  \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Param/GradeTest.java}{Java}
+  \small Every border of every grade is a case. \texttt{@CsvSource} converts each row to \texttt{int} and \texttt{String}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Each row is a test}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Param.txt}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item Eight rows, eight results: a failing row would show exactly which input is wrong.
+        \item \texttt{@ValueSource}: one value per run; good for ``all of these are invalid.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[TDD]{Test-Driven Development}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{First the test, then the code}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Tdd/LeapTest.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Tdd/step1/Leap.java}{Java}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Tdd/step2/Leap.java}{Java}
+    \end{column}
+  \end{columns}
+  \small The four years come from the rule (divisible by 4, except centuries, except every 400 years), not from the code.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Red, red, green}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, lastline=16]{codeoutput/Tdd.txt}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny, firstline=17]{codeoutput/Tdd.txt}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  The test does not compile without \texttt{Leap}; the first idea fails for 1900; the full rule is green. Now refactoring is safe.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Order]{Tests Must Be Independent}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Shared state}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=14]{codeoutput/Shared/SharedStateTest.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=15, firstnumber=15]{codeoutput/Shared/SharedStateTest.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The order decides the result}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Shared.txt}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{itemize}\small
+        \item With the order 1, 2 the second test fails: the \texttt{static} list still holds ``Ali.
+        \item Run alone, \texttt{startsEmpty} passes: a test that depends on others is a trap.
+        \item Fix: no shared mutable state, or reset it in \texttt{@BeforeEach}.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Doubles]{Test Doubles}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A clock you can control}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Double/Greeter.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Double/GreeterTest.java}{Java}
+    \end{column}
+  \end{columns}
+  \small The greeting depends on the time. With the real clock a test at 9:00 and one at 20:30 cannot both run;
+  with a clock passed in, each test chooses its time.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Both times, every day}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Double.txt}
+    \end{column}
+    \begin{column}{0.40\textwidth}
+      \begin{itemize}\small
+        \item The lambda \texttt{() -> LocalTime.of(9, 0)} is a \textbf{stub}: a stand-in that returns a fixed answer.
+        \item The program passes \texttt{LocalTime::now}; the tests pass fixed times.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Coverage]{Code Coverage}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Which lines did the tests run?}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Coverage/Grade.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=5, firstnumber=5]{codeoutput/Coverage/GradeTest.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{JaCoCo: 6 of 10 lines}
+  \begin{columns}[T]
+    \begin{column}{0.6\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Coverage.txt}
+    \end{column}
+    \begin{column}{0.36\textwidth}
+      \begin{itemize}\small
+        \item JaCoCo watches the run (\texttt{-javaagent}); \texttt{Coverage} is a small program of ours that prints its data.
+        \item Line 1: the constructor nobody calls. Lines 4, 9, 11: cases nobody tested.
+        \item Coverage shows what was \emph{not} tested; it cannot show that the assertions are good.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Which example shows which idea}
+  \begin{center}\small
+  \begin{tabular}{ll}
+    \toprule
+    \textbf{idea (concepts deck)}            & \textbf{example} \\
+    \midrule
+    arrange, act, assert                     & \texttt{IntStack}: normal case and error case \\
+    lifecycle, a new object per test         & \texttt{LifecycleTest}: \texttt{counter} is always 1 \\
+    passed, failed, aborted, skipped         & \texttt{OutcomesTest} \\
+    clear failure messages                   & assertion messages, \texttt{assertAll} \\
+    many inputs, one test                    & \texttt{@CsvSource} at every grade border \\
+    test first                               & leap years: red, red, green \\
+    independent tests                        & a \texttt{static} list breaks the second test \\
+    test doubles                             & a clock given as a \texttt{Supplier} \\
+    coverage                                 & JaCoCo: 6 of 10 lines \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Add tests to \texttt{GradeTest} (coverage example) until JaCoCo reports no line that was never run.
+    \item Add a \texttt{peek()} method to \texttt{IntStack}, test first.
+    \item Fix \texttt{SharedStateTest} with a \texttt{@BeforeEach} that empties the list; check both orders.
+    \item Give \texttt{Greeter} a test for 12:00 and one for 18:00 exactly. Which greeting is right?
+    \item Write \texttt{isLeap} tests for 1600, 1700, 2100 and 2400 before looking at the code.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

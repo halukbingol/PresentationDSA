@@ -1,0 +1,520 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Unit Testing with JUnit -- Sophomore Level: Organizing Tests, TDD, Test Doubles and Build Tools
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% theme, i/N, fonts (T1, lmodern), booktabs, xcolor, array (L{width} columns), listings, tikz,
+% algorithm2e (\small captions, \Fn) and the color gitred come from the hblib libraries
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+% ---------------------------------------------------------------------
+\title{Unit Testing with JUnit}
+\subtitle{Sophomore Level: Organizing Tests, TDD, Test Doubles and Build Tools}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-4}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={5-8}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Organizing]{Organizing Tests}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The class under test}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=15]{codeoutput/Nested/Account.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=16, firstnumber=16]{codeoutput/Nested/Account.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Fixtures, display names, nested classes}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=26]{codeoutput/Nested/AccountTest.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=27, firstnumber=27]{codeoutput/Nested/AccountTest.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Tests that read like a specification}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Nested.txt}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item \texttt{@DisplayName} replaces method names in reports and in the IDE.
+        \item \texttt{@Nested} groups tests by situation: ``after a deposit of 100.
+        \item \texttt{@BeforeEach} builds a fresh fixture for every test; the outer one (open) runs first, then the inner one (deposit).
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Where test code lives}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[htree, level distance=0.95cm, level 1/.style={sibling distance=3.0cm}, level 2/.style={sibling distance=1.2cm}, scale=0.8, transform shape]
+  \node[hsquare] {project} child {node[hsquare] {src/main/java} child {node[hnode] {Account}}} child {node[hsquare] {src/test/java} child {node[hnode, hdone] {AccountTest}}};
+\end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}\small
+        \item Maven/Gradle layout: tests in \texttt{src/test/java}, in the \textbf{same package} as the code.
+        \item Same package: tests may use package-private methods; no need to make everything \texttt{public}.
+        \item Test code is not shipped: it is not in the JAR.
+        \item Name: \texttt{AccountTest} for \texttt{Account}; methods name a behavior, not a method:
+              \texttt{refusesOverdraw}, not \texttt{testWithdraw2}.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Sources]{Argument Sources}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Where the arguments come from}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=19]{codeoutput/Sources/SourcesTest.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=20, firstnumber=20]{codeoutput/Sources/SourcesTest.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A readable name for every case}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Sources.txt}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{itemize}\small
+        \item \texttt{@MethodSource}: any Java code builds the cases.
+        \item \texttt{@CsvFileSource}: cases from a file on the class path (a teacher can add rows without touching Java).
+        \item \texttt{@NullAndEmptySource}: \texttt{null} and \texttt{""}, the classic edge cases.
+        \item \texttt{name = "\dots\ \{0\}"}: the arguments in the report.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[TDD]{A TDD Kata: the Turkish ID Number}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The rule}
+  \begin{itemize}
+    \item A Turkish ID number (T.C. Kimlik No) has 11 digits $d_{1} \dots d_{11}$ and $d_{1} \neq 0$.
+    \item Check digit 10:
+          \[
+          	d_{10} = \big( 7 (d_{1} + d_{3} + d_{5} + d_{7} + d_{9}) - (d_{2} + d_{4} + d_{6} + d_{8}) \big) \bmod 10
+          \]
+    \item Check digit 11:
+          \[
+          	d_{11} = (d_{1} + d_{2} + \dots + d_{10}) \bmod 10
+          \]
+    \item \texttt{10000000146} is a well-known valid test number. Check it by hand!
+    \item TDD: write the tests from these rules first; then the code.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The tests first}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=16]{codeoutput/Kata/TcKimlikTest.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=17, firstnumber=17]{codeoutput/Kata/TcKimlikTest.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Step 1: only the format}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Kata/step1/TcKimlik.java}{Java}
+      \small The simplest code that could pass the first tests.
+    \end{column}
+    \begin{column}{0.56\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny, lastline=13]{codeoutput/Kata.txt}}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Step 2: the check digits}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Kata/step2/TcKimlik.java}{Java}
+      \small \texttt{floorMod}: the difference can be negative; \texttt{\%} would give a negative remainder.
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny, firstline=14]{codeoutput/Kata.txt}}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Doubles]{Test Doubles by Hand}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A service that needs a database}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Fake/StudentRepository.java}{Java}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Fake/Registration.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Fake/InMemoryStudentRepository.java}{Java}
+      \small The real repository reads the university database. The test gets a \textbf{fake}: a small, working, in-memory version.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The test with the fake}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Fake/RegistrationTest.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Fake.txt}}
+      \begin{center}\scriptsize
+      \begin{tabular}{@{}ll@{}}
+        \toprule
+        \textbf{double} & \textbf{does} \\
+        \midrule
+        dummy  & fills a parameter, never used \\
+        stub   & returns fixed answers \\
+        fake   & a simple working version \\
+        spy    & records how it was called \\
+        mock   & checks the calls (Mockito, junior) \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Tags]{Tags and Selection}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Fast tests on every save, slow ones on the server}
+  \begin{columns}[T]
+    \begin{column}{0.44\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Tags/TaggedTest.java}{Java}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Tags.txt}}
+      \small \texttt{--exclude-tag}/\texttt{--include-tag} on the console; Maven: \texttt{-Dgroups=slow}; Gradle: \texttt{useJUnitPlatform \{ includeTags("slow") \}}; IDE: in the run configuration.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Build tools]{JUnit with Maven and Gradle}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Maven and Gradle}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=XML, basicstyle=\ttfamily\tiny]
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.junit</groupId>
+      <artifactId>junit-bom</artifactId>
+      <version>6.1.3</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+<dependencies>
+  <dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter</artifactId>
+    <scope>test</scope>
+  </dependency>
+</dependencies>
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+    \end{column}
+    \begin{column}{0.44\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=Java, basicstyle=\ttfamily\tiny]
+dependencies {
+  testImplementation(platform("org.junit:junit-bom:6.1.3"))
+  testImplementation("org.junit.jupiter:junit-jupiter")
+  testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+tasks.test { useJUnitPlatform() }
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \begin{itemize}\small
+        \item Run: \hCode{mvn test} or \hCode{gradle test} (\win{} and \mac).
+        \item The BOM keeps all JUnit artifacts at one version.
+        \item \hRemark{Not run here}: both download from the internet.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reports for the build server}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Reports.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{--reports-dir} writes the same XML format as Maven Surefire: CI servers (GitHub Actions, Jenkins, GitLab) read it and show
+  the failed tests on the web page.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Habits]{Good Tests}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What makes a good unit test: FIRST}
+  \begin{center}\small
+  \begin{tabular}{lL{0.68\textwidth}}
+    \toprule
+    \textbf{F}ast           & milliseconds; you run them hundreds of times a day \\
+    \textbf{I}ndependent    & any order, any subset; no shared mutable state \\
+    \textbf{R}epeatable     & same result on every machine: no real clock, network, random seed or locale surprises \\
+    \textbf{S}elf-validating & pass or fail by itself; nobody reads printed output \\
+    \textbf{T}imely         & written with the code (or before it), not months later \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \begin{itemize}\small
+    \item One behavior per test; the name says which. A failing test should tell you what broke without a debugger.
+    \item Test the \textbf{borders}: 0, 1, many; empty, \texttt{null}; the first and last valid value and the ones just outside.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet}
+  \begin{center}\footnotesize
+  \begin{tabular}{@{}ll@{}}
+    \toprule
+    \textbf{need}                              & \textbf{JUnit} \\
+    \midrule
+    fresh objects for every test               & field + \texttt{@BeforeEach} \\
+    readable reports                           & \texttt{@DisplayName}, \texttt{@ParameterizedTest(name = \dots)} \\
+    group by situation                         & \texttt{@Nested} inner classes \\
+    many cases                                 & \texttt{@CsvSource}, \texttt{@MethodSource}, \texttt{@CsvFileSource}, \texttt{@NullAndEmptySource} \\
+    expected exception and its message         & \texttt{var e = assertThrows(\dots); assertEquals(\dots, e.getMessage())} \\
+    no database, network, clock in unit tests  & an interface + a fake or stub \\
+    run a subset                               & \texttt{@Tag}, \texttt{--include-tag} / \texttt{--exclude-tag} \\
+    CI                                         & Maven/Gradle + JUnit BOM; XML reports \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Add \texttt{@Nested} ``after a withdrawal of everything'' to \texttt{AccountTest}: what should be possible then?
+    \item Extend \texttt{TcKimlik} test first: a number with all equal digits, a negative check digit sum.
+    \item Write a \textbf{spy} \texttt{Mailer} by hand that records every message; test that \texttt{Registration} mails missing students.
+    \item Move the \texttt{TcKimlik} cases into a CSV file and use \texttt{@CsvFileSource}.
+    \item Create a Maven project with the JUnit BOM in Eclipse or IntelliJ, and run \texttt{mvn test} on the command line.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

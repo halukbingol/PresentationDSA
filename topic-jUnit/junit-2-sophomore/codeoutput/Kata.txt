@@ -1,0 +1,28 @@
+$ cp step1/TcKimlik.java .
+$ javac -d bin -cp $JUNIT TcKimlik.java TcKimlikTest.java
+$ junit -cp bin --select-class TcKimlikTest | head -11
+.
+'-- JUnit Jupiter [OK]
+  '-- TcKimlikTest [OK]
+    +-- rejectsALeadingZero() [X] expected: <false> but was: <true>
+    +-- acceptsAValidNumber() [OK]
+    +-- rejectsAWrongCheckDigit() [X] expected: <false> but was: <true>
+    '-- rejectsWrongLengthOrLetters(String) [OK]
+      +-- [1] 1000000014 [OK]
+      +-- [2] 100000001460 [OK]
+      '-- [3] 1000000014a [OK]
+
+$ cp step2/TcKimlik.java .
+$ javac -d bin -cp $JUNIT TcKimlik.java TcKimlikTest.java
+$ junit -cp bin --select-class TcKimlikTest | head -11
+.
+'-- JUnit Jupiter [OK]
+  '-- TcKimlikTest [OK]
+    +-- rejectsALeadingZero() [OK]
+    +-- acceptsAValidNumber() [OK]
+    +-- rejectsAWrongCheckDigit() [OK]
+    '-- rejectsWrongLengthOrLetters(String) [OK]
+      +-- [1] 1000000014 [OK]
+      +-- [2] 100000001460 [OK]
+      '-- [3] 1000000014a [OK]
+

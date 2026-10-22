@@ -1,0 +1,530 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Unit Testing with JUnit -- Freshman Level: Your First Tests
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% theme, i/N, fonts (T1, lmodern), booktabs, xcolor, array (L{width} columns), listings, tikz,
+% algorithm2e (\small captions, \Fn) and the color gitred come from the hblib libraries
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+% ---------------------------------------------------------------------
+\title{Unit Testing with JUnit}
+\subtitle{Freshman Level: Your First Tests}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-3}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={4-6}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Why]{Why Test?}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Testing by hand does not scale}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}\small
+        \item Today: you run the program, type 2 and 3, look at the screen: ``5, fine''.
+        \item Next week you change the code. Do you type all the cases again? Every time?
+        \item A \textbf{unit test} is a small program that runs your code with known input and
+              \textbf{checks} the result by itself.
+        \item \textbf{JUnit} runs hundreds of them in a second and tells you exactly which one failed.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{A test in three steps}
+        \small
+        \textbf{Arrange}: create the objects.\\
+        \textbf{Act}: call the method.\\
+        \textbf{Assert}: compare with the expected result.
+      \end{block}
+      \begin{block}{Versions}
+        \small JUnit 4 (2006), JUnit 5 ``Jupiter'' (2017), JUnit 6 (2025; 6.1.3 is current, needs Java 17).
+        The code on these slides is the same in JUnit 5 and 6.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Setup]{Getting JUnit}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Three ways to run tests}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{In the IDE}
+        \small
+        Eclipse: \menu{New > JUnit Test Case}, accept \emph{Add JUnit library to the build path};
+        \menu{Run As > JUnit Test}.\\
+        IntelliJ IDEA: put the cursor on the class name, \keys{Alt+\return} (\win) / \keys{Option+\return} (\mac),
+        \emph{Create Test}; the green arrow runs it.
+      \end{block}
+      \begin{block}{With a build tool}
+        \small Maven or Gradle download JUnit and run the tests (sophomore level).
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{On the command line}
+        \small Download one JAR from Maven Central:\\
+        \texttt{junit-platform-console-standalone-6.1.3.jar}, rename it \texttt{junit.jar}.
+        The same commands on \win{} (Command Prompt) and \mac{} (Terminal):
+      \end{block}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\tiny]
+javac -d bin -cp junit.jar Calculator.java CalculatorTest.java
+java -jar junit.jar execute -cp bin --select-class CalculatorTest
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \small On the next slides \texttt{junit} is short for \texttt{java -jar junit.jar execute} (with plain-text output).
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[First test]{The First Test}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The class to test}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/First/Calculator.java}{Java}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item Three small methods. Which inputs would you try for each?
+        \item \texttt{add}: positive, negative, zero.
+        \item \texttt{max}: the bigger one first, then second; equal values.
+        \item \texttt{average}: does it really return a \texttt{double}? (Look at line 15.)
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A test class}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/First/CalculatorTest.java}{Java}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/First.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small A test method: \texttt{@Test}, \texttt{void}, no parameters. \texttt{assertEquals(expected, actual)} stops the test
+  if they differ. The tree shows each test with \texttt{[OK]} or \texttt{[X]}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reading the result}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/First.txt}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item The \textbf{tree}: engine \emph{JUnit Jupiter}, class, methods.
+        \item The \textbf{summary}: containers are the engine and the classes; tests are the methods.
+        \item \textbf{2 tests successful, 0 failed}: the IDE shows a \textbf{green bar}.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A red bar}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize, firstline=20, firstnumber=20]{codeoutput/Red/CalculatorTest.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Red.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small The new test fails: expected 72.5, but was 72.0. The stack trace points to \texttt{CalculatorTest.java:23}.
+  The bug is in \texttt{Calculator}: \texttt{sum / grades.length} is an integer division.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{After the fix: \texttt{(double) sum / grades.length}}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Green.txt}
+
+  \vspace{0.1em}
+  \small
+  Fix the code, run \textbf{all} tests again. Green: the new test passes and the old ones still pass.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Assertions]{Assertions}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The most used assertions}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=22]{codeoutput/Tour/AssertionsTest.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=23, firstnumber=23]{codeoutput/Tour/AssertionsTest.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What each assertion checks}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \begin{center}\scriptsize
+      \begin{tabular}{@{}ll@{}}
+        \toprule
+        \textbf{assertion}                     & \textbf{passes if} \\
+        \midrule
+        \texttt{assertEquals(e, a)}            & equal (\texttt{equals} or \texttt{==}) \\
+        \texttt{assertEquals(e, a, delta)}     & $|e - a| \le \mathit{delta}$ \\
+        \texttt{assertTrue(c)}, \texttt{assertFalse(c)} & \texttt{c} is true / false \\
+        \texttt{assertNull(x)}, \texttt{assertNotNull(x)} & \texttt{x} is / is not \texttt{null} \\
+        \texttt{assertArrayEquals(e, a)}       & same length, equal elements \\
+        \texttt{assertThrows(T.class, code)}   & the code throws a \texttt{T} \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+      \small Every assertion also takes a last argument: a message shown when it fails.
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Tour.txt}}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Mistakes]{Common Mistakes}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Forgot \texttt{@Test}: ``0 tests found''}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/NoTest/CalculatorTest.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/NoTest.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small Without \texttt{@Test} JUnit does not see the method: nothing runs, nothing fails. A run with 0 tests is not a success.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{``cannot find symbol: method assertEquals''}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/NoImport/CalculatorTest.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/NoImport.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small \texttt{assertEquals} lives in the class \texttt{Assertions}: add \texttt{import static org.junit.jupiter.api.Assertions.assertEquals;} (or \texttt{.*}).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{``package org.junit.jupiter.api does not exist''}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/NoJar/CalculatorTest.java}{Java}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/NoJar.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small JUnit is not on the class path: \texttt{javac -cp junit.jar \dots}. In the IDE: add the JUnit library to the build path.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Swapped arguments: a confusing message}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Order/CalculatorTest.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Order.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small The order is \texttt{assertEquals(expected, actual)}. Swapped, the message says ``expected 4'': it reads as if
+  the test wanted 4. Always put the \textbf{expected} value first.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Doubles need a tolerance}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Doubles/CalculatorTest.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Doubles.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small \texttt{0.1 + 0.2} is \texttt{0.30000000000000004} in binary floating point. Use \texttt{assertEquals(0.3, x, 1e-9)}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Arrays: \texttt{assertEquals} compares references}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Arrays/CalculatorTest.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Arrays.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small Two different array objects are never \texttt{equals}, even with the same elements; \texttt{[I@\dots} is
+  the object's identity. Use \texttt{assertArrayEquals}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{An exception is an error, too}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Crash/CalculatorTest.java}{Java}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Crash.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2em}
+  \small \texttt{average(null)} throws a \texttt{NullPointerException} in the loop (\texttt{<local3>} is the loop's hidden copy of
+  \texttt{grades}). An unexpected exception fails the test. What should \texttt{average} do for \texttt{null}?
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=Java, basicstyle=\ttfamily\scriptsize]
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+class ThingTest {
+    @Test
+    void doesWhatItShould() {
+        Thing t = new Thing();       // arrange
+        int result = t.compute(3);   // act
+        assertEquals(9, result);     // assert
+    }
+}
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Do}
+        \small one idea per test; a name that says what it checks; expected value first; run all tests after every change
+      \end{block}
+      \begin{block}{Don't}
+        \small forget \texttt{@Test}; compare doubles without a tolerance; compare arrays with \texttt{assertEquals};
+        trust a run with 0 tests
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Write tests for \texttt{max}: the first argument bigger, the second bigger, both equal, negative numbers.
+    \item Write a class \texttt{Grade} with \texttt{letter(int score)} (90--100 AA, \dots) and test every border: 89, 90, 100.
+    \item Make each mistake of section 5 on your own computer and read the message.
+    \item \texttt{average(new int[0])} returns \texttt{NaN} ($0.0 / 0$). Decide what it should do; write the test first, then change the code until it is green.
+    \item Run the tests once in your IDE and once on the command line; compare the two outputs.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

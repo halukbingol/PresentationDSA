@@ -1,0 +1,12 @@
+$ javac -d bin -cp $JUNIT:$JUNIT4 LegacyAccountTest.java AccountDepositsTest.java
+$ java -jar $JUNIT execute --disable-banner --disable-ansi-colors --details-theme=ascii -cp bin:$JUNIT4 --scan-classpath bin | head -10
+.
++-- JUnit Platform Suite [OK]
++-- JUnit Jupiter [OK]
+| '-- AccountDepositsTest [OK]
+|   +-- sumOfDeposits() [OK]
+|   '-- emptyHasNoFirst() [OK]
+'-- JUnit Vintage [OK]
+  '-- LegacyAccountTest [OK]
+    +-- sumOfDeposits [OK]
+    '-- emptyHasNoFirst [OK]

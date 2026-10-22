@@ -1,0 +1,12 @@
+$ javac -g -d bin -cp $JUNIT Calculator.java CalculatorTest.java
+$ junit -cp bin --select-class CalculatorTest | head -10
+.
+'-- JUnit Jupiter [OK]
+  '-- CalculatorTest [OK]
+    '-- averageOfMissingGrades() [X] Cannot read the array length because "<local3>" is null
+
+Failures (1):
+  JUnit Jupiter:CalculatorTest:averageOfMissingGrades()
+    MethodSource [className = 'CalculatorTest', methodName = 'averageOfMissingGrades', methodParameterTypes = '']
+    => java.lang.NullPointerException: Cannot read the array length because "<local3>" is null
+       Calculator.average(Calculator.java:12)

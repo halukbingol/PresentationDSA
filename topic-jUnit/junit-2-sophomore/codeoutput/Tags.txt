@@ -1,0 +1,13 @@
+$ javac -d bin -cp $JUNIT TaggedTest.java
+$ junit -cp bin --select-class TaggedTest --exclude-tag slow --exclude-tag database | head -5
+.
+'-- JUnit Jupiter [OK]
+  '-- TaggedTest [OK]
+    '-- fast() [OK]
+
+$ junit -cp bin --select-class TaggedTest --include-tag slow | head -5
+.
+'-- JUnit Jupiter [OK]
+  '-- TaggedTest [OK]
+    '-- slow() [OK]
+

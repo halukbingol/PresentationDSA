@@ -1,0 +1,11 @@
+$ javac -g -d bin -cp $JUNIT Calculator.java CalculatorTest.java
+$ junit -cp bin --select-class CalculatorTest | head -9
+.
+'-- JUnit Jupiter [OK]
+  '-- CalculatorTest [OK]
+    +-- averageOfGrades() [OK]
+    +-- addsTwoNumbers() [OK]
+    '-- maxOfTwo() [OK]
+
+[         2 containers found      ]
+[         0 containers skipped    ]

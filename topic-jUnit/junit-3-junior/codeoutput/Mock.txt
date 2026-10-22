@@ -1,0 +1,8 @@
+$ javac -d bin -cp $JUNIT:$MOCKITO *.java
+$ junit -cp bin:$MOCKITO --select-class ReminderTest | head -6
+.
+'-- JUnit Jupiter [OK]
+  '-- ReminderTest [OK]
+    +-- mailsAStudentWithMissingHomework() [OK]
+    '-- staysSilentOtherwise() [OK]
+

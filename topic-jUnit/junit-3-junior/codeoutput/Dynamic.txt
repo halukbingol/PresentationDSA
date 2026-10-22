@@ -1,0 +1,13 @@
+$ javac -encoding UTF-8 -d bin -cp $JUNIT UpperCaseTest.java
+$ junit -cp bin --select-class UpperCaseTest | head -11
+.
+'-- JUnit Jupiter [OK]
+  '-- UpperCaseTest [OK]
+    +-- englishUpperCase() [OK]
+    | '-- istanbul [X] expected: <İSTANBUL> but was: <ISTANBUL>
+    '-- turkishUpperCase() [OK]
+      +-- istanbul -> İSTANBUL [OK]
+      +-- çiçek -> ÇİÇEK [OK]
+      '-- ılık -> ILIK [OK]
+
+Failures (1):

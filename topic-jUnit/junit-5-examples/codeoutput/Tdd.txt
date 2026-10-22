@@ -1,0 +1,27 @@
+$ javac -d bin -cp $JUNIT LeapTest.java 2>&1 | head -4
+LeapTest.java:10: error: cannot find symbol
+        assertEquals(leap, Leap.isLeap(year), "year " + year);
+                           ^
+  symbol:   variable Leap
+$ cp step1/Leap.java .
+$ javac -d bin -cp $JUNIT Leap.java LeapTest.java
+$ junit -cp bin --select-class LeapTest | head -8
+.
+'-- JUnit Jupiter [OK]
+  '-- LeapTest [OK]
+    '-- leapYears(int, boolean) [OK]
+      +-- [1] 2024, true [OK]
+      +-- [2] 2026, false [OK]
+      +-- [3] 1900, false [X] year 1900 ==> expected: <false> but was: <true>
+      '-- [4] 2000, true [OK]
+$ cp step2/Leap.java .
+$ javac -d bin -cp $JUNIT Leap.java LeapTest.java
+$ junit -cp bin --select-class LeapTest | head -8
+.
+'-- JUnit Jupiter [OK]
+  '-- LeapTest [OK]
+    '-- leapYears(int, boolean) [OK]
+      +-- [1] 2024, true [OK]
+      +-- [2] 2026, false [OK]
+      +-- [3] 1900, false [OK]
+      '-- [4] 2000, true [OK]

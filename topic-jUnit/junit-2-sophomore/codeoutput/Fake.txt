@@ -1,0 +1,9 @@
+$ javac -d bin -cp $JUNIT *.java
+$ junit -cp bin --select-class RegistrationTest | head -7
+.
+'-- JUnit Jupiter [OK]
+  '-- RegistrationTest [OK]
+    +-- missingCredits() [OK]
+    +-- enoughCredits() [OK]
+    '-- unknownStudent() [OK]
+

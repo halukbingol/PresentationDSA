@@ -1,0 +1,19 @@
+$ javac -d bin -cp $JUNIT:$MOCKITO *.java
+$ junit -cp bin:$MOCKITO --select-class ReminderTest | head -5
+.
+'-- JUnit Jupiter [OK]
+  '-- ReminderTest [OK]
+    +-- mailsAStudentWithMissingHomework() [X] 
+    |     Argument(s) are different! Wanted:
+$ junit -cp bin:$MOCKITO --select-class ReminderTest | sed -n '/=> Argument/,/^ *org/p' | head -11
+    => Argument(s) are different! Wanted:
+mailer.send(
+    "ayse@std.yeditepe.edu.tr",
+    "2 homework missing"
+);
+-> at ReminderTest.mailsAStudentWithMissingHomework(ReminderTest.java:16)
+Actual invocation has different arguments:
+mailer.send(
+    "ayse@std.yeditepe.edu.tr",
+    "missing homework: 2"
+);

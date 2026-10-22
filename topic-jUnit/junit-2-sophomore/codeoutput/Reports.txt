@@ -1,0 +1,7 @@
+$ junit -cp bin --select-class AccountTest --details=none --reports-dir reports
+$ ls reports
+TEST-junit-jupiter.xml
+$ grep -o '<testsuite [^>]*>' reports/TEST-junit-jupiter.xml | sed 's/ time=.*//'
+<testsuite name="JUnit Jupiter" tests="4" skipped="0" failures="0" errors="0"
+$ grep -c '<testcase ' reports/TEST-junit-jupiter.xml
+4

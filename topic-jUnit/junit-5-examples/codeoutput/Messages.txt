@@ -1,0 +1,15 @@
+$ javac -d bin -cp $JUNIT MessagesTest.java
+$ junit -cp bin --select-class MessagesTest | head -8
+.
+'-- JUnit Jupiter [OK]
+  '-- MessagesTest [OK]
+    +-- allAtOnce() [X] student (2 failures)
+    |     	org.opentest4j.AssertionFailedError: name ==> expected: <Ayse> but was: <Ayşe>
+    |     	org.opentest4j.AssertionFailedError: midterm ==> expected: <75> but was: <70>
+    '-- oneAtATime() [X] name ==> expected: <Ayse> but was: <Ayşe>
+
+$ junit -cp bin --select-class MessagesTest | grep -A3 "MultipleFailures"
+    => org.opentest4j.MultipleFailuresError: student (2 failures)
+	org.opentest4j.AssertionFailedError: name ==> expected: <Ayse> but was: <Ayşe>
+	org.opentest4j.AssertionFailedError: midterm ==> expected: <75> but was: <70>
+       org.junit.jupiter.api.AssertAll.assertAll(AssertAll.java:80)

@@ -1,0 +1,470 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Unit Testing with JUnit -- Junior Level: Mocks, Conditions, Time, Files, Extensions and Coverage
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% theme, i/N, fonts (T1, lmodern), booktabs, xcolor, array (L{width} columns), listings, tikz,
+% algorithm2e (\small captions, \Fn) and the color gitred come from the hblib libraries
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+% ---------------------------------------------------------------------
+\title{Unit Testing with JUnit}
+\subtitle{Junior Level: Mocks, Conditions, Time, Files, Extensions and Coverage}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-4}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={5-9}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Mocks]{Mocks with Mockito}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A class with two collaborators}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Mock/Mailer.java}{Java}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Mock/GradeService.java}{Java}
+      \begin{itemize}\small
+        \item We must not send real e-mails in a test, nor read the real grade system.
+        \item Hand-written fakes work (sophomore); a \textbf{mocking library} writes them for us.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Mock/Reminder.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{mock}, \texttt{when}, \texttt{verify}}
+  \vspace{-0.3cm}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Mock/ReminderTest.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{itemize}\small
+        \item \texttt{mock(X.class)}: an object of interface \texttt{X} that does nothing and returns 0 / \texttt{null}.
+        \item \texttt{when(\dots).thenReturn(\dots)}: a \textbf{stub} answer.
+        \item \texttt{verify(m).send(\dots)}: was this call made, with these arguments?
+      \end{itemize}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Mock.txt}}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{When the text of the e-mail changes}
+  \begin{columns}[T]
+    \begin{column}{0.6\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/MockFail.txt}
+    \end{column}
+    \begin{column}{0.36\textwidth}
+      \begin{itemize}\small
+        \item Someone changed the e-mail text in \texttt{Reminder}.
+        \item Mockito shows the \textbf{wanted} call and the \textbf{actual} one.
+        \item \hRemark{Do not overuse mocks}: a test that verifies every call breaks at every refactoring. Prefer checking results.
+        \item Mockito 5 is current; these runs use Mockito 2.23 (the same \texttt{mock}/\texttt{when}/\texttt{verify}).
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Conditions]{Conditional Tests}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Tests for one system only}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=21]{codeoutput/Cond/ConditionsTest.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=22, firstnumber=22]{codeoutput/Cond/ConditionsTest.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{On Linux with Java 21, no CI variable}
+  \begin{columns}[T]
+    \begin{column}{0.6\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Cond.txt}
+    \end{column}
+    \begin{column}{0.36\textwidth}
+      \begin{itemize}\small
+        \item Disabled tests are reported as \texttt{[S]} with the reason: nothing is silently lost.
+        \item Also: \texttt{@DisabledOnOs}, \texttt{@EnabledIfSystemProperty}, \texttt{@EnabledInNativeImage}, and \texttt{assumeTrue(\dots)} inside a test.
+        \item Path separators: \win{} \texttt{\textbackslash}, \mac{} and Linux \texttt{/}; prefer \texttt{Path.of(\dots)} over writing them.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Time]{Timeouts}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Three kinds of timeouts}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=21]{codeoutput/Timeouts/TimeoutsTest.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=22, firstnumber=22]{codeoutput/Timeouts/TimeoutsTest.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Results}
+  \begin{columns}[T]
+    \begin{column}{0.6\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Timeouts.txt}
+    \end{column}
+    \begin{column}{0.36\textwidth}
+      \begin{itemize}\small
+        \item \texttt{assertTimeout}: lets the code finish, then fails if it was too slow.
+        \item \texttt{assertTimeoutPreemptively}: stops it at the limit (runs it in another thread: careful with thread-local state).
+        \item \texttt{@Timeout}: for the whole test method; can be set for all tests in \texttt{junit-platform.properties}.
+        \item The exact milliseconds differ from run to run; here they are replaced by \texttt{...}.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Files]{Files: \texttt{@TempDir}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A fresh folder for every test}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/TempDir/GradeFile.java}{Java}
+      \small JUnit creates the folder before the test and deletes it afterwards, on \win{} and \mac{} alike.
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=8, firstnumber=8]{codeoutput/TempDir/GradeFileTest.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Both tests pass}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/TempDir.txt}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item Each test gets its own empty folder: the tests cannot disturb each other.
+        \item No leftover files in the project or in your home folder after a run.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Dynamic]{Dynamic Tests}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Tests made at run time}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=18]{codeoutput/Dynamic/UpperCaseTest.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=19, firstnumber=19]{codeoutput/Dynamic/UpperCaseTest.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The Turkish \texttt{i} as test data}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Dynamic.txt}
+    \end{column}
+    \begin{column}{0.40\textwidth}
+      \begin{itemize}\small
+        \item \texttt{@TestFactory} returns a stream of \texttt{DynamicTest}s: as many as the data has.
+        \item With the Turkish locale \texttt{i} becomes \texttt{İ}, \texttt{ı} becomes \texttt{I}: all green.
+        \item With the English locale \texttt{istanbul} becomes \texttt{ISTANBUL}: the dotless \texttt{I}, so the test fails.
+        \item Unlike \texttt{@ParameterizedTest}, no lifecycle methods run around each dynamic test.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Extensions]{Writing an Extension}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{An extension: inject a fixed clock, watch the results}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=22]{codeoutput/Extension/FixedClockExtension.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=23, firstnumber=23]{codeoutput/Extension/FixedClockExtension.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Using it}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Extension/ClockTest.java}{Java}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Extension.txt}}
+      \begin{itemize}\small
+        \item \texttt{ParameterResolver}: test methods get a \texttt{Clock} parameter.
+        \item \texttt{TestWatcher}: called after each test with its outcome.
+        \item 06:30 UTC is 09:30 in Istanbul, so the second test fails.
+        \item Spring, Mockito, Testcontainers plug into JUnit the same way.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Parallel]{Parallel Execution}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Four tests of one second each}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=3, lastline=13]{codeoutput/Parallel/ParallelTest.java}{Java}
+      \small \dots{} and the same for \texttt{c} and \texttt{d}.
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Parallel.txt}}
+    \end{column}
+  \end{columns}
+  \begin{itemize}\small
+    \item \texttt{real}: about 4.6 s one after another, a little over 2.5 s concurrently on this 2-core machine (one thread per core by default); times vary.
+    \item \texttt{junit-platform.properties} is read from the class path. Only for \textbf{independent} tests;
+          \texttt{@ResourceLock} and \texttt{@Isolated} protect the others.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Coverage]{Coverage and Its Limits}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Every branch covered, nothing checked}
+	\vspace{-0.3cm}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Coverage/Grade.java}{Java}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Coverage/GradeTest.java}{Java}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Coverage.txt}}
+      \begin{itemize}\small
+        \item Every branch ran (only the unused constructor did not): the test checks \textbf{nothing}. Coverage measures what ran, not what was verified.
+        \item \textbf{Mutation testing} (e.g.\ PIT) changes the code (\texttt{>=} to \texttt{>}) and expects some test to fail;
+              this test would let every mutant survive. \hRemark{Not run here}.
+        \item Use coverage to find untested code, not as a target.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Recipes}
+  \begin{center}\footnotesize
+  \begin{tabular}{@{}L{0.34\textwidth}L{0.6\textwidth}@{}}
+    \toprule
+    \textbf{problem}                       & \textbf{JUnit tool} \\
+    \midrule
+    collaborators (mail, database)         & Mockito \texttt{mock}, \texttt{when}, \texttt{verify}; or a fake \\
+    a test only for one OS / Java / server & \texttt{@EnabledOnOs}, \texttt{@EnabledOnJre}, \texttt{@EnabledIfEnvironmentVariable} \\
+    code that may hang                     & \texttt{assertTimeoutPreemptively}, \texttt{@Timeout} \\
+    files                                  & \texttt{@TempDir} \\
+    test cases from data at run time       & \texttt{@TestFactory} + \texttt{DynamicTest} \\
+    the same setup in many test classes    & an extension + \texttt{@ExtendWith} \\
+    a slow suite                           & parallel execution for independent tests \\
+    are the tests good enough?             & coverage for gaps, mutation testing for strength \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Test \texttt{Reminder} for a student with 1 missing homework; then use \texttt{ArgumentCaptor} to check the text.
+    \item Make \texttt{englishUpperCase} pass by fixing the \emph{code}, not the test: which locale should the program use?
+    \item Write an extension that measures every test's time and prints the slowest three.
+    \item Run a test suite of yours in parallel; find and fix the first test that becomes flaky.
+    \item Add assertions to \texttt{GradeTest} until a hand-made mutant (change \texttt{>=} to \texttt{>}) is caught.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

@@ -1,0 +1,12 @@
+$ javac -d bin -cp $JUNIT Account.java AccountTest.java
+$ junit -cp bin --select-class AccountTest | head -10
+.
+'-- JUnit Jupiter [OK]
+  '-- An account [OK]
+    +-- starts with balance 0 [OK]
+    '-- after a deposit of 100 [OK]
+      +-- allows withdrawing 30 [OK]
+      +-- has balance 100 [OK]
+      '-- refuses withdrawing 150 [OK]
+
+[         3 containers found      ]

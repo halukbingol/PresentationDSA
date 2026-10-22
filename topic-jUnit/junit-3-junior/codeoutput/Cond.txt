@@ -1,0 +1,11 @@
+$ javac -d bin -cp $JUNIT ConditionsTest.java
+$ junit -cp bin --select-class ConditionsTest | head -9
+.
+'-- JUnit Jupiter [OK]
+  '-- ConditionsTest [OK]
+    +-- linuxPaths() [OK]
+    +-- onlyOnJava21() [OK]
+    +-- windowsPaths() [S] Disabled on operating system: Linux
+    +-- macPaths() [S] Disabled on operating system: Linux
+    '-- onlyOnTheBuildServer() [S] Environment variable [CI] does not exist
+

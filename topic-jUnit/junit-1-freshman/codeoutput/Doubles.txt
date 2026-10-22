@@ -1,0 +1,8 @@
+$ javac -g -d bin -cp $JUNIT Calculator.java CalculatorTest.java
+$ junit -cp bin --select-class CalculatorTest | head -6
+.
+'-- JUnit Jupiter [OK]
+  '-- CalculatorTest [OK]
+    '-- tenthsAddUp() [X] expected: <0.3> but was: <0.30000000000000004>
+
+Failures (1):

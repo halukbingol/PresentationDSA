@@ -1,0 +1,9 @@
+$ javac -d bin Calculator.java CalculatorTest.java 2>&1 | head -8
+CalculatorTest.java:1: error: package org.junit.jupiter.api does not exist
+import static org.junit.jupiter.api.Assertions.assertEquals;
+                                   ^
+CalculatorTest.java:1: error: static import only from classes and interfaces
+import static org.junit.jupiter.api.Assertions.assertEquals;
+^
+CalculatorTest.java:3: error: package org.junit.jupiter.api does not exist
+import org.junit.jupiter.api.Test;

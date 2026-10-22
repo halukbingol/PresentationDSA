@@ -1,0 +1,8 @@
+$ javac -d bin -cp $JUNIT IntStack.java IntStackTest.java
+$ junit -cp bin --select-class IntStackTest | head -6
+.
+'-- JUnit Jupiter [OK]
+  '-- IntStackTest [OK]
+    +-- popOnEmptyThrows() [OK]
+    '-- popReturnsTheLastPushed() [OK]
+

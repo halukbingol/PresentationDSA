@@ -1,0 +1,12 @@
+$ javac -d bin -cp $JUNIT LifecycleTest.java
+$ junit -cp bin --select-class LifecycleTest --details=none
+@BeforeAll
+  new LifecycleTest()
+  @BeforeEach
+    second, counter = 1
+  @AfterEach
+  new LifecycleTest()
+  @BeforeEach
+    first, counter = 1
+  @AfterEach
+@AfterAll

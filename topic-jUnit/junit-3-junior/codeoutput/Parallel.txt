@@ -1,0 +1,15 @@
+$ javac -d bin -cp $JUNIT ParallelTest.java
+$ cat junit-platform.properties
+junit.jupiter.execution.parallel.enabled=true
+junit.jupiter.execution.parallel.mode.default=concurrent
+$ time -p junit -cp bin --select-class ParallelTest --details=none 2>&1 | grep -c done
+4
+real 4.69
+user 1.16
+sys 0.06
+$ cp junit-platform.properties bin/
+$ time -p junit -cp bin --select-class ParallelTest --details=none 2>&1 | grep -c done
+4
+real 2.69
+user 1.11
+sys 0.08

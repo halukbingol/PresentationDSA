@@ -1,0 +1,8 @@
+$ javac -d bin -cp $JUNIT SharedStateTest.java
+$ junit -cp bin --select-class SharedStateTest | head -6
+.
+'-- JUnit Jupiter [OK]
+  '-- SharedStateTest [OK]
+    +-- addsAName() [OK]
+    '-- startsEmpty() [X] expected: <true> but was: <false>
+

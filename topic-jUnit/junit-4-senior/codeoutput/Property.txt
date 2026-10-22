@@ -1,0 +1,11 @@
+$ javac -d bin -cp $JUNIT MySort.java SortPropertyTest.java
+$ junit -cp bin --select-class SortPropertyTest --details=tree | grep -E "\[X\]" | head -4
+      +-- [5, 3, -7, 9] [X] array contents differ at index [0], expected: <-7> but was: <5>
+      +-- [-6, -5, 7, -9, 1, 8] [X] array contents differ at index [0], expected: <-9> but was: <-6>
+      +-- [-2, -4] [X] array contents differ at index [0], expected: <-4> but was: <-2>
+      +-- [5, 4] [X] array contents differ at index [0], expected: <4> but was: <5>
+$ junit -cp bin --select-class SortPropertyTest | tail -4
+[         0 tests aborted         ]
+[       102 tests successful      ]
+[        98 tests failed          ]
+

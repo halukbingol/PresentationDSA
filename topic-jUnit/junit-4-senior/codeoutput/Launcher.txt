@@ -1,0 +1,5 @@
+$ javac -d bin -cp $JUNIT SampleTest.java MyRunner.java
+$ java -cp bin:$JUNIT MyRunner SampleTest
+FAILED broken()
+SUCCESSFUL ok()
+found 2, failed 1

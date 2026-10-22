@@ -1,0 +1,8 @@
+$ javac -d bin -cp $JUNIT GradeFile.java GradeFileTest.java
+$ junit -cp bin --select-class GradeFileTest | head -6
+.
+'-- JUnit Jupiter [OK]
+  '-- GradeFileTest [OK]
+    +-- missingFileIsAnError() [OK]
+    '-- writesAndReadsBack() [OK]
+

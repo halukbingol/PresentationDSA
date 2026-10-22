@@ -1,0 +1,14 @@
+$ javac -d bin -cp $JUNIT AssertionsTest.java
+$ junit -cp bin --select-class AssertionsTest | head -12
+.
+'-- JUnit Jupiter [OK]
+  '-- AssertionsTest [OK]
+    +-- arrays() [OK]
+    +-- exceptions() [OK]
+    +-- truth() [OK]
+    +-- doublesWithTolerance() [OK]
+    +-- equality() [OK]
+    '-- nullOrNot() [OK]
+
+[         2 containers found      ]
+[         0 containers skipped    ]

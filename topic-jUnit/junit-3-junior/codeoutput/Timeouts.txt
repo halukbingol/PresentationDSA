@@ -1,0 +1,10 @@
+$ javac -d bin -cp $JUNIT TimeoutsTest.java
+$ junit -cp bin --select-class TimeoutsTest | head -8 | sed -E 's/by [0-9]+ ms/by ... ms/'
+.
+'-- JUnit Jupiter [OK]
+  '-- TimeoutsTest [OK]
+    +-- fastEnough() [OK]
+    +-- wholeTestWithTimeout() [X] wholeTestWithTimeout() timed out after 200 milliseconds
+    +-- tooSlowAndStopped() [X] execution timed out after 100 ms
+    '-- tooSlowButRunsToTheEnd() [X] execution exceeded timeout of 100 ms by ... ms
+

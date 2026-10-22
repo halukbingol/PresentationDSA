@@ -1,0 +1,4 @@
+$ javac -d bin -cp $JUNIT FixedClockExtension.java ClockTest.java
+$ junit -cp bin --select-class ClockTest --details=none | head -2
+passed morningInIstanbul(Clock)
+FAILED notYetNoon(Clock) at 2026-10-17T06:30:00Z

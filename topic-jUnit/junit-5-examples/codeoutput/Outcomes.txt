@@ -1,0 +1,19 @@
+$ javac -d bin -cp $JUNIT OutcomesTest.java
+$ junit -cp bin --select-class OutcomesTest | head -9
+.
+'-- JUnit Jupiter [OK]
+  '-- OutcomesTest [OK]
+    +-- passes() [OK]
+    +-- abortedByAnAssumption() [A] Assumption failed: assumption is not true
+    +-- throwsAnException() [X] For input string: "dört"
+    +-- disabled() [S] waiting for issue #42
+    '-- failsAnAssertion() [X] expected: <5> but was: <4>
+
+$ junit -cp bin --select-class OutcomesTest | tail -7
+[         5 tests found           ]
+[         1 tests skipped         ]
+[         4 tests started         ]
+[         1 tests aborted         ]
+[         1 tests successful      ]
+[         2 tests failed          ]
+

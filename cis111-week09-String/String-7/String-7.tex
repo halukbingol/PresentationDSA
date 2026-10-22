@@ -13,23 +13,36 @@
 
 
 
-\documentclass{beamer}
-	\usetheme{Dresden}
-%	\usecolortheme{}
-%	\useinnertheme{}
-%	\useoutertheme{}
-%	\setbeamertemplate{bibliography item}[text]
-\usepackage{beamerthemesplit}
-%\usecolortheme{default}
-%\usecolortheme{structure}
-%\usepackage{beamerthemesplit} // Activate for custom appearance
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstcodedown, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
 
 
 
 
+
+%\documentclass{beamer}
+%	\usetheme{Dresden}
+%%	\usecolortheme{}
+%%	\useinnertheme{}
+%%	\useoutertheme{}
+%%	\setbeamertemplate{bibliography item}[text]
+%\usepackage{beamerthemesplit}
+%%\usecolortheme{default}
+%%\usecolortheme{structure}
+%%\usepackage{beamerthemesplit} // Activate for custom appearance
+%
+%
+%
+%
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V HB lib
-\usepackage{../hbcommon/hbdatastructures} 
-\usepackage{../hbcommon/hbpresentation} 
+\usepackage{hbcommon/hbdatastructures} 
+%\usepackage{hbcommon/hbpresentation} 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 
@@ -273,7 +286,9 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \begin{frame}\frametitle{Constructor}
-	\hCodeOutput{str-construct}[3.9][2.5]
+%	\hCodeOutput{str-construct}[3.9][2.5]
+	\lstcoderight{str-construct.java}{Java}{str-construct.txt}
+
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
@@ -287,7 +302,8 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \begin{frame}\frametitle{Replacing}
-	\hCodeOutput{str-replacing}[-1][2.5]
+%	\hCodeOutput{str-replacing}[-1][2.5]
+	\lstcoderight{str-replacing.java}{Java}{str-replacing.txt}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
@@ -301,7 +317,8 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \begin{frame}\frametitle{Splitting}
-	\hCodeOutput{str-splitting}[-1][2.5]
+%	\hCodeOutput{str-splitting}[-1][2.5]
+	\lstcoderight{str-splitting.java}{Java}{str-splitting.txt}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
@@ -309,7 +326,8 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \begin{frame}\frametitle{Example: Parsing CSV}
-	\hCodeOutput{str-parsingCsv}[-1][2.5]
+%	\hCodeOutput{str-parsingCsv}[-1][2.5]
+	\lstcoderight{str-parsingCsv.java}{Java}{str-parsingCsv.txt}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
@@ -319,7 +337,8 @@
 \begin{frame}\frametitle{Example: European Number Handler}
 	from EUR7.654.321,1234 to 7654321.1234
 	
-	\hCodeOutput{str-europeanNumberHandler}[-1][2.5]
+%	\hCodeOutput{str-europeanNumberHandler}[-1][2.5]
+	\lstcoderight{str-europeanNumberHandler.java}{Java}{str-europeanNumberHandler.txt}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
@@ -333,7 +352,8 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \begin{frame}\frametitle{Matching}
-	\hCodeOutput{str-matching}[-1][2.5]
+%	\hCodeOutput{str-matching}[-1][2.5]
+	\lstcoderight{str-matching.java}{Java}{str-matching.txt}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
@@ -347,7 +367,8 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \begin{frame}\frametitle{StringBuilder}
-	\hCodeOutput{str-StringBuilder}[-1][2.5]
+%	\hCodeOutput{str-StringBuilder}[-1][2.5]
+	\lstcoderight{str-StringBuilder.java}{Java}{str-StringBuilder.txt}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
@@ -355,7 +376,8 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \begin{frame}\frametitle{Example: toString}
-	\hCodeOutput{str-toString}[-1][2.5]
+%	\hCodeOutput{str-toString}[-1][2.5]
+	\lstcoderight{str-toString.java}{Java}{str-toString.txt}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
@@ -370,7 +392,9 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \begin{frame}\frametitle{Comparison}
-	\hCodeOutput{str-comparison}[3][2.5]
+	\vspace{-0.4cm}
+%	\hCodeOutput{str-comparison}[3][2.5]
+	\lstcoderight{str-comparison.java}{Java}{str-comparison.txt}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
@@ -378,7 +402,8 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \begin{frame}\frametitle{Concatenation}
-	\hCodeOutput{str-concatenation}[3][2.5]
+%	\hCodeOutput{str-concatenation}[3][2.5]
+	\lstcoderight{str-concatenation.java}{Java}{str-concatenation.txt}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
@@ -388,32 +413,41 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V References
 \section*{References}
-Some web resources
 
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t]\frametitle{Some web resources}
 \begin{itemize}
 	
 	\item 
+	The Java Language Specification- Java SE 8 Edition
 	\href
 		{https://docs.oracle.com/javase/specs/jls/se8/jls8.pdf}
-		{The Java Language Specification- Java SE 8 Edition}
-	by	
+		{url}\\
 	James Gosling,
-	Bill Joy.
+	Bill Joy,
 	Guy Steele,
 	Gilad Bracha,
 	Alex Buckley,
-	2015-02-13
+	2015-02-13.
 	
 	\item
+	The Java Tutorials
 	\href
 		{https://docs.oracle.com/javase/tutorial/}
-		{The Java Tutorials}
+		{url}
 		
 	\item
+	Strings in The Java Tutorials
 	\href
 		{https://docs.oracle.com/javase/tutorial/java/data/strings.html}
-		{Strings} in The Java Tutorials
+		{url}
 \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
 
 
 

@@ -1,0 +1,17 @@
+$ javac -g -d bin -cp $JUNIT Calculator.java CalculatorTest.java
+$ junit -cp bin --select-class CalculatorTest | head -15
+.
+'-- JUnit Jupiter [OK]
+  '-- CalculatorTest [OK]
+    +-- averageOfGrades() [X] expected: <72.5> but was: <72.0>
+    +-- addsTwoNumbers() [OK]
+    '-- maxOfTwo() [OK]
+
+Failures (1):
+  JUnit Jupiter:CalculatorTest:averageOfGrades()
+    MethodSource [className = 'CalculatorTest', methodName = 'averageOfGrades', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <72.5> but was: <72.0>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:86)

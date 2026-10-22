@@ -1,0 +1,23 @@
+$ javac -d bin -cp $JUNIT Account.java SourcesTest.java
+$ cat owners.csv
+owner,deposit
+Ayşe,100
+Ali,40
+Zeynep,75
+$ junit -cp bin --select-class SourcesTest | head -16
+.
+'-- JUnit Jupiter [OK]
+  '-- SourcesTest [OK]
+    +-- fromAMethod(int, int) [OK]
+    | +-- deposit 50 gives balance 50 [OK]
+    | +-- deposit 1 gives balance 1 [OK]
+    | '-- deposit 250 gives balance 250 [OK]
+    +-- fromAFile(String, int) [OK]
+    | +-- Ayşe: 100 [OK]
+    | +-- Ali: 40 [OK]
+    | '-- Zeynep: 75 [OK]
+    '-- noOwner(String) [OK]
+      +-- [1] null [OK]
+      '-- [2]  [OK]
+
+[         5 containers found      ]
