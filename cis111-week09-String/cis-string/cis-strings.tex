@@ -45,12 +45,12 @@
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V doc
-\title{
-	\textsc{cis111} CIS111 \cisOOO-week09\\
-	Strings in Java
+\title[\cisOOO-String]{
+	CIS111-week09\\
+	Strings
 }
 
-\subtitle{The Concepts}
+%\subtitle{The Concepts}
 
 \author[Bingol]{
 	Haluk O. Bingol
@@ -84,10 +84,10 @@
 %  \tableofcontents[hideallsubsections]
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}
-      \tableofcontents[sections={1-8}, hideallsubsections]
+      \tableofcontents[sections={1-7}, hideallsubsections]
     \end{column}
     \begin{column}{0.48\textwidth}
-      \tableofcontents[sections={9-16}, hideallsubsections]
+      \tableofcontents[sections={8-14}, hideallsubsections]
     \end{column}
   \end{columns}
 \end{frame}
@@ -125,14 +125,16 @@
       The string \texttt{"Hello, World"} has length 12:
       \vspace{0.6em}
 
-      \begin{tikzpicture}\hString[0.42]{H,e,l,l,o,{,},\textvisiblespace,W,o,r,l,d}\end{tikzpicture}
+      \begin{tikzpicture}
+		\hString[0.42]{H,e,l,l,o,{,},\textvisiblespace,W,o,r,l,d}
+      \end{tikzpicture}
 
       \vspace{0.6em}
       \small Each character has a \textbf{position} (index), starting at \textbf{0}.
       The space and the comma are characters too.
 
       \vspace{0.4em}
-      The \textbf{empty string} \texttt{""} has length 0.
+      The \textbf{empty string} \hCode{""} has length 0.
     \end{column}
   \end{columns}
 \end{frame}
@@ -146,22 +148,24 @@
   \small
   \begin{tabular}{@{}L{0.22\textwidth}L{0.33\textwidth}L{0.36\textwidth}@{}}
     \toprule
-                       & \textbf{\texttt{char}}                  & \textbf{\texttt{String}} \\
+                       & \textbf{\hCode{char}}                  & \textbf{\hCode{String}} \\
     \midrule
     holds              & exactly \textbf{one} character           & \textbf{zero or more} characters \\
-    literal            & single quotes: \texttt{'A'}              & double quotes: \texttt{"A"}, \texttt{""}, \texttt{"Ali"} \\
+    literal            & single quotes: \hCode{'A'}              & double quotes: \hCode{"A"}, \hCode{""}, \hCode{"Ali"} \\
     kind of type       & \textbf{primitive} (a 16-bit number)     & \textbf{class} (objects, with methods) \\
     stored             & the value itself                          & a \textbf{reference} to an object \\
-    default value      & \texttt{'\textbackslash u0000'}          & \texttt{null} (no object) \\
+    default value      & \hCode{'\textbackslash u0000'}          & \hCode{null} (no object) \\
     compare with       & \texttt{==}                               & \texttt{equals(...)} \\
     \bottomrule
   \end{tabular}
 
   \vspace{0.8em}
-  \begin{alertblock}{\texttt{'A'} is not \texttt{"A"}}
-    \texttt{'A'} is the number 65 in disguise. \texttt{"A"} is an object that \emph{contains} one character.
-    Mixing them up is one of the most common beginner errors.
-  \end{alertblock}
+	\begin{alertblock}
+		{\texttt{'A'} is not \texttt{"A"}}
+		\hCode{'A'} is the number 65 in disguise. 
+		\hCode{"A"} is an object that \emph{contains} one character.
+		Mixing them up is one of the most common beginner errors.
+	\end{alertblock}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -193,13 +197,22 @@ char   c = s.charAt(1);   // 'e'
 
 
 
-      \begin{itemize}\small
-        \item \texttt{s} does not contain the letters; it \textbf{refers} (points) to a \texttt{String} object
-        \item We \textbf{ask the object}: \texttt{s.length()}, \texttt{s.charAt(1)}
-        \item The object knows its characters and offers about 70 methods
-      \end{itemize}
+	\begin{itemize}\small
+	
+		\item 
+		\hCode{s} does not contain the letters; 
+		it \textbf{refers} (points) to a \hCode{String} object
+		
+		\item 
+		We \textbf{ask the object}: \hCode{s.length()}, \hCode{s.charAt(1)}
+
+		\item 
+		The object knows its characters and offers about 70 methods
+		
+	\end{itemize}
     \end{column}
     \begin{column}{0.46\textwidth}
+
       \begin{center}
       \begin{tikzpicture}
         \node[var] (s) at (0,0) {s};
@@ -216,6 +229,7 @@ char   c = s.charAt(1);   // 'e'
         \node[lbl, align=left, anchor=west] at (1.2,-1.85) {primitives:\\the value itself};
       \end{tikzpicture}
       \end{center}
+      
     \end{column}
   \end{columns}
 \end{frame}
@@ -239,17 +253,17 @@ char   c = s.charAt(1);   // 'e'
     \toprule
     \textbf{Expression}            & \textbf{Value}       & \textbf{Why} \\
     \midrule
-    \texttt{s.length()}            & \texttt{8}           & 8 characters \\
-    \texttt{s.charAt(0)}           & \texttt{'Y'}         & first index is 0 \\
-    \texttt{s.charAt(s.length()-1)}& \texttt{'e'}         & last index is \texttt{length-1} \\
-    \texttt{s.substring(4, 8)}     & \texttt{"tepe"}      & from 4 \textbf{up to, not including}, 8 (highlighted) \\
-    \texttt{s.indexOf("tepe")}     & \texttt{4}           & where it starts; \texttt{-1} if not found \\
-    \texttt{s.charAt(8)}           & \emph{exception}     & index 8 does not exist \\
+    \hCode{s.length()}            & \texttt{8}           & 8 characters \\
+    \hCode{s.charAt(0)}           & \texttt{'Y'}         & first index is 0 \\
+    \hCode{s.charAt(s.length()-1)}& \texttt{'e'}         & last index is \texttt{length-1} \\
+    \hCode{s.substring(4, 8)}     & \texttt{"tepe"}      & from 4 \textbf{up to, not including}, 8 (highlighted) \\
+    \hCode{s.indexOf("tepe")}     & \texttt{4}           & where it starts; \texttt{-1} if not found \\
+    \hCode{s.charAt(8)}           & \emph{exception}     & index 8 does not exist \\
     \bottomrule
   \end{tabular}
 
   \vspace{0.4em}
-  \hRemark{Rule of thumb:} \texttt{substring(b, e)} has length \texttt{e - b}.
+  \hRemark{Rule of thumb:} \hCode{substring(b, e)} has length \texttt{e - b}.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -260,6 +274,7 @@ char   c = s.charAt(1);   // 'e'
 \begin{frame}[t,fragile] \frametitle{Nothing, empty, or blank?}
   \begin{columns}[T]
     \begin{column}{0.5\textwidth}
+    
       \begin{center}
       \begin{tikzpicture}
         \node[var] (a) at (0,0) {a};
@@ -297,17 +312,19 @@ String c = "   ";
         \toprule
                                & \texttt{a}     & \texttt{b}    & \texttt{c} \\
         \midrule
-        \texttt{x == null}     & true           & false         & false \\
-        \texttt{x.isEmpty()}   & \emph{error}   & true          & false \\
-        \texttt{x.isBlank()}   & \emph{error}   & true          & true \\
+        \hCode{x == null}     & true           & false         & false \\
+        \hCode{x.isEmpty()}   & \emph{error}   & true          & false \\
+        \hCode{x.isBlank()}   & \emph{error}   & true          & true \\
         \bottomrule
       \end{tabular}
 
       \vspace{0.6em}
-      \begin{alertblock}{NullPointerException}
-        \small Calling a method on \texttt{null} fails: there is no object to ask.
-        Check \texttt{x != null} first, or write \texttt{"text".equals(x)}.
-      \end{alertblock}
+      
+	\begin{alertblock}{NullPointerException}
+		\small Calling a method on \hCode{null} fails: there is no object to ask.
+		Check \hCode{x != null} first, or write \hCode{"text".equals(x)}.
+	\end{alertblock}
+	
     \end{column}
   \end{columns}
 \end{frame}
@@ -342,14 +359,22 @@ s = s.toUpperCase();  // s now refers
 
 
 
-      \begin{itemize}\small
-        \item Every ``changing'' method (\texttt{toUpperCase}, \texttt{replace}, \texttt{trim}, \dots)
-              \textbf{returns a new} \texttt{String}
-        \item The original object is never modified
-        \item An object nobody refers to is removed by the \textbf{garbage collector}
-      \end{itemize}
+	\begin{itemize}\small
+		\item 
+		Every ``changing'' method (
+		\hCode{toUpperCase}, 
+		\hCode{replace}, 
+		\hCode{trim}, \dots)
+              \textbf{returns a new} \hCode{String}
+
+		\item The original object is never modified
+
+		\item An object nobody refers to is removed by the \textbf{garbage collector}
+	\end{itemize}
+	
     \end{column}
     \begin{column}{0.52\textwidth}
+    
       \begin{center}
       \begin{tikzpicture}
         \node[lbl] at (1.5,0.9) {before \texttt{s = s.toUpperCase();}};
@@ -374,6 +399,7 @@ s = s.toUpperCase();  // s now refers
         \node[lbl, right=2pt of o3] {new object};
       \end{tikzpicture}
       \end{center}
+      
     \end{column}
   \end{columns}
 \end{frame}
@@ -430,8 +456,9 @@ s = s.toUpperCase();  // s now refers
 %: -Lst.
 \begin{lstlisting}[style=codesnippet, language=Java]
 String s = "";
-for (int i = 0; i < n; i++)
+for (int i = 0; i < n; i++){
     s = s + "x";    // new object each time
+}
 \end{lstlisting}
 % +++++++++++++++++++++++++++++++++++++++ A lst
 
@@ -450,8 +477,9 @@ for (int i = 0; i < n; i++)
 %: -Lst.
 \begin{lstlisting}[style=codesnippet, language=Java]
 StringBuilder sb = new StringBuilder();
-for (int i = 0; i < n; i++)
+for (int i = 0; i < n; i++){
     sb.append("x"); // same buffer
+}
 String s = sb.toString();
 \end{lstlisting}
 % +++++++++++++++++++++++++++++++++++++++ A lst
@@ -504,11 +532,12 @@ a == c        // true
 
 
       \begin{itemize}\small
-        \item \texttt{==} compares \textbf{references}: is it the \emph{same object}?
-        \item \texttt{equals} compares \textbf{characters}: is it the \emph{same text}?
+        \item \hCode{==} compares \textbf{references}: is it the \emph{same object}?
+        \item \hCode{equals} compares \textbf{characters}: is it the \emph{same text}?
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
+    
       \begin{center}
       \begin{tikzpicture}
         \node[var] (a) at (0,0) {a};
@@ -524,8 +553,10 @@ a == c        // true
         \draw[ref] (b) -- (o2);
       \end{tikzpicture}
       \end{center}
+      
       \begin{alertblock}{Rule}
-        \small Compare strings with \texttt{equals} (or \texttt{equalsIgnoreCase}), never with \texttt{==}.
+        \small Compare strings with \hCode{equals} (or \hCode{equalsIgnoreCase}), 
+        never with \hCode{==}.
       \end{alertblock}
     \end{column}
   \end{columns}
@@ -557,9 +588,12 @@ x == z.intern()   // true
 
 
       \small \textbf{Literals} are kept in a \textbf{pool}: equal literals share one object.
-      \texttt{new} always makes a new object. \texttt{intern()} returns the pooled copy.
+      \hCode{new} always makes a new object. 
+      \hCode{intern()} returns the pooled copy.
+      
     \end{column}
     \begin{column}{0.5\textwidth}
+    
       \begin{center}
       \begin{tikzpicture}
         \node[var] (x) at (0,0.2) {x};
@@ -578,8 +612,11 @@ x == z.intern()   // true
         \draw[ref] (z) -- (h);
       \end{tikzpicture}
       \end{center}
-      \small \hRemark{Why it still matters:} \texttt{x == y} being \texttt{true} for literals
-      makes \texttt{==} \emph{look} correct in small tests, then fail on user input.
+      
+      \small \hRemark{Why it still matters:} 
+      \hCode{x == y} being \hCode{true} for literals
+      makes \texttt{==} \emph{look} correct in small tests, 
+      then fail on user input.
     \end{column}
   \end{columns}
 \end{frame}
@@ -594,7 +631,10 @@ x == z.intern()   // true
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Dictionary order: \texttt{compareTo}}
-  \small \texttt{a.compareTo(b)} is \textbf{negative} if \texttt{a} comes first, \textbf{0} if equal, \textbf{positive} if \texttt{a} comes after.
+  \small 
+  \hCode{a.compareTo(b)} is \textbf{negative} if \hCode{a} comes first, 
+  \textbf{0} if equal, 
+  \textbf{positive} if \hCode{a} comes after.
   It compares character codes from left to right.
 
   \vspace{0.4em}
@@ -602,18 +642,18 @@ x == z.intern()   // true
     \toprule
     \textbf{Call}                                  & \textbf{Result} & \textbf{Reason} \\
     \midrule
-    \texttt{"apple".compareTo("banana")}           & $-1$  & \texttt{'a'} (97) $-$ \texttt{'b'} (98) \\
-    \texttt{"Apple".compareTo("apple")}            & $-32$ & \texttt{'A'} (65) $-$ \texttt{'a'} (97): capitals first \\
-    \texttt{"Zebra".compareTo("apple")}            & $-7$  & \texttt{'Z'} (90) $<$ \texttt{'a'} (97) \\
-    \texttt{"app".compareTo("apple")}              & $-2$  & a prefix comes first: $3 - 5$ \\
-    \texttt{"çay".compareTo("zeytin")}             & $109$ & \texttt{'ç'} (231) $>$ \texttt{'z'} (122) \\
+    \hCode{"apple".compareTo("banana")}           & $-1$  & \hCode{'a'} (97) $-$ \hCode{'b'} (98) \\
+    \hCode{"Apple".compareTo("apple")}            & $-32$ & \hCode{'A'} (65) $-$ \hCode{'a'} (97): capitals first \\
+    \hCode{"Zebra".compareTo("apple")}            & $-7$  & \hCode{'Z'} (90) $<$ \hCode{'a'} (97) \\
+    \hCode{"app".compareTo("apple")}              & $-2$  & a prefix comes first: $3 - 5$ \\
+    \hCode{"çay".compareTo("zeytin")}             & $109$ & \hCode{'ç'} (231) $>$ \hCode{'z'} (122) \\
     \bottomrule
   \end{tabular}
 
   \vspace{0.6em}
   \begin{alertblock}{Character-code order is not the alphabet}
     \small Upper case before lower case, and Turkish letters (ç, ğ, ı, ö, ş, ü) after \texttt{z}.
-    For real alphabetical order use \texttt{compareToIgnoreCase} or a \texttt{Collator} for the language.
+    For real alphabetical order use \hCode{compareToIgnoreCase} or a \hCode{Collator} for the language.
   \end{alertblock}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
@@ -637,8 +677,9 @@ x == z.intern()   // true
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/EqualsTrap.java}{Java}{codeoutput/EqualsTrap.txt}
 
   \vspace{0.3em}
-  \small The user typed \texttt{yes}, yet \texttt{answer == "yes"} is \texttt{false}: \texttt{==} asks whether they are
-  the \textbf{same object}. \hRemark{Always compare text with} \texttt{equals}: \texttt{answer.equals("yes")}.
+  \small The user typed \texttt{yes}, yet \hCode{answer == "yes"} is \hCode{false}: \hCode{==} asks whether they are
+  the \textbf{same object}. 
+  \hRemark{Always compare text with} \hCode{equals}: \hCode{answer.equals("yes")}.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -652,18 +693,19 @@ x == z.intern()   // true
     \toprule
     \textbf{Question}                     & \textbf{Write} \\
     \midrule
-    same text?                            & \texttt{a.equals(b)} \\
-    same text, ignoring case?             & \texttt{a.equalsIgnoreCase(b)} \\
-    which comes first?                    & \texttt{a.compareTo(b) < 0} \\
-    is it empty?                          & \texttt{a.isEmpty()} \\
-    does it contain \texttt{"x"}?         & \texttt{a.contains("x")} \\
-    does it start with \texttt{"Dr."}?    & \texttt{a.startsWith("Dr.")} \\
+    same text?                            & \hCode{a.equals(b)} \\
+    same text, ignoring case?             & \hCode{a.equalsIgnoreCase(b)} \\
+    which comes first?                    & \hCode{a.compareTo(b) < 0} \\
+    is it empty?                          & \hCode{a.isEmpty()} \\
+    does it contain \texttt{"x"}?         & \hCode{a.contains("x")} \\
+    does it start with \texttt{"Dr."}?    & \hCode{a.startsWith("Dr.")} \\
     \bottomrule
   \end{tabular}
 
   \vspace{0.8em}
   \begin{alertblock}{Never}
-    \texttt{if (a == b)} with strings. It may even work in a small test (with literals), then fail with user input.
+    \hCode{if (a == b)} with strings. 
+    It may even work in a small test (with literals), then fail with user input.
   \end{alertblock}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
@@ -674,6 +716,9 @@ x == z.intern()   // true
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \hSection[+ op]{concatenation and + operator}{}{}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \subsection[Plus]{Joining with +}
@@ -687,7 +732,7 @@ x == z.intern()   // true
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Greeting.java}{Java}{codeoutput/Greeting.txt}
 
   \vspace{0.3em}
-  \small \hRemark{Look at the last line:} \texttt{"Class of " + year} is a string, then \texttt{+ 4} appends ``4''.
+  \small \hRemark{Look at the last line:} \hCode{"Class of " + year} is a string, then \hCode{+ 4} appends ``4''.
   Use parentheses to add numbers first.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
@@ -700,8 +745,9 @@ x == z.intern()   // true
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/PlusPuzzle.java}{Java}{codeoutput/PlusPuzzle.txt}
 
   \vspace{0.3em}
-  \small \texttt{+} works \textbf{left to right}. Number $+$ number adds; as soon as one side is a \texttt{String}, it joins.
-  Two \texttt{char}s are numbers: \texttt{'a' + 'b'} is $97 + 98$.
+  \small \hCode{+} works \textbf{left to right}. Number $+$ number adds; 
+  as soon as one side is a \hCode{String}, it joins.
+  Two \hCode{char}s are numbers: \hCode{'a' + 'b'} is $97 + 98 = 195$.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -721,7 +767,9 @@ x == z.intern()   // true
   \lstcoderightstep[0.6][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Timing.java}{Java}{codeoutput/Timing.txt}
 
   \vspace{0.3em}
-  \small One run; \hRemark{your numbers will differ}. Doubling $n$: \texttt{+=} about $4\times$ slower (quadratic), builder near 1\,ms.
+  \small One run; \hRemark{your numbers will differ}. 
+  Doubling $n$: 
+  \hCode{+=} about $4\times$ slower (quadratic), builder near 1\,ms.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -731,6 +779,9 @@ x == z.intern()   // true
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \hSection[Errors]{When Things Go Wrong}{}{}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \subsection[Index]{Index out of bounds}
@@ -744,10 +795,14 @@ x == z.intern()   // true
   \lstcodedownstep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize, linerange={1-2,13-13}]{codeoutput/OutOfBounds.java}{Java}{codeoutput/OutOfBounds.txt}
 
   \small \hRemark{Read the message:} the exception name, \texttt{Index 4 out of bounds for length 4}, and the
-  line of \emph{your} file (\texttt{OutOfBounds.java:5}). Valid indices are \texttt{0..length()-1}.
+  line of \emph{your} file (\texttt{OutOfBounds.java:5}). 
+  Valid indices are \texttt{0..length()-1}.
   (The 10 lines from inside Java, \texttt{at java.base/...}, are skipped here.)
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \subsection[Null]{null}
@@ -760,8 +815,9 @@ x == z.intern()   // true
 \begin{frame}[t,fragile] \frametitle{A string that is not there: \texttt{null}}
   \lstcodedownstep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/NullName.java}{Java}{codeoutput/NullName.txt}
 
-  \small \texttt{name} refers to no object. Printing it shows \texttt{null}, but calling a method on it crashes.
-  Java even tells us which variable was \texttt{null}.
+  \small \hCode{name} refers to no object. 
+  Printing it shows \hCode{null}, but calling a method on it crashes.
+  Java even tells us which variable was \hCode{null}.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -771,6 +827,8 @@ x == z.intern()   // true
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \hSection[Problems]{Small Problems}{}{}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \subsection[Reverse]{Reversing}
@@ -784,9 +842,12 @@ x == z.intern()   // true
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Reverse.java}{Java}{codeoutput/Reverse.txt}
 
   \vspace{0.3em}
-  \small The loop walks from the last index down to 0. \texttt{StringBuilder} does the same in one call, and faster.
+  \small The loop walks from the last index down to 0. 
+  \hCode{StringBuilder} does the same in one call, and faster.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \subsection[Palindrome]{Palindromes}
@@ -799,8 +860,21 @@ x == z.intern()   // true
 \begin{frame}[t,fragile] \frametitle{Palindrome: the idea}
   \begin{columns}[T]
     \begin{column}{0.5\textwidth}
-      \small A \textbf{palindrome} reads the same backwards: \texttt{kayak}, \texttt{level},
-      \texttt{ey edip adanada pide ye}.
+      \small A \textbf{palindrome} reads the same backwards.\\
+      Examples:\\
+	\begin{itemize}
+		
+		\item 
+		\texttt{kayak},
+		
+		\item 
+		\texttt{level},
+		
+		\item 
+		\texttt{ey edip adanada pide ye}.
+		
+	\end{itemize}
+      
 
       \vspace{0.4em}
       Compare the two ends, then move inwards:
@@ -850,6 +924,9 @@ x == z.intern()   // true
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
+
+
+
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \subsection[Count words]{Counting words}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
@@ -862,7 +939,9 @@ x == z.intern()   // true
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\tiny]{codeoutput/WordCount.java}{Java}{codeoutput/WordCount.txt}
 
   \vspace{0.3em}
-  \small Input: 3 lines, one empty. \texttt{split("\textbackslash\textbackslash s+")} splits at runs of spaces; \texttt{strip()} avoids an empty first word.
+  \small Input: 3 lines, one empty. 
+  \hCode{split("\textbackslash\textbackslash s+")} splits at runs of spaces; 
+  \hCode{strip()} avoids an empty first word.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -872,6 +951,9 @@ x == z.intern()   // true
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \hSection[Input]{Reading Text}{}{}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \subsection[Scanner]{Reading with Scanner}
@@ -886,9 +968,12 @@ x == z.intern()   // true
 
   \vspace{0.3em}
   \small Here the input comes from the file \texttt{ReadName.in} (\texttt{Ayşe Yılmaz}, \texttt{İstanbul}),
-  so the typed text is not shown after the prompts. \texttt{nextLine()} reads a whole line, spaces included.
+  so the typed text is not shown after the prompts. 
+  \hCode{nextLine()} reads a whole line, spaces included.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \subsection[Trap]{The nextLine trap}
@@ -902,8 +987,13 @@ x == z.intern()   // true
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/NextLineTrap.java}{Java}{codeoutput/NextLineTrap.txt}
 
   \vspace{0.3em}
-  \small Input: \texttt{19}, Enter, \texttt{Ali Can}, Enter. \texttt{nextInt()} stops before the Enter, so the first
-  \texttt{nextLine()} returns the empty rest of that line. \hRemark{Fix:} call \texttt{in.nextLine()} once after \texttt{nextInt()}.
+  \small Input: 
+  \texttt{19}, \keys{Enter}, 
+  \texttt{Ali Can}, \keys{Enter}. 
+  
+  \hCode{nextInt()} stops before the \keys{Enter}, so the first
+  \hCode{nextLine()} returns the empty rest of that line. 
+  \hRemark{Fix:} call \hCode{in.nextLine()} once after \hCode{nextInt()}.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -913,6 +1003,8 @@ x == z.intern()   // true
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \hSection[Loop]{Character by Character}{}{}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \subsection[Loop]{Looping over a string}
@@ -940,9 +1032,11 @@ for (int i = 0; i < s.length(); i++) {
 
 
       \begin{itemize}\small
-        \item Start at \texttt{0}
-        \item Stop \textbf{before} \texttt{s.length()}: use \texttt{<}, not \texttt{<=}
-        \item \texttt{charAt(i)} gives the \texttt{char} at position \texttt{i}
+		\item Start at \hCode{0}
+		
+		\item Stop \textbf{before} \hCode{s.length()}: use \hCode{<}, not \hCode{<=}
+		
+		\item \hCode{charAt(i)} gives the \hCode{char} at position \hCode{i}
       \end{itemize}
     \end{column}
     \begin{column}{0.4\textwidth}
@@ -980,7 +1074,9 @@ for (int i = 0; i < s.length(); i++) {
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/CountVowels.java}{Java}{codeoutput/CountVowels.txt}
 
   \vspace{0.3em}
-  \small A handy trick: \texttt{vowels.indexOf(c) >= 0} means ``\texttt{c} is one of the characters in \texttt{vowels}''.
+  \small A handy trick: 
+  \hCode{vowels.indexOf(c) >= 0} means 
+  ``\hCode{c} is one of the characters in \hCode{vowels}''.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -1042,7 +1138,7 @@ for (int i = 0; i < s.length(); i++) {
       \begin{center}
         \begin{tikzpicture}\hString[0.32]{H,e,l,l,o,{,},\textvisiblespace,W,o,r,l,d}[7][12]\end{tikzpicture}
       \end{center}
-      \small \texttt{substring(7, 12)}: from index 7 \textbf{up to, not including} 12.
+      \small \hCode{substring(7, 12)}: from index 7 \textbf{up to, not including} 12.
       \vspace{0.3em}
 
       \uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Substring.txt}}
@@ -1065,7 +1161,9 @@ for (int i = 0; i < s.length(); i++) {
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Search.java}{Java}{codeoutput/Search.txt}
 
   \vspace{0.3em}
-  \small \texttt{indexOf} returns \texttt{-1} when not found. The loop finds every occurrence by starting after the previous one.
+  \small 
+  \hCode{indexOf} returns \texttt{-1} when not found. 
+  The loop finds every occurrence by starting after the previous one.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -1084,7 +1182,10 @@ for (int i = 0; i < s.length(); i++) {
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Compare.java}{Java}{codeoutput/Compare.txt}
 
   \vspace{0.3em}
-  \small \texttt{==} asks ``same object?''; \texttt{equals} asks ``same text?''. \texttt{compareTo} is negative, zero or positive.
+  \small 
+  \hCode{==} asks ``same object?''; 
+  \hCode{equals} asks ``same text?''. 
+  \hCode{compareTo} is negative, zero or positive.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -1103,8 +1204,11 @@ for (int i = 0; i < s.length(); i++) {
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Case.java}{Java}{codeoutput/Case.txt}
 
   \vspace{0.3em}
-  \small \hRemark{Pitfall:} \texttt{toUpperCase()} without a locale uses the computer's language. On a Turkish
-  computer \texttt{"title".toUpperCase()} is \texttt{"TİTLE"}. Use \texttt{Locale.ROOT} for program text (keywords, file names).
+  \small \hRemark{Pitfall:} 
+  \hCode{toUpperCase()} without a locale uses the computer's language. 
+  On a Turkish
+  computer \hCode{"title".toUpperCase()} is \hCode{"TİTLE"}. 
+  Use \hCode{Locale.ROOT} for program text (keywords, file names).
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -1123,7 +1227,9 @@ for (int i = 0; i < s.length(); i++) {
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\tiny]{codeoutput/TrimSplit.java}{Java}{codeoutput/TrimSplit.txt}
 
   \vspace{0.3em}
-  \small \texttt{split} takes a \textbf{regular expression}: \texttt{"\textbackslash\textbackslash s+"} means ``one or more white-space characters.
+  \small \texttt{split} takes a \textbf{regular expression}: 
+  \hCode{"\textbackslash\textbackslash s+"} means 
+  ``one or more white-space characters''.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -1142,7 +1248,9 @@ for (int i = 0; i < s.length(); i++) {
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Replace.java}{Java}{codeoutput/Replace.txt}
 
   \vspace{0.3em}
-  \small The last line proves it again: none of these methods changes \texttt{s}; each returns a new string.
+  \small The last line proves it again: 
+  none of these methods changes \hCode{s}; 
+  each returns a new string.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -1161,7 +1269,12 @@ for (int i = 0; i < s.length(); i++) {
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Format.java}{Java}{codeoutput/Format.txt}
 
   \vspace{0.3em}
-  \small \texttt{\%s} text, \texttt{\%d} integer, \texttt{\%.2f} two decimals, \texttt{\%-8s} left-aligned in 8 columns, \texttt{\%n} new line.
+  \small 
+  \hCode{\%s} text, 
+  \hCode{\%d} integer, 
+  \hCode{\%.2f} two decimals, 
+  \hCode{\%-8s} left-aligned in 8 columns, 
+  \hCode{\%n} new line.
   With the Turkish locale the decimal separator is a comma.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
@@ -1181,7 +1294,8 @@ for (int i = 0; i < s.length(); i++) {
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Convert.java}{Java}{codeoutput/Convert.txt}
 
   \vspace{0.3em}
-  \small \texttt{"42" + 1} is \texttt{"421"}: as soon as one side of \texttt{+} is a \texttt{String}, \texttt{+} means concatenation.
+  \small \hCode{"42" + 1} is \hCode{"421"}: 
+  as soon as one side of \hCode{+} is a \hCode{String}, \hCode{+} means concatenation.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -1215,25 +1329,31 @@ for (int i = 0; i < s.length(); i++) {
         \toprule
         \textbf{char} & \textbf{decimal} & \textbf{hex} & \textbf{written} \\
         \midrule
-        \texttt{'0'} & 48  & 30  & \texttt{'\textbackslash u0030'} \\
-        \texttt{'A'} & 65  & 41  & \texttt{'\textbackslash u0041'} \\
-        \texttt{'a'} & 97  & 61  & \texttt{'\textbackslash u0061'} \\
-        \texttt{'ç'} & 231 & E7  & \texttt{'\textbackslash u00E7'} \\
-        \texttt{'ğ'} & 287 & 11F & \texttt{'\textbackslash u011F'} \\
-        \texttt{'ı'} & 305 & 131 & \texttt{'\textbackslash u0131'} \\
-        \texttt{'İ'} & 304 & 130 & \texttt{'\textbackslash u0130'} \\
+        \hCode{'0'} & 48  & 30  & \hCode{'\textbackslash u0030'} \\
+        \hCode{'A'} & 65  & 41  & \hCode{'\textbackslash u0041'} \\
+        \hCode{'a'} & 97  & 61  & \hCode{'\textbackslash u0061'} \\
+        \hCode{'ç'} & 231 & E7  & \hCode{'\textbackslash u00E7'} \\
+        \hCode{'ğ'} & 287 & 11F & \hCode{'\textbackslash u011F'} \\
+        \hCode{'ı'} & 305 & 131 & \hCode{'\textbackslash u0131'} \\
+        \hCode{'İ'} & 304 & 130 & \hCode{'\textbackslash u0130'} \\
         \bottomrule
       \end{tabular}
     \end{column}
     \begin{column}{0.5\textwidth}
       \textbf{Consequences}
       \begin{itemize}\small
-        \item Arithmetic works: \texttt{'a' + 1} is 98, \texttt{(char)('a' + 1)} is \texttt{'b'}
-        \item Digit to number: \texttt{'7' - '0'} is 7
-        \item Letters \texttt{'a'..'z'} are consecutive, so \texttt{c - 'a'} is a position 0..25
+        
+        \item Arithmetic works: \hCode{'a' + 1} is 98, \hCode{(char)('a' + 1)} is \hCode{'b'}
+        
+        \item Digit to number: \hCode{'7' - '0'} is 7
+        
+        \item Letters \hCode{'a'..'z'} are consecutive, 
+        so \hCode{c - 'a'} is a position 0..25
               (useful for counting letters)
-        \item Turkish letters are \textbf{not} between \texttt{'a'} and \texttt{'z'}
-        \item \texttt{'i'}/\texttt{'I'} and \texttt{'ı'}/\texttt{'İ'} are four different characters;
+        
+        \item Turkish letters are \textbf{not} between \hCode{'a'} and \hCode{'z'}
+        
+        \item \hCode{'i'}/\hCode{'I'} and \hCode{'ı'}/\hCode{'İ'} are four different characters;
               upper/lower case depends on the \textbf{language} (locale)
       \end{itemize}
     \end{column}
@@ -1248,12 +1368,13 @@ for (int i = 0; i < s.length(); i++) {
 \begin{frame}[t,fragile] \frametitle{Unicode: When 16 bits are not enough}
   \begin{columns}[T]
     \begin{column}{0.5\textwidth}
-      \small Unicode has more than a million possible \textbf{code points}, but a \texttt{char} has only 65\,536 values.
-      Characters above \texttt{U+FFFF} (most emoji, rare scripts) take \textbf{two} \texttt{char}s:
+      \small Unicode has more than a million possible \textbf{code points}, 
+      but a \hCode{char} has only 65\,536 values.
+      Characters above \hCode{U+FFFF} (most emoji, rare scripts) take \textbf{two} \hCode{char}s:
       a \textbf{surrogate pair}.
 
       \vspace{0.5em}
-      The emoji ``grinning face'', \texttt{U+1F600}:
+      The emoji ``grinning face'', \hCode{U+1F600}:
       \begin{center}
       \begin{tikzpicture}
         \hString[1.25]{\textbackslash uD83D,\textbackslash uDE00}[0][2]
@@ -1264,16 +1385,17 @@ for (int i = 0; i < s.length(); i++) {
       \footnotesize
       \begin{tabular}{@{}ll@{}}
         \toprule
-        \texttt{s.length()}            & 2 (chars) \\
-        \texttt{s.codePointCount(0, 2)} & 1 (what a person sees) \\
-        \texttt{s.charAt(0)}           & half of the emoji \\
+        \hCode{s.length()}            & 2 (chars) \\
+        \hCode{s.codePointCount(0, 2)} & 1 (what a person sees) \\
+        \hCode{s.charAt(0)}           & half of the emoji \\
         \bottomrule
       \end{tabular}
 
       \vspace{0.6em}
       \begin{alertblock}{Careful}
-        \small \texttt{length()} counts 16-bit units, not ``letters''. Reversing such a string
-        char by char breaks the pair. Use code-point methods (\texttt{codePoints()}, \texttt{codePointAt}) for such text.
+        \small \texttt{length()} counts 16-bit units, not ``letters''. 
+        Reversing such a string char by char breaks the pair. 
+        Use code-point methods (\hCode{codePoints()}, \hCode{codePointAt}) for such text.
       \end{alertblock}
     \end{column}
   \end{columns}
@@ -1293,29 +1415,33 @@ for (int i = 0; i < s.length(); i++) {
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Text in files: encodings}
-  \small Inside Java a \texttt{String} is Unicode. A \textbf{file} or a network only has \textbf{bytes};
-  an \textbf{encoding} (charset) maps characters to bytes. The word \texttt{"Ağaç"}:
+  \small 
+  Inside Java a \hCode{String} is Unicode. 
+  A \textbf{file} or a network only has \textbf{bytes};
+  an \textbf{encoding} (charset) maps characters to bytes. 
+  The word \hCode{"Ağaç"}:
 
   \vspace{0.3em}
   \begin{tabular}{@{}lll@{}}
     \toprule
     \textbf{Encoding} & \textbf{Bytes (hex)}                     & \textbf{Count} \\
     \midrule
-    UTF-8             & \texttt{41 C4 9F 61 C3 A7}               & 6 \quad (1 to 4 bytes per character) \\
-    ISO-8859-9 (Turkish) & \texttt{41 F0 61 E7}                  & 4 \quad (1 byte, only 256 characters) \\
-    UTF-16            & \texttt{00 41 01 1F 00 61 00 E7}         & 8 \quad (2 bytes per \texttt{char}) \\
+    UTF-8             & \hCode{41 C4 9F 61 C3 A7}               & 6 \quad (1 to 4 bytes per character) \\
+    ISO-8859-9 (Turkish) & \hCode{41 F0 61 E7}                  & 4 \quad (1 byte, only 256 characters) \\
+    UTF-16            & \hCode{00 41 01 1F 00 61 00 E7}         & 8 \quad (2 bytes per \texttt{char}) \\
     \bottomrule
   \end{tabular}
 
   \vspace{0.3em}
-  Reading UTF-8 bytes as if they were Windows-1252 gives \texttt{"AÄŸaÃ§"}: garbled text (``mojibake'').
+  Reading UTF-8 bytes as if they were Windows-1252 gives \hCode{"AÄŸaÃ§"}: 
+  garbled text (``mojibake'').
   \textbf{Always state the encoding} when reading or writing text.
 
   \vspace{0.3em}
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}
       \begin{block}{Windows}
-        \footnotesize The console (Command Prompt) uses an old code page (857 in Turkey), so \texttt{ç} may print wrongly.
+        \footnotesize The console (Command Prompt) uses an old code page (857 in Turkey), so \hCode{ç} may print wrongly.
         Run \hCode{chcp 65001} to switch it to UTF-8.
       \end{block}
     \end{column}
@@ -1348,29 +1474,37 @@ for (int i = 0; i < s.length(); i++) {
         \toprule
         \textbf{Pattern} & \textbf{Matches} \\
         \midrule
-        \texttt{.}                & any character \\
-        \texttt{[abc]}, \texttt{[\textasciicircum abc]} & one of / none of \\
-        \texttt{[a-z]}            & a range \\
-        \texttt{\textbackslash d}, \texttt{\textbackslash s}, \texttt{\textbackslash w} & digit, space, word char (ASCII) \\
-        \texttt{\textbackslash p\{L\}}  & a letter in \emph{any} language \\
-        \texttt{X*}, \texttt{X+}, \texttt{X?} & 0+, 1+, 0 or 1 times \\
-        \texttt{X\{2,4\}}         & 2 to 4 times \\
-        \texttt{\textasciicircum}, \texttt{\$} & start, end of input \\
-        \texttt{(X)}, \texttt{(?<name>X)} & group, named group \\
-        \texttt{X|Y}              & \texttt{X} or \texttt{Y} \\
+        \hCode{.}                & any character \\
+        \hCode{[abc]}, \hCode{[\textasciicircum abc]} & one of / none of \\
+        \hCode{[a-z]}            & a range \\
+        \hCode{\textbackslash d}, \hCode{\textbackslash s}, \hCode{\textbackslash w} & digit, space, word char (ASCII) \\
+        \hCode{\textbackslash p\{L\}}  & a letter in \emph{any} language \\
+        \hCode{X*}, \hCode{X+}, \hCode{X?} & 0+, 1+, 0 or 1 times \\
+        \hCode{X\{2,4\}}         & 2 to 4 times \\
+        \hCode{\textasciicircum}, \hCode{\$} & start, end of input \\
+        \hCode{(X)}, \hCode{(?<name>X)} & group, named group \\
+        \hCode{X|Y}              & \hCode{X} or \hCode{Y} \\
         \bottomrule
       \end{tabular}
     \end{column}
     \begin{column}{0.48\textwidth}
       \textbf{In Java}
+      
       \begin{itemize}
-        \item In a string literal every \texttt{\textbackslash} is doubled: the regex \texttt{\textbackslash d+} is written \texttt{"\textbackslash\textbackslash d+"}
-        \item \texttt{s.matches(re)}: the \textbf{whole} string must match
-        \item \texttt{Matcher.find()}: the next match \textbf{anywhere}
-        \item \texttt{split}, \texttt{replaceAll}, \texttt{replaceFirst} take regexes
-        \item Compile once, reuse: \texttt{Pattern.compile(re)}
-        \item In a replacement, \texttt{\$1} refers to group 1
+        
+        \item In a string literal every \hCode{\textbackslash} is doubled: the regex \hCode{\textbackslash d+} is written \hCode{"\textbackslash\textbackslash d+"}
+        
+        \item \hCode{s.matches(re)}: the \textbf{whole} string must match
+        
+        \item \hCode{Matcher.find()}: the next match \textbf{anywhere}
+        
+        \item \hCode{split}, \hCode{replaceAll}, \hCode{replaceFirst} take regexes
+        
+        \item Compile once, reuse: \hCode{Pattern.compile(re)}
+        
+        \item In a replacement, \hCode{\$1} refers to group 1
       \end{itemize}
+      
     \end{column}
   \end{columns}
 \end{frame}
@@ -1381,11 +1515,15 @@ for (int i = 0; i < s.length(); i++) {
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Regular expressions in Java}
-  \lstcodeoverlaystep[basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny][0.38\textwidth]{10.2cm,2.25cm}{codeoutput/RegexDemo.java}{Java}{codeoutput/RegexDemo.txt}
+  \lstcodeoverlaystep
+  	[basicstyle=\ttfamily\tiny]
+	[basicstyle=\ttfamily\tiny][0.38\textwidth]{10.2cm,2.25cm}
+	{codeoutput/RegexDemo.java}{Java}{codeoutput/RegexDemo.txt}
 
   \vspace{0.2em}
-  \small \texttt{\textbackslash w} is ASCII-only in Java, so \texttt{"Çağrı".matches("\textbackslash\textbackslash w+")} is \texttt{false};
-  \texttt{\textbackslash p\{L\}} accepts letters of every language.
+  \small \hCode{\textbackslash w} is ASCII-only in Java, 
+  so \hCode{"Çağrı".matches("\textbackslash\textbackslash w+")} is \hCode{false};
+  \hCode{\textbackslash p\{L\}} accepts letters of every language.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -1410,14 +1548,14 @@ for (int i = 0; i < s.length(); i++) {
     \toprule
     \textbf{Idea} & \textbf{In one sentence} \\
     \midrule
-    Sequence         & A string is a sequence of characters, indexed from 0 to \texttt{length()-1}. \\
-    Object           & A \texttt{String} variable holds a reference to an object; \texttt{null} means no object. \\
-    Immutable        & A \texttt{String} never changes; methods return new strings. \\
-    Builder          & Use \texttt{StringBuilder} to build a string piece by piece. \\
-    Equality         & \texttt{equals} compares text, \texttt{==} compares references. \\
-    Pool             & Equal literals share one object; \texttt{new String} does not. \\
-    Order            & \texttt{compareTo} uses character codes, not the alphabet of a language. \\
-    Unicode          & A \texttt{char} is a 16-bit number; some characters need two \texttt{char}s. \\
+    Sequence         & A string is a sequence of characters, indexed from 0 to \hCode{length()-1}. \\
+    Object           & A \hCode{String} variable holds a reference to an object; \hCode{null} means no object. \\
+    Immutable        & A \hCode{String} never changes; methods return new strings. \\
+    Builder          & Use \hCode{StringBuilder} to build a string piece by piece. \\
+    Equality         & \hCode{equals} compares text, \hCode{==} compares references. \\
+    Pool             & Equal literals share one object; \hCode{new String} does not. \\
+    Order            & \hCode{compareTo} uses character codes, not the alphabet of a language. \\
+    Unicode          & A \hCode{char} is a 16-bit number; some characters need two \hCode{char}s. \\
     Encoding         & Files hold bytes; always say which encoding (UTF-8) turns them into text. \\
     \bottomrule
   \end{tabular}
@@ -1430,17 +1568,23 @@ for (int i = 0; i < s.length(); i++) {
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Check yourself}
   \begin{enumerate}\small
-    \item \hQuestion{What is \texttt{"Yeditepe".substring(2, 5)}, and what is its length?}
+    
+    \item \hQuestion{What is \hCode{"Yeditepe".substring(2, 5)}, and what is its length?}
           \onslide<2->{\hRemark{\texttt{"dit"}, length $5 - 2 = 3$.}}
-    \item \hQuestion{After \texttt{String s = "ab"; s.concat("c");} what is \texttt{s}?}
+    
+    \item \hQuestion{After \hCode{String s = "ab"; s.concat("c");} what is \hCode{s}?}
           \onslide<3->{\hRemark{Still \texttt{"ab"}: the result of \texttt{concat} was not stored.}}
-    \item \hQuestion{Two strings typed by a user both contain \texttt{"yes"}. Is \texttt{a == b} true?}
+    
+    \item \hQuestion{Two strings typed by a user both contain \hCode{"yes"}. Is \hCode{a == b} true?}
           \onslide<4->{\hRemark{Usually false: they are different objects. Use \texttt{a.equals(b)}.}}
-    \item \hQuestion{Which comes first with \texttt{compareTo}: \texttt{"zebra"} or \texttt{"Zebra"}?}
+    
+    \item \hQuestion{Which comes first with \hCode{compareTo}: \hCode{"zebra"} or \hCode{"Zebra"}?}
           \onslide<5->{\hRemark{\texttt{"Zebra"}: \texttt{'Z'} (90) $<$ \texttt{'z'} (122).}}
-    \item \hQuestion{Why can \texttt{"ş".getBytes(UTF\_8).length} be 2 while \texttt{"ş".length()} is 1?}
+    
+    \item \hQuestion{Why can \hCode{"ş".getBytes(UTF\_8).length} be 2 while \hCode{"ş".length()} is 1?}
           \onslide<6->{\hRemark{\texttt{length()} counts \texttt{char}s; UTF-8 needs 2 bytes for \texttt{ş}.}}
-    \item \hQuestion{Why is \texttt{s += x} in a long loop slow?}
+    
+    \item \hQuestion{Why is \hCode{s += x} in a long loop slow?}
           \onslide<7->{\hRemark{Each step copies the whole string into a new object: $O(n^{2})$ in total.}}
   \end{enumerate}
 \end{frame}
