@@ -5,7 +5,7 @@ public class Create {
         char[] letters = {'J', 'a', 'v', 'a'};
         String c = new String(letters);         // from chars
         String d = String.valueOf(2026);        // from a number
-        String e = "" + 3.14;  // by concatenation
+        String e = "" + 3.14;                   // by concatenation
         String f = """
             Faculty of Computer
             and Information Sciences""";        // text block

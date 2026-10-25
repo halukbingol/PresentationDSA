@@ -88,11 +88,16 @@
   \lstcoderightstep[0.62][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/StringFields.java}{Java}{codeoutput/StringFields.txt}
 
   \vspace{0.3em}
-  \small Found by reflection, without opening the class. Since Java 9 there is no \texttt{char[]}: the characters live in a
-  \texttt{byte[]} plus a \texttt{coder} flag. \texttt{hash} caches \texttt{hashCode()}; \texttt{hashIsZero} (Java 13) avoids
+  \small Found by reflection, without opening the class. Since Java 9 there is no \hCode{char[]}: the characters live in a
+  \hCode{byte[]} plus a \hCode{coder} flag. 
+  \hCode{hash} caches \hCode{hashCode()}; 
+  \hCode{hashIsZero} (Java 13) avoids
   recomputing when the hash really is 0.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \subsection[Compact]{Compact strings}
@@ -105,32 +110,35 @@
 \begin{frame}[t,fragile] \frametitle{Compact strings (JEP 254, Java 9)}
   \begin{columns}[T]
     \begin{column}{0.52\textwidth}
-      \small If every character fits in one byte (Latin-1, \texttt{U+0000}..\texttt{U+00FF}) the string is stored
-      with \textbf{1 byte per char} (\texttt{coder = LATIN1}); otherwise \textbf{2 bytes per char} (\texttt{coder = UTF16}).
+      \small If every character fits in one byte (Latin-1, \hCode{U+0000}..\hCode{U+00FF}) the string is stored
+      with \textbf{1 byte per char} (\hCode{coder = LATIN1}); otherwise \textbf{2 bytes per char} (\texttt{coder = UTF16}).
       \vspace{0.4em}
 
       \begin{tikzpicture}[x=0.55cm, y=0.55cm, b/.style={draw, minimum size=0.55cm, font=\ttfamily\tiny, inner sep=0pt}]
-        \node[anchor=east, font=\small] at (-0.3,0) {\texttt{"Agac"}};
+        \node[anchor=east, font=\small] at (-0.3,0) {\hCode{"Agac"}};
         \foreach \v [count=\i from 0] in {41,67,61,63} \node[b, fill=green!15] at (\i,0) {\v};
         \node[anchor=west, font=\scriptsize] at (4.2,0) {LATIN1: 4 bytes};
-        \node[anchor=east, font=\small] at (-0.3,-1.3) {\texttt{"Ağaç"}};
+        \node[anchor=east, font=\small] at (-0.3,-1.3) {\hCode{"Ağaç"}};
         \foreach \v [count=\i from 0] in {0041,011F,0061,00E7}
           \node[b, fill=orange!15, minimum width=1.1cm] at (2*\i+0.5,-1.3) {\v};
         \node[anchor=west, font=\scriptsize] at (8.2,-1.3) {UTF16: 8 bytes};
       \end{tikzpicture}
 
       \vspace{0.3em}
-      \small \texttt{ç} (\texttt{E7}) alone would fit Latin-1; \texttt{ğ} (\texttt{011F}) does not, so the whole string is UTF16.
+      \small \hCode{ç} (\hCode{E7}) alone would fit Latin-1; 
+      \hCode{ğ} (\hCode{011F}) does not, so the whole string is UTF16.
     \end{column}
     \begin{column}{0.44\textwidth}
       \begin{block}{Why it pays off}
-        \small Most strings in real heaps (names, keys, JSON, logs) are Latin-1. Strings are often 25\%+ of the live heap,
+        \small Most strings in real heaps (names, keys, JSON, logs) are Latin-1. 
+        Strings are often 25\%+ of the live heap,
         so halving their arrays saves real memory and cache bandwidth.
       \end{block}
       \begin{block}{Cost}
-        \small A branch on \texttt{coder} in every operation; mixing coders (e.g.\ concatenating with \texttt{ğ}) inflates to UTF16.
+        \small A branch on \hCode{coder} in every operation; mixing coders 
+        (e.g.\ concatenating with \hCode{ğ}) inflates to UTF16.
       \end{block}
-      \small The stack trace on the freshman slides showed it: \texttt{StringLatin1.charAt}.
+      \small The stack trace on the freshman slides showed it: \hCode{StringLatin1.charAt}.
     \end{column}
   \end{columns}
 \end{frame}
@@ -143,17 +151,21 @@
 \begin{frame}[t,fragile] \frametitle{Measuring it}
   \begin{columns}[T]
     \begin{column}{0.6\textwidth}
+    
       \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/CompactDemo.java}{Java}
+    
       \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/CompactStrings.sh}{bash}
+    
     \end{column}
     \begin{column}{0.38\textwidth}
+    
       \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/CompactStrings.txt}}
       \uncover<3->{
-      \small One million 32-char strings: the \texttt{byte[]} needs 32 bytes instead of 64, plus a header,
-      and each \texttt{String} object adds its own 24 bytes or so; hence about 30\% less, not 50\%.
+      \small One million 32-char strings: the \hCode{byte[]} needs 32 bytes instead of 64, plus a header,
+      and each \hCode{String} object adds its own 24 bytes or so; hence about 30\% less, not 50\%.
 
       \vspace{0.3em}
-      \hRemark{Rough numbers}: \texttt{totalMemory - freeMemory} after \texttt{System.gc()} is only an estimate;
+      \hRemark{Rough numbers}: \hCode{totalMemory - freeMemory} after \hCode{System.gc()} is only an estimate;
       use JOL or a heap profiler for exact sizes.}
     \end{column}
   \end{columns}
@@ -175,14 +187,22 @@
 \begin{frame}[t,fragile] \frametitle{The string pool and deduplication}
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}
-      \begin{block}{The pool (\texttt{StringTable})}
+      \begin{block}{The pool (\hCode{StringTable})}
         \small
         \begin{itemize}
-          \item Literals and \texttt{intern()}ed strings live in a native hash table pointing into the heap
+        
+          \item Literals and \hCode{intern()}ed strings live in a native hash table pointing into the heap
+          
           \item In the main heap since Java 7 (before: PermGen), so pooled strings are garbage collected
-          \item Size: \texttt{-XX:StringTableSize=N}; statistics: \hCode{jcmd <pid> VM.stringtable}
-          \item \texttt{intern()} is a hash lookup; interning everything is rarely a win
+          
+          \item Size: 
+          \hCode{-XX:StringTableSize=N}; statistics: 
+          \hCode{jcmd <pid> VM.stringtable}
+          
+          \item \hCode{intern()} is a hash lookup; interning everything is rarely a win
+          
         \end{itemize}
+        
       \end{block}
     \end{column}
     \begin{column}{0.48\textwidth}
@@ -190,8 +210,8 @@
         \small
         \begin{itemize}
           \item \hCode{-XX:+UseStringDeduplication}: the GC finds strings with equal contents and lets them
-                \textbf{share one} \texttt{byte[]}
-          \item The \texttt{String} objects stay distinct, so \texttt{==} is unchanged
+                \textbf{share one} \hCode{byte[]}
+          \item The \hCode{String} objects stay distinct, so \hCode{==} is unchanged
           \item First G1 only (Java 8u20); since Java 18 also Serial, Parallel and ZGC
           \item Good for heaps full of repeated values (CSV, JSON, database rows)
         \end{itemize}
@@ -199,8 +219,10 @@
     \end{column}
   \end{columns}
   \vspace{0.2em}
-  \small \hRemark{Windows and macOS alike}: \hCode{jps} lists running Java processes, \hCode{jcmd <pid> help} lists the commands;
-  both are in the JDK's \texttt{bin} folder (Command Prompt or Terminal).
+  \small \hRemark{Windows and macOS alike}: 
+  \hCode{jps} lists running Java processes, 
+  \hCode{jcmd <pid> help} lists the commands;
+  both are in the JDK's \hCode{bin} folder (Command Prompt or Terminal).
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -216,12 +238,15 @@
   \begin{columns}[T]
     \begin{column}{0.44\textwidth}
       \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Concat.java}{Java}
-      \small \hCode{javap -c} disassembles (Windows and macOS alike); \texttt{Javap.sh} also uses
+      \small 
+      \hCode{javap -c} disassembles (Windows and macOS alike); 
+      \hCode{Javap.sh} also uses
       \hCode{javac -XDstringConcat=inline}, the pre-Java-9 way.
       \vspace{0.3em}
 
-      \uncover<3->{Java 9+: one \texttt{invokedynamic} to \texttt{makeConcatWithConstants}; the JVM chooses the
-      strategy at run time. Old class files keep the \texttt{StringBuilder} chain: recompiling is a free speed-up.}
+      \uncover<3->{Java 9+: one \hCode{invokedynamic} to \hCode{makeConcatWithConstants}; the JVM chooses the
+      strategy at run time. Old class files keep the \hCode{StringBuilder} chain: 
+      recompiling is a free speed-up.}
     \end{column}
     \begin{column}{0.54\textwidth}
       \uncover<2->{\lstoutput[basicstyle=\ttfamily\tiny]{codeoutput/Javap.txt}}
@@ -256,7 +281,7 @@ switch (cmd) {
 
 
 
-      \small Since Java 7. \texttt{javac} turns it into two switches.
+      \small Since Java 7. \hCode{javac} turns it into two switches.
     \end{column}
     \begin{column}{0.56\textwidth}
 
@@ -283,8 +308,10 @@ switch (k) {                       // 2: on the index
 
     \end{column}
   \end{columns}
-  \small Consequences: a \texttt{null} \texttt{cmd} throws \texttt{NullPointerException}; colliding hashes still work thanks to \texttt{equals};
-  cost is one hash (cached) plus one \texttt{equals}.
+  \small Consequences: 
+  a \hCode{null} \hCode{cmd} throws \hCode{NullPointerException}; 
+  colliding hashes still work thanks to \hCode{equals};
+  cost is one hash (cached) plus one \hCode{equals}.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -355,8 +382,10 @@ java -jar target/benchmarks.jar
 
 
 
-      \footnotesize Maven: macOS \hCode{brew install maven}; Windows: unzip from \texttt{maven.apache.org} and add \texttt{bin} to \texttt{PATH}.
-      In Command Prompt write each command on one line (no \texttt{\textbackslash}).
+      \footnotesize Maven: 
+      macOS \hCode{brew install maven}; 
+      Windows: unzip from \hCode{maven.apache.org} and add \hCode{bin} to \hCode{PATH}.
+      In Command Prompt write each command on one line (no \hCode{\textbackslash}).
     \end{column}
   \end{columns}
 \end{frame}
@@ -372,18 +401,19 @@ java -jar target/benchmarks.jar
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Performance guidelines}
   \small
+  
   \begin{tabular}{@{}L{0.44\textwidth}L{0.5\textwidth}@{}}
     \toprule
     \textbf{Do} & \textbf{Why} \\
     \midrule
-    \texttt{+} for a few pieces in one expression        & compiled to one optimized \texttt{invokedynamic} \\
-    \texttt{StringBuilder} (presized) in loops            & avoids $O(n^{2})$ copying and regrowth \\
-    \texttt{String.join}, \texttt{Collectors.joining}     & clear and already efficient \\
-    \texttt{Pattern.compile} once, reuse                  & \texttt{s.matches(re)} recompiles every call \\
-    \texttt{split} with a single plain char               & fast path without the regex engine \\
-    \texttt{toLowerCase(Locale.ROOT)} for keys            & correct and locale-independent \\
-    \texttt{equals} before \texttt{intern}                & interning costs a global table lookup \\
-    \texttt{-XX:+UseStringDeduplication} for repetitive heaps & measured memory win, no code change \\
+    \hCode{+} for a few pieces in one expression        & compiled to one optimized \hCode{invokedynamic} \\
+    \hCode{StringBuilder} (presized) in loops            & avoids $O(n^{2})$ copying and regrowth \\
+    \hCode{String.join}, \hCode{Collectors.joining}     & clear and already efficient \\
+    \hCode{Pattern.compile} once, reuse                  & \hCode{s.matches(re)} recompiles every call \\
+    \hCode{split} with a single plain char               & fast path without the regex engine \\
+    \hCode{toLowerCase(Locale.ROOT)} for keys            & correct and locale-independent \\
+    \hCode{equals} before \hCode{intern}                & interning costs a global table lookup \\
+    \hCode{-XX:+UseStringDeduplication} for repetitive heaps & measured memory win, no code change \\
     \bottomrule
   \end{tabular}
 
@@ -391,6 +421,8 @@ java -jar target/benchmarks.jar
   \hRemark{First measure, then optimize}: most string code is not the bottleneck.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \subsection[API]{The modern API}
@@ -400,8 +432,13 @@ java -jar target/benchmarks.jar
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{The modern \texttt{String} API (Java 11--21)}
-  \lstcodeoverlaystep[basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny][0.28\textwidth]{11.0cm,2.25cm}{codeoutput/ModernApi.java}{Java}{codeoutput/ModernApi.txt}
+\begin{frame}[t,fragile] \frametitle{The modern \hCode{String} API (Java 11--21)}
+
+	\lstcodeoverlaystep
+		[basicstyle=\ttfamily\scriptsize]
+		[basicstyle=\ttfamily\scriptsize][0.28\textwidth]{12.0cm,2.25cm}
+			{codeoutput/ModernApi.java}{Java}
+			{codeoutput/ModernApi.txt}
 
   \vspace{0.2em}
   \small The comment on each line is the Java version that added the method.

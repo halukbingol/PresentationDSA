@@ -97,10 +97,10 @@
       	T[s + j] = P[j] \quad \text{for all } 0 \le j < m
       \]
       \small Used in editors (\emph{find}), \texttt{grep}, search engines, DNA analysis, intrusion detection, plagiarism checks.
-      In Java: \texttt{indexOf}, \texttt{contains}, \texttt{split}, \texttt{replace}.
+      In Java: \hCode{indexOf}, \hCode{contains}, \hCode{split}, \hCode{replace}.
     \end{column}
     \begin{column}{0.44\textwidth}
-      \small $T = $ \texttt{abracadabra}, $P = $ \texttt{abra}: shifts 0 and 7.
+      \small $T = $ \hCode{abracadabra}, $P = $ \hCode{abra}: shifts 0 and 7.
       \begin{center}
       \begin{tikzpicture}
         \hString[0.36]{a,b,r,a,c,a,d,a,b,r,a}
@@ -110,10 +110,14 @@
         \node[font=\scriptsize] at (3.24,-1.0) {$s = 7$};
       \end{tikzpicture}
       \end{center}
+      
       \begin{alertblock}{Question}
-        \small How many character comparisons does it take? Naively up to $(n - m + 1) \cdot m$.
+        \small 
+        How many character comparisons does it take? 
+        Naively up to $(n - m + 1) \cdot m$.
         Can we do $O(n + m)$?
       \end{alertblock}
+      
     \end{column}
   \end{columns}
 \end{frame}
@@ -154,11 +158,19 @@
     \end{column}
     \begin{column}{0.46\textwidth}
       \begin{itemize}\small
+        
         \item Try every shift; compare left to right until a mismatch
-        \item \textbf{Worst case} $\Theta((n - m + 1) m)$: $T = \texttt{a}^{n-1}\texttt{b}$, $P = \texttt{a}^{m-1}\texttt{b}$
+        
+        \item \textbf{Worst case} $\Theta((n - m + 1) m)$: 
+        $T = \texttt{a}^{n-1}\texttt{b}$, 
+        $P = \texttt{a}^{m-1}\texttt{b}$
+        
         \item \textbf{Typical text}: mismatches come early, so it is fast in practice
-        \item Java's \texttt{String.indexOf} is essentially this (with tuned, vectorized loops)
+        
+        \item Java's \hCode{String.indexOf} is essentially this (with tuned, vectorized loops)
+        
         \item The weakness: after a mismatch it \textbf{forgets} what it has already seen
+      
       \end{itemize}
     \end{column}
   \end{columns}
@@ -209,14 +221,15 @@
       \end{tabular}
 
       \vspace{0.3em}
-      \footnotesize e.g.\ $\pi[4] = 3$: \texttt{aba} is both a prefix and a suffix of \texttt{ababa}.
+      \footnotesize e.g.\ $\pi[4] = 3$: \hCode{aba} is both a prefix and a suffix of \hCode{ababa}.
     \end{column}
     \begin{column}{0.46\textwidth}
-      \SetAlFnt{\small}
-
+ 
 
 % +++++++++++++++++++++++++++++++++++++++ V alg
 %: -Alg. 
+\SetAlFnt{\small}
+
 \begin{algorithm}[H]
   \caption{PrefixFunction($P$)}
   $\pi[0] \leftarrow 0$, \quad $k \leftarrow 0$\;
@@ -330,7 +343,7 @@
   \begin{columns}[T]
     \begin{column}{0.54\textwidth}
       \small The fewest single-character \textbf{insertions}, \textbf{deletions} and \textbf{replacements}
-      that turn $a$ into $b$. \texttt{kitten} $\to$ \texttt{sitting} needs 3:
+      that turn $a$ into $b$. \hCode{kitten} $\to$ \hCode{sitting} needs 3:
       \textbf{k}itten $\to$ \textbf{s}itten $\to$ sitt\textbf{i}n $\to$ sittin\textbf{g}.
 
       \vspace{0.3em}
@@ -346,11 +359,16 @@
       with $d[i][0] = i$ and $d[0][j] = j$.
     \end{column}
     \begin{column}{0.42\textwidth}
+      
       \begin{itemize}\small
+        
         \item \textbf{Dynamic programming}: fill the table row by row
+        
         \item Time and space $O(|a| \cdot |b|)$; space $O(|b|)$ if only the distance is needed (keep two rows)
-        \item Uses: spelling suggestions (``did you mean''), DNA alignment, \texttt{diff}, fuzzy search
+        
+        \item Uses: spelling suggestions (``did you mean''), DNA alignment, \hCode{diff}, fuzzy search
       \end{itemize}
+    
     \end{column}
   \end{columns}
 \end{frame}
@@ -387,33 +405,44 @@
   \footnotesize
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}
+    
       \begin{tabular}{@{}ll@{}}
         \toprule
         \textbf{Pattern} & \textbf{Matches} \\
         \midrule
-        \texttt{.}                & any character \\
-        \texttt{[abc]}, \texttt{[\textasciicircum abc]} & one of / none of \\
-        \texttt{[a-z]}            & a range \\
-        \texttt{\textbackslash d}, \texttt{\textbackslash s}, \texttt{\textbackslash w} & digit, space, word char (ASCII) \\
-        \texttt{\textbackslash p\{L\}}  & a letter in \emph{any} language \\
-        \texttt{X*}, \texttt{X+}, \texttt{X?} & 0+, 1+, 0 or 1 times \\
-        \texttt{X\{2,4\}}         & 2 to 4 times \\
-        \texttt{\textasciicircum}, \texttt{\$} & start, end of input \\
-        \texttt{(X)}, \texttt{(?<name>X)} & group, named group \\
-        \texttt{X|Y}              & \texttt{X} or \texttt{Y} \\
+        \hCode{.}                & any character \\
+        \hCode{[abc]}, \hCode{[\textasciicircum abc]} & one of / none of \\
+        \hCode{[a-z]}            & a range \\
+        \hCode{\textbackslash d}, \hCode{\textbackslash s}, \hCode{\textbackslash w} & digit, space, word char (ASCII) \\
+        \hCode{\textbackslash p\{L\}}  & a letter in \emph{any} language \\
+        \hCode{X*}, \hCode{X+}, \hCode{X?} & 0+, 1+, 0 or 1 times \\
+        \hCode{X\{2,4\}}         & 2 to 4 times \\
+        \hCode{\textasciicircum}, \hCode{\$} & start, end of input \\
+        \hCode{(X)}, \hCode{(?<name>X)} & group, named group \\
+        \hCode{X|Y}              & \hCode{X} or \hCode{Y} \\
         \bottomrule
       \end{tabular}
+      
     \end{column}
     \begin{column}{0.48\textwidth}
       \textbf{In Java}
+      
       \begin{itemize}
-        \item In a string literal every \texttt{\textbackslash} is doubled: the regex \texttt{\textbackslash d+} is written \texttt{"\textbackslash\textbackslash d+"}
-        \item \texttt{s.matches(re)}: the \textbf{whole} string must match
-        \item \texttt{Matcher.find()}: the next match \textbf{anywhere}
-        \item \texttt{split}, \texttt{replaceAll}, \texttt{replaceFirst} take regexes
-        \item Compile once, reuse: \texttt{Pattern.compile(re)}
-        \item In a replacement, \texttt{\$1} refers to group 1
+        
+        \item In a string literal every \hCode{\textbackslash} is doubled: 
+        the regex \hCode{\textbackslash d+} is written \hCode{"\textbackslash\textbackslash d+"}
+        
+        \item \hCode{s.matches(re)}: the \textbf{whole} string must match
+        
+        \item \hCode{Matcher.find()}: the next match \textbf{anywhere}
+        
+        \item \hCode{split}, \hCode{replaceAll}, \hCode{replaceFirst} take regexes
+        
+        \item Compile once, reuse: \hCode{Pattern.compile(re)}
+        
+        \item In a replacement, \hCode{\$1} refers to group 1
       \end{itemize}
+      
     \end{column}
   \end{columns}
 \end{frame}
@@ -424,11 +453,16 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Regular expressions in Java}
-  \lstcodeoverlaystep[basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny][0.38\textwidth]{10.2cm,2.25cm}{codeoutput/RegexDemo.java}{Java}{codeoutput/RegexDemo.txt}
+
+	\lstcodeoverlaystep
+		[basicstyle=\ttfamily\tiny]
+		[basicstyle=\ttfamily\tiny][0.38\textwidth]{10.2cm,2.25cm}
+			{codeoutput/RegexDemo.java}{Java}
+			{codeoutput/RegexDemo.txt}
 
   \vspace{0.2em}
-  \small \texttt{\textbackslash w} is ASCII-only in Java, so \texttt{"Çağrı".matches("\textbackslash\textbackslash w+")} is \texttt{false};
-  \texttt{\textbackslash p\{L\}} accepts letters of every language.
+  \small \hCode{\textbackslash w} is ASCII-only in Java, so \hCode{"Çağrı".matches("\textbackslash\textbackslash w+")} is \hCode{false};
+  \hCode{\textbackslash p\{L\}} accepts letters of every language.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -448,13 +482,19 @@
   \begin{columns}[T]
     \begin{column}{0.5\textwidth}
       \small Three ways to count ``characters'':
+      
       \begin{itemize}\small
-        \item \textbf{\texttt{char}}: a 16-bit UTF-16 code unit; \texttt{length()} counts these
-        \item \textbf{code point}: a Unicode number \texttt{U+0000}..\texttt{U+10FFFF};
-              above \texttt{U+FFFF} it takes two \texttt{char}s (a \textbf{surrogate pair})
-        \item \textbf{grapheme cluster}: what a reader sees as one letter; may be several code points
-              (\texttt{e} + combining accent, flags, family emoji)
+        
+        \item \textbf{\hCode{char}}: a 16-bit UTF-16 code unit; \hCode{length()} counts these
+        
+        \item \textbf{code point}: a Unicode number \hCode{U+0000}..\hCode{U+10FFFF};
+              above \hCode{U+FFFF} it takes two \hCode{char}s (a \textbf{surrogate pair})
+        
+        \item \textbf{grapheme cluster}: 
+        what a reader sees as one letter; may be several code points
+              (\hCode{e} + combining accent, flags, family emoji)
       \end{itemize}
+      
     \end{column}
     \begin{column}{0.46\textwidth}
       \small
@@ -462,15 +502,16 @@
         \toprule
         \textbf{Unit} & \textbf{Java API} \\
         \midrule
-        \texttt{char}       & \texttt{length()}, \texttt{charAt} \\
-        code point          & \texttt{codePoints()}, \texttt{codePointAt} \\
-        grapheme            & \texttt{BreakIterator}, regex \texttt{\textbackslash X} \\
+        \hCode{char}       & \hCode{length()}, \hCode{charAt} \\
+        code point          & \hCode{codePoints()}, \hCode{codePointAt} \\
+        grapheme            & \hCode{BreakIterator}, regex \hCode{\textbackslash X} \\
         \bottomrule
       \end{tabular}
 
       \vspace{0.5em}
       \begin{alertblock}{Case and locale}
-        \small Case mapping can change the length: \texttt{"İ".toLowerCase(Locale.ROOT)} is \texttt{i} + a combining dot (2 chars).
+        \small Case mapping can change the length: 
+        \hCode{"İ".toLowerCase(Locale.ROOT)} is \hCode{i} + a combining dot (2 chars).
       \end{alertblock}
     \end{column}
   \end{columns}
@@ -482,10 +523,14 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Unicode in Java}
-  \lstcodeoverlaystep[basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny][0.34\textwidth]{10.6cm,2.25cm}{codeoutput/UnicodeDemo.java}{Java}{codeoutput/UnicodeDemo.txt}
+	\lstcodeoverlaystep
+		[basicstyle=\ttfamily\tiny]
+		[basicstyle=\ttfamily\tiny][0.34\textwidth]{10.6cm,2.25cm}
+			{codeoutput/UnicodeDemo.java}{Java}
+			{codeoutput/UnicodeDemo.txt}
 
   \vspace{0.2em}
-  \small \texttt{reverse()} keeps surrogate pairs; equal-looking strings may differ until \textbf{normalized} (NFC).
+  \small \hCode{reverse()} keeps surrogate pairs; equal-looking strings may differ until \textbf{normalized} (NFC).
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -498,10 +543,16 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Bytes and encodings}
-  \lstcodeoverlaystep[basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny][0.38\textwidth]{10.4cm,3.8cm}{codeoutput/Encoding.java}{Java}{codeoutput/Encoding.txt}
+
+	\lstcodeoverlaystep
+		[basicstyle=\ttfamily\tiny]	[basicstyle=\ttfamily\tiny][0.38\textwidth]{10.4cm,3.8cm}
+			{codeoutput/Encoding.java}{Java}
+			{codeoutput/Encoding.txt}
 
   \vspace{0.2em}
-  \small Decoding UTF-8 bytes as Windows-1252 gives \texttt{AÄŸaÃ§}. Since Java 18 the default charset is UTF-8 on every system.
+  \small 
+  Decoding UTF-8 bytes as Windows-1252 gives \hCode{AÄŸaÃ§}. 
+  Since Java 18 the default charset is UTF-8 on every system.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -514,30 +565,48 @@
     \begin{column}{0.48\textwidth}
       \begin{block}{Windows}
         \footnotesize
+        
         \begin{itemize}
-          \item Old Java (before 18): the default charset was Windows-1254 (Turkish), files written there were not UTF-8
-          \item Console: run \hCode{chcp 65001}; Java 19+ also reads it from \texttt{stdout.encoding}
+          
+          \item Old Java (before 18): the default charset was Windows-1254 (Turkish), 
+          files written there were not UTF-8
+          
+          \item Console: run \hCode{chcp 65001}; 
+          Java 19+ also reads it from \hCode{stdout.encoding}
+          
           \item Compile UTF-8 sources with \hCode{javac -encoding UTF-8}
+          
           \item Notepad saves UTF-8 by default since Windows 10 (1903)
         \end{itemize}
+        
       \end{block}
     \end{column}
     \begin{column}{0.48\textwidth}
       \begin{block}{macOS}
         \footnotesize
+        
         \begin{itemize}
+          
           \item Terminal and the file system use UTF-8
-          \item Older HFS+ volumes store file names decomposed (NFD): \texttt{ç} may arrive as \texttt{c} + cedilla;
-                \textbf{normalize} names before comparing
+          
+          \item Older HFS+ volumes store file names decomposed (NFD): 
+          \hCode{ç} may arrive as \hCode{c} + cedilla;
+          \textbf{normalize} names before comparing
+          
           \item TextEdit: choose UTF-8 in the save dialog for plain text
         \end{itemize}
+        
       \end{block}
     \end{column}
   \end{columns}
+  
   \vspace{0.3em}
+  
   \begin{alertblock}{Rule for portable programs}
-    \small Always pass a charset: \texttt{Files.readString(path, StandardCharsets.UTF\_8)},
-    \texttt{new InputStreamReader(in, UTF\_8)}. Never rely on the platform default.
+    \small Always pass a charset: 
+    \hCode{Files.readString(path, StandardCharsets.UTF\_8)},
+    \hCode{new InputStreamReader(in, UTF\_8)}. 
+    Never rely on the platform default.
   \end{alertblock}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
@@ -556,21 +625,23 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{String matching algorithms at a glance}
   \small
+  
   \begin{tabular}{@{}L{0.2\textwidth}L{0.14\textwidth}L{0.17\textwidth}L{0.4\textwidth}@{}}
     \toprule
     \textbf{Algorithm} & \textbf{Preprocess} & \textbf{Match} & \textbf{When to use} \\
     \midrule
-    Naive            & none     & $O(nm)$ worst      & short patterns, typical text (\texttt{indexOf}) \\
+    Naive            & none     & $O(nm)$ worst      & short patterns, typical text (\hCode{indexOf}) \\
     KMP              & $O(m)$   & $O(n)$             & guaranteed linear time, streaming text \\
     Rabin--Karp      & $O(m)$   & $O(n)$ expected    & many patterns, plagiarism (window hashes) \\
-    Boyer--Moore     & $O(m + |\Sigma|)$ & sublinear typical & long patterns, large alphabets (\texttt{grep}) \\
+    Boyer--Moore     & $O(m + |\Sigma|)$ & sublinear typical & long patterns, large alphabets (\hCode{grep}) \\
     Aho--Corasick    & $O(\sum m_{i})$ & $O(n + \text{matches})$ & a dictionary of patterns at once \\
     Suffix array     & $O(n \log n)$ & $O(m \log n)$ & many queries on one fixed text \\
     \bottomrule
   \end{tabular}
 
   \vspace{0.5em}
-  Edit distance: $O(|a| \cdot |b|)$ dynamic programming. Regex: convenient, but its cost depends on the pattern
+  Edit distance: $O(|a| \cdot |b|)$ dynamic programming. 
+  Regex: convenient, but its cost depends on the pattern
   (see the senior slides on catastrophic backtracking).
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
@@ -584,15 +655,25 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Exercises}
+
   \begin{enumerate}\small
-    \item Compute $\pi$ for \texttt{aabaaab} by hand, then check with \texttt{KMP.prefix}.
-    \item Extend \texttt{NaiveSearch} and \texttt{KMP} to count comparisons on random texts over $\{a, b\}$; plot both against $n$.
+    
+    \item Compute $\pi$ for \hCode{aabaaab} by hand, then check with \hCode{KMP.prefix}.
+    
+    \item Extend \hCode{NaiveSearch} and \hCode{KMP} to count comparisons on random texts over $\{a, b\}$; plot both against $n$.
+    
     \item Use Rabin--Karp with $k$-word windows to find the longest common passage of two text files.
+    
     \item Print the actual edits (replace / insert / delete) from the edit-distance table.
-    \item Write a regex for Turkish mobile numbers (\texttt{05xx xxx xx xx}, spaces optional) and test it.
-    \item Reverse a string by \textbf{code points}, and show that a \texttt{char} loop breaks an emoji.
-    \item Read a UTF-8 file with Turkish text on Windows and macOS; compare with and without an explicit charset.
+    
+    \item Write a regex for Turkish mobile numbers (\hCode{05xx xxx xx xx}, spaces optional) and test it.
+    
+    \item Reverse a string by \textbf{code points}, and show that a \hCode{char} loop breaks an emoji.
+    
+    \item Read a UTF-8 file with Turkish text on Windows and macOS; 
+    compare with and without an explicit charset.
   \end{enumerate}
+  
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 

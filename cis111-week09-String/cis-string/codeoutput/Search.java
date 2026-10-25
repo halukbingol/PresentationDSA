@@ -10,7 +10,7 @@ public class Search {
         System.out.println(s.endsWith("lls"));
         int count = 0;
         int i = s.indexOf('s');
-        while (i >= 0) {               // every occurrence
+        while (i >= 0) {                           // every occurrence
             count++;
             i = s.indexOf('s', i + 1);
         }

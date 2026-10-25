@@ -1,12 +1,12 @@
 public class Timing {
     static String plus(int n) {
         String s = "";
-        for (int i = 0; i < n; i++) {s += "x"};        // copies s each time
+        for (int i = 0; i < n; i++) {s += "x";}        // copies s each time
         return s;
     }
     static String builder(int n) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < n; i++) sb.append("x");  // amortized O(1)
+        for (int i = 0; i < n; i++) sb.append("x");    // amortized O(1)
         return sb.toString();
     }
     public static void main(String[] args) {
