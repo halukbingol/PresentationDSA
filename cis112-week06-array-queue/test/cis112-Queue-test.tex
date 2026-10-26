@@ -1,0 +1,198 @@
+% !TEX spellcheck = en_US
+
+
+
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: 
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: 
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures:
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V specific	
+	\usepackage[normalem]{ulem} %strikethroug
+%  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A specific
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\title{
+	cis112\\
+	Queue
+}
+
+\author[Alpaydin]{Ruhan Alpaydin}
+
+\institute{
+	Faculty of Computer and Information Sciences\\
+	Yeditepe University
+}
+
+\date{
+	{\tiny \hbTimeStamp}
+}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+\begin{document}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}\frametitle{Case: Printing}
+	\footnotesize
+	\begin{tabular}{l l l}
+
+		% ~~~~~~~~~~~~~~~~~
+		\textbf{Sent}
+		&\textbf{Printing}
+		&\textbf{Waiting}\\
+		
+		% ~~~~~~~~~~~~~~~~~
+		\pause
+		~
+		&~
+		&\begin{tikzpicture}
+			\hQueue{0}{8}{0}{0}{, , , , , , , } [.5][.5]
+		\end{tikzpicture}
+		{\tiny noting is waiting to be printed}\\
+		
+		% ~~~~~~~~~~~~~~~~~
+		\pause
+		{\footnotesize D1}
+		&{\footnotesize D1}
+		&\begin{tikzpicture}
+			\hQueue{0}{8}{0}{1}{D1, , , , , , , } [.5][.5]
+		\end{tikzpicture}
+		{\tiny D1 is waiting to be printed}\\
+		
+		% ~~~~~~~~~~~~~~~~~
+		\pause
+		{\footnotesize D1}
+		&{\footnotesize D1}
+		&\begin{tikzpicture}
+			\hQueue{0}{8}{1}{1}{D1, , , , , , , } [.5][.5]
+		\end{tikzpicture}
+		{\tiny D1 is sent to printer, no one is waiting to be printed}\\
+		
+		% ~~~~~~~~~~~~~~~~~
+		\pause
+		{\footnotesize D2}
+		&{\footnotesize D1}
+		&\begin{tikzpicture}
+			\hQueue{0}{8}{1}{2}{D1, D2, , , , , , } [.5][.5]
+		\end{tikzpicture}
+		{\tiny D1 is still printing; D2 is waiting}\\
+		
+		% ~~~~~~~~~~~~~~~~~
+		\pause
+		{\footnotesize D3}
+		&{\footnotesize D1}
+		&\begin{tikzpicture}
+			\hQueue{0}{8}{1}{3}{D1, D2, D3, , , , , } [.5][.5]
+		\end{tikzpicture}
+		{\tiny D1 is still printing; D2 and D3 are waiting}\\
+		
+		% ~~~~~~~~~~~~~~~~~
+		\pause
+		~
+		&{\footnotesize ~}
+		&\begin{tikzpicture}
+			\hQueue{0}{8}{1}{3}{D1, D2, D3, , , , , } [.5][.5]
+		\end{tikzpicture}
+		{\tiny D1 is done; D2 and D3 are waiting}\\
+				
+		% ~~~~~~~~~~~~~~~~~
+		\pause
+		{\footnotesize ~}
+		&{\footnotesize D2}
+		&\begin{tikzpicture}
+			\hQueue{0}{8}{2}{3}{D1, D2, D3, , , , , } [.5][.5]
+		\end{tikzpicture}
+		{\tiny D2 is printing; D3 is waiting}\\
+				
+		% ~~~~~~~~~~~~~~~~~
+		\pause
+		{\footnotesize D4}
+		&{\footnotesize D2}
+		&\begin{tikzpicture}
+			\hQueue{0}{8}{4}{5}{D1, D2, D3, D4, , , , } [.5][.5]
+		\end{tikzpicture}
+		{\tiny D2 is still printing; D3 and D4 are waiting}\\
+		
+		% ~~~~~~~~~~~~~~~~~
+		\pause
+		~
+		&{\footnotesize D3}
+		&\begin{tikzpicture}
+			\hQueue{0}{8}{3}{5}{D1, D2, D3, D4, , , , } [.5][.5]
+		\end{tikzpicture}
+		{\tiny D2 is done; D3 is printing; D4 is waiting}\\
+		
+		% ~~~~~~~~~~~~~~~~~
+		\pause
+		~
+		&{\footnotesize D4}
+		&\begin{tikzpicture}
+			\hQueue{0}{8}{4}{5}{D1, D2, D3, D4, , , , } [.5][.5]
+		\end{tikzpicture}
+		{\tiny D3 is done; D4 is printing; no one is waiting}\\
+		
+		% ~~~~~~~~~~~~~~~~~
+		\pause
+		~
+		&~
+		&\begin{tikzpicture}
+			\hQueue{0}{8}{5}{5}{D1, D2, D3, D4, , , , } [.5][.5]
+		\end{tikzpicture}
+		{\tiny D4 is done, printer idle}\\
+
+	\end{tabular}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t]\frametitle{aaa}
+	\begin{columns}[T] % >>>>
+	\begin{column}{.5\linewidth} % ++++ V
+		
+		% ~~~~~~~~~~~~~~~~~
+		\pause
+		~
+		&{\footnotesize D4}
+		&\begin{tikzpicture}
+			\hQueue{0}{8}{4}{5}{D1, D2, D3, D4, , , , } [.5][.5]
+		\end{tikzpicture}
+		{\tiny D3 is done; D4 is printing; no one is waiting}\\
+	\end{column} % ++++ A
+	\begin{column}{.5\linewidth} % ++++ V
+		
+		% ~~~~~~~~~~~~~~~~~
+		\pause
+		~
+		&{\footnotesize D4}
+		&\begin{tikzpicture}
+			\hQueue{0}{8}{4}{5}{D1, D2, D3, D4, , , , } [.5][.5]
+		\end{tikzpicture}
+		{\tiny D3 is done; D4 is printing; no one is waiting}\\
+	\end{column} % ++++ A
+	\end{columns} % <<<<
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+\end{document}

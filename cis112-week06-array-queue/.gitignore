@@ -1,3 +1,24 @@
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V specific
+
+# folder
+/_old/
+/test/
+
+# file
+
+# ~~~~~~~~~~~~~~~~~ V generated
+*-orj.pdf
+*-concepts.pdf
+*-freshman.pdf
+*-sophomore.pdf
+*-junior.pdf
+*-examples.pdf
+# ~~~~~~~~~~~~~~~~~ A generated
+*-outline.xlsx
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A specific
+
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V LaTeX
 
 ## Core latex/pdflatex auxiliary files:

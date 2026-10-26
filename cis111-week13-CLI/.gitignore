@@ -2,10 +2,19 @@
 
 # folder
 /_old/
-/hblib___/
+/test/
 
 # file
 
+# ~~~~~~~~~~~~~~~~~ V generated
+*-orj.pdf
+*-concepts.pdf
+*-freshman.pdf
+*-sophomore.pdf
+*-junior.pdf
+*-examples.pdf
+# ~~~~~~~~~~~~~~~~~ A generated
+*-outline.xlsx
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A specific
 

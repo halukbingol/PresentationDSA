@@ -13,24 +13,17 @@
 
 
 
-\documentclass{beamer}
-	\usetheme{Dresden}
-%	\usecolortheme{}
-%	\useinnertheme{}
-%	\useoutertheme{}
-%	\setbeamertemplate{bibliography item}[text]
-\usepackage{beamerthemesplit}
-%	\usecolortheme{default}
-%	\usecolortheme{structure}
-%	\usepackage{beamerthemesplit} // Activate for custom appearance
 
 
 
 
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V HB lib
-\usepackage{../hbcommon/hbdatastructures} 
-\usepackage{../hbcommon/hbpresentation} 
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: 
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: 
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures:
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
 
 
 
@@ -44,7 +37,7 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \title{
-	cis112\\
+	cis112-week06\\
 	Queue
 }
 
@@ -160,6 +153,7 @@ How does
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \begin{frame}\frametitle{Case: Printing}
+	\small
 	\begin{tabular}{l l l}
 
 		% ~~~~~~~~~~~~~~~~~
@@ -891,19 +885,23 @@ How does
 
 
 
+
+
+
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V References bib
-\begin{frame}[allowframebreaks]\frametitle{References}
+\begin{frame}[t,allowframebreaks]\frametitle{References}
 	\setbeamertemplate{bibliography item}[text] % sets numbers in references
 %	\bibliographystyle{abbrv}
 %	\bibliographystyle{apalike}
 %	\bibliographystyle{ieeetr}
 	\bibliographystyle{IEEEtran}
 	%
-	\tiny\bibliography{../hbcommon/bingol-DataStructures} % bib file
-
-	
+	\tiny\bibliography{../../hblib/hblibDataStructures} % bib file	
 \end{frame}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A References bib
+
+
+
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 \end{document}

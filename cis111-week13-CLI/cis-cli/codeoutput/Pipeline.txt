@@ -1,0 +1,15 @@
+$ javac -d classes src/edu/yeditepe/hello/Hello.java
+$ find classes -type f
+classes/edu/yeditepe/hello/Hello.class
+$ jar --create --file hello.jar --main-class edu.yeditepe.hello.Hello -C classes .
+$ jar --list --file hello.jar
+META-INF/
+META-INF/MANIFEST.MF
+edu/
+edu/yeditepe/
+edu/yeditepe/hello/
+edu/yeditepe/hello/Hello.class
+$ java -jar hello.jar Ayşe
+Hello, Ayşe!
+$ java -cp classes edu.yeditepe.hello.Hello Can
+Hello, Can!
