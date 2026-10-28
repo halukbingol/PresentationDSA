@@ -1,0 +1,16 @@
+$ mvn -q package
+$ ls target
+classes
+generated-sources
+generated-test-sources
+hello-1.0-SNAPSHOT.jar
+maven-archiver
+maven-status
+surefire-reports
+test-classes
+$ java -cp target/hello-1.0-SNAPSHOT.jar hello.Greeter
+Merhaba, Dünya!
+$ mvn -q clean
+$ ls
+pom.xml
+src

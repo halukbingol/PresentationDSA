@@ -94,20 +94,20 @@
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{What happens when you type \texttt{java -cp out App}}
+\begin{frame}[t,fragile] \frametitle{What happens when you type \hCode{java -cp out App}}
 % +++++++++++++++++++++++++++++++++++++++ V alg
 %: -Alg. 
 \begin{algorithm}[H]
-  \caption{The \texttt{java} launcher (simplified)}
+  \caption{The \hCode{java} launcher (simplified)}
   \KwIn{command line $c$, environment $e$}
-  insert $e[\texttt{JDK\_JAVA\_OPTIONS}]$ before the options of $c$; expand every \texttt{@file}\;
-  split $c$ into JVM options, the main class (or \texttt{-jar} / \texttt{-m}) and the program arguments\;
-  load the JVM library (\texttt{libjvm.so}, \texttt{jvm.dll}, \texttt{libjvm.dylib}) and create the JVM\;
-  the JVM reads $e[\texttt{JAVA\_TOOL\_OPTIONS}]$, maps the CDS archive, resolves the boot modules\;
-  \eIf{\texttt{-jar} $f$}{$\mathit{main} \gets$ \texttt{Main-Class} of $f$; class path $\gets f$ + its \texttt{Class-Path}}{
+  insert $e[\hCode{JDK\_JAVA\_OPTIONS}]$ before the options of $c$; expand every \hCode{@file}\;
+  split $c$ into JVM options, the main class (or \hCode{-jar} / \hCode{-m}) and the program arguments\;
+  load the JVM library (\hCode{libjvm.so}, \hCode{jvm.dll}, \hCode{libjvm.dylib}) and create the JVM\;
+  the JVM reads $e[\hCode{JAVA\_TOOL\_OPTIONS}]$, maps the CDS archive, resolves the boot modules\;
+  \eIf{\hCode{-jar} $f$}{$\mathit{main} \gets$ \hCode{Main-Class} of $f$; class path $\gets f$ + its \hCode{Class-Path}}{
     $\mathit{main} \gets$ the given class}
   load $\mathit{main}$ with the \textbf{application class loader}; link, verify, initialize\;
-  call \texttt{main(String[])} on a new thread \texttt{main}\;
+  call \hCode{main(String[])} on a new thread \hCode{main}\;
   wait for all non-daemon threads; run shutdown hooks; \Return{exit status}\;
 \end{algorithm}
 % +++++++++++++++++++++++++++++++++++++++ A alg
@@ -136,8 +136,8 @@ dir "C:\Program Files\Eclipse Adoptium"
 
 
       \end{block}
-      \small Installers add \texttt{bin} to the \texttt{PATH} and may set \texttt{JAVA\_HOME}; the \emph{first} \texttt{java.exe}
-      on the \texttt{PATH} wins (beware of old \texttt{C:\textbackslash ProgramData\textbackslash Oracle\textbackslash Java\textbackslash javapath}).
+      \small Installers add \hCode{bin} to the \hCode{PATH} and may set \hCode{JAVA\_HOME}; the \emph{first} \hCode{java.exe}
+      on the \hCode{PATH} wins (beware of old \hCode{C:\textbackslash ProgramData\textbackslash Oracle\textbackslash Java\textbackslash javapath}).
     \end{column}
     \begin{column}{0.48\textwidth}
       \begin{block}{\mac}
@@ -154,8 +154,8 @@ ls /Library/Java/JavaVirtualMachines
 
 
       \end{block}
-      \small \texttt{/usr/bin/java} is a stub that starts the JDK chosen by \texttt{java\_home}.
-      JDKs live in \texttt{\dots/jdk-21.jdk/Contents/Home}. Several versions side by side: \texttt{JAVA\_HOME} selects one;
+      \small \hCode{/usr/bin/java} is a stub that starts the JDK chosen by \hCode{java\_home}.
+      JDKs live in \hCode{\dots/jdk-21.jdk/Contents/Home}. Several versions side by side: \hCode{JAVA\_HOME} selects one;
       tools such as SDKMAN! or jenv switch per project.
     \end{column}
   \end{columns}
@@ -182,9 +182,9 @@ ls /Library/Java/JavaVirtualMachines
   \end{columns}
 
   \vspace{0.1em}
-  \small \texttt{JAVA\_TOOL\_OPTIONS} is read by \textbf{every} JVM, also the one inside \texttt{javac};
-  \texttt{JDK\_JAVA\_OPTIONS} only by the \texttt{java} launcher. Both are announced, so a stray value cannot hide.
-  \texttt{@file} keeps long command lines (Windows limit: 8191 characters in \texttt{cmd}) out of scripts.
+  \small \hCode{JAVA\_TOOL\_OPTIONS} is read by \textbf{every} JVM, also the one inside \hCode{javac};
+  \hCode{JDK\_JAVA\_OPTIONS} only by the \hCode{java} launcher. Both are announced, so a stray value cannot hide.
+  \hCode{@file} keeps long command lines (Windows limit: 8191 characters in \hCode{cmd}) out of scripts.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -213,7 +213,7 @@ ls /Library/Java/JavaVirtualMachines
       \uncover<2->{\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Loaders.txt}}
       \uncover<3->{
       \begin{itemize}\small
-        \item A loader first asks its \textbf{parent}: a class path JAR cannot replace \texttt{java.lang.String}.
+        \item A loader first asks its \textbf{parent}: a class path JAR cannot replace \hCode{java.lang.String}.
         \item The same name loaded by two loaders gives two \emph{different} classes (plugins, application servers).
       \end{itemize}}
     \end{column}
@@ -225,14 +225,14 @@ ls /Library/Java/JavaVirtualMachines
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Watching the JVM load classes: \texttt{-Xlog}}
+\begin{frame}[t,fragile] \frametitle{Watching the JVM load classes: \hCode{-Xlog}}
   \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/ClassLoad.txt}
 
   \vspace{0.1em}
   \small
   About 550 classes are loaded to print one line; almost all come from the \textbf{CDS archive} (\emph{shared objects file}),
-  a memory image of pre-parsed JDK classes. \texttt{-Xlog} is the unified logging of the JVM: \texttt{-Xlog:help} lists the tags
-  (\texttt{gc}, \texttt{class+load}, \texttt{safepoint}, \dots).
+  a memory image of pre-parsed JDK classes. \hCode{-Xlog} is the unified logging of the JVM: \hCode{-Xlog:help} lists the tags
+  (\hCode{gc}, \hCode{class+load}, \hCode{safepoint}, \dots).
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -244,7 +244,7 @@ ls /Library/Java/JavaVirtualMachines
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Inside a \texttt{.class} file}
+\begin{frame}[t,fragile] \frametitle{Inside a \hCode{.class} file}
   \begin{columns}[T]
     \begin{column}{0.44\textwidth}
       \begin{center}\small
@@ -252,9 +252,9 @@ ls /Library/Java/JavaVirtualMachines
         \toprule
         bytes & content & \\
         \midrule
-        0--3  & magic             & \texttt{CA FE BA BE} \\
-        4--5  & minor version     & \texttt{00 00} \\
-        6--7  & major version     & \texttt{00 41} = 65 \\
+        0--3  & magic             & \hCode{CA FE BA BE} \\
+        4--5  & minor version     & \hCode{00 00} \\
+        6--7  & major version     & \hCode{00 41} = 65 \\
         8--   & constant pool, \dots & \\
         \bottomrule
       \end{tabular}
@@ -269,8 +269,8 @@ ls /Library/Java/JavaVirtualMachines
     \end{column}
   \end{columns}
   \vspace{0.2em}
-  \small We changed byte 7 to \texttt{46} (= 70, Java 26): a JVM refuses class files \textbf{newer} than itself, but runs all older ones.
-  Fix: run with a newer JDK, or compile with \texttt{--release 21}.
+  \small We changed byte 7 to \hCode{46} (= 70, Java 26): a JVM refuses class files \textbf{newer} than itself, but runs all older ones.
+  Fix: run with a newer JDK, or compile with \hCode{--release 21}.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -291,9 +291,9 @@ ls /Library/Java/JavaVirtualMachines
 
   \vspace{0.1em}
   \small
-  Five runs each (times differ from machine to machine). \texttt{-Xshare:off} disables the JDK's archive;
-  \texttt{-XX:ArchiveClassesAtExit} (Java 13+) records the classes of one run, \texttt{-XX:SharedArchiveFile} maps them next time.
-  Projects Leyden (Java 24+: \texttt{-XX:AOTCache}) and GraalVM \texttt{native-image} go further.
+  Five runs each (times differ from machine to machine). \hCode{-Xshare:off} disables the JDK's archive;
+  \hCode{-XX:ArchiveClassesAtExit} (Java 13+) records the classes of one run, \hCode{-XX:SharedArchiveFile} maps them next time.
+  Projects Leyden (Java 24+: \hCode{-XX:AOTCache}) and GraalVM \hCode{native-image} go further.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -317,7 +317,7 @@ ls /Library/Java/JavaVirtualMachines
 
   \vspace{0.1em}
   \small The \textbf{JDK Flight Recorder} is built into the JVM with about 1\,\% overhead, so it can stay on in production.
-  \texttt{jcmd <pid> JFR.start} attaches it to a running JVM; JDK Mission Control (a separate GUI) opens the \texttt{.jfr} file.
+  \hCode{jcmd <pid> JFR.start} attaches it to a running JVM; JDK Mission Control (a separate GUI) opens the \hCode{.jfr} file.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -333,13 +333,13 @@ ls /Library/Java/JavaVirtualMachines
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Same sources, same JAR? \texttt{jar --date}}
+\begin{frame}[t,fragile] \frametitle{Same sources, same JAR? \hCode{jar --date}}
   \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Reproducible.txt}
 
   \vspace{0.1em}
   \small
-  A JAR is a ZIP file that stores each entry's time, so two builds differ. \texttt{--date} (Java 19+) fixes all
-  timestamps: anyone can rebuild and compare checksums. Maven: \texttt{project.build.outputTimestamp}.
+  A JAR is a ZIP file that stores each entry's time, so two builds differ. \hCode{--date} (Java 19+) fixes all
+  timestamps: anyone can rebuild and compare checksums. Maven: \hCode{project.build.outputTimestamp}.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -401,9 +401,9 @@ shasum -a 256 OpenJDK21.pkg
 
   \vspace{0.1em}
   \small
-  \texttt{jarsigner} stores a digest of every entry (\texttt{META-INF/*.SF}) and a signature (\texttt{*.RSA}).
-  After we replaced \texttt{App.class}, verification and start-up both fail. Here the certificate is self-signed: real signing uses a
-  certificate from a certificate authority. On \mac{} the \emph{installer} must also be signed and notarized (\texttt{jpackage --mac-sign}).
+  \hCode{jarsigner} stores a digest of every entry (\hCode{META-INF/*.SF}) and a signature (\hCode{*.RSA}).
+  After we replaced \hCode{App.class}, verification and start-up both fail. Here the certificate is self-signed: real signing uses a
+  certificate from a certificate authority. On \mac{} the \emph{installer} must also be signed and notarized (\hCode{jpackage --mac-sign}).
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -414,13 +414,13 @@ shasum -a 256 OpenJDK21.pkg
 \begin{frame}[t,fragile] \frametitle{Other risks on the command line}
   \begin{itemize}\small
     \item \textbf{Class path order}: a JAR placed \emph{before} yours can replace any of your classes; modules forbid split packages.
-    \item \textbf{\texttt{CLASSPATH} and \texttt{JAVA\_TOOL\_OPTIONS}}: an attacker who can set the environment controls the JVM
-      (\texttt{-javaagent:evil.jar}). Check them in CI logs: the JVM prints \emph{Picked up \dots}.
-    \item \textbf{\texttt{PATH}}: which \texttt{java} runs? (\texttt{where java}, \texttt{which -a java})
+    \item \textbf{\hCode{CLASSPATH} and \hCode{JAVA\_TOOL\_OPTIONS}}: an attacker who can set the environment controls the JVM
+      (\hCode{-javaagent:evil.jar}). Check them in CI logs: the JVM prints \emph{Picked up \dots}.
+    \item \textbf{\hCode{PATH}}: which \hCode{java} runs? (\hCode{where java}, \hCode{which -a java})
     \item \textbf{Old JDKs}: only the latest update of an LTS gets security fixes (21.0.\emph{x}); update monthly or with each quarterly release.
     \item \textbf{Security Manager}: deprecated in Java 17 and permanently disabled in Java 24; isolate untrusted code with
       operating system processes or containers instead.
-    \item \textbf{Secrets}: never on the command line (\texttt{-Dpassword=\dots} is visible in \texttt{ps} and \texttt{jcmd VM.command\_line}).
+    \item \textbf{Secrets}: never on the command line (\hCode{-Dpassword=\dots} is visible in \hCode{ps} and \hCode{jcmd VM.command\_line}).
   \end{itemize}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
@@ -473,7 +473,7 @@ docker run --rm hello
 
 
       Same commands on \win{} and \mac{} with Docker Desktop.
-      The JVM sees the container's CPU and memory limits; tune with \texttt{-XX:MaxRAMPercentage=75}.
+      The JVM sees the container's CPU and memory limits; tune with \hCode{-XX:MaxRAMPercentage=75}.
       \hRemark{Not run here.}
     \end{column}
   \end{columns}
@@ -484,7 +484,7 @@ docker run --rm hello
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Native executables: GraalVM \texttt{native-image}}
+\begin{frame}[t,fragile] \frametitle{Native executables: GraalVM \hCode{native-image}}
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}
 
@@ -499,7 +499,7 @@ native-image -cp out App app
 % +++++++++++++++++++++++++++++++++++++++ A lst
 
 
-      \small \hRemark{Not run here} (needs GraalVM). On \win{} it needs the Visual Studio C++ build tools and makes \texttt{app.exe};
+      \small \hRemark{Not run here} (needs GraalVM). On \win{} it needs the Visual Studio C++ build tools and makes \hCode{app.exe};
       on \mac{} the Xcode command line tools.
     \end{column}
     \begin{column}{0.48\textwidth}
@@ -535,18 +535,18 @@ native-image -cp out App app
     \toprule
     need                         & command \\
     \midrule
-    wait for a debugger          & \texttt{java -agentlib:jdwp=transport=dt\_socket,server=y,suspend=y,address=*:5005 -jar app.jar} \\
-    debug in the terminal        & \texttt{jdb -attach 5005} (or attach an IDE to port 5005) \\
-    thread dump                  & \texttt{jcmd <pid> Thread.print}; macOS/Linux also \texttt{kill -3 <pid>}; \win{} \texttt{Ctrl+Break} \\
-    heap dump                    & \texttt{jcmd <pid> GC.heap\_dump heap.hprof} \\
-    dump on crash                & \texttt{-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=dumps} \\
-    garbage collector log        & \texttt{-Xlog:gc*:file=gc.log:time,uptime} \\
-    record a profile             & \texttt{-XX:StartFlightRecording=duration=60s,filename=r.jfr} \\
-    JVM settings of a process    & \texttt{jcmd <pid> VM.flags}, \texttt{VM.system\_properties}, \texttt{VM.command\_line} \\
+    wait for a debugger          & \hCode{java -agentlib:jdwp=transport=dt\_socket,server=y,suspend=y,address=*:5005 -jar app.jar} \\
+    debug in the terminal        & \hCode{jdb -attach 5005} (or attach an IDE to port 5005) \\
+    thread dump                  & \hCode{jcmd <pid> Thread.print}; macOS/Linux also \hCode{kill -3 <pid>}; \win{} \hCode{Ctrl+Break} \\
+    heap dump                    & \hCode{jcmd <pid> GC.heap\_dump heap.hprof} \\
+    dump on crash                & \hCode{-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=dumps} \\
+    garbage collector log        & \hCode{-Xlog:gc*:file=gc.log:time,uptime} \\
+    record a profile             & \hCode{-XX:StartFlightRecording=duration=60s,filename=r.jfr} \\
+    JVM settings of a process    & \hCode{jcmd <pid> VM.flags}, \hCode{VM.system\_properties}, \hCode{VM.command\_line} \\
     \bottomrule
   \end{tabular}
   \end{center}
-  \small \texttt{address=*:5005} opens a port to the network: on a server use \texttt{localhost:5005} and an SSH tunnel.
+  \small \hCode{address=*:5005} opens a port to the network: on a server use \hCode{localhost:5005} and an SSH tunnel.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -560,14 +560,14 @@ native-image -cp out App app
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Big ideas}
   \begin{itemize}
-    \item The \texttt{java} command is a small native launcher; options can come from the command line, \texttt{@files},
-      \texttt{JDK\_JAVA\_OPTIONS} and \texttt{JAVA\_TOOL\_OPTIONS}.
+    \item The \hCode{java} command is a small native launcher; options can come from the command line, \hCode{@files},
+      \hCode{JDK\_JAVA\_OPTIONS} and \hCode{JAVA\_TOOL\_OPTIONS}.
     \item Classes are loaded on demand by three loaders; CDS archives make start-up fast.
     \item A class file carries its version: newer class files do not run on older JVMs.
     \item Builds should be \textbf{reproducible}, downloads \textbf{checked}, artifacts \textbf{signed}.
-    \item Delivery options grow from JAR to \texttt{jlink} image, installer, container and native executable;
+    \item Delivery options grow from JAR to \hCode{jlink} image, installer, container and native executable;
       each one trades size, start-up and portability.
-    \item The JDK's own tools (\texttt{jcmd}, \texttt{jfr}, \texttt{jdb}, \texttt{-Xlog}) diagnose a JVM anywhere a terminal exists.
+    \item The JDK's own tools (\hCode{jcmd}, \hCode{jfr}, \hCode{jdb}, \hCode{-Xlog}) diagnose a JVM anywhere a terminal exists.
   \end{itemize}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
@@ -578,14 +578,14 @@ native-image -cp out App app
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Projects}
   \begin{enumerate}\small
-    \item Write \texttt{build.sh} and \texttt{build.bat} that build the books application reproducibly; prove it with two
+    \item Write \hCode{build.sh} and \hCode{build.bat} that build the books application reproducibly; prove it with two
       checksums on two different computers (one Windows, one macOS).
-    \item Measure start-up of the books application as a JAR, with AppCDS, as a \texttt{jlink} image and (optionally) as a
+    \item Measure start-up of the books application as a JAR, with AppCDS, as a \hCode{jlink} image and (optionally) as a
       native image. Report median times of 20 runs.
-    \item Sign the JAR, change one byte, and explain every line printed by \texttt{jarsigner -verify -verbose}.
-    \item Record a JFR file of \texttt{Work}, find the hottest method with \texttt{jfr print}, make it faster, record again.
-    \item Write a launcher script that picks the newest installed JDK $\geq 21$ on Windows (\texttt{where}) and macOS
-      (\texttt{java\_home}) and prints a clear message if none exists.
+    \item Sign the JAR, change one byte, and explain every line printed by \hCode{jarsigner -verify -verbose}.
+    \item Record a JFR file of \hCode{Work}, find the hottest method with \hCode{jfr print}, make it faster, record again.
+    \item Write a launcher script that picks the newest installed JDK $\geq 21$ on Windows (\hCode{where}) and macOS
+      (\hCode{java\_home}) and prints a clear message if none exists.
   \end{enumerate}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm

@@ -1,0 +1,10 @@
+$ tree
+pom.xml
+src/
+    main/
+        java/
+            hello/
+                Hello.java
+$ mvn -q package
+$ java -cp target/hello-1.0.jar hello.Hello
+Merhaba, Maven!

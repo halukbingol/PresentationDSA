@@ -11,6 +11,22 @@
 /cis112-syllabus*.pdf
 z-syllabus-LatexTables-2*.xlsx
 
+/cis11{1,2}-Info-20[0-9][0-9]-{1,3}.xlsx
+/cis111-Info-20[0-9][0-9]-[1,3}.xlsx
+
+
+/cis111-Info-20[0-9][0-9]-1.xlsx
+
+/cis111-Info-2024-1.xlsx
+/cis111-Info-2024-3.xlsx
+/cis111-Info-2025-1.xlsx
+/cis111-Info-2025-3.xlsx
+
+/cis112-Info-2024-1.xlsx
+/cis112-Info-2024-3.xlsx
+/cis112-Info-2025-1.xlsx
+/cis112-Info-2025-3.xlsx
+/cis112-Info-2026-1.xlsx
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V specific
 
 

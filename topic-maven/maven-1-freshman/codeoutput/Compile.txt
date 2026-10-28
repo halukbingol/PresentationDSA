@@ -1,0 +1,25 @@
+$ mvn compile
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------------< edu.yeditepe:hello >-------------------------
+[INFO] Building hello 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ hello ---
+[INFO] skip non existing resourceDirectory ~/project/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ hello ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to ~/project/target/classes
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.850 s
+[INFO] Finished at: 2026-10-27T06:07:29+03:00
+[INFO] ------------------------------------------------------------------------
+$ tree target/classes
+hello/
+    Greeter.class
+$ java -cp target/classes hello.Greeter Ayşe
+Merhaba, Ayşe!

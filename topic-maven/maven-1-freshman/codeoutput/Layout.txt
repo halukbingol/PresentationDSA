@@ -1,0 +1,11 @@
+$ tree
+pom.xml
+src/
+    main/
+        java/
+            hello/
+                Greeter.java
+    test/
+        java/
+            hello/
+                GreeterTest.java

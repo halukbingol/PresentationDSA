@@ -98,17 +98,17 @@
     \begin{column}{0.48\textwidth}
       \begin{itemize}\small
         \item Every grey-black box is a \textbf{real session}, run with Java 21 for these slides
-        \item Yellow lines starting with \texttt{\$} are what was \textbf{typed}; the rest is what the computer printed
-        \item The sessions ran in a \texttt{bash} shell (Linux); \textbf{macOS Terminal} (zsh) gives the same results
+        \item Yellow lines starting with \hCode{\$} are what was \textbf{typed}; the rest is what the computer printed
+        \item The sessions ran in a \hCode{bash} shell (Linux); \textbf{macOS Terminal} (zsh) gives the same results
         \item \textbf{Windows} differences are shown next to the commands where they matter
       \end{itemize}
       \vspace{0.3em}
-      \small Each example's files are in \texttt{codeoutput/<Name>/}; \hCode{bash run\_examples.sh} repeats all sessions
+      \small Each example's files are in \hCode{codeoutput/<Name>/}; \hCode{bash run\_examples.sh} repeats all sessions
       (macOS: Terminal; Windows: Git Bash).
     \end{column}
     \begin{column}{0.48\textwidth}
       \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Versions.txt}
-      \small \texttt{-version} prints to the error stream (old style); \texttt{--version} prints to standard output.
+      \small \hCode{-version} prints to the error stream (old style); \hCode{--version} prints to standard output.
     \end{column}
   \end{columns}
 \end{frame}
@@ -119,7 +119,7 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{The same commands on Windows}
-  \small Open \textbf{Command Prompt} (\texttt{Win}, type \texttt{cmd}) or \textbf{PowerShell}. The Java commands are identical:
+  \small Open \textbf{Command Prompt} (\hCode{Win}, type \hCode{cmd}) or \textbf{PowerShell}. The Java commands are identical:
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}
       \begin{block}{Windows (Command Prompt)}
@@ -162,8 +162,8 @@ Hello, World!
 
   \vspace{0.2em}
   \begin{itemize}\small
-    \item The \textbf{prompt} differs (\texttt{C:\textbackslash\dots>} versus \texttt{\dots\ \%}); in these slides it is shortened to \texttt{\$}
-    \item Differences to watch: class-path separator (\texttt{;} vs \texttt{:}), \texttt{type} vs \texttt{cat}, \texttt{dir} vs \texttt{ls}, \texttt{\%ERRORLEVEL\%} vs \texttt{\$?}
+    \item The \textbf{prompt} differs (\hCode{C:\textbackslash\dots>} versus \hCode{\dots\ \%}); in these slides it is shortened to \hCode{\$}
+    \item Differences to watch: class-path separator (\hCode{;} vs \hCode{:}), \hCode{type} vs \hCode{cat}, \hCode{dir} vs \hCode{ls}, \hCode{\%ERRORLEVEL\%} vs \hCode{\$?}
   \end{itemize}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
@@ -191,8 +191,8 @@ Hello, World!
   \end{columns}
 
   \vspace{0.1em}
-  \small \texttt{javac} takes a \textbf{file} (\texttt{Hello.java}) and writes \texttt{Hello.class}; \texttt{java} takes a
-  \textbf{class name} (\texttt{Hello}, without \texttt{.class}).
+  \small \hCode{javac} takes a \textbf{file} (\hCode{Hello.java}) and writes \hCode{Hello.class}; \hCode{java} takes a
+  \textbf{class name} (\hCode{Hello}, without \hCode{.class}).
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -200,7 +200,7 @@ Hello, World!
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Source-file mode: \texttt{java Hello.java}}
+\begin{frame}[t,fragile] \frametitle{Source-file mode: \hCode{java Hello.java}}
   \begin{columns}[T]
     \begin{column}{0.5\textwidth}
       \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/SourceMode/Hello.java}{Java}
@@ -211,7 +211,7 @@ Hello, World!
   \end{columns}
 
   \vspace{0.1em}
-  \small Compiled in memory and run; no \texttt{.class} file is left behind (second \texttt{ls}). Needs Java 11 or later.
+  \small Compiled in memory and run; no \hCode{.class} file is left behind (second \hCode{ls}). Needs Java 11 or later.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -223,7 +223,7 @@ Hello, World!
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Command-line arguments: \texttt{String[] args}}
+\begin{frame}[t,fragile] \frametitle{Command-line arguments: \hCode{String[] args}}
   \begin{columns}[T]
     \begin{column}{0.52\textwidth}
       \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Args/Args.java}{Java}
@@ -234,8 +234,8 @@ Hello, World!
   \end{columns}
 
   \vspace{0.1em}
-  \small The \textbf{shell} splits the line at spaces; quotes keep \texttt{"two words"} together. \win\ Command Prompt
-  only understands double quotes: \texttt{java Args "Ayşe Yılmaz" --verbose}.
+  \small The \textbf{shell} splits the line at spaces; quotes keep \hCode{"two words"} together. \win\ Command Prompt
+  only understands double quotes: \hCode{java Args "Ayşe Yılmaz" --verbose}.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -258,8 +258,8 @@ Hello, World!
   \end{columns}
 
   \vspace{0.1em}
-  \small \texttt{|} pipe, \texttt{<} read from a file, \texttt{>} write to a file, \texttt{2>} redirect the \textbf{error} stream.
-  These work in Windows Command Prompt too (use \texttt{type} instead of \texttt{cat}).
+  \small \hCode{|} pipe, \hCode{<} read from a file, \hCode{>} write to a file, \hCode{2>} redirect the \textbf{error} stream.
+  These work in Windows Command Prompt too (use \hCode{type} instead of \hCode{cat}).
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -271,7 +271,7 @@ Hello, World!
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Exit codes: \texttt{System.exit(n)}}
+\begin{frame}[t,fragile] \frametitle{Exit codes: \hCode{System.exit(n)}}
   \begin{columns}[T]
     \begin{column}{0.52\textwidth}
       \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Exit/Check.java}{Java}
@@ -282,8 +282,8 @@ Hello, World!
   \end{columns}
 
   \vspace{0.1em}
-  \small 0 means success. Scripts test it: \texttt{\&\&} runs on success, \texttt{||} on failure.
-  \win: \texttt{echo \%ERRORLEVEL\%} instead of \texttt{echo \$?}; an uncaught exception gives exit code 1.
+  \small 0 means success. Scripts test it: \hCode{\&\&} runs on success, \hCode{||} on failure.
+  \win: \hCode{echo \%ERRORLEVEL\%} instead of \hCode{echo \$?}; an uncaught exception gives exit code 1.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -295,7 +295,7 @@ Hello, World!
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{System properties (\texttt{-D}) and environment variables}
+\begin{frame}[t,fragile] \frametitle{System properties (\hCode{-D}) and environment variables}
   \begin{columns}[T]
     \begin{column}{0.56\textwidth}
       \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Props/Props.java}{Java}
@@ -306,8 +306,8 @@ Hello, World!
   \end{columns}
 
   \vspace{0.1em}
-  \small \texttt{-Dname=value} goes \textbf{before} the class name. \texttt{COURSE=CSE101 java \dots} sets a variable for one
-  command on macOS; on \win: \texttt{set COURSE=CSE101} then \texttt{java \dots}. On Windows \texttt{path.separator} is \texttt{;}.
+  \small \hCode{-Dname=value} goes \textbf{before} the class name. \hCode{COURSE=CSE101 java \dots} sets a variable for one
+  command on macOS; on \win: \hCode{set COURSE=CSE101} then \hCode{java \dots}. On Windows \hCode{path.separator} is \hCode{;}.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -345,8 +345,8 @@ Hello, World!
 
   \vspace{0.1em}
   \small
-  \texttt{-d out} creates the package folders. Run with the \textbf{full name}; neither the short name nor
-  the package folder works (``wrong name''). \win: \texttt{javac -d out src\textbackslash edu\textbackslash yeditepe\textbackslash shop\textbackslash *.java}.
+  \hCode{-d out} creates the package folders. Run with the \textbf{full name}; neither the short name nor
+  the package folder works (``wrong name''). \win: \hCode{javac -d out src\textbackslash edu\textbackslash yeditepe\textbackslash shop\textbackslash *.java}.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -358,13 +358,13 @@ Hello, World!
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Many source files: \texttt{@argfile} and \texttt{-sourcepath}}
+\begin{frame}[t,fragile] \frametitle{Many source files: \hCode{@argfile} and \hCode{-sourcepath}}
   \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/ManyFiles.txt}
 
   \vspace{0.1em}
   \small
-  \texttt{@sources.txt} reads the file names from a file. With \texttt{-sourcepath src}, \texttt{javac} finds and compiles
-  \texttt{Cart} and \texttt{Item} by itself. \win: \texttt{dir /s /b src\textbackslash *.java > sources.txt}.
+  \hCode{@sources.txt} reads the file names from a file. With \hCode{-sourcepath src}, \hCode{javac} finds and compiles
+  \hCode{Cart} and \hCode{Item} by itself. \win: \hCode{dir /s /b src\textbackslash *.java > sources.txt}.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -385,8 +385,8 @@ Hello, World!
 
   \vspace{0.1em}
   \small
-  Without \texttt{--main-class}, \texttt{java -jar} does not know where to start. \texttt{unzip -p} prints a file from inside the JAR
-  (\win: \texttt{tar -xOf shop.jar META-INF/MANIFEST.MF}, or open the JAR with any ZIP tool).
+  Without \hCode{--main-class}, \hCode{java -jar} does not know where to start. \hCode{unzip -p} prints a file from inside the JAR
+  (\win: \hCode{tar -xOf shop.jar META-INF/MANIFEST.MF}, or open the JAR with any ZIP tool).
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -394,13 +394,13 @@ Hello, World!
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{The short (classic) \texttt{jar} options}
+\begin{frame}[t,fragile] \frametitle{The short (classic) \hCode{jar} options}
   \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/JarShort.txt}
 
   \vspace{0.1em}
   \small
-  \texttt{c} create, \texttt{t} list, \texttt{x} extract, \texttt{v} verbose, \texttt{f} file name follows, \texttt{e} entry point (main class),
-  like the old Unix \texttt{tar}. \texttt{jar cfe} = \texttt{jar --create --file \dots\ --main-class \dots}
+  \hCode{c} create, \hCode{t} list, \hCode{x} extract, \hCode{v} verbose, \hCode{f} file name follows, \hCode{e} entry point (main class),
+  like the old Unix \hCode{tar}. \hCode{jar cfe} = \hCode{jar --create --file \dots\ --main-class \dots}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -423,7 +423,7 @@ Hello, World!
   \end{columns}
 
   \vspace{0.1em}
-  \small \texttt{getResourceAsStream("/banner.txt")} searches the \textbf{class path}, so it works from any folder.
+  \small \hCode{getResourceAsStream("/banner.txt")} searches the \textbf{class path}, so it works from any folder.
   A plain file path is relative to the \textbf{current folder}: run elsewhere, the file is gone.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
@@ -446,8 +446,8 @@ Hello, World!
       \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Library.txt}}
     \end{column}
   \end{columns}
-  \small The library must be on the class path \textbf{twice}: when compiling (\texttt{javac -cp}) and when running
-  (\texttt{java -cp}). \win: \texttt{java -cp out;greet.jar App}.
+  \small The library must be on the class path \textbf{twice}: when compiling (\hCode{javac -cp}) and when running
+  (\hCode{java -cp}). \win: \hCode{java -cp out;greet.jar App}.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -474,7 +474,7 @@ Hello, World!
   \end{columns}
 
   \vspace{0.1em}
-  \small \texttt{javac} reports \textbf{file:line}, a message and a \texttt{\^{}} under the spot. Here it stops after the
+  \small \hCode{javac} reports \textbf{file:line}, a message and a \hCode{\^{}} under the spot. Here it stops after the
   syntax error; fix it, compile again, and the type error on line 4 appears.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
@@ -494,8 +494,8 @@ Hello, World!
   \end{columns}
 
   \vspace{0.1em}
-  \small Read the trace \textbf{top-down}: the exception, then where it happened (\texttt{Crash.java:5} in \texttt{average}),
-  then who called it (\texttt{Crash.java:10} in \texttt{main}). The exit code is 1.
+  \small Read the trace \textbf{top-down}: the exception, then where it happened (\hCode{Crash.java:5} in \hCode{average}),
+  then who called it (\hCode{Crash.java:10} in \hCode{main}). The exit code is 1.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -507,12 +507,12 @@ Hello, World!
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{\texttt{javap}: looking inside a \texttt{.class} file}
+\begin{frame}[t,fragile] \frametitle{\hCode{javap}: looking inside a \hCode{.class} file}
   \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Javap.txt}
 
   \vspace{0.1em}
   \small
-  The bytecode: \texttt{getstatic} fetches \texttt{System.out}, \texttt{ldc} loads the string, \texttt{invokevirtual} calls \texttt{println}.
+  The bytecode: \hCode{getstatic} fetches \hCode{System.out}, \hCode{ldc} loads the string, \hCode{invokevirtual} calls \hCode{println}.
   \textbf{Major version 65} means the file needs Java 21 or newer.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
@@ -525,13 +525,13 @@ Hello, World!
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{\texttt{jshell}: Java without a class}
-  \small Type \hCode{jshell}, then expressions one by one (\texttt{/exit} to leave); or give it a script file:
+\begin{frame}[t,fragile] \frametitle{\hCode{jshell}: Java without a class}
+  \small Type \hCode{jshell}, then expressions one by one (\hCode{/exit} to leave); or give it a script file:
 
   \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/JShell.txt}
 
   \vspace{0.1em}
-  \small Good for trying an API before writing a program. \texttt{-q} (quiet) skips the welcome text.
+  \small Good for trying an API before writing a program. \hCode{-q} (quiet) skips the welcome text.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -543,7 +543,7 @@ Hello, World!
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{\texttt{javadoc}: documentation from comments}
+\begin{frame}[t,fragile] \frametitle{\hCode{javadoc}: documentation from comments}
   \begin{columns}[T]
     \begin{column}{0.5\textwidth}
       \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Docs/lib/edu/yeditepe/greet/Greeter.java}{Java}
@@ -554,7 +554,7 @@ Hello, World!
   \end{columns}
 
   \vspace{0.1em}
-  \small Open \texttt{docs/index.html} in a browser: the same format as the official Java API documentation.
+  \small Open \hCode{docs/index.html} in a browser: the same format as the official Java API documentation.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -566,13 +566,13 @@ Hello, World!
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{\texttt{jdeps}: what does a JAR depend on?}
+\begin{frame}[t,fragile] \frametitle{\hCode{jdeps}: what does a JAR depend on?}
   \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Jdeps.txt}
 
   \vspace{0.1em}
   \small
-  The shop only needs \texttt{java.base}. \texttt{Report} uses \texttt{java.sql.Date} and \texttt{Logger}, yet only \texttt{java.sql}
-  is listed: \texttt{java.sql} already requires \texttt{java.logging}. This is the list \texttt{jlink} wants (junior slides).
+  The shop only needs \hCode{java.base}. \hCode{Report} uses \hCode{java.sql.Date} and \hCode{Logger}, yet only \hCode{java.sql}
+  is listed: \hCode{java.sql} already requires \hCode{java.logging}. This is the list \hCode{jlink} wants (junior slides).
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -594,16 +594,16 @@ Hello, World!
     \toprule
     \textbf{Command} & \textbf{Does} \\
     \midrule
-    \texttt{javac Hello.java}                               & compile into the current folder \\
-    \texttt{javac -d out -sourcepath src src/a/b/Main.java} & compile a project into \texttt{out} \\
-    \texttt{java Hello} / \texttt{java -cp out a.b.Main}     & run a class \\
-    \texttt{java Hello.java}                                & compile in memory and run (Java 11+) \\
-    \texttt{java -Dkey=value -cp out a.b.Main arg1 arg2}    & property, then class, then arguments \\
-    \texttt{jar --create --file app.jar --main-class a.b.Main -C out .} & executable JAR (\texttt{jar cfe}) \\
-    \texttt{jar --list --file app.jar} (\texttt{jar tf})    & list contents \\
-    \texttt{java -jar app.jar}                              & run an executable JAR \\
-    \texttt{java -cp out:lib/x.jar Main} (\win: \texttt{;}) & use a library \\
-    \texttt{javap -c Hello}, \texttt{jshell}, \texttt{javadoc -d docs \dots}, \texttt{jdeps app.jar} & tools \\
+    \hCode{javac Hello.java}                               & compile into the current folder \\
+    \hCode{javac -d out -sourcepath src src/a/b/Main.java} & compile a project into \hCode{out} \\
+    \hCode{java Hello} / \hCode{java -cp out a.b.Main}     & run a class \\
+    \hCode{java Hello.java}                                & compile in memory and run (Java 11+) \\
+    \hCode{java -Dkey=value -cp out a.b.Main arg1 arg2}    & property, then class, then arguments \\
+    \hCode{jar --create --file app.jar --main-class a.b.Main -C out .} & executable JAR (\hCode{jar cfe}) \\
+    \hCode{jar --list --file app.jar} (\hCode{jar tf})    & list contents \\
+    \hCode{java -jar app.jar}                              & run an executable JAR \\
+    \hCode{java -cp out:lib/x.jar Main} (\win: \hCode{;}) & use a library \\
+    \hCode{javap -c Hello}, \hCode{jshell}, \hCode{javadoc -d docs \dots}, \hCode{jdeps app.jar} & tools \\
     \bottomrule
   \end{tabular}
 \end{frame}
@@ -619,13 +619,13 @@ Hello, World!
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Exercises}
   \begin{enumerate}\small
-    \item Write \texttt{Upper.java} that prints its arguments in upper case; run it with and without quotes.
-    \item Make \texttt{Sum} read from a file and write the result to another file using only redirection.
-    \item Give \texttt{Check} a third exit code (3 for zero) and test it in a one-line \texttt{\&\&}/\texttt{||} command.
-    \item Add a class \texttt{Discount} to the shop project; compile everything with one \texttt{-sourcepath} command.
+    \item Write \hCode{Upper.java} that prints its arguments in upper case; run it with and without quotes.
+    \item Make \hCode{Sum} read from a file and write the result to another file using only redirection.
+    \item Give \hCode{Check} a third exit code (3 for zero) and test it in a one-line \hCode{\&\&}/\hCode{||} command.
+    \item Add a class \hCode{Discount} to the shop project; compile everything with one \hCode{-sourcepath} command.
     \item Package the shop as an executable JAR; run it from a different folder.
-    \item Put a \texttt{prices.txt} resource into the JAR and read it with \texttt{getResourceAsStream}.
-    \item Split \texttt{Greeter} into a library JAR with \texttt{javadoc}; use it from two different programs.
+    \item Put a \hCode{prices.txt} resource into the JAR and read it with \hCode{getResourceAsStream}.
+    \item Split \hCode{Greeter} into a library JAR with \hCode{javadoc}; use it from two different programs.
   \end{enumerate}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm

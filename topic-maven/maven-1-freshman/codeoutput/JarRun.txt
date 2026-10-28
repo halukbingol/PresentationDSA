@@ -1,0 +1,2 @@
+$ java -jar target/hello-1.0-SNAPSHOT.jar
+no main manifest attribute, in target/hello-1.0-SNAPSHOT.jar

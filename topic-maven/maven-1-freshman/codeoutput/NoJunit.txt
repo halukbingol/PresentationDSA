@@ -1,0 +1,13 @@
+$ mvn -q test | head -12
+[ERROR] COMPILATION ERROR : 
+[ERROR] ~/project/src/test/java/hello/GreeterTest.java:[3,36] package org.junit.jupiter.api does not exist
+[ERROR] ~/project/src/test/java/hello/GreeterTest.java:[3,1] static import only from classes and interfaces
+[ERROR] ~/project/src/test/java/hello/GreeterTest.java:[5,29] package org.junit.jupiter.api does not exist
+[ERROR] ~/project/src/test/java/hello/GreeterTest.java:[8,6] cannot find symbol
+  symbol:   class Test
+  location: class hello.GreeterTest
+[ERROR] ~/project/src/test/java/hello/GreeterTest.java:[10,9] cannot find symbol
+  symbol:   method assertEquals(java.lang.String,java.lang.String)
+  location: class hello.GreeterTest
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:testCompile (default-testCompile) on project hello: Compilation failure: Compilation failure: 
+[ERROR] ~/project/src/test/java/hello/GreeterTest.java:[3,36] package org.junit.jupiter.api does not exist

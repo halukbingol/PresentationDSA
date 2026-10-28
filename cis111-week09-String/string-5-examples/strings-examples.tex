@@ -25,19 +25,12 @@
 
 \documentclass[aspectratio=169,10pt,compress]{beamer}
 
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
-	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
-	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstcodedown, ...
-	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} 
+	\usepackage{../../hblib/hblibCodeoutput}
+	\usepackage{../../hblib/hblibDatastructures} 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
 
-
-% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage{booktabs}
-
-\definecolor{gitred}{RGB}{240,80,50}
 
 % ---------------------------------------------------------------------
 \title{Strings in Java}
@@ -85,7 +78,7 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Running the examples}
-  \small Every program on these slides is a file in \texttt{codeoutput/}; the output shown is what it really printed (Java 21).
+  \small Every program on these slides is a file in \hCode{codeoutput/}; the output shown is what it really printed (Java 21).
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}
       \begin{block}{macOS (Terminal)}
@@ -123,7 +116,7 @@ java -cp build Case
 
 
 
-        \texttt{run\_examples.sh} runs in \emph{Git Bash}.
+        \hCode{run\_examples.sh} runs in \emph{Git Bash}.
       \end{block}
     \end{column}
   \end{columns}
@@ -160,11 +153,11 @@ java -cp build Case
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{\texttt{length()} and \texttt{charAt(i)}}
+\begin{frame}[t,fragile] \frametitle{\hCode{length()} and \hCode{charAt(i)}}
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\tiny]{codeoutput/LengthCharAt.java}{Java}{codeoutput/LengthCharAt.txt}
 
   \vspace{0.3em}
-  \small Valid indices are \texttt{0} to \texttt{length()-1}. A \texttt{char} is a number: \texttt{(int) c} shows its code.
+  \small Valid indices are \hCode{0} to \hCode{length()-1}. A \hCode{char} is a number: \hCode{(int) c} shows its code.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -176,7 +169,7 @@ java -cp build Case
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{\texttt{substring(begin, end)}}
+\begin{frame}[t,fragile] \frametitle{\hCode{substring(begin, end)}}
   \begin{columns}[T]
     \begin{column}{0.66\textwidth}
       \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Substring.java}{Java}
@@ -185,7 +178,7 @@ java -cp build Case
       \begin{center}
         \begin{tikzpicture}\hString[0.32]{H,e,l,l,o,{,},\textvisiblespace,W,o,r,l,d}[7][12]\end{tikzpicture}
       \end{center}
-      \small \texttt{substring(7, 12)}: from index 7 \textbf{up to, not including} 12.
+      \small \hCode{substring(7, 12)}: from index 7 \textbf{up to, not including} 12.
       \vspace{0.3em}
 
       \uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Substring.txt}}
@@ -206,11 +199,11 @@ java -cp build Case
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Searching: \texttt{indexOf}, \texttt{contains}, \dots}
+\begin{frame}[t,fragile] \frametitle{Searching: \hCode{indexOf}, \hCode{contains}, \dots}
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Search.java}{Java}{codeoutput/Search.txt}
 
   \vspace{0.3em}
-  \small \texttt{indexOf} returns \texttt{-1} when not found. The loop finds every occurrence by starting after the previous one.
+  \small \hCode{indexOf} returns \hCode{-1} when not found. The loop finds every occurrence by starting after the previous one.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -222,11 +215,11 @@ java -cp build Case
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Comparing: \texttt{equals} and \texttt{compareTo}}
+\begin{frame}[t,fragile] \frametitle{Comparing: \hCode{equals} and \hCode{compareTo}}
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Compare.java}{Java}{codeoutput/Compare.txt}
 
   \vspace{0.3em}
-  \small \texttt{==} asks ``same object?''; \texttt{equals} asks ``same text?''. \texttt{compareTo} is negative, zero or positive.
+  \small \hCode{==} asks ``same object?''; \hCode{equals} asks ``same text?''. \hCode{compareTo} is negative, zero or positive.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -238,12 +231,12 @@ java -cp build Case
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Upper and lower case: the Turkish \texttt{i}}
+\begin{frame}[t,fragile] \frametitle{Upper and lower case: the Turkish \hCode{i}}
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Case.java}{Java}{codeoutput/Case.txt}
 
   \vspace{0.3em}
-  \small \hRemark{Pitfall:} \texttt{toUpperCase()} without a locale uses the computer's language. On a Turkish
-  computer \texttt{"title".toUpperCase()} is \texttt{"TİTLE"}. Use \texttt{Locale.ROOT} for program text (keywords, file names).
+  \small \hRemark{Pitfall:} \hCode{toUpperCase()} without a locale uses the computer's language. On a Turkish
+  computer \hCode{"title".toUpperCase()} is \hCode{"TİTLE"}. Use \hCode{Locale.ROOT} for program text (keywords, file names).
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -263,7 +256,7 @@ java -cp build Case
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\tiny]{codeoutput/TrimSplit.java}{Java}{codeoutput/TrimSplit.txt}
 
   \vspace{0.3em}
-  \small \texttt{split} takes a \textbf{regular expression}: \texttt{"\textbackslash\textbackslash s+"} means ``one or more white-space characters.
+  \small \hCode{split} takes a \textbf{regular expression}: \hCode{"\textbackslash\textbackslash s+"} means ``one or more white-space characters.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -279,7 +272,7 @@ java -cp build Case
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Replace.java}{Java}{codeoutput/Replace.txt}
 
   \vspace{0.3em}
-  \small The last line proves it again: none of these methods changes \texttt{s}; each returns a new string.
+  \small The last line proves it again: none of these methods changes \hCode{s}; each returns a new string.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -295,7 +288,7 @@ java -cp build Case
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Format.java}{Java}{codeoutput/Format.txt}
 
   \vspace{0.3em}
-  \small \texttt{\%s} text, \texttt{\%d} integer, \texttt{\%.2f} two decimals, \texttt{\%-8s} left-aligned in 8 columns, \texttt{\%n} new line.
+  \small \hCode{\%s} text, \hCode{\%d} integer, \hCode{\%.2f} two decimals, \hCode{\%-8s} left-aligned in 8 columns, \hCode{\%n} new line.
   With the Turkish locale the decimal separator is a comma.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
@@ -312,7 +305,7 @@ java -cp build Case
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Convert.java}{Java}{codeoutput/Convert.txt}
 
   \vspace{0.3em}
-  \small \texttt{"42" + 1} is \texttt{"421"}: as soon as one side of \texttt{+} is a \texttt{String}, \texttt{+} means concatenation.
+  \small \hCode{"42" + 1} is \hCode{"421"}: as soon as one side of \hCode{+} is a \hCode{String}, \hCode{+} means concatenation.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -328,11 +321,11 @@ java -cp build Case
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{\texttt{StringBuilder}: a mutable string}
+\begin{frame}[t,fragile] \frametitle{\hCode{StringBuilder}: a mutable string}
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Builder.java}{Java}{codeoutput/Builder.txt}
 
   \vspace{0.3em}
-  \small Methods return the builder itself, so calls can be chained: \texttt{sb.append(a).append(b)}.
+  \small Methods return the builder itself, so calls can be chained: \hCode{sb.append(a).append(b)}.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -357,11 +350,11 @@ java -cp build Case
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Classifying characters: \texttt{Character}}
+\begin{frame}[t,fragile] \frametitle{Classifying characters: \hCode{Character}}
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/CharClass.java}{Java}{codeoutput/CharClass.txt}
 
   \vspace{0.3em}
-  \small \texttt{Character.isLetter} knows Turkish letters too. \texttt{\textquotesingle 7\textquotesingle{} - \textquotesingle 0\textquotesingle} turns a digit character into its value.
+  \small \hCode{Character.isLetter} knows Turkish letters too. \hCode{\textquotesingle 7\textquotesingle{} - \textquotesingle 0\textquotesingle} turns a digit character into its value.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -381,8 +374,8 @@ java -cp build Case
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/TextBlock.java}{Java}{codeoutput/TextBlock.txt}
 
   \vspace{0.3em}
-  \small A text block starts with \texttt{"""} and a new line. The common indentation is removed;
-  a \texttt{\textbackslash} at the end of a line joins it with the next one.
+  \small A text block starts with \hCode{"""} and a new line. The common indentation is removed;
+  a \hCode{\textbackslash} at the end of a line joins it with the next one.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -394,11 +387,11 @@ java -cp build Case
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{\texttt{switch} on strings}
+\begin{frame}[t,fragile] \frametitle{\hCode{switch} on strings}
   \lstcoderightstep[0.7][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/SwitchString.java}{Java}{codeoutput/SwitchString.txt}
 
   \vspace{0.3em}
-  \small A \texttt{switch} can test strings (with \texttt{equals}, never \texttt{==}). Normalize the case first, with \texttt{Locale.ROOT}.
+  \small A \hCode{switch} can test strings (with \hCode{equals}, never \hCode{==}). Normalize the case first, with \hCode{Locale.ROOT}.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -422,14 +415,14 @@ java -cp build Case
         \toprule
         \textbf{Method} & \textbf{Gives} \\
         \midrule
-        \texttt{length()}                 & number of chars \\
-        \texttt{charAt(i)}                & char at index \texttt{i} \\
-        \texttt{substring(b, e)}          & chars \texttt{b..e-1} \\
-        \texttt{indexOf(x)}               & first index or \texttt{-1} \\
-        \texttt{contains(x)}              & \texttt{boolean} \\
-        \texttt{startsWith}/\texttt{endsWith} & \texttt{boolean} \\
-        \texttt{equals}/\texttt{equalsIgnoreCase} & same text? \\
-        \texttt{compareTo(x)}             & $<0$, $0$, $>0$ \\
+        \hCode{length()}                 & number of chars \\
+        \hCode{charAt(i)}                & char at index \hCode{i} \\
+        \hCode{substring(b, e)}          & chars \hCode{b..e-1} \\
+        \hCode{indexOf(x)}               & first index or \hCode{-1} \\
+        \hCode{contains(x)}              & \hCode{boolean} \\
+        \hCode{startsWith}/\hCode{endsWith} & \hCode{boolean} \\
+        \hCode{equals}/\hCode{equalsIgnoreCase} & same text? \\
+        \hCode{compareTo(x)}             & $<0$, $0$, $>0$ \\
         \bottomrule
       \end{tabular}
     \end{column}
@@ -438,14 +431,14 @@ java -cp build Case
         \toprule
         \textbf{Method} & \textbf{Gives (a new string)} \\
         \midrule
-        \texttt{toUpperCase(locale)}      & upper case \\
-        \texttt{strip()}                  & no outer spaces \\
-        \texttt{split(regex)}             & \texttt{String[]} \\
-        \texttt{String.join(sep, ...)}    & joined string \\
-        \texttt{replace(a, b)}            & all \texttt{a} replaced \\
-        \texttt{repeat(n)}                & \texttt{n} copies \\
-        \texttt{String.format(...)}       & formatted text \\
-        \texttt{Integer.parseInt(s)}      & \texttt{int} (not a string) \\
+        \hCode{toUpperCase(locale)}      & upper case \\
+        \hCode{strip()}                  & no outer spaces \\
+        \hCode{split(regex)}             & \hCode{String[]} \\
+        \hCode{String.join(sep, ...)}    & joined string \\
+        \hCode{replace(a, b)}            & all \hCode{a} replaced \\
+        \hCode{repeat(n)}                & \hCode{n} copies \\
+        \hCode{String.format(...)}       & formatted text \\
+        \hCode{Integer.parseInt(s)}      & \hCode{int} (not a string) \\
         \bottomrule
       \end{tabular}
     \end{column}
@@ -463,13 +456,13 @@ java -cp build Case
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Exercises}
   \begin{enumerate}\small
-    \item Print a name in reverse with a loop, then with \texttt{StringBuilder.reverse()}.
-    \item Count the vowels (\texttt{a e ı i o ö u ü}) in a Turkish sentence.
-    \item Given \texttt{"surname, name"}, print \texttt{"Name SURNAME"} (use \texttt{indexOf}, \texttt{substring}, \texttt{strip}).
-    \item Read a CSV line \texttt{"Ali,3.25,6"} and print it as a formatted table row with \texttt{String.format}.
-    \item Check whether a word is a palindrome, ignoring case (\texttt{"Kayak"}).
-    \item Turn \texttt{"hello world from java"} into \texttt{"helloWorldFromJava"} (camel case).
-    \item Explain the output of \texttt{System.out.println(1 + 2 + "3" + 4 + 5);} and then run it.
+    \item Print a name in reverse with a loop, then with \hCode{StringBuilder.reverse()}.
+    \item Count the vowels (\hCode{a e ı i o ö u ü}) in a Turkish sentence.
+    \item Given \hCode{"surname, name"}, print \hCode{"Name SURNAME"} (use \hCode{indexOf}, \hCode{substring}, \hCode{strip}).
+    \item Read a CSV line \hCode{"Ali,3.25,6"} and print it as a formatted table row with \hCode{String.format}.
+    \item Check whether a word is a palindrome, ignoring case (\hCode{"Kayak"}).
+    \item Turn \hCode{"hello world from java"} into \hCode{"helloWorldFromJava"} (camel case).
+    \item Explain the output of \hCode{System.out.println(1 + 2 + "3" + 4 + 5);} and then run it.
   \end{enumerate}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm

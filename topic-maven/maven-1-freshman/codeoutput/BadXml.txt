@@ -1,0 +1,15 @@
+$ mvn -q compile
+[ERROR] [ERROR] Some problems were encountered while processing the POMs:
+[FATAL] Non-parseable POM ~/project/pom.xml: end tag name </versoin> must be the same as start tag <version> from line 19 (position: TEXT seen ...<version>5.10.1</versoin>... @19:32)  @ line 19, column 32
+ @ 
+[ERROR] The build could not read 1 project -> [Help 1]
+[ERROR]   
+[ERROR]   The project  (~/project/pom.xml) has 1 error
+[ERROR]     Non-parseable POM ~/project/pom.xml: end tag name </versoin> must be the same as start tag <version> from line 19 (position: TEXT seen ...<version>5.10.1</versoin>... @19:32)  @ line 19, column 32 -> [Help 2]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[ERROR] [Help 2] http://cwiki.apache.org/confluence/display/MAVEN/ModelParseException

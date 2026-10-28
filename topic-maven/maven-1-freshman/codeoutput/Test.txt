@@ -1,0 +1,40 @@
+$ mvn test
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------------< edu.yeditepe:hello >-------------------------
+[INFO] Building hello 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ hello ---
+[INFO] skip non existing resourceDirectory ~/project/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ hello ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to ~/project/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ hello ---
+[INFO] skip non existing resourceDirectory ~/project/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ hello ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to ~/project/target/test-classes
+[INFO] 
+[INFO] --- surefire:2.22.3:test (default-test) @ hello ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running hello.GreeterTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.077 s - in hello.GreeterTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  11.333 s
+[INFO] Finished at: 2026-10-27T06:08:27+03:00
+[INFO] ------------------------------------------------------------------------

@@ -1,0 +1,512 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Maven for Java -- Freshman Level: Install, First Project, Build and Test
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% theme, i/N, fonts (T1, lmodern), booktabs, xcolor, array (L{width} columns), listings, tikz,
+% algorithm2e (\small captions, \Fn) and the color gitred come from the hblib libraries
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+% ---------------------------------------------------------------------
+\title{Maven for Java}
+\subtitle{Freshman Level: Install, First Project, Build and Test}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-4}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={5-7}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Why]{Why a Build Tool?}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Building by hand does not scale}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{By hand}
+      \begin{itemize}\small
+        \item \texttt{javac -d out -cp lib/a.jar:lib/b.jar \dots} for every file.
+        \item Download each library (\texttt{.jar}) and the libraries \emph{it} needs.
+        \item Run the tests yourself, put the classes in a \texttt{.jar} yourself.
+        \item Every student and every IDE does it a little differently.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{With Maven}
+      \begin{itemize}\small
+        \item One file, \texttt{pom.xml}, describes the project.
+        \item \texttt{mvn package}: compile, test, make the \texttt{.jar}.
+        \item Libraries are named, Maven downloads them (and theirs).
+        \item The same build on Windows, macOS, Linux, in the IDE and on a build server.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \vspace{0.5em}
+  \hRemark{Maven: \emph{convention over configuration}: follow the standard layout and you write almost nothing.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Install]{Installing Maven}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Getting Maven}
+  \begin{itemize}\small
+    \item Needs a JDK first (\texttt{java -version}, \texttt{javac -version}); here JDK 21.
+    \item Current release: Maven 3.10.0 (September 2026); Maven 4 is still a release candidate. The sessions in this deck ran Maven 3.9.11: the commands are the same.
+  \end{itemize}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Windows (not run here)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\tiny]
+:: 1. maven.apache.org: download
+::    apache-maven-3.10.0-bin.zip
+:: 2. unzip to C:\tools\apache-maven-3.10.0
+:: 3. Settings > System > About >
+::    Advanced system settings >
+::    Environment Variables: add to Path
+::    C:\tools\apache-maven-3.10.0\bin
+:: 4. a NEW Command Prompt:
+mvn -v
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{macOS (not run here)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\tiny]
+# with Homebrew (brew.sh):
+brew install maven
+mvn -v
+
+# or by hand: download the .tar.gz,
+# unpack it, then in ~/.zshrc:
+export PATH="$HOME/tools/apache-maven-3.10.0/bin:$PATH"
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \small If \texttt{mvn} says \texttt{JAVA\_HOME} is not defined: set \texttt{JAVA\_HOME} to the JDK folder the same way.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Is it working?}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Version.txt}
+
+  \vspace{0.1em}
+  \small
+  \begin{itemize}
+    \item The Maven version, where it is installed, and the Java it uses: check that this is the JDK you expect.
+    \item Run here on Linux; on Windows and macOS the lines look the same, with other paths.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Project]{The First Project}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The standard layout}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Layout/src/main/java/hello/Greeter.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Layout.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  Sources in \texttt{src/main/java}, tests in \texttt{src/test/java}, folders = packages. (\texttt{tree}: a small shell function here; Windows: \texttt{tree /F}.)
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{pom.xml}: the Project Object Model}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=23]{codeoutput/Layout/pom.xml}{XML}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}\small
+        \item \textbf{Coordinates}: \texttt{groupId} (who, reversed domain), \texttt{artifactId} (what), \texttt{version}.
+        \item \texttt{SNAPSHOT}: still in development.
+        \item \texttt{maven.compiler.release}: compile for Java 21.
+        \item \texttt{UTF-8}: Turkish letters in the sources.
+        \item One dependency: JUnit, only for the tests (\texttt{scope test}).
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{pom.xml}: pinning the plugin versions}
+  \begin{columns}[T]
+    \begin{column}{0.62\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=24, firstnumber=24]{codeoutput/Layout/pom.xml}{XML}
+    \end{column}
+    \begin{column}{0.36\textwidth}
+      \begin{itemize}\small
+        \item Maven itself does little: \textbf{plugins} compile, test, pack.
+        \item Without versions here, Maven picks its defaults: the build may change when Maven changes.
+        \item The versions here are those available offline for this deck; newer ones exist.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Build]{Compile, Test, Package}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{mvn compile}}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Compile.txt}
+
+  \vspace{0.1em}
+  \small
+  The classes go to \texttt{target/classes}; run them with \texttt{java -cp} (the same on Windows and macOS).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{mvn test} (1/2)}
+  \lstterminal[basicstyle=\ttfamily\tiny, lastline=21]{codeoutput/Test.txt}
+
+  \vspace{0.1em}
+  \small Each \texttt{---} line is one plugin goal at work.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{mvn test} (2/2)}
+  \lstterminal[basicstyle=\ttfamily\tiny, firstline=22]{codeoutput/Test.txt}
+
+  \vspace{0.1em}
+  \small Surefire runs the JUnit tests: 1 run, 0 failures. The time and date change with every run.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reading the log}
+  \begin{itemize}\small
+    \item \texttt{--- compiler:3.10.1:compile (default-compile) @ hello ---}: plugin \texttt{compiler}, version, \textbf{goal} \texttt{compile}, project \texttt{hello}.
+    \item \texttt{mvn test} ran everything before it: resources, compile, test resources, test compile, then the tests.
+    \item These steps are \textbf{phases} of the \textbf{lifecycle}:
+  \end{itemize}
+  \[
+  	\mathit{validate} \to \mathit{compile} \to \mathit{test} \to \mathit{package} \to \mathit{verify} \to \mathit{install} \to \mathit{deploy}
+  \]
+  \begin{itemize}\small
+    \item Naming a phase runs all phases up to it. \texttt{BUILD SUCCESS} or \texttt{BUILD FAILURE} is the verdict.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{mvn package} and \texttt{mvn clean}}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Package.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{-q} (quiet): only errors. The \texttt{.jar} name is \texttt{artifactId-version.jar}. \texttt{clean} deletes \texttt{target}: everything there can be rebuilt.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{java -jar} does not work (yet)}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/JarRun.txt}
+
+  \vspace{0.1em}
+  \small
+  The jar does not say which class has \texttt{main}. Either name the class (\texttt{java -cp \dots\ Greeter}, previous slide) or add a \emph{manifest} to the jar plugin (sophomore level).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Errors]{When the Build Fails}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A compile error}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/CompileError.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{[5,40]}: line 5, column 40 of \texttt{Greeter.java}. Read the \emph{first} error; the \texttt{[Help 1]} lines are the same for every failure.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A failing test}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/FailTest.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{expected} vs.\ \texttt{but was}: the comma is missing. No \texttt{.jar} is made while a test fails.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{No \texttt{pom.xml} here}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/NoPom.txt}
+
+  \vspace{0.1em}
+  \small
+  Maven looks for \texttt{pom.xml} in the current folder: \texttt{cd} into the project first (Windows: \texttt{cd hello}, \texttt{dir}).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A typo in the phase}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/BadPhase.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{complie} is not a phase; the message lists all valid ones.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A typo in the XML}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/BadXml.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{</versoin>}: the POM is not valid XML; line 19, column 32 is given. An IDE marks such errors while you type.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The test library is missing}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/NoJunit.txt}
+
+  \vspace{0.1em}
+  \small
+  Without the JUnit dependency the test does not compile: \texttt{package \dots\ does not exist}. (\texttt{| head -12}: the first 12 lines; the rest repeats them.)
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[IDE]{Maven in the IDE}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Opening a Maven project in an IDE}
+  \begin{itemize}\small
+    \item \textbf{Eclipse}: \menu{File > Import > Maven > Existing Maven Projects}, choose the folder with \texttt{pom.xml}. Run: right click \menu{Run As > Maven build\dots}, goal \texttt{package}.
+    \item \textbf{IntelliJ IDEA}: \menu{File > Open}, choose \texttt{pom.xml}, \emph{Open as Project}; the \emph{Maven} tool window lists the phases.
+    \item \textbf{VS Code}: the \emph{Extension Pack for Java} reads \texttt{pom.xml} on opening the folder.
+    \item The IDE uses the POM: changing a dependency in \texttt{pom.xml} changes the IDE's class path.
+    \item Same on Windows and macOS; \texttt{mvn} in a terminal stays the reference: if it builds there, it builds everywhere.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Summary}
+  \begin{center}\small
+  \begin{tabular}{@{}L{0.32\textwidth}L{0.6\textwidth}@{}}
+    \toprule
+    \textbf{command}            & \textbf{what it does} \\
+    \midrule
+    \texttt{mvn -v}             & Maven and Java versions \\
+    \texttt{mvn compile}        & \texttt{src/main/java} $\to$ \texttt{target/classes} \\
+    \texttt{mvn test}           & compile, then run the tests in \texttt{src/test/java} \\
+    \texttt{mvn package}        & \dots then \texttt{target/artifactId-version.jar} \\
+    \texttt{mvn clean}          & delete \texttt{target} \\
+    \texttt{mvn clean package}  & both, in this order \\
+    \texttt{-q}                 & quiet: only errors \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \begin{itemize}\small
+    \item The project is described by its coordinates and its \texttt{pom.xml}; layout by convention.
+    \item On failure: read the first \texttt{[ERROR]}, it names the file, line and column.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Install Maven on your computer; compare your \texttt{mvn -v} with the one in the deck.
+    \item Rebuild the \texttt{hello} project by hand (folders, \texttt{pom.xml}, two classes); run \texttt{mvn package}.
+    \item Add a method \texttt{farewell(name)} returning \texttt{"Hoşça kal, name!"} and a test for it.
+    \item Break the build in three ways (syntax, test, POM) and explain each first \texttt{[ERROR]} line.
+    \item Change \texttt{version} to \texttt{1.0}; what is the name of the jar now?
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

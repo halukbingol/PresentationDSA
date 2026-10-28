@@ -101,14 +101,14 @@
     \end{column}
     \begin{column}{0.54\textwidth}
       \begin{itemize}\small
-        \item \texttt{util}: a small \textbf{library}, \texttt{edu.yeditepe.util.Table}, that prints aligned text tables
-        \item \texttt{app}: the \textbf{application} \texttt{edu.yeditepe.books}; it reads a book list and prints it with \texttt{Table}
-        \item \texttt{app/res}: \textbf{resources}, files the program reads at run time
-        \item \texttt{build}: generated \texttt{.class} files; \texttt{dist}: what we ship
-        \item \texttt{build.sh} / \texttt{build.bat}: the build as a script
+        \item \hCode{util}: a small \textbf{library}, \hCode{edu.yeditepe.util.Table}, that prints aligned text tables
+        \item \hCode{app}: the \textbf{application} \hCode{edu.yeditepe.books}; it reads a book list and prints it with \hCode{Table}
+        \item \hCode{app/res}: \textbf{resources}, files the program reads at run time
+        \item \hCode{build}: generated \hCode{.class} files; \hCode{dist}: what we ship
+        \item \hCode{build.sh} / \hCode{build.bat}: the build as a script
       \end{itemize}
       \begin{block}{Rule}
-        \small Keep \textbf{sources} and \textbf{generated} files apart: you can delete \texttt{build} and \texttt{dist} at any time,
+        \small Keep \textbf{sources} and \textbf{generated} files apart: you can delete \hCode{build} and \hCode{dist} at any time,
         and never put them in Git.
       \end{block}
     \end{column}
@@ -129,7 +129,7 @@
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{The application: \texttt{main} and the data}
+\begin{frame}[t,fragile] \frametitle{The application: \hCode{main} and the data}
   \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Project/app/src/edu/yeditepe/books/Book.java}{Java}
   \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Project/app/src/edu/yeditepe/books/Main.java}{Java}
   \lstcode[basicstyle=\ttfamily\tiny, numbers=none]{codeoutput/Project/app/res/books.csv}{CSV}
@@ -144,7 +144,7 @@
   \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Project/app/src/edu/yeditepe/books/Catalog.java}{Java}
 
   \vspace{0.1em}
-  \small \texttt{getResourceAsStream("/books.csv")} searches the \textbf{class path}, not the current folder,
+  \small \hCode{getResourceAsStream("/books.csv")} searches the \textbf{class path}, not the current folder,
   so the file is found in a folder \emph{or} inside a JAR.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
@@ -162,9 +162,9 @@
 
   \vspace{0.1em}
   \small
-  \texttt{-sourcepath app/src}: \texttt{javac} finds \texttt{Catalog} and \texttt{Book} by itself. \texttt{-cp} names the library
-  when compiling \emph{and} when running; \texttt{app/res} is on the class path so \texttt{getResourceAsStream} finds \texttt{books.csv}.
-  \win: \texttt{-cp build\textbackslash app;app\textbackslash res;dist\textbackslash lib\textbackslash table.jar}.
+  \hCode{-sourcepath app/src}: \hCode{javac} finds \hCode{Catalog} and \hCode{Book} by itself. \hCode{-cp} names the library
+  when compiling \emph{and} when running; \hCode{app/res} is on the class path so \hCode{getResourceAsStream} finds \hCode{books.csv}.
+  \win: \hCode{-cp build\textbackslash app;app\textbackslash res;dist\textbackslash lib\textbackslash table.jar}.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -180,7 +180,7 @@
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Warnings: \texttt{-Xlint}}
+\begin{frame}[t,fragile] \frametitle{Warnings: \hCode{-Xlint}}
   \begin{columns}[T]
     \begin{column}{0.46\textwidth}
       \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Lint/Old.java}{Java}
@@ -191,8 +191,8 @@
   \end{columns}
 
   \vspace{0.1em}
-  \small By default \texttt{javac} only prints a short \emph{Note}; \texttt{-Xlint:all} names every problem.
-  Add \texttt{-Werror} to treat warnings as errors in a build.
+  \small By default \hCode{javac} only prints a short \emph{Note}; \hCode{-Xlint:all} names every problem.
+  Add \hCode{-Werror} to treat warnings as errors in a build.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -204,14 +204,14 @@
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Source file encoding: \texttt{-encoding}}
+\begin{frame}[t,fragile] \frametitle{Source file encoding: \hCode{-encoding}}
   \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Encoding.txt}
 
   \vspace{0.1em}
   \small
-  The file was saved in the old Turkish encoding ISO-8859-9. Since Java 18 \texttt{javac} assumes \textbf{UTF-8} on every system, so
-  it rejects the bytes until we name the encoding, or convert the file (\texttt{iconv}; on \win{} use the editor's \emph{Save with encoding}). Older JDKs on Windows assumed Windows-1254 instead: the classic
-  ``works on my machine'' bug. \hRemark{Save sources as UTF-8 and pass} \texttt{-encoding UTF-8} \hRemark{in builds.}
+  The file was saved in the old Turkish encoding ISO-8859-9. Since Java 18 \hCode{javac} assumes \textbf{UTF-8} on every system, so
+  it rejects the bytes until we name the encoding, or convert the file (\hCode{iconv}; on \win{} use the editor's \emph{Save with encoding}). Older JDKs on Windows assumed Windows-1254 instead: the classic
+  ``works on my machine'' bug. \hRemark{Save sources as UTF-8 and pass} \hCode{-encoding UTF-8} \hRemark{in builds.}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -223,7 +223,7 @@
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Compiling for an older Java: \texttt{--release}}
+\begin{frame}[t,fragile] \frametitle{Compiling for an older Java: \hCode{--release}}
   \begin{columns}[T]
     \begin{column}{0.42\textwidth}
       \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Release/Modern.java}{Java}
@@ -234,9 +234,9 @@
   \end{columns}
 
   \vspace{0.1em}
-  \small \texttt{--release N} checks the language \textbf{and} the API of Java N and writes class files that Java N can run
+  \small \hCode{--release N} checks the language \textbf{and} the API of Java N and writes class files that Java N can run
   (version 52 = Java 8, 55 = 11, 61 = 17, 65 = 21, 69 = 25).
-  Java 8 is \emph{obsolete} as a target: \texttt{-Xlint:-options} hides that warning.
+  Java 8 is \emph{obsolete} as a target: \hCode{-Xlint:-options} hides that warning.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -252,7 +252,7 @@
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Order, wildcards and the \texttt{CLASSPATH} variable}
+\begin{frame}[t,fragile] \frametitle{Order, wildcards and the \hCode{CLASSPATH} variable}
   \begin{columns}[T]
     \begin{column}{0.34\textwidth}
       \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/ClassPath/App.java}{Java}
@@ -263,9 +263,9 @@
   \end{columns}
 
   \vspace{0.1em}
-  \small Two JARs with the same class: the \textbf{first} on the class path wins. \texttt{lib/*} means every JAR in \texttt{lib}
-  (quote it on macOS; Windows: \texttt{-cp ".;lib\textbackslash *"}). A \texttt{CLASSPATH} variable \textbf{replaces} the default \texttt{.},
-  so \texttt{App} itself disappears; prefer \texttt{-cp} and leave \texttt{CLASSPATH} unset.
+  \small Two JARs with the same class: the \textbf{first} on the class path wins. \hCode{lib/*} means every JAR in \hCode{lib}
+  (quote it on macOS; Windows: \hCode{-cp ".;lib\textbackslash *"}). A \hCode{CLASSPATH} variable \textbf{replaces} the default \hCode{.},
+  so \hCode{App} itself disappears; prefer \hCode{-cp} and leave \hCode{CLASSPATH} unset.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -281,13 +281,13 @@
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Executable JAR with a library: \texttt{Class-Path}}
+\begin{frame}[t,fragile] \frametitle{Executable JAR with a library: \hCode{Class-Path}}
   \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Manifest.txt}
 
   \vspace{0.1em}
   \small
-  \texttt{Class-Path: lib/table.jar} is relative to the \textbf{JAR's folder}, not the current folder: ship \texttt{books.jar} with \texttt{lib/};
-  alone it fails. \texttt{manifest.txt} must end with a newline, or its last line is silently ignored.
+  \hCode{Class-Path: lib/table.jar} is relative to the \textbf{JAR's folder}, not the current folder: ship \hCode{books.jar} with \hCode{lib/};
+  alone it fails. \hCode{manifest.txt} must end with a newline, or its last line is silently ignored.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -343,7 +343,7 @@
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{Assertions are off by default: \texttt{-ea}}
+\begin{frame}[t,fragile] \frametitle{Assertions are off by default: \hCode{-ea}}
   \begin{columns}[T]
     \begin{column}{0.56\textwidth}
       \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Assert/test/TableTest.java}{Java}
@@ -354,8 +354,8 @@
   \end{columns}
 
   \vspace{0.1em}
-  \small Without \texttt{-ea} (\texttt{-enableassertions}) every \texttt{assert} is skipped and the broken test ``passes''.
-  The second assertion found a real bug: \texttt{render} pads the \textbf{last} column too. Real projects use JUnit.
+  \small Without \hCode{-ea} (\hCode{-enableassertions}) every \hCode{assert} is skipped and the broken test ``passes''.
+  The second assertion found a real bug: \hCode{render} pads the \textbf{last} column too. Real projects use JUnit.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -372,8 +372,8 @@
 
   \vspace{0.1em}
   \small
-  \texttt{-sourcepath util/src edu.yeditepe.util} documents a whole package. The warnings list the missing tags: a method comment should
-  describe each parameter (\texttt{@param}) and the result (\texttt{@return}). Ship \texttt{docs} with the library or publish it on a web site.
+  \hCode{-sourcepath util/src edu.yeditepe.util} documents a whole package. The warnings list the missing tags: a method comment should
+  describe each parameter (\hCode{@param}) and the result (\hCode{@return}). Ship \hCode{docs} with the library or publish it on a web site.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -420,7 +420,7 @@
 
     \end{column}
     \begin{column}{0.46\textwidth}
-      \small \texttt{pom.xml} \emph{describes} the project; Maven knows the steps:
+      \small \hCode{pom.xml} \emph{describes} the project; Maven knows the steps:
       \vspace{0.2em}
 
       \footnotesize
@@ -428,15 +428,15 @@
         \toprule
         \textbf{Command} & \textbf{By hand} \\
         \midrule
-        \texttt{mvn compile}  & \texttt{javac -d \dots} \\
-        \texttt{mvn test}     & run the tests \\
-        \texttt{mvn package}  & \texttt{jar --create \dots} \\
-        \texttt{mvn clean}    & \texttt{rm -rf target} \\
+        \hCode{mvn compile}  & \hCode{javac -d \dots} \\
+        \hCode{mvn test}     & run the tests \\
+        \hCode{mvn package}  & \hCode{jar --create \dots} \\
+        \hCode{mvn clean}    & \hCode{rm -rf target} \\
         \bottomrule
       \end{tabular}
 
       \vspace{0.3em}
-      \small Sources go in \texttt{src/main/java}, resources in \texttt{src/main/resources}; libraries are downloaded from
+      \small Sources go in \hCode{src/main/java}, resources in \hCode{src/main/resources}; libraries are downloaded from
       Maven Central. Same commands on Windows and macOS.
       \vspace{0.2em}
 
@@ -489,18 +489,18 @@ application {
         \toprule
         \textbf{macOS} & \textbf{Windows} \\
         \midrule
-        \texttt{./gradlew build}   & \texttt{gradlew build} \\
-        \texttt{./gradlew run}     & \texttt{gradlew run} \\
-        \texttt{./gradlew jar}     & \texttt{gradlew jar} \\
+        \hCode{./gradlew build}   & \hCode{gradlew build} \\
+        \hCode{./gradlew run}     & \hCode{gradlew run} \\
+        \hCode{./gradlew jar}     & \hCode{gradlew jar} \\
         \bottomrule
       \end{tabular}
 
       \vspace{0.4em}
-      \small \texttt{gradlew} (the \emph{wrapper}) downloads the right Gradle version, so everyone builds the same way.
-      The \texttt{application} plugin also makes start scripts for Windows and macOS.
+      \small \hCode{gradlew} (the \emph{wrapper}) downloads the right Gradle version, so everyone builds the same way.
+      The \hCode{application} plugin also makes start scripts for Windows and macOS.
       \vspace{0.2em}
 
-      \footnotesize\hRemark{Not run here} (needs the internet). Either tool replaces \texttt{build.sh}; the concepts on these slides stay the same.
+      \footnotesize\hRemark{Not run here} (needs the internet). Either tool replaces \hCode{build.sh}; the concepts on these slides stay the same.
     \end{column}
   \end{columns}
 \end{frame}
@@ -522,17 +522,17 @@ application {
   \footnotesize
   \begin{tabular}{@{}L{0.36\textwidth}L{0.58\textwidth}@{}}
     \toprule
-    \textbf{Goal} & \textbf{Command (macOS; Windows: \texttt{;} and \texttt{\textbackslash})} \\
+    \textbf{Goal} & \textbf{Command (macOS; Windows: \hCode{;} and \hCode{\textbackslash})} \\
     \midrule
-    compile a whole project         & \texttt{javac -d build -sourcepath src -encoding UTF-8 src/a/b/Main.java} \\
-    \dots\ against a library        & \texttt{javac -d build -cp lib/x.jar -sourcepath src src/a/b/Main.java} \\
-    \dots\ for an older Java        & \texttt{javac --release 17 \dots} \\
-    with all warnings               & \texttt{javac -Xlint:all -Werror \dots} \\
-    library JAR                     & \texttt{jar --create --file lib/x.jar -C build .} \\
-    executable JAR + library        & \texttt{jar --create --file app.jar --manifest m.txt -C build . -C res .} \\
-    run with libraries              & \texttt{java -cp "build:res:lib/*" a.b.Main} \\
-    run tests with assertions       & \texttt{java -ea -cp build:test Tests} \\
-    documentation                   & \texttt{javadoc -d docs -sourcepath src a.b} \\
+    compile a whole project         & \hCode{javac -d build -sourcepath src -encoding UTF-8 src/a/b/Main.java} \\
+    \dots\ against a library        & \hCode{javac -d build -cp lib/x.jar -sourcepath src src/a/b/Main.java} \\
+    \dots\ for an older Java        & \hCode{javac --release 17 \dots} \\
+    with all warnings               & \hCode{javac -Xlint:all -Werror \dots} \\
+    library JAR                     & \hCode{jar --create --file lib/x.jar -C build .} \\
+    executable JAR + library        & \hCode{jar --create --file app.jar --manifest m.txt -C build . -C res .} \\
+    run with libraries              & \hCode{java -cp "build:res:lib/*" a.b.Main} \\
+    run tests with assertions       & \hCode{java -ea -cp build:test Tests} \\
+    documentation                   & \hCode{javadoc -d docs -sourcepath src a.b} \\
     \bottomrule
   \end{tabular}
 \end{frame}
@@ -548,12 +548,12 @@ application {
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Exercises}
   \begin{enumerate}\small
-    \item Add a column ``Pages'' to \texttt{books.csv} and print it; rebuild with \texttt{build.sh} or \texttt{build.bat}.
-    \item Fix the padding bug in \texttt{Table.render} so that \texttt{TableTest} passes with \texttt{-ea}.
-    \item Turn \texttt{TableTest} into a script step: the build must stop when a test fails (exit code).
-    \item Compile the project with \texttt{--release 17}. What changes? Can you go down to \texttt{--release 11}? (records!)
-    \item Ship the application as \texttt{dist/} (JAR + \texttt{lib/}) and as one fat JAR; compare sizes and startup.
-    \item Write the \texttt{pom.xml} for the project and build it with Maven on your own computer.
+    \item Add a column ``Pages'' to \hCode{books.csv} and print it; rebuild with \hCode{build.sh} or \hCode{build.bat}.
+    \item Fix the padding bug in \hCode{Table.render} so that \hCode{TableTest} passes with \hCode{-ea}.
+    \item Turn \hCode{TableTest} into a script step: the build must stop when a test fails (exit code).
+    \item Compile the project with \hCode{--release 17}. What changes? Can you go down to \hCode{--release 11}? (records!)
+    \item Ship the application as \hCode{dist/} (JAR + \hCode{lib/}) and as one fat JAR; compare sizes and startup.
+    \item Write the \hCode{pom.xml} for the project and build it with Maven on your own computer.
   \end{enumerate}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
