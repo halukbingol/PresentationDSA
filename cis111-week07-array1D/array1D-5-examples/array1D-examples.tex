@@ -1,0 +1,414 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+% v20261029T1800
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue, \hArray
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+
+
+\title[Arrays 1D: Examples]{
+	One-Dimensional Arrays\\
+	Examples
+}
+\subtitle{
+	\cisOOO\ -- Level 5: every concept as a small program
+}
+\author[Erkovan]{Sait Erkovan}
+
+\institute[FCIS]{
+	Faculty of Computer and Information Sciences\\
+	Yeditepe University
+}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={1-4}, hideallsubsections]
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={5-8}, hideallsubsections]
+		\end{column}
+	\end{columns}
+
+	\vspace{1em}
+	\small Each slide shows a program first. \hQuestion{Predict its output}, then go to the next
+	click. The sections follow \hCode{array1D-0-concepts}; the pictures are there.
+	Every output here was produced by \hCode{run\_examples.sh}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Why]{Why arrays?}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Days warmer than the average}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/AboveAverage.java}{Java}{codeoutput/AboveAverage.txt}
+
+	\footnotesize Concept: some questions need every value \hEmph{twice}: once for the average,
+	once to compare.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Anatomy]{Anatomy of an array}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Length, first index, last index}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/Anatomy.java}{Java}{codeoutput/Anatomy.txt}
+
+	\small Concept: indices run from 0 to \hCode{length - 1}; the length is a count.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Rules]{The rules of a Java array}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Default values}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/Defaults.java}{Java}{codeoutput/Defaults.txt}
+
+	\small Concept: a new array is never empty; every element starts with the default of its type.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Memory]{Arrays live in memory}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Alias or copy?}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/Aliasing.java}{Java}{codeoutput/Aliasing.txt}
+
+	\small Concept: \hCode{b = a} copies the \emph{arrow}; a copy is a second array.
+	\hCode{==} asks ``same array?''.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Patterns]{Thinking in traversals}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Fill: the value depends on the index}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/FillSquares.java}{Java}{codeoutput/FillSquares.txt}
+
+	\small Pattern \emph{fill}: $a[i] \gets f(i)$; here $f(i) = i^{2}$.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Accumulate: sum and average}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/SumAverage.java}{Java}{codeoutput/SumAverage.txt}
+
+	\small Pattern \emph{accumulate}. \hQuestion{Why \hCode{(double)}?}
+	\uncover<2->{Without it, \hCode{389 / 5} is 77. And $0.0 / 0$ is \hCode{NaN}, ``not a number''.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Best so far: wettest and driest}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/MinMax.java}{Java}{codeoutput/MinMax.txt}
+
+	\small Pattern \emph{best so far}, twice in one loop. \hQuestion{Wed and Fri tie. Why Wed?}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Search: the first match, or -1}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/LinearSearch.java}{Java}{codeoutput/LinearSearch.txt}
+
+	\small Pattern \emph{search}, written with \hCode{return} inside the loop: the method ends at the first match.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Count the matches}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/CountPassing.java}{Java}{codeoutput/CountPassing.txt}
+
+	\small Pattern \emph{count}: a for-each loop is enough, because the index is not needed.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Transform in place}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/CurveScores.java}{Java}{codeoutput/CurveScores.txt}
+
+	\small Pattern \emph{transform}: writing \hCode{scores[i]} needs the index loop.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Filter into a new array}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/FilterPassing.java}{Java}{codeoutput/FilterPassing.txt}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Swap: wrong and right}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/Swap.java}{Java}{codeoutput/Swap.txt}
+
+	\small The first swap loses 5 forever. \hCode{temp} keeps it until it is needed.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Fence posts: separators}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/Separators.java}{Java}{codeoutput/Separators.txt}
+
+	\small A separator \emph{before} every element except the first.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Two patterns in one loop}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/DropLowest.java}{Java}{codeoutput/DropLowest.txt}
+
+	\small Accumulate and best so far together: the average of the quizzes without the lowest one.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Partial]{Partially filled arrays}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Size travels with the array}
+	\lstcode[basicstyle=\ttfamily\scriptsize, lastline=16]{codeoutput/PartiallyFilled.java}{Java}
+
+	\small \hCode{show} loops to \hCode{size}, not to \hCode{a.length}: the gray cells of the
+	concepts deck are never printed.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Insert and remove}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize, firstline=18, firstnumber=18]{codeoutput/PartiallyFilled.java}{Java}{codeoutput/PartiallyFilled.txt}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Methods]{Arrays and methods}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Three methods that take an array}
+	\lstcode[basicstyle=\ttfamily\scriptsize, lastline=18]{codeoutput/PassReference.java}{Java}
+
+	\small \hQuestion{Which of them can change the caller's array?}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Calling them}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize, firstline=20, firstnumber=20]{codeoutput/PassReference.java}{Java}{codeoutput/PassReference.txt}
+
+	\begin{itemize}\small
+		\item<2-> \hCode{addBonus} changes the elements: the caller sees 75 85 95
+		\item<2-> \hCode{replace} moves only its own arrow: nothing changes for the caller
+		\item<2-> \hCode{doubled} leaves \hCode{s} alone and returns a new array
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Recipes: concept and program}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. recipes
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.24\textwidth}L{0.24\textwidth}L{0.44\textwidth}@{}}
+			\toprule
+			\textbf{Concept} & \textbf{Program} & \textbf{The line to remember} \\
+			\midrule
+			keep values for later  & \hCode{AboveAverage}    & two passes over the same array \\
+			index and length       & \hCode{Anatomy}         & \hCode{a[a.length - 1]} is the last one \\
+			default values         & \hCode{Defaults}        & \hCode{0}, \hCode{0.0}, \hCode{false}, code 0, \hCode{null} \\
+			alias or copy          & \hCode{Aliasing}        & \hCode{b = a} copies the arrow \\
+			fill, accumulate       & \hCode{FillSquares}, \hCode{SumAverage} & \hCode{(double) sum / a.length} \\
+			best so far            & \hCode{MinMax}          & start with index 0, loop from 1 \\
+			search, count          & \hCode{LinearSearch}, \hCode{CountPassing} & stop at the first match; $-1$ \\
+			transform, filter      & \hCode{CurveScores}, \hCode{FilterPassing} & count first, then copy \\
+			swap, separators       & \hCode{Swap}, \hCode{Separators} & \hCode{temp}; a comma if \hCode{i > 0} \\
+			partially filled       & \hCode{PartiallyFilled} & loops go to \hCode{size} \\
+			methods                & \hCode{PassReference}   & elements yes, the caller's arrow no \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises: change the programs}
+	\begin{enumerate}\small
+		\item \hCode{AboveAverage}: also print how many days were \emph{below} the average.
+		\item \hCode{MinMax}: make it report the \emph{last} of two equal maxima. Which character changes?
+		\item \hCode{LinearSearch}: write \hCode{lastAtLeast}, which searches from the end.
+		\item \hCode{FilterPassing}: make the limit a parameter of a method
+		      \hCode{static int[] atLeast(int[] a, int limit)}.
+		\item \hCode{Separators}: print \hCode{[72, 85, 90]} with the brackets, and \hCode{[]} for an empty array.
+		\item \hCode{PartiallyFilled}: what happens if you add a ninth value? Add a check that prints
+		      ``full'' instead.
+		\item \hCode{PassReference}: write \hCode{reversed(int[] a)} that returns a new, reversed array.
+	\end{enumerate}
+
+	\vspace{0.5em}
+	\small After a change, run \hCode{bash run\_examples.sh Name.java} in the deck folder
+	(macOS: Terminal; Windows: Git Bash); it rewrites \hCode{codeoutput/Name.txt}.
+	In Eclipse: copy the class into a project and \menu{Run As > Java Application}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

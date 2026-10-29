@@ -1,0 +1,10 @@
+InitLater.java:4: error: illegal start of expression
+		marks = {10, 20, 30};
+		        ^
+InitLater.java:4: error: not a statement
+		marks = {10, 20, 30};
+		         ^
+InitLater.java:4: error: ';' expected
+		marks = {10, 20, 30};
+		           ^
+3 errors

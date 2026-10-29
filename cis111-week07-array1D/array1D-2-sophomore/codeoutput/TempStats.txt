@@ -1,0 +1,12 @@
+$ javac -d out TempStats.java TempStatsTest.java RunTests.java
+$ java RunTests TempStatsTest
+  ok    changesKeepsInput()
+  ok    maxOfMixed()
+  ok    countBelowZero()
+  FAIL  maxOfAllNegative()
+        expected: <-3> but was: <0>
+  FAIL  keepsInputWrongAssert()
+        expected: [I@20d28811<[1, 5, 2]> but was: [I@3967e60c<[1, 5, 2]>
+  FAIL  changesOfFourDays()
+        array contents differ at index [0], expected: <4> but was: <-4>
+6 tests: 3 passed, 3 failed

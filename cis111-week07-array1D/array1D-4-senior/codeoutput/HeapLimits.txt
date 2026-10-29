@@ -1,0 +1,9 @@
+$ javac -d out Huge.java
+$ java -Xmx64m -cp out Huge 10000000
+allocated 10000000 ints
+$ java -Xmx64m -cp out Huge 20000000
+Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
+	at Huge.main(Huge.java:4)
+$ java -cp out Huge 2147483647
+Exception in thread "main" java.lang.OutOfMemoryError: Requested array size exceeds VM limit
+	at Huge.main(Huge.java:4)

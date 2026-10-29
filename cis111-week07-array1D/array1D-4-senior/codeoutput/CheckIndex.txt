@@ -1,0 +1,8 @@
+B201
+Exception in thread "main" java.lang.IndexOutOfBoundsException: Index 7 out of bounds for length 3
+	at java.base/jdk.internal.util.Preconditions.outOfBounds(Preconditions.java:100)
+	at java.base/jdk.internal.util.Preconditions.outOfBoundsCheckIndex(Preconditions.java:106)
+	at java.base/jdk.internal.util.Preconditions.checkIndex(Preconditions.java:302)
+	at java.base/java.util.Objects.checkIndex(Objects.java:385)
+	at CheckIndex.room(CheckIndex.java:8)
+	at CheckIndex.main(CheckIndex.java:14)

@@ -1,0 +1,4 @@
+FinalReassign.java:5: error: cannot assign a value to static final variable LIMITS
+		LIMITS = new int[] {0, 0, 0};
+		^
+1 error

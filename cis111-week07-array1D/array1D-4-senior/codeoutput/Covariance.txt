@@ -1,0 +1,3 @@
+Ada
+Exception in thread "main" java.lang.ArrayStoreException: java.lang.Integer
+	at Covariance.main(Covariance.java:8)

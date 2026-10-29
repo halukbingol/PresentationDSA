@@ -1,0 +1,7 @@
+[10]  size 1, capacity 2
+[10, 20]  size 2, capacity 2
+[10, 20, 30]  size 3, capacity 4
+[10, 20, 30, 40]  size 4, capacity 4
+[10, 20, 30, 40, 50]  size 5, capacity 8
+[10, 15, 20, 30, 40, 50]  size 6, capacity 8
+[15, 20, 30, 40, 50]  size 5, capacity 8

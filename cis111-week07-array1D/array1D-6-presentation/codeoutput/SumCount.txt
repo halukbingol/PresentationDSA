@@ -1,0 +1,2 @@
+sum 351, average 70.2
+3 of 5 passed

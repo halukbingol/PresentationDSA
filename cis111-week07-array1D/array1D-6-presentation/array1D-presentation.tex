@@ -1,0 +1,1074 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+% v20261029T2350
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue, \hArray
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V switches
+% Optional parts of this lecture. Set a switch to ...false to hide its frames,
+% or delete the frames between its "EXTRA ... V" and "EXTRA ... A" lines.
+\newif\ifActivities  \Activitiestrue   % quick checks, trace table, draw-it exercise (4 frames)
+\newif\ifEclipseLab  \EclipseLabtrue   % the debugger, as in the labs (1 frame)
+\newif\ifExtraAlgos  \ExtraAlgostrue   % counting array, reverse and palindrome (2 frames)
+% +++++++++++++++++++++++++++++++++++++++ A switches
+
+
+
+\title[Arrays 1D: Lecture]{
+	One-Dimensional Arrays
+}
+\subtitle{
+	\cisOOO\ -- Week 7 lecture
+}
+\author[Erkovan]{Sait Erkovan}
+
+\institute[FCIS]{
+	Faculty of Computer and Information Sciences\\
+	Yeditepe University
+}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={1-3}, hideallsubsections]
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={4-6}, hideallsubsections]
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Why]{Why arrays?}[\small Week 7: from one value to many values]
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Where we are}
+	\begin{center}
+		\begin{tikzpicture}[week/.style={draw, rounded corners=2pt, minimum width=1.25cm, minimum height=0.9cm,
+				align=center, font=\scriptsize, fill=white}]
+			\foreach \w/\t [count=\k from 0] in {1/thinking, 2/{int\\ variables}, 3/{types,\\ debugger}, 4/decisions,
+					5/loops, 6/methods, 7/{\textbf{arrays}\\ \textbf{1D}}, 8/{arrays\\ 2D}, 9/String} {
+				\node[week] (w\k) at (\k*1.45, 0) {\t};
+				\node[font=\tiny, colorIndex, above=1pt of w\k] {week \w};
+			}
+			\node[week, fill=colorHead, minimum width=1.25cm, minimum height=0.9cm, align=center] at (6*1.45, 0) {\textbf{arrays}\\ \textbf{1D}};
+			\draw[href] (w4.south) to[bend right=25] node[below, font=\scriptsize] {loops visit the elements} (w6.south west);
+		\end{tikzpicture}
+	\end{center}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. known and new
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.46\textwidth}L{0.46\textwidth}@{}}
+			\toprule
+			\textbf{You know (week)} & \textbf{Today} \\
+			\midrule
+			a variable holds one value: \hCode{int x} (2--3)                 & an array holds many: \hCode{int[] a} \\
+			a counter loop: \hCode{for (int i = 0; i < n; i++)} (5)          & \hCode{i} becomes the \hEmph{index}: \hCode{a[i]} \\
+			sum, count, largest with a loop (5)                              & the same patterns, on an array \\
+			a method with \hCode{int} parameters (6)                         & a method with an \hCode{int[]} parameter \\
+			the debugger's Variables view (3)                                & watching all elements at once \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Today's problem: five names, or one array?}
+	\small Five daily highs: what is their average, and on how many days was it warmer?
+
+	\begin{columns}[T]
+		\begin{column}{0.49\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=14, firstnumber=3]{codeoutput/WithoutArrays.java}{Java}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/WithoutArrays.txt}}
+		\end{column}
+		\begin{column}{0.49\textwidth}
+			\uncover<3->{\lstcode[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=14, firstnumber=3]{codeoutput/WithAnArray.java}{Java}}
+			\uncover<4->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/WithAnArray.txt}}
+		\end{column}
+	\end{columns}
+
+	\footnotesize \uncover<2->{\hQuestion{And for 365 days?}}
+	\uncover<4->{Left: 365 names and 365 \hCode{if}s. Right: one name \hCode{t}; only the list in lines 3--4 grows.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{One name for many values: the parts of an array}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. parts in Java
+\begin{lstlisting}[style=codesnippet, language=Java]
+double[] t = {14.0, 16.5, 13.0, 18.5, 13.0};   // one name, five values
+System.out.println(t[3]);                        // the element at index 3
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+	\begin{center}
+		\begin{tikzpicture}
+			\hArray[id=h, name={t}, width=1.0, hot={3}]{14.0,16.5,13.0,18.5,13.0}
+			\node[colorIndex, font=\small] (ix) at (3.5,1.3) {index 3};
+			\draw[->, colorIndex] (ix) -- (3.5,0.68);
+			\node[font=\small] (el) at (6.6,1.3) {element \hCode{t[3]} is 18.5};
+			\draw[->] (el.south west) -- (h-3.north east);
+			\draw[decorate, decoration={brace, mirror, amplitude=5pt}] (0,-0.12) -- (5,-0.12)
+				node[midway, below=6pt, font=\small] {length 5: \hCode{t.length}};
+		\end{tikzpicture}
+	\end{center}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. parts
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.18\textwidth}L{0.50\textwidth}L{0.24\textwidth}@{}}
+			\toprule
+			\textbf{Term} & \textbf{Meaning} & \textbf{In Java} \\
+			\midrule
+			element      & one stored value                                         & \hCode{t[3]} \\
+			index        & its position: $0, 1, \dots, n - 1$; the first one is 0   & \hCode{3}, \hCode{i} \\
+			length $n$   & how many elements; the last index is $n - 1$             & \hCode{t.length} \\
+			element type & the type of \emph{every} element                         & \hCode{double} \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Basics]{Creating and using an array}[\small Create it, visit it with a loop, avoid the common errors]
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Declaring and creating: two steps}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. two steps
+\begin{lstlisting}[style=codesnippet, language=Java]
+double[] highs;              // 1. a variable that can refer to a double array
+highs = new double[5];       // 2. the array itself: 5 elements, all 0.0
+
+double[] lows = new double[5];   // both steps in one line
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+	\begin{center}
+		\begin{tikzpicture}
+			\node[font=\ttfamily\small] (t) at (0,0) {double[]};
+			\node[font=\ttfamily\small, right=0.7cm of t] (n) {lows};
+			\node[font=\ttfamily\small, right=0.5cm of n] (e) {=};
+			\node[font=\ttfamily\small, right=0.5cm of e] (v) {new double[5]};
+			\node[font=\scriptsize, below=0.3cm of t, align=center] {element type\\ and \hCode{[]}};
+			\node[font=\scriptsize, below=0.3cm of n, align=center] {name};
+			\node[font=\scriptsize, below=0.3cm of v, align=center] {creates 5 elements;\\ 5 is the length};
+		\end{tikzpicture}
+	\end{center}
+
+	\begin{itemize}\small
+		\item The brackets belong to the type: \hCode{double[]} is read ``double array''
+		\item \hCode{int[] a;} alone creates \emph{no} array yet; using \hCode{a[0]} does not compile
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A first array}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/FirstArray.java}{Java}{codeoutput/FirstArray.txt}
+
+	\small \hQuestion{What does it print? Look at line 6.}
+	\uncover<2->{Nobody wrote \hCode{scores[2]}: it keeps its start value 0.}
+
+	\begin{itemize}\footnotesize
+		\item<2-> A new array is never ``empty'': numbers start as 0 (0.0), \hCode{boolean} as \hCode{false}, \hCode{String} as \hCode{null}
+		\item<2-> A list \hCode{\{\dots\}} sets the values and the length. The last element is always \hCode{a[a.length - 1]}.
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\ifActivities % EXTRA activities V
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Quick check: create}
+	\hCode{int[] a = new int[5];}
+
+	\begin{enumerate}
+		\item What is \hCode{a.length}? \uncover<2->{\hEmph{5}}
+		\item What is the last valid index? \uncover<2->{\hEmph{4}}
+		\item What is \hCode{a[2]} right now? \uncover<2->{\hEmph{0}, the start value}
+		\item Make the array \hCode{\{3, 1, 4\}} in one line. \uncover<2->{\hCode{int[] b = \{3, 1, 4\};}}
+		\item For that \hCode{b}, what is \hCode{b[b.length - 1]}? \uncover<2->{\hEmph{4}, the last element}
+	\end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\fi % EXTRA activities A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Using the elements: read, write, visit}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. element access
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.34\textwidth}L{0.56\textwidth}@{}}
+			\toprule
+			\textbf{Write} & \textbf{Meaning} \\
+			\midrule
+			\hCode{a[i]}                         & the element at index \hCode{i}: read it \\
+			\hCode{a[i] = 7;} \ \hCode{a[i]++;}  & write it, change it, like any variable \\
+			\hCode{a[i + 1]}, \hCode{a[2 * k]}   & the index can be any \hCode{int} expression \\
+			\hCode{a[a.length - 1]}              & the last element \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\begin{center}
+		\begin{tikzpicture}
+			\only<1>{\hArray[id=a, name={a}, width=0.9, cur={0}]{72,85,90,64,78}}
+			\only<2>{\hArray[id=a, name={a}, width=0.9, done={0}, cur={1}]{72,85,90,64,78}}
+			\only<3>{\hArray[id=a, name={a}, width=0.9, done={0,1}, cur={2}]{72,85,90,64,78}}
+			\only<4>{\hArray[id=a, name={a}, width=0.9, done={0,...,2}, cur={3}]{72,85,90,64,78}}
+			\only<5>{\hArray[id=a, name={a}, width=0.9, done={0,...,3}, cur={4}]{72,85,90,64,78}}
+			\only<6>{\hArray[id=a, name={a}, width=0.9, done={0,...,4}]{72,85,90,64,78}}
+			\foreach \k in {0,...,5} {
+				\only<\the\numexpr\k+1\relax>{\node[font=\ttfamily\small, colorTop!60!black] at (\k*0.9+0.45,-0.45) {i = \k};}
+			}
+			\only<6>{\node[font=\small, anchor=west] at (5.0,0.25) {\hCode{i == a.length}: stop};}
+		\end{tikzpicture}
+	\end{center}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. traversal
+\begin{lstlisting}[style=codesnippet, language=Java]
+for (int i = 0; i < a.length; i++) {     // the counter loop of week 5 ...
+    System.out.println(a[i]);            // ... and i is the index
+}
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+	\small Start at 0, continue while \hCode{i < a.length}. Every algorithm today is this loop with a different body.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The enhanced for loop: for each element}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. enhanced for
+\begin{lstlisting}[style=codesnippet, language=Java]
+for (int s : steps) { ... }      // read: "for each s in steps"
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+	\footnotesize \hCode{s} takes the values \hCode{steps[0]}, \hCode{steps[1]}, \dots\ in order, one per turn.
+	There is no index: it is the index loop with \hCode{int s = steps[i];} as its first line.
+
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize, firstline=3, lastline=12, firstnumber=3]{codeoutput/ForEachLoop.java}{Java}{codeoutput/ForEachLoop.txt}
+
+	\footnotesize \uncover<2->{Read only: \hCode{s} is a copy, so line 10 does not change the array.
+	To change elements, or to know the index, use the index loop.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Find the two bugs: index out of bounds}
+	\footnotesize \hQuestion{The sum should be 60. Find the two bugs before the program runs.}
+
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=8, firstnumber=3][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/OffByOne.java}{Java}{codeoutput/OffByOne.txt}
+
+	\begin{enumerate}\footnotesize
+		\item<3-> \hCode{i = 1}: \hCode{marks[0]} is never added. Start at 0.
+		\item<3-> \hCode{i <= marks.length}: \hCode{i} reaches 3, but the last index is 2. Use \hCode{<}.
+		\item[]<3-> Java checks every index. A wrong one stops the program with an error message
+			  (an \emph{exception}, week 11); it names the index, the length and the line.
+	\end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Two errors the compiler finds}
+	\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/NotInitialized.txt}
+
+	\footnotesize \hCode{int[] marks;} is only the variable. Create the array: \hCode{int[] marks = new int[3];}
+
+	\vspace{0.5em}
+	\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/LengthParens.txt}
+
+	\footnotesize The length of an array has no parentheses: \hCode{marks.length}.
+	A \hCode{String} has \hCode{s.length()} (week 9).
+	The compiler names the file and the line; the caret \hCode{\^{}} marks the place.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Printing an array}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/PrintArray.java}{Java}{codeoutput/PrintArray.txt}
+
+	\footnotesize \uncover<2->{\hCode{[I@\dots} is where the array is. \hCode{Arrays.toString} puts the commas for us.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{An array variable holds a reference}
+	\begin{center}
+		\begin{tikzpicture}
+			\node[hvar] (x) at (-2.4,0.6) {5};
+			\node[font=\ttfamily\small, left=2pt of x] {x};
+			\only<1-2>{\hArray[id=r, at={(2.6,0)}, width=0.8]{1,2,3}}
+			\only<3->{\hArray[id=r, at={(2.6,0)}, width=0.8, hot={0}]{99,2,3}}
+			\node[hvar] (a) at (0.6,0.6) {};
+			\node[font=\ttfamily\small, left=2pt of a] {a};
+			\draw[href] (a.center) -- (r-0.west);
+			\uncover<2->{
+				\node[hvar] (b) at (0.6,-0.4) {};
+				\node[font=\ttfamily\small, left=2pt of b] {b};
+				\draw[href] (b.center) -- (r-0.south west);
+			}
+			\node[font=\small, anchor=west] at (5.4,0.9) {\hCode{int x = 5;}};
+			\node[font=\small, anchor=west] at (5.4,0.45) {\hCode{int[] a = \{1, 2, 3\};}};
+			\uncover<2->{\node[font=\small, anchor=west] at (5.4,0.0) {\hCode{int[] b = a;}};}
+			\uncover<3->{\node[font=\small, anchor=west] at (5.4,-0.45) {\hCode{b[0] = 99;}};}
+		\end{tikzpicture}
+	\end{center}
+
+	\begin{itemize}
+		\item An \hCode{int} variable holds its number. An array variable holds an \hEmph{arrow} to its array:
+			  a \hDefined{reference}.
+		\item<2-> \hCode{b = a} copies the arrow, not the array: \hCode{a} and \hCode{b} are two names
+			  for one array, \hDefined{aliases}.
+		\item<3-> \hCode{b[0] = 99} changes that one array, so \hCode{a[0]} is 99, too.
+			  (After \hCode{int y = x;} changing \hCode{y} never changes \hCode{x}.)
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Copying an array: make a new one}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/CopyArray.java}{Java}{codeoutput/CopyArray.txt}
+
+	\footnotesize \uncover<2->{\hCode{==} asks ``the same array?''; \hCode{Arrays.equals} asks ``the same elements?''.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\ifActivities % EXTRA activities V
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{On paper: draw the arrows}
+	Draw the variables, the arrows and the arrays after each line. Then answer.
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. draw it
+\begin{lstlisting}[style=codesnippet, language=Java]
+int[] p = {4, 5};
+int[] q = p;
+int[] r = java.util.Arrays.copyOf(p, p.length);
+q[1] = 0;
+r[0] = 9;
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+	\begin{enumerate}
+		\item What are \hCode{p[0]} and \hCode{p[1]}? \uncover<2->{\hEmph{4} and \hEmph{0}: \hCode{q} is an alias of \hCode{p}}
+		\item What is \hCode{r[1]}? \uncover<2->{\hEmph{5}: \hCode{r} is a copy, made before \hCode{q[1] = 0}}
+		\item How many arrays are there? \uncover<2->{\hEmph{2}, and three variables}
+	\end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\fi % EXTRA activities A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Algos]{Common array algorithms}[\small Name the pattern first, then write the loop]
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A catalogue of patterns}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. patterns
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.12\textwidth}L{0.21\textwidth}L{0.16\textwidth}L{0.25\textwidth}L{0.13\textwidth}@{}}
+			\toprule
+			\textbf{Pattern} & \textbf{Question} & \textbf{Start} & \textbf{At element $i$} & \textbf{Result} \\
+			\midrule
+			Fill       & set every element         & --                     & $a[i] \gets f(i)$             & filled array \\
+			Accumulate & total? average?           & $s \gets 0$            & $s \gets s + a[i]$            & $s$, $s / n$ \\
+			Count      & how many match?           & $c \gets 0$            & if match: $c \gets c + 1$     & $c$ \\
+			Largest    & which is the largest?     & $b \gets 0$ (index) & if $a[i] > a[b]$: $b \gets i$ & $b$, $a[b]$ \\
+			Smallest   & which is the smallest?    & $b \gets 0$ (index) & if $a[i] < a[b]$: $b \gets i$ & $b$, $a[b]$ \\
+			Search     & where is the first match? & --                     & stop at the first match       & index or $-1$ \\
+			Transform  & change every element      & --                     & $a[i] \gets g(a[i])$          & same array \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\small Largest and smallest start with element 0 and loop from 1.
+	Week 5 had the same patterns for numbers read one by one; now the numbers stay in the array.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Filling and changing every element}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/FillChange.java}{Java}{codeoutput/FillChange.txt}
+
+	\footnotesize Both write \hCode{a[i]}, so both need the index loop. Fill: the value comes from \hCode{i}.
+	Change: from the old value; \hCode{Math.min} keeps it at most 100.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Sum, average and count}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/SumCount.java}{Java}{codeoutput/SumCount.txt}
+
+	\footnotesize One loop, two patterns. \hQuestion{Why \hCode{(double)}?}
+	\uncover<2->{Without it \hCode{351 / 5} is 70: integer division (week 3).}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Largest and smallest}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/MinMax.java}{Java}{codeoutput/MinMax.txt}
+
+	\footnotesize Keep the \emph{index} of the best so far: it gives the value and the day.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\ifActivities % EXTRA activities V
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{On paper: trace the best-so-far loop}
+	\hCode{rain = \{2.5, 0.0, 11.5, 4.0, 11.5\}}; fill one row per step, then click.
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. trace
+\begin{table}
+		\small
+		\begin{tabular}{@{}ccccc@{}}
+			\toprule
+			\hCode{i} & \hCode{rain[i]} & \hCode{rain[i] > rain[wet]}? & \hCode{wet} & \hCode{dry} \\
+			\midrule
+			start & --   & --                       & 0              & 0 \\
+			1     & 0.0  & \leavevmode\uncover<2->{no}         & \leavevmode\uncover<2->{0} & \leavevmode\uncover<2->{1} \\
+			2     & 11.5 & \leavevmode\uncover<2->{yes}        & \leavevmode\uncover<2->{2} & \leavevmode\uncover<2->{1} \\
+			3     & 4.0  & \leavevmode\uncover<2->{no}         & \leavevmode\uncover<2->{2} & \leavevmode\uncover<2->{1} \\
+			4     & 11.5 & \leavevmode\uncover<2->{no, equal}  & \leavevmode\uncover<2->{2} & \leavevmode\uncover<2->{1} \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\small \uncover<2->{Wednesday (index 2) wins the tie: \hCode{>} keeps the first of equal values.
+	With \hCode{>=}, Friday would win.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\fi % EXTRA activities A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Linear search}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/SearchFlag.java}{Java}{codeoutput/SearchFlag.txt}
+
+	\footnotesize Look at the elements one by one; stop at the end \emph{or} at the first match.
+	As a method (week 6) it would return \hCode{pos}, or $-1$ when not found: $-1$ is never an index.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Swapping two elements}
+	\small Swap \hCode{a[0]} and \hCode{a[2]}:
+
+	\begin{center}
+		\begin{tikzpicture}
+			\only<1>{\hArray[id=s, name={a}, width=0.8]{5,8,3}}
+			\only<2>{\hArray[id=s, name={a}, width=0.8, hot={0}]{5,8,3}}
+			\only<3>{\hArray[id=s, name={a}, width=0.8, hot={0}]{3,8,3}}
+			\only<4->{\hArray[id=s, name={a}, width=0.8, hot={0,2}]{3,8,5}}
+			\uncover<2->{\node[hvar] (t) at (4.2,0.25) {5};
+				\node[font=\ttfamily\small, above=1pt of t] {temp};}
+		\end{tikzpicture}
+	\end{center}
+
+	\begin{enumerate}\small
+		\item<2-> \hCode{int temp = a[0];} keep a copy of the old \hCode{a[0]}
+		\item<3-> \hCode{a[0] = a[2];} the old \hCode{a[0]} is safe in \hCode{temp}
+		\item<4-> \hCode{a[2] = temp;}
+	\end{enumerate}
+
+	\small \uncover<5->{Without \hCode{temp}, step 2 destroys the old \hCode{a[0]}: the array becomes \hCode{\{3, 8, 3\}}.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\ifExtraAlgos % EXTRA algorithms V
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A counting array: the value picks the counter}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/Histogram.java}{Java}{codeoutput/Histogram.txt}
+
+	\small \hCode{counts[s / 10]++}: score 72 adds one to \hCode{counts[7]}. One pass, no search.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reverse and palindrome: the mirror index}
+	\begin{columns}[T]
+		\begin{column}{0.49\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, firstline=4, lastline=11, firstnumber=4]{codeoutput/MirrorIndex.java}{Java}
+		\end{column}
+		\begin{column}{0.49\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, firstline=13, lastline=21, firstnumber=13]{codeoutput/MirrorIndex.java}{Java}
+		\end{column}
+	\end{columns}
+
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize, firstline=24, lastline=28, firstnumber=24]{codeoutput/MirrorIndex.java}{Java}{codeoutput/MirrorIndex.txt}
+
+	\footnotesize Element \hCode{i} and its mirror \hCode{n - 1 - i}: swap them, or compare them. Half of the array is enough.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\fi % EXTRA algorithms A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Partial]{Partially filled arrays}[\small When the number of values is not known in advance]
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Size, remove, insert}
+	\footnotesize How many values will come? Unknown: make the array \hEmph{big enough} and count the cells \hEmph{in use}.
+
+	\begin{center}
+		\begin{tikzpicture}[every node/.append style={font=\scriptsize}]
+			\hArray[id=v, name={values}, width=0.45, font=\scriptsize, unused={4,...,7}]{40,33,15,27,0,0,0,0}
+			\draw[decorate, decoration={brace, mirror, amplitude=3pt}] (0,-0.1) -- (1.8,-0.1)
+				node[midway, below=4pt] {in use: \hCode{size} = 4};
+			\draw[decorate, decoration={brace, mirror, amplitude=3pt}] (1.8,-0.1) -- (3.6,-0.1)
+				node[midway, below=4pt] {free};
+			\node[anchor=west, align=left] at (3.9,0.25) {capacity = \hCode{values.length} = 8\\
+				add at the end: \hCode{values[size] = x; size++;}};
+
+			\node[anchor=west] at (-0.2,-1.15) {\textbf{Remove} index 0, \emph{any order}: move the last one in};
+			\hArray[id=e, at={(0,-2.1)}, width=0.45, font=\scriptsize, index=below, unused={4,5}]{40,33,15,27,0,0}
+			\draw[->, colorStop, thick] (e-3.north) to[bend right=35] (e-0.north);
+			\node at (3.0,-1.87) {$\Rightarrow$};
+			\hArray[id=f, at={(3.35,-2.1)}, width=0.45, font=\scriptsize, index=below, hot={0}, unused={3,4,5}]{27,33,15,27,0,0}
+
+			\node[anchor=west] at (6.2,-1.15) {\textbf{Remove} index 0, \emph{keep the order}: shift left};
+			\hArray[id=c, at={(6.4,-2.1)}, width=0.45, font=\scriptsize, index=below, unused={4,5}]{40,33,15,27,0,0}
+			\draw[->, colorStop, thick] (c-1.north) to[bend right=60] (c-0.north);
+			\draw[->, colorStop, thick] (c-2.north) to[bend right=60] (c-1.north);
+			\draw[->, colorStop, thick] (c-3.north) to[bend right=60] (c-2.north);
+			\node at (9.4,-1.87) {$\Rightarrow$};
+			\hArray[id=d, at={(9.75,-2.1)}, width=0.45, font=\scriptsize, index=below, unused={3,4,5}]{33,15,27,27,0,0}
+
+			\node[anchor=west] at (-0.2,-3.35) {\textbf{Insert} 33 at index 1: shift right, \emph{starting from the end}};
+			\hArray[id=a, at={(0,-4.3)}, width=0.45, font=\scriptsize, index=below, unused={3,...,5}]{40,15,27,0,0,0}
+			\draw[->, colorStop, thick] (a-2.north) to[bend left=60] (a-3.north);
+			\draw[->, colorStop, thick] (a-1.north) to[bend left=60] (a-2.north);
+			\node at (3.0,-4.07) {$\Rightarrow$};
+			\hArray[id=b, at={(3.35,-4.3)}, width=0.45, font=\scriptsize, index=below, hot={1}, unused={4,5}]{40,33,15,27,0,0}
+			\node[anchor=west, align=left] at (6.2,-3.9) {Gray cells are outside \hCode{size}:\\ their old values do not matter.\\
+				\hQuestion{Why must the right shift start from the end?}};
+		\end{tikzpicture}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A partially filled array in Java}
+	\begin{columns}[T]
+		\begin{column}{0.49\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, lastline=16]{codeoutput/PartiallyFilled.java}{Java}
+		\end{column}
+		\begin{column}{0.49\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, firstline=17, lastline=26, firstnumber=17]{codeoutput/PartiallyFilled.java}{Java}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/PartiallyFilled.txt}}
+		\end{column}
+	\end{columns}
+
+	\footnotesize \hCode{size} travels with the array; \hCode{show} loops to \hCode{size}, not to \hCode{a.length}.
+	Lines 17--20 insert 33 at index 1; lines 22--25 remove index 0 and keep the order.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reading input into an array}
+	\footnotesize \textbf{The count comes first:} read it, then make exactly that many elements.
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. known count
+\begin{lstlisting}[style=codesnippet, language=Java]
+int n = in.nextInt();                   // how many values?
+double[] t = new double[n];             // exactly n elements
+for (int i = 0; i < n; i++) { t[i] = in.nextDouble(); }
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+	\footnotesize \textbf{The count is not known:} a big-enough array and \hCode{size}, a partially filled array.
+
+	\begin{columns}[T]
+		\begin{column}{0.66\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, firstline=5, lastline=15, firstnumber=5]{codeoutput/ReadScores.java}{Java}
+		\end{column}
+		\begin{column}{0.32\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, numbers=none]{codeoutput/ReadScores.in}{}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/ReadScores.txt}}
+		\end{column}
+	\end{columns}
+
+	\footnotesize \hCode{Scanner} as in the week 3 lab (more in week 10). The loop stops at the first non-number, \hCode{q}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Growing an array}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/GrowArray.java}{Java}{codeoutput/GrowArray.txt}
+
+	\small \uncover<2->{An array cannot grow: \hCode{Arrays.copyOf} makes a longer one and copies.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Methods]{Arrays and methods}[\small The methods of week 6, now with array parameters]
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Passing an array passes the arrow}
+	\begin{center}
+		\begin{tikzpicture}
+			\node[draw, rounded corners, gray, minimum width=2.4cm, minimum height=1.0cm, label={[gray, font=\scriptsize]above:main}] (cf) at (0.6,0.6) {};
+			\node[draw, rounded corners, gray, minimum width=2.4cm, minimum height=1.0cm, label={[gray, font=\scriptsize]below:addBonus}] (mf) at (0.6,-1.0) {};
+			\node[hvar] (s) at (1.0,0.6) {};
+			\node[font=\ttfamily\small, left=2pt of s] {scores};
+			\node[hvar] (p) at (1.0,-1.0) {};
+			\node[font=\ttfamily\small, left=2pt of p] {a};
+			\only<1-2>{\hArray[id=x, at={(4.0,-0.45)}, width=0.8]{70,80,90}}
+			\only<3->{\hArray[id=x, at={(4.0,-0.45)}, width=0.8, hot={0,1,2}]{75,85,95}}
+			\draw[href] (s.center) -- (x-0.north west);
+			\only<1-3>{\draw[href] (p.center) -- (x-0.south west);}
+			\only<4>{
+				\hArray[id=z, at={(4.0,-1.7)}, width=0.8]{0,0,0}
+				\draw[href] (p.center) -- (z-0.west);
+			}
+		\end{tikzpicture}
+	\end{center}
+
+	\begin{itemize}\small
+		\item<2-> The parameter \hCode{a} gets a copy of the \emph{arrow}: both refer to one array
+		\item<3-> The method changes \hCode{a[i]}: the caller \hEmph{sees} the change
+		\item<4-> The method sets \hCode{a} to a new array: only its own arrow moves;
+				  the caller \hEmph{does not} see it
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A method can change an array, or return a new one}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize, firstline=3, lastline=21, firstnumber=3]{codeoutput/PassReference.java}{Java}{codeoutput/PassReference.txt}
+
+	\footnotesize \uncover<2->{\hCode{addBonus} changes the caller's array; \hCode{doubled} \hEmph{returns} a new one.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Solving a problem: decompose it}
+	\small \hQuestion{The lowest quiz is dropped; what is the average of the rest?}
+	Split it (total, lowest), name the patterns (accumulate, best so far), combine, check by hand: $(38 - 4) / 4 = 8.5$.
+
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize, firstline=3, lastline=15, firstnumber=3]{codeoutput/DropLowest.java}{Java}{codeoutput/DropLowest.txt}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\ifEclipseLab % EXTRA Eclipse and lab V
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{In Eclipse: watch an array in the debugger}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. debugger keys
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.34\textwidth}L{0.24\textwidth}L{0.30\textwidth}@{}}
+			\toprule
+			\textbf{Action} & \textbf{Windows} & \textbf{macOS} \\
+			\midrule
+			Toggle a breakpoint           & \keys{Ctrl + Shift + B} & \keys{\shift + \cmd + B} \\
+			Debug (last launched)         & \keys{F11}              & \keys{\cmd + F11} \\
+			Step over / step into         & \keys{F6} / \keys{F5}   & \keys{F6} / \keys{F5} \\
+			Resume to the next breakpoint & \keys{F8}               & \keys{F8} \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\begin{enumerate}\small
+		\item Double-click the left margin of a line inside the loop: a breakpoint
+		\item \menu{Run > Debug As > Java Application} opens the Debug perspective
+		\item In the \menu{Variables} view, open the array: one row per element, \hCode{[0]}, \hCode{[1]}, \dots
+		\item Step with \keys{F6}: the element that changes is highlighted
+	\end{enumerate}
+	\footnotesize \hRemark{macOS}: if the F-keys change volume or brightness, also hold \keys{fn}.
+	Try it on \hCode{FillChange}: watch \hCode{scores} change one element per step.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\fi % EXTRA Eclipse and lab A
+
+
+
+\ifActivities % EXTRA activities V
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Quick check: methods}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. methods quiz
+\begin{lstlisting}[style=codesnippet, language=Java]
+static void renew(int[] a) { a = new int[a.length]; }
+static void reset(int[] a) {
+    for (int i = 0; i < a.length; i++) { a[i] = 0; }
+}
+int[] x = {1, 2, 3};   renew(x);   reset(x);
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+	\begin{enumerate}
+		\item After \hCode{renew(x)}, what is \hCode{x[0]}? \uncover<2->{\hEmph{1}: only the parameter's arrow moved}
+		\item After \hCode{reset(x)}, what is \hCode{x[0]}? \uncover<2->{\hEmph{0}: the elements of the caller's array changed}
+		\item Write the header of a method that returns the reverse of an \hCode{int} array.
+			  \uncover<2->{\hCode{static int[] reversed(int[] a)}}
+	\end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\fi % EXTRA activities A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[End]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. cheat sheet
+\begin{lstlisting}[style=codesnippet, language=Java, basicstyle=\ttfamily\scriptsize]
+int[] a = new int[5];                 // create: 5 zeros
+int[] b = {4, 8, 15};                 // create with values
+a[0] = 7;   int x = a[2];             // write, read
+int n = a.length;                     // no parentheses
+int last = a[a.length - 1];           // the last element
+int[] c = a;                          // an alias: the same array!
+int[] d = Arrays.copyOf(a, a.length); // a copy: a new array
+for (int i = 0; i < a.length; i++) {  // index loop: read and write
+    a[i] = 2 * a[i];
+}
+for (int v : a) {                     // enhanced for: read only
+    System.out.print(v + " ");
+}
+static int[] reversed(int[] a) {...}  // array parameter, array result
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+	\footnotesize Patterns: fill, accumulate, count, largest and smallest, search, transform, swap.
+	Partially filled arrays: \hCode{size}; insert and remove by shifting.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+	\begin{enumerate}\small
+		\item Store the number of days of the 12 months in an array (February: 28) and print the total.
+		\item Read up to 50 exam scores until a non-number; print how many are above the average.
+		\item Write \hCode{static int lastIndexOf(int[] a, int x)}: the last index of \hCode{x}, or $-1$.
+			  Search from the end.
+		\item Write \hCode{static void rotateLeft(int[] a)}: \hCode{\{1, 2, 3, 4\}} becomes \hCode{\{2, 3, 4, 1\}}.
+			  Which element must be saved first?
+		\item In a partially filled array, remove \emph{every} element equal to \hCode{x}, keeping the order.
+		\item Write \hCode{static boolean isIncreasing(int[] a)}: is every element larger than the one before it?
+	\end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Where arrays come back}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. next weeks
+\begin{table}
+		\small
+		\begin{tabular}{@{}L{0.12\textwidth}L{0.24\textwidth}L{0.56\textwidth}@{}}
+			\toprule
+			\textbf{Week} & \textbf{Topic} & \textbf{Arrays there} \\
+			\midrule
+			8  & 2D arrays              & a table is an array of rows: \hCode{int[][] t}; \hCode{t[r][c]} \\
+			9  & String                 & a sequence of \hCode{char}s: \hCode{s.charAt(i)} is like \hCode{a[i]}; \hCode{s.length()} \\
+			10 & Input/Output           & read a file into a (partially filled) array \\
+			11 & Exceptions, testing    & today's index-out-of-bounds error is an exception; tests compare arrays \\
+			12 & Recursion              & a method that works on a part of an array \\
+			13 & Command line           & \hCode{main(String[] args)}: the words typed after the program name \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\small Reading: bjlo2, Chapter 6 (6.1--6.6). Decks of this topic: \hCode{array1D-0-concepts} \dots\ \hCode{array1D-5-examples}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{References}
+	\small The Java Tutorials, Arrays \cite{TheJavaTutorialsArray}.
+
+	\vspace{1em}
+	\setbeamertemplate{bibliography item}[text]
+	\bibliographystyle{IEEEtran}
+	\tiny\bibliography{../../hblib/hblibDataStructures}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

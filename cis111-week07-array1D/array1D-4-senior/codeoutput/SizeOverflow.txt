@@ -1,0 +1,3 @@
+bytes = -1894967296
+java.lang.NegativeArraySizeException: -1894967296
+java.lang.ArithmeticException: integer overflow
