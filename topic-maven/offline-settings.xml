@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- offline-settings.xml: how the sessions on the slides were run without internet access.
+     Plugins and libraries come from a local copy (/opt/maven-offline-repo, made from the Debian packages of the plugins) instead of
+     Maven Central. With internet access you do not need this file: plain "mvn" uses Central. -->
+<settings>
+  <profiles>
+    <profile>
+      <id>offline</id>
+      <repositories>
+        <repository>
+          <id>central</id>
+          <url>file:///opt/maven-offline-repo</url>
+          <releases><checksumPolicy>ignore</checksumPolicy></releases>
+          <snapshots><checksumPolicy>ignore</checksumPolicy></snapshots>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>central</id>
+          <url>file:///opt/maven-offline-repo</url>
+          <releases><checksumPolicy>ignore</checksumPolicy></releases>
+          <snapshots><checksumPolicy>ignore</checksumPolicy></snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>offline</activeProfile>
+  </activeProfiles>
+</settings>

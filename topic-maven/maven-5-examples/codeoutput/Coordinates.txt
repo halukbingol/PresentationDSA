@@ -1,0 +1,7 @@
+$ mvn -q install
+$ cd ~/.m2/repository
+$ find edu -type f | sort
+edu/yeditepe/hello/1.0/_remote.repositories
+edu/yeditepe/hello/1.0/hello-1.0.jar
+edu/yeditepe/hello/1.0/hello-1.0.pom
+edu/yeditepe/hello/maven-metadata-local.xml

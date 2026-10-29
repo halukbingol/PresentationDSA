@@ -1,0 +1,14 @@
+$ cd linecount-maven-plugin
+$ mvn -q install
+$ cd ../hello-app
+$ mvn verify | grep -A1 "linecount"
+[INFO] --- linecount:1.0:count (default) @ repro ---
+[INFO] 1 files, 7 lines (max 1000)
+$ mvn -q verify -Dlinecount.max=5
+[ERROR] Failed to execute goal edu.yeditepe:linecount-maven-plugin:1.0:count (default) on project repro: too many lines: 7 > 5 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

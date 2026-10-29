@@ -1,0 +1,16 @@
+$ mvn package | grep "Tests run:\|BUILD\|---.*@"
+[INFO] --- resources:3.3.0:resources (default-resources) @ hello ---
+[INFO] --- compiler:3.10.1:compile (default-compile) @ hello ---
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ hello ---
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ hello ---
+[INFO] --- surefire:2.22.3:test (default-test) @ hello ---
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.051 s <<< FAILURE! - in hello.HelloTest
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0
+[INFO] BUILD FAILURE
+$ ls target
+classes
+generated-sources
+generated-test-sources
+maven-status
+surefire-reports
+test-classes

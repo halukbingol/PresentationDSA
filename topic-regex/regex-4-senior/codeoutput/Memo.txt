@@ -1,0 +1,7 @@
+(a+)+b     n=30     false     5 ms
+(a+)+b     n=5000   false   174 ms
+(a+)+b     n=10000  false   796 ms
+(a+)+\1b   n=20     false    31 ms
+(a+)+\1b   n=22     false    87 ms
+(a+)+\1b   n=24     false   349 ms
+(a+)+\1b   n=26     false  1569 ms

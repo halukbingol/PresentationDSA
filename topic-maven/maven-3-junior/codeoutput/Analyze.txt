@@ -1,0 +1,5 @@
+$ mvn compile dependency:analyze | grep WARNING
+[WARNING] Used undeclared dependencies found:
+[WARNING]    edu.yeditepe.lib:textutil:jar:2.0:compile
+[WARNING] Unused declared dependencies found:
+[WARNING]    org.apache.commons:commons-lang3:jar:3.14.0:compile

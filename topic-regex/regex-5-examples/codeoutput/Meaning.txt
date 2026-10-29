@@ -1,0 +1,4 @@
+26.10.2026  form ok  date 2026-10-26
+31.02.2026  form ok  no such date
+29.02.2028  form ok  date 2028-02-29
+99.99.2026  form ok  no such date

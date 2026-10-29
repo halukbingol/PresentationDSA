@@ -1,0 +1,487 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Maven for Java -- Sophomore Level: Lifecycle, Dependencies, Resources and Runnable Jars
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% theme, i/N, fonts (T1, lmodern), booktabs, xcolor, array (L{width} columns), listings, tikz,
+% algorithm2e (\small captions, \Fn) and the color gitred come from the hblib libraries
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+% ---------------------------------------------------------------------
+\title{Maven for Java}
+\subtitle{Sophomore Level: Lifecycle, Dependencies, Resources and Runnable Jars}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-4}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={5-8}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Lifecycle]{Phases, Plugins and Goals}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Three lifecycles, many phases}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \begin{itemize}\small
+        \item \textbf{clean}: \texttt{pre-clean}, \texttt{clean}, \texttt{post-clean}.
+        \item \textbf{default} (the build), main phases:
+      \end{itemize}
+      \[
+      	\begin{array}{l}
+      		\mathit{validate} \\ \mathit{compile} \\ \mathit{test} \\ \mathit{package} \\ \mathit{verify} \\ \mathit{install} \\ \mathit{deploy}
+      	\end{array}
+      \]
+      \begin{itemize}\small
+        \item \textbf{site}: project web pages.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.56\textwidth}
+      \begin{center}\footnotesize
+      \begin{tabular}{@{}ll@{}}
+        \toprule
+        \textbf{phase}            & \textbf{goal bound to it (jar)} \\
+        \midrule
+        process-resources          & \texttt{resources:resources} \\
+        compile                    & \texttt{compiler:compile} \\
+        process-test-resources     & \texttt{resources:testResources} \\
+        test-compile               & \texttt{compiler:testCompile} \\
+        test                       & \texttt{surefire:test} \\
+        package                    & \texttt{jar:jar} \\
+        install                    & \texttt{install:install} \\
+        deploy                     & \texttt{deploy:deploy} \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+      \small A \textbf{phase} is a step; a \textbf{goal} (\texttt{plugin:goal}) is the work. The packaging (\texttt{jar}, \texttt{war}, \texttt{pom}) decides the bindings.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{mvn clean verify} (1/2)}
+  \lstterminal[basicstyle=\ttfamily\tiny, lastline=24]{codeoutput/Phases.txt}
+
+  \vspace{0.1em}
+  \small Two lifecycles in one call: \texttt{clean}, then the default lifecycle up to \texttt{verify}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{mvn clean verify} (2/2)}
+  \lstterminal[basicstyle=\ttfamily\tiny, firstline=25]{codeoutput/Phases.txt}
+
+  \vspace{0.1em}
+  \small Then \texttt{jar:jar} at \texttt{package}; \texttt{verify} has no goal bound for a plain jar. A failing test would stop the build before \texttt{package}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Calling goals directly}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Goal.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{plugin:goal} runs only that goal, no phases before it: \texttt{(default-cli)} instead of \texttt{(default-compile)}. The \texttt{encoding} line is only a note.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Dependencies]{Dependencies}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Declaring a library}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=10, firstnumber=10, lastline=30]{codeoutput/Tree/pom.xml}{XML}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{itemize}\small
+        \item A dependency is named by its coordinates: \texttt{groupId:artifactId:version}.
+        \item Versions in \texttt{<properties>}: one place to change them.
+        \item Find coordinates on \texttt{central.sonatype.com} or \texttt{mvnrepository.com}.
+        \item Maven downloads the jar (and its POM) into the \textbf{local repository} \texttt{\textasciitilde/.m2/repository}; Windows: \texttt{C:\textbackslash Users\textbackslash ayse\textbackslash .m2\textbackslash repository}.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Using it}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Tree/src/main/java/banner/Banner.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Repo.txt}}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1em}
+  \small
+  The jar and its POM, as Maven stored them. \texttt{\_remote.repositories} remembers where they came from.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{mvn dependency:tree}}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Tree.txt}
+
+  \vspace{0.1em}
+  \small
+  JUnit needs five more jars: \textbf{transitive} dependencies, found through their POMs. The last column is the \textbf{scope}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Scopes]{Scopes and Class Paths}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Scopes}
+  \begin{center}\small
+  \begin{tabular}{@{}lccccL{0.34\textwidth}@{}}
+    \toprule
+    \textbf{scope}      & \textbf{compile} & \textbf{test} & \textbf{run} & \textbf{in jar/war} & \textbf{example} \\
+    \midrule
+    \texttt{compile}    & yes & yes & yes & yes & commons-lang3 (the default) \\
+    \texttt{provided}   & yes & yes & no  & no  & Servlet API (the server has it) \\
+    \texttt{runtime}    & no  & yes & yes & yes & a JDBC driver \\
+    \texttt{test}       & no  & yes & no  & no  & JUnit \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \begin{itemize}\small
+    \item The scope decides on which class path a jar is: compiling, testing, running.
+    \item Wrong scope, typical errors: JUnit in main code (next slide); a \texttt{provided} jar missing at run time.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Test-only code in the main sources}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Scope.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{App.java} imports JUnit, but JUnit is \texttt{test} scope: not on the class path of \texttt{src/main/java}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Maven compiles it, but \texttt{java} cannot run it}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Classpath.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{mvn compile} found commons-lang3, plain \texttt{java} does not know the jar. \texttt{dependency:build-classpath} writes the run-time class path to a file. Windows uses \texttt{;} between class path entries, macOS and Linux \texttt{:}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Mistakes]{Dependency Mistakes}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{No version}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/NoVersion.txt}
+
+  \vspace{0.1em}
+  \small
+  Every dependency needs a version (or one inherited from a parent or a BOM, junior level).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A version that does not exist}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/NotFound.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{3.99.0} is not in the repository. Here \texttt{central} is a local copy (no internet, see \texttt{offline-settings.xml}); normally the line reads \texttt{in central (https://repo.maven.apache.org/maven2)}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Resources]{Resources and Filtering}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Files that are not Java}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=7, firstnumber=7]{codeoutput/Filter/src/main/java/banner/App.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{itemize}\small
+        \item \texttt{src/main/resources}: copied to \texttt{target/classes}, then into the jar.
+        \item Read them with \texttt{getResourceAsStream}: works from folders and from jars, not with \texttt{new File(\dots)}.
+        \item \textbf{Filtering} replaces \texttt{\$\{\dots\}} by POM values:
+      \end{itemize}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=31, firstnumber=31, lastline=37]{codeoutput/Filter/pom.xml}{XML}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Filtering at work}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Filter.txt}
+
+  \vspace{0.1em}
+  \small
+  The program prints its own version without a constant in the code: change \texttt{<version>} once.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Running]{Running the Program}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The exec plugin}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=38, firstnumber=38, lastline=47]{codeoutput/Exec/pom.xml}{XML}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Exec.txt}}
+    \end{column}
+  \end{columns}
+  \vspace{0.3em}
+  \small \texttt{exec:java} runs \texttt{main} inside Maven with the right class path. Arguments: \texttt{-Dexec.args="\dots"}; in PowerShell quote the whole option: \texttt{"-Dexec.args=\dots"}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A runnable jar: the manifest}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=38, firstnumber=38, lastline=49]{codeoutput/Manifest/pom.xml}{XML}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Manifest.txt}}
+    \end{column}
+  \end{columns}
+  \vspace{0.3em}
+  \small Now \texttt{java -jar} finds \texttt{main}, but the jar has only our two classes: commons-lang3 is missing.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A runnable jar with everything inside: shade}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=38, firstnumber=38, lastline=56]{codeoutput/Shade/pom.xml}{XML}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Shade.txt}}
+    \end{column}
+  \end{columns}
+  \vspace{0.3em}
+  \small An \emph{uber jar}: our classes plus 421 entries of commons-lang3. The plain jar is kept as \texttt{original-\dots}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Tests]{Running Tests}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Choosing and skipping tests}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Surefire.txt}
+
+  \vspace{0.1em}
+  \small
+  \begin{itemize}
+    \item \texttt{-Dtest=BannerTest}: one class; \texttt{-Dtest=BannerTest\#long*}: matching methods.
+    \item \texttt{-DskipTests}: compile the tests, do not run them (an emergency, not a habit).
+    \item \texttt{target/surefire-reports}: one text and one XML report per test class; build servers read the XML.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Summary}
+  \begin{center}\small
+  \begin{tabular}{@{}L{0.42\textwidth}L{0.5\textwidth}@{}}
+    \toprule
+    \textbf{you want}                       & \textbf{Maven} \\
+    \midrule
+    build up to a step                      & \texttt{mvn <phase>}, e.g.\ \texttt{mvn clean verify} \\
+    one goal only                           & \texttt{mvn plugin:goal} \\
+    a library                               & \texttt{<dependency>} with G:A:V and a scope \\
+    see what you really get                 & \texttt{mvn dependency:tree} \\
+    configuration files                     & \texttt{src/main/resources}, filtering \\
+    run \texttt{main}                       & \texttt{mvn exec:java} \\
+    one runnable jar                        & jar manifest + shade \\
+    some tests / no tests                   & \texttt{-Dtest=\dots}, \texttt{-DskipTests} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Add \texttt{commons-text} and use \texttt{WordUtils.wrap}; how does \texttt{dependency:tree} change?
+    \item Move the banner width (24) to \texttt{app.properties}, filled from a POM property \texttt{banner.width}.
+    \item Make \texttt{BannerTest} fail and run \texttt{mvn package}: which files are in \texttt{target} now?
+    \item Build the shaded jar and run it on a computer with Windows or macOS; compare the size with the plain jar.
+    \item Explain each scope by one library of your choice; put a JDBC driver in the right scope.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

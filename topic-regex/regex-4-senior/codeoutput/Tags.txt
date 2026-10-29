@@ -1,0 +1,3 @@
+<b>x</b>  ->  x
+<b>x<b>y</b>z</b>  ->  x<b>y
+<b title="a</b>">x</b>  ->  -

@@ -1,0 +1,14 @@
+$ mvn -q compile
+$ mvn dependency:tree -Dverbose | grep edu.yeditepe
+[INFO] ---------------------< edu.yeditepe:conflict-app >----------------------
+[INFO] edu.yeditepe:conflict-app:jar:1.0-SNAPSHOT
+[INFO] +- edu.yeditepe.lib:lib-a:jar:1.0:compile
+[INFO] |  \- edu.yeditepe.lib:textutil:jar:1.0:compile
+[INFO] \- edu.yeditepe.lib:lib-b:jar:1.0:compile
+[INFO]    \- (edu.yeditepe.lib:textutil:jar:2.0:compile - omitted for conflict with 1.0)
+$ mvn -q dependency:build-classpath -Dmdep.outputFile=cp.txt
+$ java -cp "target/classes:$(cat cp.txt)" app.Main
+MERHABA!
+Exception in thread "main" java.lang.NoSuchMethodError: 'java.lang.String lib.TextUtil.whisper(java.lang.String)'
+	at lib.b.Farewell.bye(Farewell.java:7)
+	at app.Main.main(Main.java:9)

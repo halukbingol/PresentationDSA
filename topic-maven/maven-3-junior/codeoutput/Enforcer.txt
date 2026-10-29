@@ -1,0 +1,12 @@
+$ mvn -q validate
+$ sed -i 's/\[21,)/[25,)/' pom.xml
+$ mvn -q validate
+[ERROR] Rule 1: org.apache.maven.plugins.enforcer.RequireJavaVersion failed with message:
+Detected JDK Version: 21.0.12-1 is not in the allowed range [25,).
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-enforcer-plugin:3.1.0:enforce (rules) on project grades-parent: Some Enforcer rules have failed. Look above for specific messages explaining why the rule failed. -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

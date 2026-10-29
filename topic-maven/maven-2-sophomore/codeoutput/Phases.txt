@@ -1,0 +1,48 @@
+$ mvn clean verify
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< edu.yeditepe:banner >-------------------------
+[INFO] Building banner 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ banner ---
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ banner ---
+[INFO] Copying 1 resource
+[INFO] The encoding used to copy filtered properties files have not been set. This means that the same encoding will be used to copy filtered properties files as when copying other filtered resources. This might not be what you want! Run your build with --debug to see which files might be affected. Read more at https://maven.apache.org/plugins/maven-resources-plugin/examples/filtering-properties-files.html
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ banner ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 2 source files to ~/project/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ banner ---
+[INFO] skip non existing resourceDirectory ~/project/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ banner ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 2 source files to ~/project/target/test-classes
+[INFO] 
+[INFO] --- surefire:2.22.3:test (default-test) @ banner ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running banner.BannerTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.043 s - in banner.BannerTest
+[INFO] Running banner.AppTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s - in banner.AppTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jar:3.3.0:jar (default-jar) @ banner ---
+[INFO] Building jar: ~/project/target/banner-1.0-SNAPSHOT.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  11.853 s
+[INFO] Finished at: 2026-10-27T06:09:10+03:00
+[INFO] ------------------------------------------------------------------------

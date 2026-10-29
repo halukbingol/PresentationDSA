@@ -1,0 +1,10 @@
+$ mvn -q install
+$ ls ~/.m2/repository/edu/yeditepe/grades-core/1.0-SNAPSHOT
+_remote.repositories
+grades-core-1.0-SNAPSHOT.jar
+grades-core-1.0-SNAPSHOT.pom
+maven-metadata-local.xml
+$ cd grades-app
+$ mvn -q package
+$ ls target/*.jar
+target/grades-app-1.0-SNAPSHOT.jar

@@ -3,6 +3,7 @@
 # folder
 /_old/
 /test/
+/_hblib/
 
 # file
 
@@ -13,6 +14,7 @@
 *-sophomore.pdf
 *-junior.pdf
 *-examples.pdf
+/cis-*/cis11[0-9]-w[0-9][0-9]-[A-Za-z]*-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].pdf
 # ~~~~~~~~~~~~~~~~~ A generated
 *-outline.xlsx
 

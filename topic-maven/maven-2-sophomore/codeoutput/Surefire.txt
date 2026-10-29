@@ -1,0 +1,8 @@
+$ mvn test -Dtest=BannerTest | grep "Tests run\|Running"
+[INFO] Running banner.BannerTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.048 s - in banner.BannerTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+$ mvn -q package -DskipTests
+$ ls target/surefire-reports
+TEST-banner.BannerTest.xml
+banner.BannerTest.txt

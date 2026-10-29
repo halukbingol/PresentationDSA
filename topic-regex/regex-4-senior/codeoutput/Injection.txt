@@ -1,0 +1,5 @@
+price: # or #
+price: # or 5x0
+\Q5.0\E
+java.lang.IndexOutOfBoundsException: No group 5
+price: $5 or 5x0

@@ -1,0 +1,4 @@
+(a|b)* StackOverflowError
+[ab]* true
+(?:a|b)* StackOverflowError
+(?:ab)* true

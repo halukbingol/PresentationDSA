@@ -1,0 +1,3 @@
+<b>.*</b>  [<b>bold</b> and <b>more</b>]
+<b>.*?</b> [<b>bold</b>, <b>more</b>]
+<b>[^<]*</b> [<b>bold</b>, <b>more</b>]

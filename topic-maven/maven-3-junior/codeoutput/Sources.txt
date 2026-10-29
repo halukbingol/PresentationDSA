@@ -1,0 +1,7 @@
+$ mvn -q package source:jar
+$ ls grades-core/target/*.jar
+grades-core/target/grades-core-1.0-SNAPSHOT-sources.jar
+grades-core/target/grades-core-1.0-SNAPSHOT.jar
+$ jar tf grades-core/target/grades-core-1.0-SNAPSHOT-sources.jar | grep java
+grades/Gpa.java
+grades/Course.java

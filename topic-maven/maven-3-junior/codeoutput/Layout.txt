@@ -1,0 +1,22 @@
+$ tree
+grades-app/
+    pom.xml
+    src/
+        main/
+            java/
+                grades/
+                    app/
+                        Transcript.java
+grades-core/
+    pom.xml
+    src/
+        main/
+            java/
+                grades/
+                    Course.java
+                    Gpa.java
+        test/
+            java/
+                grades/
+                    GpaTest.java
+pom.xml

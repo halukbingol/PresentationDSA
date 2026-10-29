@@ -1,0 +1,11 @@
+$ mvn -q process-resources
+$ cat hello/src/main/resources/info.properties
+course=${course}
+term=${term}
+group=${project.groupId}
+compiler=${maven.compiler.release}
+$ cat hello/target/classes/info.properties
+course=CSE 344
+term=2027 Spring
+group=edu.yeditepe
+compiler=21

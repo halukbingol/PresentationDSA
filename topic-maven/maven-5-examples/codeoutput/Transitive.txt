@@ -1,0 +1,5 @@
+$ mvn dependency:tree | grep edu.yeditepe
+[INFO] -----------------------< edu.yeditepe:graph-app >-----------------------
+[INFO] edu.yeditepe:graph-app:jar:1.0
+[INFO] +- edu.yeditepe.lib:lib-a:jar:1.0:compile
+[INFO] |  \- edu.yeditepe.lib:textutil:jar:1.0:compile

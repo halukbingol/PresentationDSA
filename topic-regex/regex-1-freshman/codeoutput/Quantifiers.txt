@@ -1,0 +1,9 @@
+         a*         true
+aaa      a*         true
+         a+         false
+a        a+         true
+color    colou?r    true
+colour   colou?r    true
+ab       a{2,3}     false
+aab      a{2,3}b    true
+aaaab    a{2,3}b    false

@@ -1,0 +1,9 @@
+#@ unset JAVA_TOOL_OPTIONS MAVEN_OPTS
+#@ mvn() { if [ -f "$here/../offline-settings.xml" ]; then set -- -s "$here/../offline-settings.xml" "$@"; fi; command mvn -B -ntp "$@" 2>&1 | sed "s#$HOME#~#g"; return ${PIPESTATUS[0]}; }
+#@ tree() { find "${1:-.}" -mindepth 1 -not -path '*/.*' -printf '%P\t%y\n' | sort | awk -F'\t' '{n=split($1,p,"/"); s=""; for(i=1;i<n;i++) s=s"    "; print s p[n] ($2=="d"?"/":"")}'; }
+mvn -q package
+sha256sum target/repro-1.0.jar
+#@ sleep 2
+mvn -q clean package
+sha256sum target/repro-1.0.jar
+unzip -l target/repro-1.0.jar | head -6

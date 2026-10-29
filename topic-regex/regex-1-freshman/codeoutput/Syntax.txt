@@ -1,0 +1,17 @@
+Unclosed group near index 3
+(ab
+
+Dangling meta character '*' near index 0
+*.java
+^
+
+Unclosed character class near index 3
+[a-z
+   ^
+
+Illegal repetition range near index 5
+a{3,1}
+     ^
+
+\*\.java  is fine
+

@@ -1,0 +1,16 @@
+$ javac -d bin -cp $JUNIT CourseCode.java CourseCodeTest.java
+$ junit -cp bin --select-class CourseCodeTest | head -14
+.
+'-- JUnit Jupiter [OK]
+  '-- CourseCodeTest [OK]
+    '-- codes(String, boolean) [OK]
+      +-- CSE101 -> true [OK]
+      +-- MATH151 -> true [OK]
+      +-- CIS111 -> true [OK]
+      +-- cse101 -> false [OK]
+      +-- CSE1010 -> false [OK]
+      +-- CS101 -> false [OK]
+      +-- CSE 101 -> false [OK]
+      '--  -> false [OK]
+
+[         3 containers found      ]

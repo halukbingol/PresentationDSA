@@ -1,0 +1,10 @@
+$ mvn -q process-resources
+$ cat target/classes/build.properties
+mode=development
+db.url=jdbc:h2:mem:grades
+script=run.sh
+$ mvn -q process-resources -P prod
+$ cat target/classes/build.properties
+mode=production
+db.url=jdbc:postgresql://db.yeditepe.edu.tr/grades
+script=run.sh

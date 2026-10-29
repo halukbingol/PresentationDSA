@@ -1,0 +1,11 @@
+$ mvn -q compile
+$ mvn dependency:tree | grep edu.yeditepe
+[INFO] ---------------------< edu.yeditepe:conflict-app >----------------------
+[INFO] edu.yeditepe:conflict-app:jar:1.0-SNAPSHOT
+[INFO] +- edu.yeditepe.lib:lib-a:jar:1.0:compile
+[INFO] |  \- edu.yeditepe.lib:textutil:jar:2.0:compile
+[INFO] \- edu.yeditepe.lib:lib-b:jar:1.0:compile
+$ mvn -q dependency:build-classpath -Dmdep.outputFile=cp.txt
+$ java -cp "target/classes:$(cat cp.txt)" app.Main
+MERHABA!
+güle güle...

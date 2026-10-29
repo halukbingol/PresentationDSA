@@ -1,0 +1,396 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Regular Expressions in Java -- Examples: Every Concept as a Real Program
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% theme, i/N, fonts (T1, lmodern), booktabs, xcolor, array (L{width} columns), listings, tikz,
+% algorithm2e (\small captions, \Fn) and the color gitred come from the hblib libraries
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+% ---------------------------------------------------------------------
+\title{Regular Expressions in Java}
+\subtitle{Examples: Every Concept as a Real Program}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-3}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={4-6}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{How to use this deck}
+  \begin{itemize}\small
+    \item Each concept of the concepts deck, as a small program; the output appears on the second click.
+    \item All outputs are real (JDK 21), made by \texttt{bash run\_examples.sh}.
+    \item Run one program yourself:
+  \end{itemize}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Windows (Command Prompt)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\scriptsize]
+cd regex-5-examples\codeoutput
+javac Table.java
+java Table
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{macOS (Terminal)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\scriptsize]
+cd regex-5-examples/codeoutput
+javac Table.java
+java Table
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \small For the Turkish letters on Windows, use Windows Terminal or \texttt{chcp 65001} first.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Blocks]{Building Blocks}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Which regex matches which text?}
+  \lstcoderightstep[0.56][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Table.java}{Java}{codeoutput/Table.txt}
+
+  \vspace{0.2em}
+  \small \texttt{matches}: the \emph{whole} text. \texttt{.} one character, \texttt{*} zero or more, \texttt{+} one or more, \texttt{?} zero or one, \texttt{\{4\}} exactly four, \texttt{|} or.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Anchors, \texttt{find} and \texttt{|}}
+  \lstcoderightstep[0.56][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Anchors.java}{Java}{codeoutput/Anchors.txt}
+
+  \vspace{0.2em}
+  \small \texttt{find}: anywhere (F: found). \texttt{\textasciicircum cat|dog\$} is ``starts with cat'' or ``ends with dog''. \texttt{\textbackslash b}: a word boundary. \texttt{matches} needs the whole text.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Groups take a match apart}
+  \lstcoderightstep[0.6][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Dates.java}{Java}{codeoutput/Dates.txt}
+
+  \vspace{0.2em}
+  \small \texttt{group(1)}: the first parentheses. In \texttt{replaceAll}, \texttt{\$3-\$2-\$1} puts the parts in a new order.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Java]{Regexes in Java Source}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Two languages in one line}
+  \lstcoderightstep[0.6][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Escapes.java}{Java}{codeoutput/Escapes.txt}
+
+  \vspace{0.2em}
+  \small \texttt{split(".")}: every character is a separator, nothing is left. To match one backslash, the regex is \texttt{\textbackslash\textbackslash}, the Java literal \texttt{"\textbackslash\textbackslash\textbackslash\textbackslash"}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Compile once, find many: word counts}
+  \lstcoderightstep[0.62][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Words.java}{Java}{codeoutput/Words.txt}
+
+  \vspace{0.2em}
+  \small \texttt{\textbackslash p\{L\}+}: Turkish words in one piece; \texttt{\textbackslash w+} breaks them at \texttt{ç}, \texttt{ş}, \texttt{ı}. Lower-case with \texttt{tr}: \texttt{Çay} and \texttt{çay} count together.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Engines]{How Matching Works}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A finite automaton as a table}
+  \lstcoderightstep[0.52][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Dfa.java}{Java}{codeoutput/Dfa.txt}
+
+  \vspace{0.2em}
+  \small The DFA of the concepts deck for \texttt{(a|b)*abb}: one table look-up per character, never back.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Greedy, lazy, exact}
+  \lstcoderightstep[0.56][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Greedy.java}{Java}{codeoutput/Greedy.txt}
+
+  \vspace{0.2em}
+  \small \texttt{.*} runs to the \emph{last} \texttt{</b>}; \texttt{.*?} stops at the first; \texttt{[\textasciicircum <]*} cannot pass a \texttt{<}: one way only, nothing to try again.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A backtracking matcher in 35 lines}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=21]{codeoutput/Mini.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=22, firstnumber=22]{codeoutput/Mini.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Watching it backtrack}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Mini.txt}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{itemize}\small
+        \item \texttt{a*} first takes all three \texttt{a}s (greedy): the rest \texttt{ab\$} is tried at 3 and fails.
+        \item Give one back: \texttt{ab\$} at 2 fits, then \texttt{b\$}, then \texttt{\$} at the end.
+        \item Each \texttt{try} line is one call of \texttt{here}: 5 steps.
+        \item \texttt{java.util.regex} works the same way, with many more features.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Counting the steps}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, lastline=17]{codeoutput/Steps.java}{Java}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=18, firstnumber=18]{codeoutput/Steps.java}{Java}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Choices multiply}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Steps.txt}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item Each line: a failing match on $n$ letters \texttt{a} (no \texttt{c}).
+        \item One star: about $n$ steps. Two stars: about $n^{2}/2$. Four stars: about $n^{4}/24$.
+        \item The engine tries every way to share the \texttt{a}s among the stars.
+        \item Nested stars such as \texttt{(a*)*c} can have $2^{n}$ ways; the senior deck shows when Java pays for that.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Validate]{Validating Input}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Student numbers and e-mails}
+  \lstcoderightstep[0.52][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Check.java}{Java}{codeoutput/Check.txt}
+
+  \vspace{0.2em}
+  \small Input from a file: three lines. \texttt{Omer} fails: \texttt{[a-z]} has no capitals. Compiled once, used for every line.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Limits]{Form, not Meaning}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A regex checks the form only}
+  \lstcoderightstep[0.64][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Meaning.java}{Java}{codeoutput/Meaning.txt}
+
+  \vspace{0.2em}
+  \small \texttt{31.02.2026}: right form, no date. \texttt{LocalDate} (\texttt{STRICT}) knows the calendar.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Summary}
+  \begin{center}\small
+  \begin{tabular}{@{}L{0.3\textwidth}L{0.2\textwidth}L{0.42\textwidth}@{}}
+    \toprule
+    \textbf{concept}                    & \textbf{program}        & \textbf{lesson} \\
+    \midrule
+    building blocks                     & \texttt{Table}           & \texttt{matches} = the whole text \\
+    anchors, alternation                & \texttt{Anchors}         & \texttt{|} binds weakest; \texttt{find} = anywhere \\
+    groups                              & \texttt{Dates}           & \texttt{group(i)}, \texttt{\$i} \\
+    two languages                       & \texttt{Escapes}         & every \texttt{\textbackslash} twice in Java \\
+    \texttt{Pattern} and \texttt{Matcher} & \texttt{Words}         & compile once; \texttt{\textbackslash p\{L\}} for Turkish \\
+    automaton                           & \texttt{Dfa}             & one step per character \\
+    backtracking                        & \texttt{Mini}, \texttt{Steps} & greedy, give back; choices multiply \\
+    validation                          & \texttt{Check}           & whole-text match of each field \\
+    form vs meaning                     & \texttt{Meaning}         & a parser for the value \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Add \texttt{[ct]at}, \texttt{c[\textasciicircum a]t} and \texttt{(ca)+t} to \texttt{Table}; predict the rows first.
+    \item Change \texttt{Dates} to accept \texttt{2026-11-18} as well and to print all dates as \texttt{18 Kasım 2026}.
+    \item Extend \texttt{Mini} with \texttt{+} and \texttt{?}; count its steps on \texttt{a*a*a*c}.
+    \item Change \texttt{Dfa} so that it accepts the texts that \emph{contain} \texttt{abb}.
+    \item In \texttt{Check}, also read the name and accept Turkish capitals; then reject \texttt{20231101005} if it appears twice.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

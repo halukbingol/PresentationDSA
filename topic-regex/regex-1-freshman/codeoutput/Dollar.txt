@@ -1,0 +1,10 @@
+Total: $5
+Total: $5
+Exception in thread "main" java.lang.IndexOutOfBoundsException: No group 5
+	at java.base/java.util.regex.Matcher.checkGroup(Matcher.java:1847)
+	at java.base/java.util.regex.Matcher.start(Matcher.java:525)
+	at java.base/java.util.regex.Matcher.appendExpandedReplacement(Matcher.java:1136)
+	at java.base/java.util.regex.Matcher.appendReplacement(Matcher.java:1043)
+	at java.base/java.util.regex.Matcher.replaceAll(Matcher.java:1229)
+	at java.base/java.lang.String.replaceAll(String.java:3058)
+	at Dollar.main(Dollar.java:6)

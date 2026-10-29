@@ -1,0 +1,7 @@
+$ javac -cp re2j-1.7.jar Re2.java
+$ java -cp re2j-1.7.jar:. Re2
+java.util.regex  CSV       false  826 ms
+RE2/J            CSV       false   17 ms
+java.util.regex  (a|b)*    StackOverflowError
+RE2/J            (a|b)*    true    16 ms
+error parsing regexp: invalid escape sequence: `\1`

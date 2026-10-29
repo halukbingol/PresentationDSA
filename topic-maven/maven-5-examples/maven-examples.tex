@@ -1,0 +1,383 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Maven for Java -- Examples: Every Concept as a Real Session
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% theme, i/N, fonts (T1, lmodern), booktabs, xcolor, array (L{width} columns), listings, tikz,
+% algorithm2e (\small captions, \Fn) and the color gitred come from the hblib libraries
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+% ---------------------------------------------------------------------
+\title{Maven for Java}
+\subtitle{Examples: Every Concept as a Real Session}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-4}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={5-7}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{How to use this deck}
+  \begin{itemize}\small
+    \item One concept of the concepts deck per slide, shown as a real terminal session (on the second click where code comes first).
+    \item All sessions were run with Maven 3.9.11 and JDK 21 by \texttt{bash run\_examples.sh}; times and dates change from run to run.
+    \item No internet here: the sessions used \texttt{-s ../offline-settings.xml} (a local copy of the plugins); with internet just type \texttt{mvn}.
+    \item Try a session yourself: copy its folder, then
+  \end{itemize}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Windows (not run here)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\scriptsize]
+cd codeoutput\Layout
+mvn package
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{macOS (not run here)}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\scriptsize]
+cd codeoutput/Layout
+mvn package
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Builds]{Builds}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A build by hand}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/ByHand.txt}
+
+  \vspace{0.1em}
+  \small
+  Three commands for one class without libraries and without tests. Add tests, libraries and their versions, and the script grows: this is what Maven standardizes.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The same build with Maven (1/2)}
+  \lstterminal[basicstyle=\ttfamily\scriptsize, lastline=13]{codeoutput/Layout.txt}
+
+  \vspace{0.1em}
+  \small The convention says where everything is: sources, tests, \texttt{pom.xml}. One command builds and tests (the POM is in the freshman deck).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The same build with Maven (2/2)}
+  \lstterminal[basicstyle=\ttfamily\tiny, firstline=14]{codeoutput/Layout.txt}
+
+  \vspace{0.1em}
+  \small \texttt{target} holds every result: classes, test classes, reports and the jar.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Coordinates]{Coordinates and Repositories}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Coordinates are paths}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Coordinates.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{edu.yeditepe:hello:1.0} $\to$ \texttt{edu/yeditepe/hello/1.0/hello-1.0.jar}, plus the POM. Windows: \texttt{cd \%USERPROFILE\%\textbackslash .m2\textbackslash repository}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The local repository is a cache}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Offline.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{-o} (offline): only the local repository. The first try fails, \texttt{commons-text} was never downloaded; after one online build it works offline too.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Dependencies]{Dependencies and Scopes}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Transitive dependencies}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Transitive.txt}
+
+  \vspace{0.1em}
+  \small
+  The POM names only \texttt{lib-a}; \texttt{textutil} comes with it, read from \texttt{lib-a}'s own POM.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{One project, several class paths}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Scopes.txt}
+
+  \vspace{0.1em}
+  \small
+  Running needs 2 jars, testing 10: the JUnit jars have \texttt{test} scope and never reach the program's run-time class path.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Lifecycle]{Phases and Goals}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A phase runs everything before it}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Phases.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{validate}: no goal bound for a jar project. \texttt{compile}: 2 goals. \texttt{package}: 6 goals, always in the same order.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A goal runs alone}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Goal.txt}
+
+  \vspace{0.1em}
+  \small
+  \texttt{jar:jar} without \texttt{compile}: nothing was compiled, so the jar has no class at all. Phases keep the order right; call goals directly only when you know what is already done.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A failure stops the run}
+  \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Stop.txt}
+
+  \vspace{0.1em}
+  \small
+  The test fails, so \texttt{jar:jar} never runs: no \texttt{.jar} in \texttt{target}. An untested jar cannot leave a Maven build by accident.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[POM]{The POM}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Inheritance: values from the parent}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=15, firstnumber=15, lastline=20]{codeoutput/Inherit/pom.xml}{XML}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=6, firstnumber=6, lastline=15]{codeoutput/Inherit/hello/pom.xml}{XML}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \uncover<2->{\lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Inherit.txt}}
+    \end{column}
+  \end{columns}
+  \vspace{0.2em}
+  \small \texttt{course} and the compiler release come from the parent; the child overrides \texttt{term}. Filtering shows the effective values.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[OS]{Windows and macOS}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The sessions on other systems}
+  \begin{center}\small
+  \begin{tabular}{@{}L{0.3\textwidth}L{0.3\textwidth}L{0.32\textwidth}@{}}
+    \toprule
+    \textbf{here (Linux)}              & \textbf{Windows (cmd)}                      & \textbf{macOS (Terminal)} \\
+    \midrule
+    \texttt{tree}                      & \texttt{tree /F}                            & \texttt{find . -type f} \\
+    \texttt{\textasciitilde/.m2}       & \texttt{\%USERPROFILE\%\textbackslash .m2} & \texttt{\textasciitilde/.m2} \\
+    \texttt{-cp a.jar:b.jar}           & \texttt{-cp a.jar;b.jar}                    & \texttt{-cp a.jar:b.jar} \\
+    \texttt{grep}, \texttt{tr}, \texttt{sed} & \texttt{findstr}, or Git Bash          & the same \\
+    \texttt{target/x.jar}              & \texttt{target\textbackslash x.jar}         & \texttt{target/x.jar} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \small The \texttt{mvn} commands themselves are the same everywhere (not run on Windows or macOS here).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Summary}
+  \begin{center}\small
+  \begin{tabular}{@{}L{0.3\textwidth}L{0.2\textwidth}L{0.42\textwidth}@{}}
+    \toprule
+    \textbf{concept}              & \textbf{session}         & \textbf{lesson} \\
+    \midrule
+    build                         & \texttt{ByHand}, \texttt{Layout} & Maven standardizes the steps \\
+    coordinates                   & \texttt{Coordinates}     & G:A:V is a path \\
+    local repository              & \texttt{Offline}         & a cache; \texttt{-o} uses only it \\
+    transitive dependencies       & \texttt{Transitive}      & POMs of dependencies are read \\
+    scopes                        & \texttt{Scopes}          & different class paths \\
+    lifecycle                     & \texttt{Phases}, \texttt{Stop} & ordered phases, stop on failure \\
+    goals                         & \texttt{Goal}            & a goal alone skips the phases before \\
+    inheritance                   & \texttt{Inherit}         & values from the parent, overridable \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Extend \texttt{ByHand} with a JUnit test, compiled and run by hand with the console launcher; compare with \texttt{mvn test}.
+    \item Install \texttt{hello} as version \texttt{1.1}; what is added in \texttt{\textasciitilde/.m2/repository}?
+    \item In \texttt{Scopes}, change JUnit to \texttt{compile} scope; how many jars does running need now?
+    \item Run \texttt{mvn test} in \texttt{Phases}: which goals run?
+    \item In \texttt{Inherit}, override \texttt{course} in the child and add \texttt{\$\{project.version\}} to the file.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

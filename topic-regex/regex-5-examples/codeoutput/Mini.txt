@@ -1,0 +1,7 @@
+^a*ab$ on aaab:
+  try a*ab$ at 0 "aaab"
+  try ab$   at 3 "b"
+  try ab$   at 2 "ab"
+  try b$    at 3 "b"
+  try $     at 4 ""
+true after 5 steps

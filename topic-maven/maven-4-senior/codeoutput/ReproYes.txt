@@ -1,0 +1,13 @@
+$ mvn -q package
+$ sha256sum target/repro-1.0.jar
+02b17eca5a72c78c605d24e872804506fa6475f57732b266753a3de3371e5ae6  target/repro-1.0.jar
+$ mvn -q clean package
+$ sha256sum target/repro-1.0.jar
+02b17eca5a72c78c605d24e872804506fa6475f57732b266753a3de3371e5ae6  target/repro-1.0.jar
+$ unzip -l target/repro-1.0.jar | head -6
+Archive:  target/repro-1.0.jar
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2026-10-27 09:00   META-INF/
+       81  2026-10-27 09:00   META-INF/MANIFEST.MF
+        0  2026-10-27 09:00   hello/

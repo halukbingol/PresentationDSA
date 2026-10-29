@@ -1,0 +1,277 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Regular Expressions in Java -- Junior Level: Unicode, Back-references, Look-around and New APIs
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% theme, i/N, fonts (T1, lmodern), booktabs, xcolor, array (L{width} columns), listings, tikz,
+% algorithm2e (\small captions, \Fn) and the color gitred come from the hblib libraries
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+% ---------------------------------------------------------------------
+\title{Regular Expressions in Java}
+\subtitle{Junior Level: Unicode, Back-references, Look-around and New APIs}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-4}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={5-8}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Unicode]{Unicode and Turkish}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Which letters are ``letters''?}
+  \lstcoderightstep[0.56][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Letters.java}{Java}{codeoutput/Letters.txt}
+
+  \vspace{0.2em}
+  \small \texttt{\textbackslash w} is only \texttt{[a-zA-Z\_0-9]} by default. Use \texttt{\textbackslash p\{L\}} (any letter), \texttt{\textbackslash p\{Lu\}} (capital), or the flag \texttt{UNICODE\_CHARACTER\_CLASS} (\texttt{(?U)}).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Case-insensitive, the Turkish way}
+  \lstcoderightstep[0.6][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/TurkishCase.java}{Java}{codeoutput/TurkishCase.txt}
+
+  \vspace{0.2em}
+  \small With \texttt{UNICODE\_CASE}, \texttt{i}, \texttt{ı}, \texttt{I}, \texttt{İ} match each other, yet \texttt{ılık} $\neq$ \texttt{ilik}. Turkish rule: lower-case with \texttt{tr}, then match.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{One character or two?}
+  \lstcoderightstep[0.56][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Graphemes.java}{Java}{codeoutput/Graphemes.txt}
+
+  \vspace{0.2em}
+  \small \texttt{e} + a combining accent looks like \texttt{é} but is two \texttt{char}s. \texttt{\textbackslash X} matches one \emph{grapheme} (what a reader sees as one character); or normalize to NFC first.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Back-references]{Back-references}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Matching the same text again: \texttt{\textbackslash 1}}
+  \lstcoderightstep[0.6][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/Backref.java}{Java}{codeoutput/Backref.txt}
+
+  \vspace{0.2em}
+  \small \texttt{\textbackslash 1} matches exactly what group 1 matched: doubled words, matching open and close tags. In Java source: \texttt{"\textbackslash\textbackslash 1"}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Look-around]{Look-ahead and Look-behind}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Conditions without consuming}
+  \lstcoderightstep[0.56][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/LookAround.java}{Java}{codeoutput/LookAround.txt}
+
+  \vspace{0.2em}
+  \small \texttt{(?<=\dots)} preceded by, \texttt{(?<!\dots)} not preceded by, \texttt{(?=\dots)} followed by, \texttt{(?!\dots)} not followed by.
+  Java allows look-behind only with a bounded length.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Possessive]{Possessive Quantifiers and Atomic Groups}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{No giving back}
+  \lstcoderightstep[0.56][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Possessive.java}{Java}{codeoutput/Possessive.txt}
+
+  \vspace{0.2em}
+  \small \texttt{a*+} and \texttt{(?>a*)} keep everything they matched: no backtracking, so \texttt{a*+a} can never match. Used right, they make failing matches fast (senior level).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[New APIs]{Streams and Newer APIs}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Java 8 to 21}
+  \lstcoderightstep[0.62][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/NewApis.java}{Java}{codeoutput/NewApis.txt}
+
+  \vspace{0.2em}
+  \small \texttt{splitAsStream} (Java 8), \texttt{results} (9), \texttt{namedGroups} (20), \texttt{splitWithDelimiters} (21).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{Scanner} speaks regex, too}
+  \lstcoderightstep[0.56][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/ScanGrades.java}{Java}{codeoutput/ScanGrades.txt}
+
+  \vspace{0.2em}
+  \small \texttt{useDelimiter}: what separates the tokens; \texttt{hasNext(regex)}: is the next token of this form? Input from a file: \texttt{70, 85;90 , abc;  100} / \texttt{55,x9}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Speed]{Speed}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Compile once}
+  \lstcoderightstep[0.62][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Speed.java}{Java}{codeoutput/Speed.txt}
+
+  \vspace{0.2em}
+  \small \texttt{String.matches} compiles the pattern on every call. Times vary from run to run; the ratio stays.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Recipes}
+  \begin{center}\footnotesize
+  \begin{tabular}{@{}L{0.38\textwidth}L{0.56\textwidth}@{}}
+    \toprule
+    \textbf{need}                              & \textbf{regex} \\
+    \midrule
+    any letter, also Turkish                   & \texttt{\textbackslash p\{L\}}, \texttt{\textbackslash p\{Lu\}}, \texttt{\textbackslash p\{Ll\}}, or \texttt{(?U)\textbackslash w} \\
+    ignore case beyond ASCII                   & \texttt{CASE\_INSENSITIVE | UNICODE\_CASE}; for Turkish: lower-case with \texttt{tr} first \\
+    one visible character                      & \texttt{\textbackslash X}, or \texttt{Normalizer} NFC first \\
+    the same text again                        & \texttt{(\dots)\dots\textbackslash 1}, \texttt{\textbackslash k<name>} \\
+    a condition around the match               & \texttt{(?=)}, \texttt{(?!)}, \texttt{(?<=)}, \texttt{(?<!)} \\
+    no backtracking into a part                & \texttt{*+}, \texttt{++}, \texttt{(?>\dots)} \\
+    keep the separators                        & \texttt{splitWithDelimiters} (21) \\
+    a stream of matches                        & \texttt{matcher.results()}, \texttt{splitAsStream} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Write a pattern for Turkish person names (capital first letter, then lower-case letters, also Ç, Ğ, İ, Ö, Ş, Ü).
+    \item Find all words that start and end with the same letter, using a back-reference.
+    \item Extract all amounts in TL (\texttt{\hbLira20}, \texttt{20 TL}, \texttt{20,50 TL}) with look-around.
+    \item Tokenize \texttt{"(12+3)*4"} with \texttt{splitWithDelimiters}, then evaluate it.
+    \item Measure \texttt{String.split(",")} against a compiled \texttt{Pattern}: why is the one-character split fast anyway?
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

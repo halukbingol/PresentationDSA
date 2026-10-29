@@ -1,0 +1,10 @@
+$ mvn -q compile exec:java
+************************
+     Merhaba Maven      
+************************
+banner 1.0-SNAPSHOT
+$ mvn -q exec:java -Dexec.args="Bilgisayar Mühendisliği Bölümü"
+************************
+  Bilgisayar Mühend...  
+************************
+banner 1.0-SNAPSHOT

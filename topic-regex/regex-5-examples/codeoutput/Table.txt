@@ -1,0 +1,8 @@
+         cat   ct    caat  cut   2026  dog   
+cat      yes   .     .     .     .     .     
+c.t      yes   .     .     yes   .     .     
+ca*t     yes   yes   yes   .     .     .     
+ca+t     yes   .     yes   .     .     .     
+ca?t     yes   yes   .     .     .     .     
+[0-9]{4} .     .     .     .     yes   .     
+cat|dog  yes   .     .     .     .     yes   

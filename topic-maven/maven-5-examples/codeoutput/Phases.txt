@@ -1,0 +1,11 @@
+$ mvn validate | grep -- "---" | grep @
+$ mvn compile | grep -- "---" | grep @
+[INFO] --- resources:3.3.0:resources (default-resources) @ hello ---
+[INFO] --- compiler:3.10.1:compile (default-compile) @ hello ---
+$ mvn package | grep -- "---" | grep @
+[INFO] --- resources:3.3.0:resources (default-resources) @ hello ---
+[INFO] --- compiler:3.10.1:compile (default-compile) @ hello ---
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ hello ---
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ hello ---
+[INFO] --- surefire:2.22.3:test (default-test) @ hello ---
+[INFO] --- jar:3.3.0:jar (default-jar) @ hello ---

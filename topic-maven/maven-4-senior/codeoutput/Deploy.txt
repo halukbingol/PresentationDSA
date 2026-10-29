@@ -1,0 +1,15 @@
+$ mvn -q deploy -DaltDeploymentRepository=uni::file:./remote-repo
+$ tree remote-repo
+edu/
+    yeditepe/
+        repro/
+            1.0/
+                repro-1.0.jar
+                repro-1.0.jar.md5
+                repro-1.0.jar.sha1
+                repro-1.0.pom
+                repro-1.0.pom.md5
+                repro-1.0.pom.sha1
+            maven-metadata.xml
+            maven-metadata.xml.md5
+            maven-metadata.xml.sha1

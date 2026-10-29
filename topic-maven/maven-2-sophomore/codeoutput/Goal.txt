@@ -1,0 +1,22 @@
+$ mvn -q clean
+$ mvn resources:resources compiler:compile
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< edu.yeditepe:banner >-------------------------
+[INFO] Building banner 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-cli) @ banner ---
+[INFO] Copying 1 resource
+[INFO] The encoding used to copy filtered properties files have not been set. This means that the same encoding will be used to copy filtered properties files as when copying other filtered resources. This might not be what you want! Run your build with --debug to see which files might be affected. Read more at https://maven.apache.org/plugins/maven-resources-plugin/examples/filtering-properties-files.html
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-cli) @ banner ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 2 source files to ~/project/target/classes
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.867 s
+[INFO] Finished at: 2026-10-27T06:08:41+03:00
+[INFO] ------------------------------------------------------------------------

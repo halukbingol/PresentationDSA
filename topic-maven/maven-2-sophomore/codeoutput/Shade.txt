@@ -1,0 +1,11 @@
+$ mvn -q package
+$ ls target/*.jar
+target/banner-1.0-SNAPSHOT.jar
+target/original-banner-1.0-SNAPSHOT.jar
+$ java -jar target/banner-1.0-SNAPSHOT.jar Maven ile paketlendi
+************************
+  Maven ile paketlendi  
+************************
+banner 1.0-SNAPSHOT
+$ jar tf target/banner-1.0-SNAPSHOT.jar | grep -c "^org/apache/commons/lang3/"
+421

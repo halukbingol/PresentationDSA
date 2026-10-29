@@ -1,0 +1,9 @@
+cat          cat            true
+cat          c.t            true
+cut          c.t            true
+ct           c.t            false
+2026         [0-9]{4}       true
+20a6         [0-9]{4}       false
+34755        \d{5}          true
+Ayşe         [A-Z].*        true
+ayşe         [A-Z].*        false

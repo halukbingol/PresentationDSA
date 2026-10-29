@@ -1,0 +1,5 @@
+$ mvn jar:jar | grep "WARNING\|Building jar"
+[WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: ~/project/target/hello-1.0.jar
+$ unzip -l target/hello-1.0.jar | grep -c "[.]class"
+0

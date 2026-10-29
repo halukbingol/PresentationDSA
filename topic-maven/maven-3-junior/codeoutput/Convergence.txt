@@ -1,0 +1,25 @@
+$ mvn validate | head -24
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------------< edu.yeditepe:conflict-app >----------------------
+[INFO] Building conflict-app 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.1.0:enforce (rules) @ conflict-app ---
+[WARNING] 
+Dependency convergence error for edu.yeditepe.lib:textutil:jar:1.0:compile paths to dependency are:
++-edu.yeditepe:conflict-app:jar:1.0-SNAPSHOT
+  +-edu.yeditepe.lib:lib-a:jar:1.0:compile
+    +-edu.yeditepe.lib:textutil:jar:1.0:compile
+and
++-edu.yeditepe:conflict-app:jar:1.0-SNAPSHOT
+  +-edu.yeditepe.lib:lib-b:jar:1.0:compile
+    +-edu.yeditepe.lib:textutil:jar:2.0:compile
+
+[ERROR] Rule 0: org.apache.maven.plugins.enforcer.DependencyConvergence failed with message:
+Failed while enforcing releasability. See above detailed error message.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.503 s

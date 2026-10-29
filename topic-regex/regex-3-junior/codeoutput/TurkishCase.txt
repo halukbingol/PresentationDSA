@@ -1,0 +1,6 @@
+şişli    ŞİŞLİ    CI    false
+şişli    ŞİŞLİ    CI+UC true
+ılık     ILIK     CI+UC true
+ilik     ILIK     CI+UC true
+istanbul İSTANBUL CI+UC true
+şişli true

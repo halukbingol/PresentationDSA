@@ -1,0 +1,4 @@
+$ javac -d out src/main/java/hello/Hello.java
+$ jar cf hello.jar -C out .
+$ java -cp hello.jar hello.Hello
+Merhaba, Maven!

@@ -1,0 +1,6 @@
+word      [a-zA-Z] \w     \p{L} \w+U
+Ankara    true   true   true   true  
+Iğdır     false  false  true   true  
+Şişli     false  false  true   true  
+Ömer      false  false  true   true  
+İzmir     false  false  true   true  

@@ -1,0 +1,6 @@
+[Ayşe, Ali,   Zeynep , Can]
+[Ayşe, Ali, Zeynep, Can]
+[Java, , , is, , , , fun]
+[Java, is, fun]
+[]
+[192, 168, 1, 10]

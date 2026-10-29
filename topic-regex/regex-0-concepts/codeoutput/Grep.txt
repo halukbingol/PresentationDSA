@@ -1,0 +1,15 @@
+$ cat students.txt
+Ayşe Yılmaz      20231101005  ayse@std.yeditepe.edu.tr
+Mehmet Demir     20221102017  mehmet@gmail.com
+ömer kaya        20241103002  omer@std.yeditepe.edu.tr
+Zeynep Çelik     2023110      zeynep@std.yeditepe.edu.tr
+$ grep -E '@std\.yeditepe\.edu\.tr$' students.txt
+Ayşe Yılmaz      20231101005  ayse@std.yeditepe.edu.tr
+ömer kaya        20241103002  omer@std.yeditepe.edu.tr
+Zeynep Çelik     2023110      zeynep@std.yeditepe.edu.tr
+$ grep -E -o '[0-9]{11}' students.txt
+20231101005
+20221102017
+20241103002
+$ grep -E -v '^[A-ZÇĞİÖŞÜ]' students.txt
+ömer kaya        20241103002  omer@std.yeditepe.edu.tr

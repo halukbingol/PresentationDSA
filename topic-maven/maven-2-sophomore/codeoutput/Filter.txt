@@ -1,0 +1,7 @@
+$ mvn -q process-resources
+$ cat src/main/resources/app.properties
+name=${project.artifactId}
+version=${project.version}
+$ cat target/classes/app.properties
+name=banner
+version=1.0-SNAPSHOT

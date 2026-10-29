@@ -1,0 +1,5 @@
+Java literal "\\d+\\.\\d+" is the regex \d+\.\d+
+true false
+[]
+[192, 168, 1, 10]
+C:\Users\ayse -> [C:, Users, ayse]

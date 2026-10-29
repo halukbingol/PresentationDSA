@@ -1,0 +1,5 @@
+(a)      regex true  counter true
+(a(b)c)  regex true  counter true
+((a))    regex true  counter true
+(((a)))  regex false counter true
+(()      regex false counter false

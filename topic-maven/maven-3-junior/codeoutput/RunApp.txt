@@ -1,0 +1,6 @@
+$ mvn -q package
+$ java -cp grades-core/target/grades-core-1.0-SNAPSHOT.jar:grades-app/target/grades-app-1.0-SNAPSHOT.jar grades.app.Transcript CSE101:6:AA MATH151:2:FF PHYS101:4:BB
+CSE101    6 credits  AA
+MATH151   2 credits  FF
+PHYS101   4 credits  BB
+GPA 3.00

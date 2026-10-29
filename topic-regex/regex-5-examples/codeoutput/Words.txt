@@ -1,0 +1,2 @@
+{ama=1, kahve=1, mi=1, mı=1, çay=3, şekersiz=1}
+\w+ finds: [ay, m, kahve, mi, ay, Ama, ekersiz, ay]

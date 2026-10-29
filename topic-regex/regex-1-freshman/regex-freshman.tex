@@ -1,0 +1,368 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Regular Expressions in Java -- Freshman Level: First Patterns
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java  a program (classes without main() are only compiled)
+%     codeoutput/<Name>.sh    a terminal session, run in a copy of codeoutput/<Name>/
+%     codeoutput/<Name>.txt   what it printed, made by:  bash run_examples.sh
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% theme, i/N, fonts (T1, lmodern), booktabs, xcolor, array (L{width} columns), listings, tikz,
+% algorithm2e (\small captions, \Fn) and the color gitred come from the hblib libraries
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+% ---------------------------------------------------------------------
+\title{Regular Expressions in Java}
+\subtitle{Freshman Level: First Patterns}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-3}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={4-6}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[What]{What Is a Regular Expression?}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A pattern for text}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}\small
+        \item A \textbf{regular expression} (regex) describes a \emph{set} of strings: ``5 digits'', ``a word that starts with a capital''.
+        \item Java uses it to \textbf{check} (\texttt{matches}), \textbf{cut} (\texttt{split}) and \textbf{change} (\texttt{replaceAll}) text.
+        \item One line instead of a loop over the characters.
+        \item The same idea in Python, JavaScript, \texttt{grep}, editors (Eclipse: \menu{Edit > Find/Replace}, tick \emph{Regular expressions}).
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{center}\small
+      \begin{tabular}{ll}
+        \toprule
+        \textbf{regex}       & \textbf{means} \\
+        \midrule
+        \texttt{cat}         & exactly ``cat'' \\
+        \texttt{.}           & any one character \\
+        \texttt{[0-9]}, \texttt{\textbackslash d} & one digit \\
+        \texttt{[A-Z]}       & one capital A to Z \\
+        \texttt{\textbackslash s} & one space, tab or newline \\
+        \texttt{x\{4\}}      & exactly 4 times \texttt{x} \\
+        \texttt{x*}          & 0 or more times \texttt{x} \\
+        \texttt{x+}          & 1 or more times \\
+        \texttt{x?}          & 0 or 1 time \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[matches]{Checking: \texttt{matches}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{input.matches(regex)}}
+  \lstcoderightstep[0.56][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/Matches.java}{Java}{codeoutput/Matches.txt}
+
+  \vspace{0.2em}
+  \small \texttt{matches} is true only if the \textbf{whole} input fits the pattern. \texttt{[A-Z]} knows only English capitals: Ş, Ç, Ö, Ü, İ, Ğ are not in it (junior level).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Quantifiers: how many times?}
+  \lstcoderightstep[0.56][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/Quantifiers.java}{Java}{codeoutput/Quantifiers.txt}
+
+  \vspace{0.2em}
+  \small A quantifier applies to the item just before it: in \texttt{colou?r} only the \texttt{u} is optional.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A Turkish mobile number}
+  \lstcoderightstep[0.6][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/Phone.java}{Java}{codeoutput/Phone.txt}
+
+  \vspace{0.2em}
+  \small \texttt{05\textbackslash\textbackslash d\{9\}}: ``05'' and then exactly 9 digits. Clean the input first (remove spaces), then check.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Ask until the input is valid}
+  \lstcoderightstep[0.56][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/Validate.java}{Java}{codeoutput/Validate.txt}
+
+  \vspace{0.2em}
+  \small Keyboard input here came from a file (\texttt{3475}, \texttt{34 755}, \texttt{34755}), so it is not shown; the prompt repeats until the input matches.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Backslash]{The Double Backslash}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Two languages in one string}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}\small
+        \item The regex \texttt{\textbackslash d} contains a backslash.
+        \item In Java source, a backslash in a string starts an escape (\texttt{\textbackslash n}, \texttt{\textbackslash t}).
+        \item So the regex \texttt{\textbackslash d} is written \texttt{"\textbackslash\textbackslash d"} in Java.
+        \item A literal dot in the regex: \texttt{\textbackslash .}, in Java \texttt{"\textbackslash\textbackslash ."}.
+        \item A literal backslash: regex \texttt{\textbackslash\textbackslash}, Java \texttt{"\textbackslash\textbackslash\textbackslash\textbackslash"}.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{center}\small
+      \begin{tabular}{lll}
+        \toprule
+        \textbf{you mean}  & \textbf{regex}                     & \textbf{Java string} \\
+        \midrule
+        a digit           & \texttt{\textbackslash d}           & \texttt{"\textbackslash\textbackslash d"} \\
+        a space           & \texttt{\textbackslash s}           & \texttt{"\textbackslash\textbackslash s"} \\
+        a dot             & \texttt{\textbackslash .}           & \texttt{"\textbackslash\textbackslash ."} \\
+        a star            & \texttt{\textbackslash *}           & \texttt{"\textbackslash\textbackslash *"} \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{``illegal escape character''}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Escape.txt}
+
+  \vspace{0.1em}
+  \small
+  The Java compiler stops: \texttt{\textbackslash d} is not a Java escape. Write \texttt{"\textbackslash\textbackslash d\{4\}"}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[split]{Cutting: \texttt{split}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{split} takes a regex, not a plain text}
+  \lstcoderightstep[0.56][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/Split.java}{Java}{codeoutput/Split.txt}
+
+  \vspace{0.2em}
+  \small \texttt{split(".")}: the dot means \emph{any character}, every character is a separator, nothing is left: \texttt{[]}. Use \texttt{"\textbackslash\textbackslash ."}. The same trap: \texttt{"|"}, \texttt{"+"}, \texttt{"*"}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[replace]{Changing: \texttt{replaceAll}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Replacing with a regex}
+  \lstcoderightstep[0.6][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/Replace.java}{Java}{codeoutput/Replace.txt}
+
+  \vspace{0.2em}
+  \small \texttt{\$1}, \texttt{\$2}, \texttt{\$3} in the replacement are the parts in parentheses (groups): the date is rearranged.
+  The phone mask uses a look-ahead (sophomore level).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A \texttt{\$} in the replacement}
+  \lstcoderightstep[0.48][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/Dollar.java}{Java}{codeoutput/Dollar.txt}
+
+  \vspace{0.2em}
+  \small In \texttt{replaceAll} the replacement is not plain text: \texttt{\$5} means ``group 5''. Write \texttt{\textbackslash\textbackslash\$}, or use \texttt{replace} (no regex at all).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Errors]{Common Errors}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{PatternSyntaxException}: a broken pattern}
+  \lstcoderightstep[0.52][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/Syntax.java}{Java}{codeoutput/Syntax.txt}
+
+  \vspace{0.2em}
+  \small The message names the problem and its position (\texttt{index}); the \texttt{\textasciicircum} points to it. \texttt{*.java} is a file pattern of the shell, not a regex.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{matches} wants the whole string}
+  \lstcoderightstep[0.6][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\scriptsize]{codeoutput/Whole.java}{Java}{codeoutput/Whole.txt}
+
+  \vspace{0.2em}
+  \small To ask ``is there a number \emph{somewhere}?'' use \texttt{find} (sophomore level), not \texttt{matches}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{center}\footnotesize
+      \begin{tabular}{@{}ll@{}}
+        \toprule
+        \textbf{Java}                          & \textbf{does} \\
+        \midrule
+        \texttt{s.matches(r)}                  & whole \texttt{s} fits \texttt{r}? \\
+        \texttt{s.split(r)}                    & cut at every match \\
+        \texttt{s.replaceAll(r, t)}            & replace every match \\
+        \texttt{s.replaceFirst(r, t)}          & replace the first match \\
+        \texttt{s.replace(a, b)}               & plain text, no regex \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Remember}
+        \small \texttt{\textbackslash\textbackslash d} in Java for \texttt{\textbackslash d};
+        escape \texttt{. | + * ? ( ) [ \{ \textasciicircum{} \$} to mean themselves;
+        \texttt{\$} in a replacement means a group.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+  \begin{enumerate}\small
+    \item Write a regex for a 4-digit year from 1900 to 2099 and test it with \texttt{matches}.
+    \item Split \texttt{"Ali;Veli ; Ayşe;;Can"} into names without spaces. What happens with \texttt{;;}?
+    \item Replace every run of digits in a text with \texttt{\#}.
+    \item Validate a Yeditepe-style course code: 3 capitals and 3 digits, e.g.\ \texttt{CSE101}.
+    \item Make each error of section 6 happen and read the message.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

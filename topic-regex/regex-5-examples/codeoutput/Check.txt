@@ -1,0 +1,3 @@
+20231101005  true  ayse@std.yeditepe.edu.tr     true
+2023110      false mehmet@gmail.com             false
+20241103002  true  Omer@std.yeditepe.edu.tr     false

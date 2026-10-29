@@ -1,0 +1,5 @@
+a*a          aaaa     true
+a*+a         aaaa     false
+(?>a*)a      aaaa     false
+"[^"]*+"     "text"   true
+\d++\.\d+    3.14     true

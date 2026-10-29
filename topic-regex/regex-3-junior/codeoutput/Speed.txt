@@ -1,0 +1,2 @@
+round 1: matches 773 ms, Pattern 107 ms
+round 2: matches 523 ms, Pattern 103 ms

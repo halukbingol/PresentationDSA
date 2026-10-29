@@ -1,0 +1,16 @@
+$ mvn -q dependency:build-classpath -DincludeScope=runtime -Dmdep.outputFile=run.txt
+$ mvn -q dependency:build-classpath -DincludeScope=test -Dmdep.outputFile=test.txt
+$ tr ':' '\n' < run.txt | sed 's#.*/##'; echo
+lib-a-1.0.jar
+textutil-1.0.jar
+$ tr ':' '\n' < test.txt | sed 's#.*/##'; echo
+lib-a-1.0.jar
+textutil-1.0.jar
+junit-jupiter-5.10.1.jar
+junit-jupiter-api-5.10.1.jar
+opentest4j-1.2.0.jar
+junit-platform-commons-1.9.1.jar
+junit-jupiter-params-5.10.1.jar
+junit-jupiter-engine-5.10.1.jar
+junit-platform-engine-1.9.1.jar
+apiguardian-api-1.1.2.jar

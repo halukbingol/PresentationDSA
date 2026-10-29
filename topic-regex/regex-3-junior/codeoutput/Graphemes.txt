@@ -1,0 +1,5 @@
+composed:   length 4, caf\p{L} true
+decomposed: length 5, caf\p{L} false
+decomposed: caf\X true
+4 graphemes
+after NFC:  length 4, caf\p{L} true

@@ -1,0 +1,5 @@
+cat          cat:F dog:- catalog:F hotdog:- concat:F
+^cat|dog$    cat:F dog:F catalog:F hotdog:F concat:-
+^(cat|dog)$  cat:F dog:F catalog:- hotdog:- concat:-
+\bcat\b      cat:F dog:- catalog:- hotdog:- concat:-
+matches: false, find: true
