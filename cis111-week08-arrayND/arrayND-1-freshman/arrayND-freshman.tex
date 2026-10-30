@@ -1,0 +1,531 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% v20261030T1200
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue, \hArray, \hGrid
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+
+
+\title[Arrays ND: Freshman]{
+	Multi-Dimensional Arrays\\
+	Freshman
+}
+\subtitle{
+	\cisOOO\ -- Level 1: first steps and common errors
+}
+\author[Erkovan]{Sait Erkovan}
+
+\institute[FCIS]{
+	Faculty of Computer and Information Sciences\\
+	Yeditepe University
+}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={1-3}, hideallsubsections]
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={4-7}, hideallsubsections]
+		\end{column}
+	\end{columns}
+
+	\vspace{1em}
+	\small It builds on \hCode{array1D-1-freshman}: the 1D syntax and its errors are not repeated here.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Create]{Creating a table}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Three ways to create a table}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. three ways
+\begin{lstlisting}[style=codesnippet, language=Java]
+int[][] a = new int[3][4];               // 1. sizes: 3 rows, 4 columns, all 0
+
+int[][] b = {{72, 85, 90},               // 2. values: one pair of braces per row
+             {55, 61, 70}};
+
+int[][] c = new int[3][];                // 3. rows later: 3 rows, none created yet
+c[0] = new int[2];
+c[1] = new int[5];                       //    rows may differ in length
+c[2] = new int[1];
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+	\begin{itemize}\small
+		\item \hCode{[rows][columns]}: the first number is always the rows
+		\item Way 2 is only for a declaration: \hCode{b = \{\{1\}\};} alone does not compile, as in 1D
+		\item Way 3 makes a \hDefined{ragged} table; until a row is created, it does not exist
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A first program}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/ScoresTable.java}{Java}{codeoutput/ScoresTable.txt}
+
+	\footnotesize Named sizes (\hCode{STUDENTS}, \hCode{QUIZZES}) say which number is which, and change in one place.
+	Unwritten cells keep the start value 0.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Initializer lists: one pair of braces per row}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/InitRows.java}{Java}{codeoutput/InitRows.txt}
+
+	\footnotesize The outer braces hold the rows; each inner pair is one row. \hCode{\{\}} is an empty row of length 0.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reading and writing cells}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. cell syntax
+\begin{table}
+		\small
+		\begin{tabular}{@{}L{0.36\textwidth}L{0.56\textwidth}@{}}
+			\toprule
+			\textbf{Write} & \textbf{Meaning} \\
+			\midrule
+			\hCode{t[r][c]}                        & the cell in row \hCode{r}, column \hCode{c}: read it \\
+			\hCode{t[r][c] = 7;} \ \hCode{t[r][c]++;} & write it, change it, like any variable \\
+			\hCode{t[r]}                           & row \hCode{r}: an \hCode{int[]} \\
+			\hCode{t.length}                       & the number of rows \\
+			\hCode{t[r].length}                    & the number of cells in row \hCode{r} \\
+			\hCode{t[t.length - 1]}                & the last row \\
+			\hCode{t[r][t[r].length - 1]}          & the last cell of row \hCode{r} \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\small There is no ``number of columns'' in Java: only the length of each row.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Loops]{Loops over a table}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Index loops and the enhanced for}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/LoopKinds.java}{Java}{codeoutput/LoopKinds.txt}
+
+	\footnotesize Lines 5--10: index loops, with \hCode{w} and \hCode{d}. Lines 12--16: the enhanced for, row by row, cell by cell.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Which loop?}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. which loop
+\begin{table}
+		\small
+		\begin{tabular}{@{}L{0.48\textwidth}cc@{}}
+			\toprule
+			\textbf{You need to \dots} & \textbf{index loops} & \textbf{enhanced for} \\
+			\midrule
+			read every cell, row by row                 & yes & \hEmph{yes, simpler} \\
+			change cells                                & yes & no \\
+			know the row and the column (print them)    & yes & no \\
+			go column by column                         & yes & no \\
+			visit a part: one row, one column, a diagonal & yes & only one row \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. both loops
+\begin{lstlisting}[style=codesnippet, language=Java]
+for (int r = 0; r < t.length; r++) {
+    for (int c = 0; c < t[r].length; c++) { ... t[r][c] ... }
+}
+for (int[] row : t) { for (int x : row) { ... x ... } }
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Compile]{Errors the compiler finds}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Brackets: one pair per index}
+	\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/CommaIndex.txt}
+
+	\footnotesize \hCode{t[1, 2]} is not Java. Write \hCode{t[1][2]}.
+
+	\vspace{0.4em}
+	\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/NoRowCount.txt}
+
+	\footnotesize The number of rows is required; the columns may come later: \hCode{new int[3][]}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{One index too many, or too few}
+	\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/TooManyIndices.txt}
+
+	\begin{itemize}\footnotesize
+		\item \hCode{t[0][0]} is already an \hCode{int}; a third \hCode{[0]} needs an array: ``array required''
+		\item \hCode{t[0]} is a whole row, an \hCode{int[]}: it does not fit in an \hCode{int}
+		\item Count the brackets: an \hCode{int[][]} needs two indices to give an \hCode{int}
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The types must match}
+	\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/WrongTypes.txt}
+
+	\begin{itemize}\footnotesize
+		\item Every cell has the element type: \hCode{3.5} cannot go into an \hCode{int} table
+		\item \hCode{int[][]} and \hCode{int[]} are different types: a table is not a row
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reading these messages}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. messages
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.36\textwidth}L{0.30\textwidth}L{0.26\textwidth}@{}}
+			\toprule
+			\textbf{Message} & \textbf{Cause} & \textbf{Fix} \\
+			\midrule
+			\hCode{']' expected}                                & \hCode{t[1, 2]}; or \hCode{new int[][3]} & \hCode{t[1][2]}; \hCode{new int[3][]} \\
+			\hCode{array required, but int found}               & too many indices                     & one index per \hCode{[]} \\
+			\hCode{int[] cannot be converted to int}            & too few indices                      & add the column index \\
+			\hCode{int[][] cannot be converted to int[]}        & a table where a row is expected      & pick a row: \hCode{t[r]} \\
+			\hCode{possible lossy conversion from double to int} & a value of the wrong type           & the right element type \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\small Read the line number and the caret \hCode{\^{}} first; the message says what was expected there.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Runtime]{Errors at run time}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Rows and columns swapped}
+	\footnotesize \hQuestion{2 rows, 3 columns. Which index goes out of bounds?}
+
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=9, firstnumber=3][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/SwappedIndex.java}{Java}{codeoutput/SwappedIndex.txt}
+
+	\footnotesize \uncover<2->{\hCode{r} counts to 3 but there are only 2 rows: \hCode{t[2]} fails at line 6.
+	On a square table this bug stays hidden. Rule: \hCode{r} with \hCode{t.length}, \hCode{c} with \hCode{t[r].length}.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A row that was never created}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/MissingRow.java}{Java}{codeoutput/MissingRow.txt}
+
+	\footnotesize \uncover<2->{\hCode{new int[3][]} makes 3 empty places for rows; \hCode{t[0]} is \hCode{null}, ``no row''.
+	The message names it: \hCode{"t[0]" is null}. Create every row before using it.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A ragged table and t[0].length}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=14, firstnumber=3][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/RaggedBound.java}{Java}{codeoutput/RaggedBound.txt}
+
+	\footnotesize \uncover<2->{The first loops print too little (row 0 has 1 cell), without an error. The second loops ask
+	row 1 for 3 cells and stop. Only \hCode{tri[r].length} is right for every row.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Output]{Wrong output, no error}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Printing a table}
+	\lstcoderightstep[0.62][basicstyle=\ttfamily\scriptsize]{codeoutput/PrintWrong.java}{Java}{codeoutput/PrintWrong.txt}
+
+	\footnotesize \uncover<2->{Lines 5--6 print only references. A row prints with \hCode{Arrays.toString(row)};
+	the whole table with \hCode{Arrays.deepToString(t)}.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Straight columns with printf}
+	\lstcoderightstep[0.62][basicstyle=\ttfamily\scriptsize]{codeoutput/Printf.java}{Java}{codeoutput/Printf.txt}
+
+	\footnotesize \hCode{\%5d}: an \hCode{int} in 5 places, right-aligned; \hCode{\%8.1f}: a \hCode{double} in 8 places
+	with one decimal; \hCode{\%n}: a new line. The columns line up because every cell has the same width.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Debugger]{The debugger}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Watching a table in the debugger}
+	\begin{enumerate}\small
+		\item Put a breakpoint inside the inner loop of \hCode{Printf} and start \menu{Debug As > Java Application}
+		\item In the \menu{Variables} view, \hCode{s} opens to its rows \hCode{[0]}, \hCode{[1]}, \hCode{[2]};
+			  each row opens to its cells
+		\item Step with \keys{F6}: \hCode{c} changes at every step, \hCode{r} only when a row is done
+		\item Add \hCode{s[r][c]} in the \menu{Expressions} view to see the current cell
+		\item For \hCode{MissingRow}, the Variables view shows \hCode{t[0]} as \hCode{null} before the crash
+	\end{enumerate}
+
+	\vspace{0.5em}
+	\small The keys for Windows and macOS are in \hCode{array1D-1-freshman}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet: syntax}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. syntax
+\begin{lstlisting}[style=codesnippet, language=Java, basicstyle=\ttfamily\scriptsize]
+int[][] t = new int[3][4];             // 3 rows of 4, all 0
+int[][] m = {{1, 2, 3}, {4, 5, 6}};    // rows in braces
+int[][] j = new int[3][];              // rows later; j[0] = new int[5];
+t[1][2] = 7;   int x = t[1][2];        // write, read: [row][column]
+int[] row = t[1];                      // a whole row
+t.length   t[r].length                 // rows; cells of row r
+for (int r = 0; r < t.length; r++) {
+    for (int c = 0; c < t[r].length; c++) { ... t[r][c] ... }
+}
+for (int[] r : t) { for (int v : r) { ... } }       // read only
+System.out.println(Arrays.deepToString(t));         // print all cells
+System.out.printf("%5d", t[r][c]);                  // straight columns
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet: errors}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. errors
+\begin{table}
+		\small
+		\begin{tabular}{@{}L{0.40\textwidth}L{0.52\textwidth}@{}}
+			\toprule
+			\textbf{Symptom} & \textbf{Cause} \\
+			\midrule
+			\hCode{']' expected}                 & \hCode{t[1, 2]}, or \hCode{new int[][3]} \\
+			\hCode{array required, but int found} & one index too many \\
+			\hCode{int[] cannot be converted\dots} & one index too few: \hCode{t[r]} is a row \\
+			\hCode{ArrayIndexOutOfBounds}         & rows and columns swapped; \hCode{t[0].length} on a ragged table \\
+			\hCode{NullPointerException}          & a row of \hCode{new int[n][]} not created yet \\
+			\hCode{[[I@6d06d69c}                  & printed the table itself: use \hCode{Arrays.deepToString} \\
+			too few cells printed                & a loop bound from another row \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises: predict, then run}
+	\begin{enumerate}\small
+		\item \hCode{ScoresTable}: predict the output, then let the outer loop go to \hCode{QUIZZES}. What happens, and at which line?
+		\item \hCode{InitRows}: add \hCode{System.out.println(odd[2][0]);}. Predict the message.
+		\item \hCode{LoopKinds}: print the average of every week, using the enhanced for.
+		\item \hCode{Printf}: add a header line \hCode{q0 q1 q2 q3 avg} that lines up with the numbers.
+		\item \hCode{MissingRow}: create the missing rows with a loop, each of length 4.
+		\item Write a program that fills a $5 \times 5$ table with $r \cdot c$ and prints it in straight columns.
+	\end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{References}
+	\small The Java Tutorials, Arrays \cite{TheJavaTutorialsArray}; Big Java \cite{horstmann2016big}.
+
+	\vspace{1em}
+	\setbeamertemplate{bibliography item}[text]
+	\bibliographystyle{IEEEtran}
+	\tiny\bibliography{../../hblib/hblibDataStructures}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

@@ -1,0 +1,7 @@
+week 0, day 0: 14.0
+week 0, day 1: 16.5
+week 0, day 2: 13.0
+week 1, day 0: 18.5
+week 1, day 1: 13.0
+week 1, day 2: 15.5
+sum 90.5

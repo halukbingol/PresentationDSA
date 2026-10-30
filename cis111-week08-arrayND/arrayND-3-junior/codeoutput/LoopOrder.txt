@@ -1,0 +1,3 @@
+rows  21 ms, columns  186 ms, same sum: true
+rows  23 ms, columns  140 ms, same sum: true
+rows   5 ms, columns  138 ms, same sum: true

@@ -1,0 +1,383 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% v20261030T1200
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue, \hArray, \hGrid
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+
+
+\title[Arrays ND: Junior]{
+	Multi-Dimensional Arrays\\
+	Junior
+}
+\subtitle{
+	\cisOOO\ -- Level 3: ragged structures, matrices, performance
+}
+\author[Erkovan]{Sait Erkovan}
+
+\institute[FCIS]{
+	Faculty of Computer and Information Sciences\\
+	Yeditepe University
+}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={1-3}, hideallsubsections]
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={4-5}, hideallsubsections]
+		\end{column}
+	\end{columns}
+
+	\vspace{1em}
+	\small It builds on \hCode{array1D-3-junior}: costs, prefix sums and locality in 1D are assumed.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Ragged]{Ragged structures}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Pascal's triangle}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize, firstline=3, lastline=18, firstnumber=3]{codeoutput/Pascal.java}{Java}{codeoutput/Pascal.txt}
+
+	\footnotesize Row \hCode{r} has \hCode{r + 1} cells, so a ragged table fits exactly: no unused cells.
+	Every inner cell is the sum of the two cells above it.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A triangular table saves half}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/TriangleTable.java}{Java}{codeoutput/TriangleTable.txt}
+
+	\footnotesize A distance table is symmetric: $d(a, b) = d(b, a)$. Storing only $c \le r$ needs
+	$n(n + 1)/2$ cells instead of $n^{2}$; \hCode{get} hides the order of the two indices.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Matrices]{Matrices}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The matrix product: a row times a column}
+	\begin{center}
+		\begin{tikzpicture}
+			\hGrid[id=a, name={a}, width=0.55, rowhot={0}]{{1,2,3},{4,5,6}}
+			\node at (2.15,-0.2) {$\times$};
+			\hGrid[id=b, at={(2.9,0.25)}, name={b}, width=0.55, colhot={0}]{{1,0},{0,1},{2,2}}
+			\node at (4.4,-0.2) {$=$};
+			\hGrid[id=c, at={(5.0,0)}, name={c}, width=0.55, hot={0/0}]{{7,8},{16,17}}
+		\end{tikzpicture}
+	\end{center}
+	\[
+		c[i][j] = \sum_{x=0}^{k-1} a[i][x] \cdot b[x][j], \qquad c[0][0] = 1 \cdot 1 + 2 \cdot 0 + 3 \cdot 2 = 7
+	\]
+	\begin{itemize}\small
+		\item $a$ is $n \times k$, $b$ is $k \times m$: the inner sizes must agree; $c$ is $n \times m$
+		\item Every cell of $c$ is a sum of $k$ products: $n \cdot m \cdot k$ multiplications, three nested loops
+		\item The order matters: $a \cdot b \ne b \cdot a$ in general
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The product in Java}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize, firstline=3, lastline=20, firstnumber=3]{codeoutput/MatMul.java}{Java}{codeoutput/MatMul.txt}
+
+	\footnotesize The sizes come from the arrays: \hCode{a.length} rows, \hCode{b.length} $= k$, \hCode{b[0].length} columns.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Three loops: $n^{3}$, measured}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize, firstline=23, lastline=32, firstnumber=23]{codeoutput/MatMulGrowth.java}{Java}{codeoutput/MatMulGrowth.txt}
+
+	\begin{itemize}\footnotesize
+		\item Doubling $n$ multiplies the work by 8; the times grow by about that (or more, when the tables leave the cache)
+		\item Square matrices of size 10\,000 would need $10^{12}$ steps: libraries use better orders and many cores
+		\item The times differ from run to run and from machine to machine
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Transpose a square table in place}
+	\lstcoderightstep[0.62][basicstyle=\ttfamily\scriptsize]{codeoutput/TransposeInPlace.java}{Java}{codeoutput/TransposeInPlace.txt}
+
+	\footnotesize Swap $(r, c)$ with $(c, r)$ only above the diagonal: $c$ starts at $r + 1$.
+	Starting at 0 would swap every pair twice and give back the original.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Rotate a picture by 90 degrees}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/Rotate.java}{Java}{codeoutput/Rotate.txt}
+
+	\footnotesize Row \hCode{r} of the picture becomes column \hCode{rows - 1 - r} of the result:
+	a transpose followed by a mirror. A $2 \times 3$ picture becomes $3 \times 2$, so a new table is needed.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Performance]{Performance}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Row by row or column by column? Measured}
+	\lstcodedownstep[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=5, lastline=19, firstnumber=5][basicstyle=\ttfamily\scriptsize]{codeoutput/LoopOrder.java}{Java}{codeoutput/LoopOrder.txt}
+
+	\footnotesize \uncover<2->{The same $16 \cdot 10^{6}$ additions; the column order is many times slower.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Why: a column jumps from row to row}
+	\begin{center}
+		\begin{tikzpicture}
+			\hArray[id=o, at={(0,-0.35)}, width=0.5, index=none, name={t}]{\phantom{0},\phantom{0},\phantom{0}}
+			\hArray[id=r0, at={(2.6,0.9)}, width=0.5, index=none, done={0,...,5}]{,,,,,}
+			\hArray[id=r1, at={(4.0,-0.1)}, width=0.5, index=none, cur={0}]{,,,,,}
+			\hArray[id=r2, at={(2.0,-1.1)}, width=0.5, index=none, cur={0}]{,,,,,}
+			\draw[href] (o-0.center) -- (r0-0.west);
+			\draw[href] (o-1.center) -- (r1-0.west);
+			\draw[href] (o-2.center) -- (r2-0.west);
+			\node[font=\scriptsize, anchor=west] at (5.8,1.15) {row 0: read in one sweep};
+			\node[font=\scriptsize, anchor=west] at (7.2,0.15) {column 0: one cell here,};
+			\node[font=\scriptsize, anchor=west] at (5.2,-0.85) {one cell there, \dots};
+		\end{tikzpicture}
+	\end{center}
+
+	\begin{itemize}\small
+		\item The cells of one row are side by side in memory; the rows are separate arrays, somewhere else
+		\item Row by row reads memory in order: the cache and the processor love it (\hCode{array1D-3-junior})
+		\item Column by column touches a different row array at every step: each access may miss the cache
+		\item Rule: make the \emph{last} index the inner loop
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{One flat array instead of a table}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/FlatTable.java}{Java}{codeoutput/FlatTable.txt}
+
+	\begin{itemize}\footnotesize
+		\item Cell $(r, c)$ is \hCode{flat[r * cols + c]}: row-major order by hand
+		\item One object, no row references, all cells side by side: images, games and numeric libraries do this
+		\item The price: no ragged rows, no \hCode{t[r]}, and the index formula must be right everywhere
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Techniques]{Techniques}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Summed-area table: any rectangle in O(1)}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=16, firstnumber=3][basicstyle=\ttfamily\scriptsize]{codeoutput/SummedArea.java}{Java}{codeoutput/SummedArea.txt}
+
+	\footnotesize The prefix sums of \hCode{array1D-3-junior}, in two dimensions: one pass builds \hCode{s},
+	then every rectangle sum is 4 lookups. One extra row and column of zeros remove the edge cases.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Game of Life: neighbors and a second table}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=2, lastline=19, firstnumber=2]{codeoutput/Life.java}{Java}
+
+	\footnotesize A cell lives on with 2 or 3 live neighbors and is born with exactly 3. All cells change \emph{at once}:
+	the new values go into \hCode{next}, never into \hCode{g} while it is still being read.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Game of Life: three generations}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize, firstline=21, lastline=34, firstnumber=21]{codeoutput/Life.java}{Java}{codeoutput/Life.txt}
+
+	\footnotesize \hCode{gens} is a three-dimensional array: generation, row, column. The blinker turns
+	every step and comes back after two.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet: what each operation costs}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. costs
+\begin{table}
+		\small
+		\begin{tabular}{@{}L{0.40\textwidth}L{0.16\textwidth}L{0.36\textwidth}@{}}
+			\toprule
+			\textbf{Operation, $n \times m$ table} & \textbf{Steps} & \textbf{Note} \\
+			\midrule
+			read or write one cell                  & $O(1)$          & two lookups: the row, the cell \\
+			visit every cell                        & $O(n m)$        & last index inside: faster \\
+			rectangle sum, summed-area table        & $O(1)$          & after $O(n m)$ preparation \\
+			transpose, rotate                       & $O(n m)$        & a new table unless square \\
+			product of $n \times k$ and $k \times m$ & $O(n k m)$      & $O(n^{3})$ for square tables \\
+			one Life step                           & $O(n m)$        & 8 neighbors per cell, a second table \\
+			triangular storage                      & $n(n+1)/2$ cells & instead of $n^{2}$ \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises and projects}
+	\begin{enumerate}\small
+		\item \hCode{MatMulGrowth}: swap the two inner loops ($i, x, j$). Measure again and explain the difference.
+		\item Write \hCode{rotateLeft} and check that four left turns give back the original picture.
+		\item \hCode{SummedArea}: count how many rectangles of a table have a sum above a limit, in $O(n^{2} m^{2})$.
+		\item \hCode{TriangleTable}: store a symmetric $n \times n$ table in one flat array of $n(n+1)/2$ cells.
+	\end{enumerate}
+
+	\vspace{0.5em}
+	\hRemark{Projects}: Game of Life with a ``wrap around'' board; a small image editor for \hCode{int[][]} gray
+	pictures (blur, flip, rotate, histogram); a matrix class with \hCode{times}, \hCode{transpose}, \hCode{equals}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{References}
+	\small Matrix multiplication \cite{cormen2022introduction}; arrays in memory \cite{knuth1973artv1}.
+
+	\vspace{1em}
+	\setbeamertemplate{bibliography item}[text]
+	\bibliographystyle{IEEEtran}
+	\tiny\bibliography{../../hblib/hblibDataStructures}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

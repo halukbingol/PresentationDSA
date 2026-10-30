@@ -1,0 +1,405 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% v20261030T1200
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue, \hArray, \hGrid
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+
+
+\title[Arrays ND: Examples]{
+	Multi-Dimensional Arrays\\
+	Examples
+}
+\subtitle{
+	\cisOOO\ -- Level 5: every concept as a small program
+}
+\author[Erkovan]{Sait Erkovan}
+
+\institute[FCIS]{
+	Faculty of Computer and Information Sciences\\
+	Yeditepe University
+}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={1-4}, hideallsubsections]
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={5-7}, hideallsubsections]
+		\end{column}
+	\end{columns}
+
+	\vspace{1em}
+	\small Every idea of \hCode{arrayND-0-concepts} as a small program; run them all with \hCode{run\_examples.sh}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Why]{Why tables?}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{From lists to a table}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/OneTable.java}{Java}{codeoutput/OneTable.txt}
+
+	\footnotesize Three students, four quizzes: one name \hCode{s}. Row \hCode{r} is a student; the inner loop adds that row.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Questions about a table}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/Questions.java}{Java}{codeoutput/Questions.txt}
+
+	\footnotesize One cell needs no loop; one row loops over \hCode{c}; one column loops over \hCode{r}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Anatomy]{Anatomy of a table}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Rows, columns, cells}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/Anatomy.java}{Java}{codeoutput/Anatomy.txt}
+
+	\footnotesize Lines 7--11: the rows, the columns (the length of row 0), one cell, one row, the last cell.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Row first, then column}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/Coordinates.java}{Java}{codeoutput/Coordinates.txt}
+
+	\footnotesize The point $(x, y) = (4, 1)$ is \hCode{map[1][4]}: \hCode{y} picks the row, \hCode{x} the column. \hCode{new String(map[r])} prints a row of characters.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Row-major numbering}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/RowMajor.java}{Java}{codeoutput/RowMajor.txt}
+
+	\footnotesize $k = r \cdot m + c$ numbers the cells row by row; \hCode{/} and \hCode{\%} turn $k$ back into $(r, c)$.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Rows]{A table is an array of rows}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Rows are arrays}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/RowsAreArrays.java}{Java}{codeoutput/RowsAreArrays.txt}
+
+	\footnotesize \hCode{t[1]} is an \hCode{int[]}; \hCode{row} is a second reference to it. A row can be replaced by a shorter one.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A ragged table}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/Ragged.java}{Java}{codeoutput/Ragged.txt}
+
+	\footnotesize \hCode{new int[4][]} makes 4 rows that do not exist yet; row \hCode{r} gets \hCode{r + 1} cells.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Shallow or deep copy}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/CopyTable.java}{Java}{codeoutput/CopyTable.txt}
+
+	\footnotesize \hCode{Arrays.copyOf(a, a.length)} copies the references only: \hCode{shallow} sees the 99. \hCode{deep} copied every row.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Visits]{Visiting the cells}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Row by row}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/RowByRow.java}{Java}{codeoutput/RowByRow.txt}
+
+	\footnotesize Rows outside, columns inside: the numbers grow along each row.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Column by column}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/ColByCol.java}{Java}{codeoutput/ColByCol.txt}
+
+	\footnotesize Columns outside, rows inside: the numbers grow down each column. The cell is still \hCode{order[r][c]}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Diagonals of a square board}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/Diagonals.java}{Java}{codeoutput/Diagonals.txt}
+
+	\footnotesize \hCode{b[i][i]} and \hCode{b[i][n - 1 - i]}: one loop for each diagonal.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Neighbors and edges}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/NeighborCount.java}{Java}{codeoutput/NeighborCount.txt}
+
+	\footnotesize Each cell counts its neighbors up, down, left, right: 2 in a corner, 3 on an edge, 4 inside.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Patterns]{Patterns on tables}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Totals per row and per column}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize, firstline=3, lastline=19, firstnumber=3]{codeoutput/RowColTotals.java}{Java}{codeoutput/RowColTotals.txt}
+
+	\footnotesize Row totals: \hCode{r} outside. Column totals: \hCode{c} outside. The total starts at 0 inside the outer loop.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The largest cell}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize, firstline=3, lastline=17, firstnumber=3]{codeoutput/LargestCell.java}{Java}{codeoutput/LargestCell.txt}
+
+	\footnotesize The best so far is a place: \hCode{br} and \hCode{bc}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Search with two indices}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize, firstline=3, lastline=17, firstnumber=3]{codeoutput/FindCell.java}{Java}{codeoutput/FindCell.txt}
+
+	\footnotesize \hCode{fr == -1} stops both loops at the first match.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Count and transform}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/CountTransform.java}{Java}{codeoutput/CountTransform.txt}
+
+	\footnotesize One visit, two patterns: count the cells $\ge 90$, then add 5 to every cell, at most 100.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Transpose}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/Transpose.java}{Java}{codeoutput/Transpose.txt}
+
+	\footnotesize A $2 \times 3$ table becomes a new $3 \times 2$ table: \hCode{tt[c][r] = t[r][c]}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[ND]{More dimensions}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Three dimensions}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/ThreeD.java}{Java}{codeoutput/ThreeD.txt}
+
+	\footnotesize \hCode{taken[f][r][s]}: floor, row, seat; three loops, each bounded by the level above it.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Four dimensions}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/FourD.java}{Java}{codeoutput/FourD.txt}
+
+	\footnotesize Every \hCode{[]} adds an index and a loop; the cells multiply: $2 \cdot 3 \cdot 4 \cdot 5 = 120$.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Recipes: concept and program}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. recipes
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.30\textwidth}L{0.22\textwidth}L{0.40\textwidth}@{}}
+			\toprule
+			\textbf{Concept (arrayND-0)} & \textbf{Program} & \textbf{The line to remember} \\
+			\midrule
+			From lists to a table     & \hCode{OneTable}       & \hCode{int[][] s = \{\{\dots\}, \{\dots\}\};} \\
+			Rows, columns, cells      & \hCode{Anatomy}        & \hCode{s.length}, \hCode{s[r].length}, \hCode{s[r][c]} \\
+			Row first, then column    & \hCode{Coordinates}    & \hCode{map[y][x]} \\
+			Row-major order           & \hCode{RowMajor}       & \hCode{k = r * cols + c} \\
+			Rows are arrays           & \hCode{RowsAreArrays}  & \hCode{int[] row = t[1];} \\
+			Ragged                    & \hCode{Ragged}         & \hCode{tri[r] = new int[r + 1];} \\
+			Shallow or deep           & \hCode{CopyTable}      & \hCode{deep[r] = Arrays.copyOf(a[r], a[r].length);} \\
+			Row by row, column by column & \hCode{RowByRow}, \hCode{ColByCol} & swap the loops, not the indices \\
+			Diagonals, neighbors      & \hCode{Diagonals}, \hCode{NeighborCount} & \hCode{b[i][n - 1 - i]}; \hCode{if (r > 0)} first \\
+			Totals, largest, search   & \hCode{RowColTotals}, \dots & keep a place: \hCode{br}, \hCode{bc} \\
+			Transpose                 & \hCode{Transpose}      & \hCode{tt[c][r] = t[r][c];} \\
+			N dimensions              & \hCode{ThreeD}, \hCode{FourD} & one index and one loop per \hCode{[]} \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises: change the programs}
+	\begin{enumerate}\small
+		\item \hCode{RowColTotals}: print the average of every quiz with one decimal (\hCode{printf("\%.1f")}).
+		\item \hCode{RowMajor}: number the cells in column-major order and write the formula for $k$.
+		\item \hCode{NeighborCount}: count 8 neighbors (with the corners) instead of 4.
+		\item \hCode{FindCell}: print \emph{every} place of the wanted value, not only the first.
+		\item \hCode{Ragged}: build Pascal's triangle: every inner cell is the sum of the two cells above it.
+		\item \hCode{ThreeD}: print the number of taken seats on every floor.
+	\end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

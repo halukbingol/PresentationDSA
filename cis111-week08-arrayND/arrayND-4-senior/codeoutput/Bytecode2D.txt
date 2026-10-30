@@ -1,0 +1,6 @@
+$ javac Make.java
+$ javap -c Make | grep -E "static|newarray"
+  static int[][] full();
+       2: multianewarray #7,  2             // class "[[I"
+  static int[][] rowsLater();
+       1: anewarray     #9                  // class "[I"

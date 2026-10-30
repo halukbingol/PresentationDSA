@@ -1,0 +1,7 @@
+CommaIndex.java:4: error: ']' expected
+		t[1, 2] = 7;
+		   ^
+CommaIndex.java:4: error: not a statement
+		t[1, 2] = 7;
+		 ^
+2 errors

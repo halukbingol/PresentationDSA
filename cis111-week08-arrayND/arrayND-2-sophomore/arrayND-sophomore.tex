@@ -1,0 +1,438 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% v20261030T1200
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue, \hArray, \hGrid
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+
+
+\title[Arrays ND: Sophomore]{
+	Multi-Dimensional Arrays\\
+	Sophomore
+}
+\subtitle{
+	\cisOOO\ -- Level 2: library, copies, tests, input, good habits
+}
+\author[Erkovan]{Sait Erkovan}
+
+\institute[FCIS]{
+	Faculty of Computer and Information Sciences\\
+	Yeditepe University
+}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={1-4}, hideallsubsections]
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={5-7}, hideallsubsections]
+		\end{column}
+	\end{columns}
+
+	\vspace{1em}
+	\small It builds on \hCode{array1D-2-sophomore}: \hCode{java.util.Arrays}, JUnit 5 and \hCode{Scanner} are assumed.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Library]{java.util.Arrays meets tables}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The deep methods}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. library
+\begin{table}
+		\small
+		\begin{tabular}{@{}L{0.34\textwidth}L{0.58\textwidth}@{}}
+			\toprule
+			\textbf{Method} & \textbf{On a table \hCode{int[][] t}} \\
+			\midrule
+			\hCode{toString(t)}            & the references of the rows, \hCode{[[I@\dots, [I@\dots]} \\
+			\hCode{deepToString(t)}        & every cell: \hCode{[[1, 2], [3, 4]]} \\
+			\hCode{equals(a, b)}           & are the rows the \emph{same} arrays? \\
+			\hCode{deepEquals(a, b)}       & are the cells equal, row by row? \\
+			\hCode{hashCode} / \hCode{deepHashCode} & the same difference, for hash codes \\
+			\hCode{fill(t, x)}, \hCode{sort(t)}, \hCode{copyOf(t, n)} & work on the outer array only: the rows, not the cells \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\small A table is an array of arrays. The ``deep'' methods go into the rows; the others stop at the references.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{equals or deepEquals?}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/DeepLib.java}{Java}{codeoutput/DeepLib.txt}
+
+	\footnotesize \uncover<2->{\hCode{a} and \hCode{b} have equal cells but different rows: only \hCode{deepEquals}
+	and \hCode{deepToString} look inside the rows.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Arrays.fill: one row, three references}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/ShareRow.java}{Java}{codeoutput/ShareRow.txt}
+
+	\footnotesize \uncover<2->{\hCode{fill(bad, new int[2])} creates \emph{one} row and puts it in every place:
+	a change in row 0 is seen in all rows. Fill the cells of every row instead.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Sorting row by row}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/SortRows.java}{Java}{codeoutput/SortRows.txt}
+
+	\footnotesize \hCode{Arrays.sort} works on one row at a time. Sorting the rows themselves
+	(for example by their total) needs a comparator: interfaces, in CIS112.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Copy]{Copying a table}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{clone and copyOf copy the references}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/ShallowCopy.java}{Java}{codeoutput/ShallowCopy.txt}
+
+	\footnotesize \uncover<2->{\hCode{clone}, \hCode{Arrays.copyOf} and \hCode{System.arraycopy} copy the outer array:
+	a \hDefined{shallow} copy. Both tables share their rows.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A deep copy, row by row}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/DeepCopy.java}{Java}{codeoutput/DeepCopy.txt}
+
+	\footnotesize A new outer array, and a copy of every row with its own length: it works for ragged tables too.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Contract]{Methods with a contract}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A small library: GradeBook (1/2)}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=4, lastline=26, firstnumber=4]{codeoutput/GradeBook/GradeBook.java}{Java}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A small library: GradeBook (2/2)}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=28, lastline=47, firstnumber=28]{codeoutput/GradeBook/GradeBook.java}{Java}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Checklist for a method that takes a table}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. checklist
+\begin{table}
+		\small
+		\begin{tabular}{@{}L{0.40\textwidth}L{0.52\textwidth}@{}}
+			\toprule
+			\textbf{Question} & \textbf{Say it in the comment, test it} \\
+			\midrule
+			No rows at all, \hCode{new int[0][]}?      & \hCode{isRectangular}: \hCode{false}; \hCode{columnAverages}: not allowed \\
+			Ragged?                                   & \hCode{rowTotals}: fine; \hCode{columnAverages}: rectangular only \\
+			Is the input changed?                     & ``\hCode{t} is not changed'', and a test that checks it \\
+			A new table, or the same one?             & \hCode{withBonus} returns a new one, with new rows \\
+			Which index is which?                     & rows are students, columns are quizzes \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\small The checklist of \hCode{array1D-2-sophomore} still holds; these questions are new for tables.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Tests]{Testing table methods}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Tests with assertArrayEquals}
+	\lstcode[basicstyle=\ttfamily\scriptsize, linerange={18-22,31-36,45-50}]{codeoutput/GradeBook/GradeBookTest.java}{Java}
+
+	\footnotesize On \hCode{int[][]}, \hCode{assertArrayEquals} compares cell by cell; doubles need a tolerance (\hCode{1e-9}).
+	\hCode{withBonusKeepsInput} (not shown) checks that \hCode{t} is unchanged.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reading the results}
+	\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/GradeBook.txt}
+
+	\begin{itemize}\small
+		\item \hCode{index [0]}: \hCode{63.0} instead of \hCode{63.5}: the method is wrong, \hCode{sum / t.length} is an integer division
+		\item \hCode{index [1][0]}: the first wrong cell is row 1, column 0; here the \emph{test} is wrong ($55 + 5 = 60$)
+		\item In Eclipse: \menu{Run As > JUnit Test}; the Failure Trace shows the same messages
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Input]{Reading a table}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The sizes first, then the cells}
+	\begin{columns}[T]
+		\begin{column}{0.66\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, firstline=3]{codeoutput/ReadTable.java}{Java}
+		\end{column}
+		\begin{column}{0.32\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, numbers=none]{codeoutput/ReadTable.in}{}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/ReadTable.txt}}
+		\end{column}
+	\end{columns}
+
+	\footnotesize With the sizes known, the table is created once, then filled row by row.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Rows of different lengths}
+	\begin{columns}[T]
+		\begin{column}{0.66\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, firstline=4]{codeoutput/ReadRagged.java}{Java}
+		\end{column}
+		\begin{column}{0.32\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, numbers=none]{codeoutput/ReadRagged.in}{}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/ReadRagged.txt}}
+		\end{column}
+	\end{columns}
+
+	\footnotesize Each line starts with the length of its row, so every row is created with its own length.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Habits]{Good habits}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{final does not freeze the rows}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/FinalRows.java}{Java}{codeoutput/FinalRows.txt}
+
+	\vspace{0.3em}
+	\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/FinalTable.txt}
+
+	\footnotesize \hCode{final} fixes only the variable \hCode{t}; cells and even whole rows may change.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Habits that prevent table bugs}
+	\begin{itemize}
+		\item Name the indices \hCode{r} and \hCode{c} (or \hCode{student}, \hCode{quiz}); never \hCode{i} and \hCode{j} by habit
+		\item Name the sizes: \hCode{final int STUDENTS = 3, QUIZZES = 4;}
+		\item Loop to \hCode{t[r].length}; use \hCode{t[0].length} only after \hCode{isRectangular}
+		\item Never share a row by accident: no \hCode{fill(t, row)}, no shallow copy where a deep one is meant
+		\item Print with \hCode{Arrays.deepToString} while looking for a bug
+		\item Test the edges: 0 rows, 1 row, 1 column, a ragged table
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Recipes}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. recipes
+\begin{lstlisting}[style=codesnippet, language=Java, basicstyle=\ttfamily\scriptsize]
+Arrays.deepToString(t)                     // print every cell
+Arrays.deepEquals(a, b)                    // equal cells?
+for (int[] row : t) { Arrays.fill(row, x); }   // fill every cell
+for (int[] row : t) { Arrays.sort(row); }      // sort every row
+int[][] d = new int[t.length][];           // a deep copy
+for (int r = 0; r < t.length; r++) { d[r] = Arrays.copyOf(t[r], t[r].length); }
+assertArrayEquals(expected, actual);       // JUnit: cell by cell
+int rows = in.nextInt(), cols = in.nextInt();   // read sizes, then cells
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises and a small project}
+	\begin{enumerate}\small
+		\item Fix \hCode{columnAverages} and the wrong test; all six tests must pass.
+		\item Add \hCode{static int[] bestOfEachColumn(int[][] t)} with three tests, one of them on a $1 \times 1$ table.
+		\item Write \hCode{static boolean sameShape(int[][] a, int[][] b)}: the same number of rows, and rows of the same lengths.
+		\item Read a table whose first line is the sizes and print it transposed.
+	\end{enumerate}
+
+	\vspace{0.5em}
+	\hRemark{Project}: a seat reservation for a small theater. A \hCode{boolean[][]} with rows of different
+	lengths; reserve, cancel, print the plan, find the first row with $k$ free seats side by side. Test every method.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{References}
+	\small The Java Tutorials, Arrays \cite{TheJavaTutorialsArray}; JUnit 5 \cite{homeJunit}.
+
+	\vspace{1em}
+	\setbeamertemplate{bibliography item}[text]
+	\bibliographystyle{IEEEtran}
+	\tiny\bibliography{../../hblib/hblibDataStructures}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

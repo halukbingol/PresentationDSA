@@ -1,0 +1,7 @@
+student 0: 311
+student 1: 266
+student 2: 370
+quiz 0: 217
+quiz 1: 234
+quiz 2: 253
+quiz 3: 243
