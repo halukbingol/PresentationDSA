@@ -1,0 +1,7 @@
+WrongType.java:3: error: incompatible types: double[] cannot be converted to int[]
+		int[] counts = new double[5];
+		               ^
+WrongType.java:4: error: incompatible types: possible lossy conversion from double to int
+		int[] marks = {10, 20.5, 30};
+		                   ^
+2 errors

@@ -1,0 +1,620 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+% v20261029T1800
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue, \hArray
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+
+
+\title[Arrays 1D: Freshman]{
+	One-Dimensional Arrays\\
+	Freshman
+}
+\subtitle{
+	\cisOOO\ -- Level 1: first steps and common errors
+}
+\author[Erkovan]{Sait Erkovan}
+
+\institute[FCIS]{
+	Faculty of Computer and Information Sciences\\
+	Yeditepe University
+}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={1-3}, hideallsubsections]
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={4-6}, hideallsubsections]
+		\end{column}
+	\end{columns}
+
+	\vspace{1em}
+	\small The ideas (index, length, reference, \dots) are in \hCode{array1D-0-concepts};
+	this deck is about writing them in Java and about the error messages you will meet.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Create]{Creating an array}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Three ways to create an array}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. create
+\begin{lstlisting}[style=codesnippet, language=Java]
+double[] highs = new double[7];     // 7 elements, all 0.0
+int[] primes = {2, 3, 5, 7, 11};    // the values are known now
+String[] names = new String[n];     // the length can be computed
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+	\begin{tikzpicture}
+		\node[font=\ttfamily\small] (t) at (0,0) {int[]};
+		\node[font=\ttfamily\small, right=0.6cm of t] (n) {primes};
+		\node[font=\ttfamily\small, right=0.6cm of n] (e) {=};
+		\node[font=\ttfamily\small, right=0.6cm of e] (v) {new int[5]};
+		\node[font=\scriptsize, below=0.3cm of t, align=center] {type:\\ array of \hCode{int}};
+		\node[font=\scriptsize, below=0.3cm of n, align=center] {name of the\\ variable};
+		\node[font=\scriptsize, below=0.3cm of v, align=center] {creates the array;\\ 5 is the length};
+	\end{tikzpicture}
+
+	\begin{itemize}\small
+		\item The brackets belong to the \hEmph{type}: \hCode{int[]} is read ``int array''
+		\item \hCode{new int[5]} makes 5 elements with the default value 0
+		\item The list form \hCode{\{2, 3, 5, 7, 11\}} counts the values for you: length 5
+		\item \hCode{int primes[]} also compiles (an old C style); write \hCode{int[] primes}
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A first array}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/FirstArray.java}{Java}{codeoutput/FirstArray.txt}
+
+	\vspace{0.3em}
+	\small \hQuestion{What does it print? Note line 7.}
+	\uncover<2->{Nobody wrote \hCode{scores[2]}, so it keeps its default value 0.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Initializer list, first and last element}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/InitializerList.java}{Java}{codeoutput/InitializerList.txt}
+
+	\vspace{0.3em}
+	\small The last element is always \hCode{a[a.length - 1]}, whatever the length is.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Use]{Reading, writing, looping}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Elements are variables}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. element access
+\begin{table}
+		\small
+		\begin{tabular}{@{}L{0.34\textwidth}L{0.56\textwidth}@{}}
+			\toprule
+			\textbf{Write} & \textbf{Meaning} \\
+			\midrule
+			\hCode{a[i]}                  & the element at index \hCode{i} (read it) \\
+			\hCode{a[i] = 7;}             & store 7 at index \hCode{i} (the old value is gone) \\
+			\hCode{a[i]++;} \ \hCode{a[i] += 5;} & change it, like any \hCode{int} variable \\
+			\hCode{a[i + 1]}, \hCode{a[2 * k]} & the index can be any \hCode{int} expression \\
+			\hCode{a.length}              & the number of elements; \emph{no} parentheses \\
+			\hCode{a[a.length - 1]}       & the last element \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.5em}
+	\begin{alertblock}{The index must be an \texttt{int} from 0 to \texttt{a.length - 1}}
+		\small A \hCode{double} index does not compile. An \hCode{int} outside the range compiles,
+		but stops the program when that line runs (section 4).
+	\end{alertblock}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Two loops: by index, and for each}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/ForEachLoop.java}{Java}{codeoutput/ForEachLoop.txt}
+
+	\footnotesize \hQuestion{Why does the second loop not change the array?}
+	\uncover<2->{\hCode{s} is a \emph{copy} of the element; changing the copy changes nothing else.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Which loop?}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. which loop
+\begin{table}
+		\small
+		\begin{tabular}{@{}L{0.40\textwidth}cc@{}}
+			\toprule
+			\textbf{You need to \dots} & \textbf{index loop} & \textbf{for-each} \\
+			\midrule
+			read every element, in order                 & yes & \hEmph{yes, simpler} \\
+			change the elements                          & yes & no \\
+			know the index (print it, compare neighbors) & yes & no \\
+			visit only part, or go backwards             & yes & no \\
+			stop early                                   & yes & awkward \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.5em}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. two loops
+\begin{lstlisting}[style=codesnippet, language=Java]
+for (int i = 0; i < a.length; i++) { ... a[i] ... }   // by index
+for (int x : a) { ... x ... }                          // for each x in a
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{length versus length()}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. length and size
+\begin{table}
+		\small
+		\begin{tabular}{@{}L{0.22\textwidth}L{0.22\textwidth}L{0.46\textwidth}@{}}
+			\toprule
+			\textbf{Kind of object} & \textbf{How many?} & \textbf{Note} \\
+			\midrule
+			array                  & \hCode{a.length}      & no parentheses: it is a value, not a method \\
+			\hCode{String}         & \hCode{s.length()}    & a method call (week 9) \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.5em}
+	\small Mixing them up is a compile error. The next section shows the message.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Compile errors]{Errors the compiler finds}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{How to read a compiler message}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/NotInitialized.java}{Java}{codeoutput/NotInitialized.txt}
+
+	\begin{itemize}\small
+		\item<2-> \hCode{NotInitialized.java:4}: the file and the \hEmph{line}; the caret \hCode{\^{}} marks the place
+		\item<2-> \hCode{int[] marks;} makes a variable, but \emph{no array}: add \hCode{= new int[3]}
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{length is not a method}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/LengthParens.java}{Java}{codeoutput/LengthParens.txt}
+
+	\small \uncover<2->{``cannot find symbol \dots\ method length()'': there is no such method.
+	Fix: \hCode{marks.length}.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The element type must match}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/WrongType.java}{Java}{codeoutput/WrongType.txt}
+
+	\small \uncover<2->{Two errors, two messages. A \hCode{double[]} is not an \hCode{int[]};
+	20.5 does not fit in an \hCode{int} element.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{An initializer list only in a declaration}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\fontsize{6.4}{7.4}\selectfont]{codeoutput/InitLater.java}{Java}{codeoutput/InitLater.txt}
+	\uncover<2->{\footnotesize One mistake, three messages: fix the \hEmph{first} one. Fix: \hCode{marks = new int[] \{10, 20, 30\};}}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Eclipse says it in other words}
+	The messages above come from \hCode{javac}, the compiler of the JDK.
+	Eclipse uses its own compiler: it underlines the same place, with different words.
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. javac and Eclipse messages
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.42\textwidth}L{0.50\textwidth}@{}}
+			\toprule
+			\textbf{javac} & \textbf{Eclipse} \hRemark{(not run here)} \\
+			\midrule
+			variable marks might not have been initialized & The local variable marks may not have been initialized \\
+			cannot find symbol \dots\ method length()        & Cannot invoke length() on the array type int[] \\
+			incompatible types: double[] cannot be converted to int[] & Type mismatch: cannot convert from double[] to int[] \\
+			illegal start of expression                    & Array constants can only be used in initializers \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.5em}
+	\small Same on Windows and macOS. Hover over the red underline, or open the \menu{Problems} view,
+	to read the message.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Run-time errors]{Errors at run time}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Index out of bounds}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/IndexError.java}{Java}{codeoutput/IndexError.txt}
+
+	\small \uncover<2->{The program compiles. Line 4 runs and prints 30; line 5 stops the program.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{How to read a stack trace}
+	\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=2]{codeoutput/IndexError.txt}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. stack trace
+\begin{table}
+		\small
+		\begin{tabular}{@{}L{0.42\textwidth}L{0.50\textwidth}@{}}
+			\toprule
+			\textbf{Part} & \textbf{Meaning} \\
+			\midrule
+			\hCode{Exception in thread "main"}        & the program stopped while running \hCode{main} \\
+			\hCode{ArrayIndexOutOfBoundsException}    & \emph{what} went wrong: an index outside the array \\
+			\hCode{Index 3 out of bounds for length 3} & the bad index and the length: valid is 0 to 2 \\
+			\hCode{at IndexError.main(IndexError.java:5)} & \emph{where}: class, method, file, \hEmph{line} \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\small In Eclipse the last part is a link: click it to jump to the line.
+	Then ask: \emph{which value did the index have, and why?}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Off by one}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/OffByOne.java}{Java}{codeoutput/OffByOne.txt}
+
+	\small \uncover<2->{Three good lines, then the crash: \hCode{<=} lets \hCode{i} reach 3.
+	Fix: \hCode{i < marks.length}.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{No array at all: null}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/NullArray.java}{Java}{codeoutput/NullArray.txt}
+
+	\small \uncover<2->{The message names the variable: \hCode{"marks" is null}.
+	Look for the line that should have created the array.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A negative length}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/NegativeSize.java}{Java}{codeoutput/NegativeSize.txt}
+
+	\small \uncover<2->{A length is checked when the array is created: it can be 0, never negative.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{No error, wrong output: printing an array}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/PrintArray.java}{Java}{codeoutput/PrintArray.txt}
+
+	\vspace{0.3em}
+	\begin{itemize}\small
+		\item<2-> \hCode{[I@\dots}: ``an \hCode{int} array at \dots''; the part after \hCode{@}
+		          changes from run to run. Print the elements with a loop.
+		\item<2-> \hCode{char[]} is the one exception: \hCode{println} prints its characters
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Debugger]{Watching an array in the debugger}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The Eclipse debugger, Windows and macOS}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. debugger keys
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.34\textwidth}L{0.24\textwidth}L{0.30\textwidth}@{}}
+			\toprule
+			\textbf{Action} & \textbf{Windows} & \textbf{macOS} \\
+			\midrule
+			Toggle a breakpoint     & \keys{Ctrl + Shift + B}   & \keys{\shift + \cmd + B} \\
+			Debug (last launched)   & \keys{F11}                & \keys{\cmd + F11} \\
+			Step over / step into   & \keys{F6} / \keys{F5}     & \keys{F6} / \keys{F5} \\
+			Resume to the next breakpoint & \keys{F8}           & \keys{F8} \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\begin{enumerate}\small
+		\item Double-click the left margin of a line inside the loop: a breakpoint
+		\item \menu{Run > Debug As > Java Application} opens the Debug perspective
+		\item In the \menu{Variables} view, open the array: one row per element, \hCode{[0]}, \hCode{[1]}, \dots
+		\item Step with \keys{F6}: the element that changes is highlighted; you can also edit a value
+	\end{enumerate}
+	\footnotesize \hRemark{macOS}: if the F-keys change volume or brightness, also hold \keys{fn}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet: syntax}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. cheat sheet
+\begin{lstlisting}[style=codesnippet, language=Java]
+int[] a = new int[5];             // create: 5 zeros
+int[] b = {4, 8, 15};             // create with values
+a = new int[] {1, 2, 3};          // a new array for an existing variable
+
+a[0] = 7;       int x = a[2];     // write, read
+int n = a.length;                 // 3; no parentheses
+int last = a[a.length - 1];       // the last element
+
+for (int i = 0; i < a.length; i++) { a[i] = 2 * a[i]; }   // index loop
+for (int v : a) { System.out.print(v + " "); }            // for-each
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet: errors}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. errors
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.40\textwidth}L{0.26\textwidth}L{0.26\textwidth}@{}}
+			\toprule
+			\textbf{Message (javac / JVM)} & \textbf{Cause} & \textbf{Fix} \\
+			\midrule
+			might not have been initialized          & no \hCode{new}            & create the array \\
+			cannot find symbol \dots\ length()       & \hCode{length()}          & \hCode{length} \\
+			incompatible types                       & wrong element type        & match the types \\
+			illegal start of expression              & \hCode{\{\dots\}} after the declaration & \hCode{new int[] \{\dots\}} \\
+			\midrule
+			ArrayIndexOutOfBoundsException           & index $< 0$ or $\ge$ length & check loop bounds: \hCode{<} \\
+			NullPointerException \dots\ is null      & the variable has no array & create it first \\
+			NegativeArraySizeException               & length $< 0$              & check the computation \\
+			\hCode{[I@\dots} printed                 & printing the array itself & print in a loop \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises: predict, then run}
+	\begin{enumerate}\small
+		\item Create an array with the number of days of the 12 months (February: 28).
+		      Print the month number and its days, one month per line.
+		\item In \hCode{FirstArray}, change the loop to \hCode{i <= scores.length}.
+		      Predict the message \emph{before} you run it. Which line does it name?
+		\item Remove \hCode{= null} from \hCode{NullArray}. Is it still a run-time error?
+		\item Write a for-each loop that counts the negative elements of
+		      \hCode{\{3, -1, 0, -7, 2\}}. Then try to set them to 0 with a for-each loop. Explain the result.
+		\item Print \hCode{\{10, 20, 30\}} in reverse order with an index loop.
+		      Which index does the loop start from?
+		\item Set a breakpoint in \hCode{ForEachLoop} and watch \hCode{steps} in the Variables view
+		      while you step with \keys{F6}. When does \hCode{steps[0]} change?
+	\end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{References}
+	\small Reading: bjlo2, Chapter 6; The Java Tutorials, Arrays \cite{TheJavaTutorialsArray}.
+
+	\vspace{1em}
+	\setbeamertemplate{bibliography item}[text]
+	\bibliographystyle{IEEEtran}
+	\tiny\bibliography{../../hblib/hblibDataStructures}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

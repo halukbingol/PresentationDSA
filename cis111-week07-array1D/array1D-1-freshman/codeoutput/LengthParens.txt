@@ -1,0 +1,6 @@
+LengthParens.java:4: error: cannot find symbol
+		System.out.println(marks.length());
+		                        ^
+  symbol:   method length()
+  location: variable marks of type int[]
+1 error

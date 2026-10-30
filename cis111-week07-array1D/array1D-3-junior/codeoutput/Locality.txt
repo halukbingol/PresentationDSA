@@ -1,0 +1,3 @@
+stride     1:   15 ms (sum 830471520)
+stride    16:   52 ms (sum 830471520)
+stride  4096:   98 ms (sum 830471520)

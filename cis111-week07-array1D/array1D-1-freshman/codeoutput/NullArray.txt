@@ -1,0 +1,2 @@
+Exception in thread "main" java.lang.NullPointerException: Cannot read the array length because "marks" is null
+	at NullArray.main(NullArray.java:4)

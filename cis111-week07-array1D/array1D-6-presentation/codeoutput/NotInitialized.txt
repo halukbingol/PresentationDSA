@@ -1,0 +1,4 @@
+NotInitialized.java:4: error: variable marks might not have been initialized
+		marks[0] = 10;
+		^
+1 error

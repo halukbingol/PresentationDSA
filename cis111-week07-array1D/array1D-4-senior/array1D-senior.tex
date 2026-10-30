@@ -1,0 +1,586 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+% v20261029T1800
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue, \hArray
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+
+
+\title[Arrays 1D: Senior]{
+	One-Dimensional Arrays\\
+	Senior
+}
+\subtitle{
+	\cisOOO\ -- Level 4: internals, security, production use
+}
+\author[Erkovan]{Sait Erkovan}
+
+\institute[FCIS]{
+	Faculty of Computer and Information Sciences\\
+	Yeditepe University
+}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={1-4}, hideallsubsections]
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={5-8}, hideallsubsections]
+		\end{column}
+	\end{columns}
+
+	\vspace{1em}
+	\small Assumes \hCode{array1D-3-junior}. Facts about the JVM below are for the HotSpot JVM
+	of OpenJDK 21; other JVMs may differ.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[JVM]{Arrays inside the JVM}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{An array is an object with a made-up class}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/ArrayTypes.java}{Java}{codeoutput/ArrayTypes.txt}
+
+	\footnotesize \uncover<2->{\hCode{[} means ``array of''; \hCode{I D Z C} are \hCode{int double boolean char};
+	\hCode{L\dots;} is a class. This explains \hCode{[I@\dots} in the freshman deck.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What an int[3] looks like in memory}
+	\begin{center}
+		\begin{tikzpicture}[cell/.style={draw, minimum height=0.6cm, font=\scriptsize, inner sep=1pt}]
+			\node[cell, minimum width=3.2cm, fill=colorUnused] (m) at (0,0) {mark word: 8 bytes};
+			\node[cell, minimum width=1.6cm, fill=colorUnused, right=0pt of m] (k) {class: 4};
+			\node[cell, minimum width=1.6cm, fill=colorHead!50, right=0pt of k] (l) {length: 4};
+			\node[cell, minimum width=1.6cm, right=0pt of l] (e0) {[0]: 4};
+			\node[cell, minimum width=1.6cm, right=0pt of e0] (e1) {[1]: 4};
+			\node[cell, minimum width=1.6cm, right=0pt of e1] (e2) {[2]: 4};
+			\node[cell, minimum width=0.8cm, dashed, right=0pt of e2] (p) {};
+			\draw[decorate, decoration={brace, amplitude=4pt}] (m.north west) -- (l.north east)
+				node[midway, above=5pt, font=\scriptsize] {header: 16 bytes};
+			\draw[decorate, decoration={brace, amplitude=4pt}] (e0.north west) -- (e2.north east)
+				node[midway, above=5pt, font=\scriptsize] {elements: $3 \times 4$ bytes};
+			\node[font=\scriptsize, below=2pt of p] {padding};
+		\end{tikzpicture}
+	\end{center}
+
+	\begin{itemize}\small
+		\item Typical 64-bit HotSpot with compressed class pointers; objects are aligned to 8 bytes:
+		      \hCode{int[3]} takes 32 bytes, \hCode{int[1000]} about 4\,016
+		\item The \hEmph{length is stored in the object}: \hCode{a.length} is a read, not a count
+		\item For large arrays the header does not matter; for millions of tiny arrays it does
+		\item Measure instead of guessing: the OpenJDK tool \emph{JOL} (Java Object Layout) prints the layout
+		      \hRemark{(not run here)}
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Arrays have their own bytecodes}
+	\begin{columns}[T]
+		\begin{column}{0.50\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Bytecode/Sum.java}{Java}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\uncover<2->{\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Bytecode.txt}}
+		\end{column}
+	\end{columns}
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. bytecodes
+\begin{table}
+		\scriptsize
+		\begin{tabular}{@{}L{0.24\textwidth}L{0.68\textwidth}@{}}
+			\toprule
+			\textbf{Instruction} & \textbf{Java} \\
+			\midrule
+			\hCode{newarray int}   & \hCode{new int[3]}; checks that the length is not negative \\
+			\hCode{iastore}        & \hCode{a[0] = 7}; checks \hCode{null} and the bounds \\
+			\hCode{arraylength}    & \hCode{a.length} \\
+			\hCode{iaload}         & \hCode{a[i]}; checks \hCode{null} and the bounds \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\scriptsize \hCode{javap} comes with the JDK. Windows Command Prompt: \hCode{findstr} instead of \hCode{grep}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Safety]{Checks that keep arrays safe}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Every access is checked}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\textbf{Java}
+			\begin{itemize}\small
+				\item Every \hCode{a[i]} checks $0 \le i <$ \hCode{a.length}: a bad index is an
+				      exception, never a silent read of other memory
+				\item The JIT compiler removes a check when it can \emph{prove} it always passes,
+				      e.g.\ in \hCode{for (i = 0; i < a.length; i++)}; so the safety is nearly free
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\textbf{C and C++}
+			\begin{itemize}\small
+				\item \hCode{a[i]} is plain address arithmetic: $s + i \cdot b$, no check
+				\item Reading or writing past the end is a \hDefined{buffer overflow}:
+				      one of the oldest sources of security holes
+				\item Example: \emph{Heartbleed} (OpenSSL, 2014, CVE-2014-0160) read past a buffer
+				      and leaked server memory
+			\end{itemize}
+		\end{column}
+	\end{columns}
+
+	\vspace{0.5em}
+	\begin{block}{The other checks}
+		\small \hCode{null} (NullPointerException), negative length (NegativeArraySizeException),
+		element type (ArrayStoreException, next slide).
+	\end{block}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Covariance and ArrayStoreException}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Covariance.java}{Java}{codeoutput/Covariance.txt}
+
+	\begin{itemize}\small
+		\item<2-> Arrays are \hDefined{covariant}: a \hCode{String[]} \emph{is an} \hCode{Object[]}, so line 8 compiles
+		\item<2-> The array remembers its element type; every store into an object array is checked at run time
+		\item<2-> Generic types (\cisOOT) chose the opposite rule: such mistakes stop at compile time
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Limits]{Limits and overflow}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{How big can an array be?}
+	\begin{columns}[T]
+		\begin{column}{0.70\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/HeapLimits/Huge.java}{Java}
+		\end{column}
+		\begin{column}{0.28\textwidth}
+			\begin{itemize}\small
+				\item The index is an \hCode{int}: at most $2^{31} - 1$ elements
+				\item The heap is limited: \hCode{-Xmx64m} gives 64 MB
+			\end{itemize}
+		\end{column}
+	\end{columns}
+
+	\vspace{0.5em}
+	\small \hQuestion{What happens with 10 million, 20 million, and $2^{31} - 1$ \hCode{int}s?}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Two different out-of-memory errors}
+	\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/HeapLimits.txt}
+
+	\begin{itemize}\small
+		\item 10 million \hCode{int}s are 40 MB: they fit in 64 MB; 20 million (80 MB) do not
+		\item $2^{31} - 1$ elements are refused before the heap is even asked: a JVM limit
+		\item Large data: process it in chunks, or keep it in a file
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A length computed with int can overflow}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize, firstline=4, lastline=16, firstnumber=4][basicstyle=\ttfamily\scriptsize]{codeoutput/SizeOverflow.java}{Java}{codeoutput/SizeOverflow.txt}
+
+	\footnotesize $6 \cdot 10^{8} \cdot 4 > 2^{31} - 1$ wraps to a negative number; other counts wrap to a \emph{positive} wrong length, with no error.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The midpoint bug}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/Midpoint.java}{Java}{codeoutput/Midpoint.txt}
+
+	\begin{itemize}\small
+		\item \hCode{(lo + hi) / 2} was in binary searches and merge sorts for decades, including the JDK's
+		      own \hCode{Arrays.binarySearch}; it fails only for arrays of more than about $2^{30}$ elements
+		\item Found and published by J.\ Bloch in 2006
+		      \hUrl{research.google/blog: Nearly All Binary Searches and Mergesorts are Broken}
+		\item Fix: \hCode{lo + (hi - lo) / 2} or \hCode{(lo + hi) >>> 1}
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Security]{Security}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Arrays are mutable: copy at the border}
+	\lstcode[basicstyle=\ttfamily\scriptsize, lastline=19]{codeoutput/DefensiveCopy.java}{Java}
+
+	\footnotesize A \hCode{private final int[]} field is not protected: whoever has the arrow can change the elements.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Who can change what?}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize, firstline=21, firstnumber=21]{codeoutput/DefensiveCopy.java}{Java}{codeoutput/DefensiveCopy.txt}
+
+	\footnotesize \uncover<2->{The copies protect \hCode{scores}; the leaky getter and the public array do not.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The rules behind it}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. cert rules
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.20\textwidth}L{0.72\textwidth}@{}}
+			\toprule
+			\textbf{SEI CERT} & \textbf{Rule (Oracle Coding Standard for Java)} \\
+			\midrule
+			OBJ05-J & Do not return references to private mutable class members \\
+			OBJ06-J & Defensively copy mutable inputs and mutable internal components \\
+			OBJ13-J & Ensure that references to mutable objects are not exposed (\hCode{public static final} arrays) \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\begin{itemize}\small
+		\item An array handed out is an array handed over: return \hCode{clone()}
+		\item An array taken in may be changed later by the caller: store \hCode{clone()}
+		\item Instead of \hCode{public static final String[] LEVELS}, a private array and a method that returns a copy
+	\end{itemize}
+
+
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Secrets in a char[], wiped after use}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/ClearSecret.java}{Java}{codeoutput/ClearSecret.txt}
+
+	\footnotesize A \hCode{String} cannot be wiped; that is why \hCode{java.io.Console.readPassword()} returns a \hCode{char[]}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Never trust an index from outside}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize, firstline=5, firstnumber=5][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, linerange={1-2,7-8}]{codeoutput/CheckIndex.java}{Java}{codeoutput/CheckIndex.txt}
+
+	\footnotesize \uncover<2->{(JDK-internal lines cut.) \hCode{Objects.checkIndex}, Java 9+, fails early, before anything uses the index.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Production]{Production use}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Less known parts of java.util.Arrays}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize, firstline=4, firstnumber=4]{codeoutput/ArraysPro.java}{Java}{codeoutput/ArraysPro.txt}
+
+	\footnotesize \hCode{mismatch} and \hCode{compare}: Java 9. \hCode{parallelSort}, \hCode{stream}: Java 8.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Arrays in real systems}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. production
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.30\textwidth}L{0.62\textwidth}@{}}
+			\toprule
+			\textbf{Situation} & \textbf{Practice} \\
+			\midrule
+			Arrays as keys, in sets, in \hCode{equals}  & \hCode{equals} and \hCode{hashCode} of an array are by identity: use \hCode{Arrays.equals}, \hCode{Arrays.hashCode} \\
+			Public API                                  & return copies, or read-only views; document who owns the array \\
+			Numbers in bulk (signals, images, matrices) & primitive arrays: compact, cache friendly, no boxing \\
+			Very large data                             & watch $2^{31} - 1$ and the heap; stream it in chunks \\
+			Sorting objects                             & \hCode{Arrays.sort} is stable for objects; equal keys keep their order \\
+			Many threads                                & do not share a plain array that is written; see the next section \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Threads]{Arrays and threads}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Lost updates}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize, firstline=5, lastline=17, firstnumber=5][basicstyle=\ttfamily\scriptsize]{codeoutput/LostUpdates.java}{Java}{codeoutput/LostUpdates.txt}
+
+	\footnotesize \uncover<2->{The \hCode{int[]} total varies from run to run and machine to machine: two threads can read the same old value.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Sharing arrays between threads}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. threads
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.32\textwidth}L{0.60\textwidth}@{}}
+			\toprule
+			\textbf{Tool} & \textbf{What it guarantees} \\
+			\midrule
+			\hCode{AtomicIntegerArray}, \hCode{AtomicLongArray} & each element is updated atomically \\
+			\hCode{synchronized} block around the update        & one thread at a time; slower under contention \\
+			\hCode{volatile int[] a}                            & only the \emph{arrow} is volatile, not the elements \\
+			one array per thread, combine at the end            & no sharing, no locks: often the fastest \\
+			\hCode{Arrays.parallelSort}, parallel streams       & the library splits the work safely \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\small A program with a data race may print the right answer on your laptop and the wrong one on a server.
+	Reasoning, not testing, shows it is correct.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Projects]{Open-ended projects}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Projects}
+	\begin{enumerate}\small
+		\item \textbf{Ring buffer.} The last $n$ sensor readings in a fixed array with a moving start index;
+		      no shifting. Test it with JUnit, including wrap-around.
+		\item \textbf{Bit set.} Store 64 \hCode{boolean}s in one \hCode{long} of a \hCode{long[]}; implement
+		      \hCode{set}, \hCode{get}, \hCode{count}. Compare its memory with \hCode{boolean[]}.
+		\item \textbf{Sieve of Eratosthenes} up to $10^{8}$: \hCode{boolean[]} against your bit set; time and memory.
+		\item \textbf{Image histogram.} A gray image as one \hCode{int[]} of pixels (row after row);
+		      histogram equalization with a counting array and prefix sums.
+		\item \textbf{Secure container.} A class that holds scores and never leaks its array;
+		      write tests that \emph{try} to change it from outside.
+		\item \textbf{Benchmark study.} Sequential against random access, \hCode{int[]} against \hCode{Integer[]},
+		      with JMH; explain every number.
+	\end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. cheat sheet
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.26\textwidth}L{0.66\textwidth}@{}}
+			\toprule
+			\textbf{Topic} & \textbf{Remember} \\
+			\midrule
+			Representation   & an object: header with the length, then the elements side by side \\
+			Class names      & \hCode{[I}, \hCode{[D}, \hCode{[Ljava.lang.String;}; superclass \hCode{Object} \\
+			Checks           & bounds, \hCode{null}, negative length, store type: all at run time \\
+			Limits           & at most $2^{31} - 1$ elements; the heap (\hCode{-Xmx}) \\
+			Overflow         & \hCode{Math.multiplyExact} for sizes; \hCode{lo + (hi - lo) / 2} \\
+			Security         & copy in, copy out; no \hCode{public static final} arrays; wipe secrets \\
+			Untrusted index  & \hCode{Objects.checkIndex(i, a.length)} \\
+			Threads          & \hCode{AtomicIntegerArray}, or one array per thread \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{References}
+	\begin{itemize}\small
+		\item The Java Language Specification, Chapter 10: Arrays \hUrl{docs.oracle.com/javase/specs}
+		\item The Java Virtual Machine Specification, \hCode{newarray}, \hCode{iaload}, \hCode{arraylength}
+		\item SEI CERT Oracle Coding Standard for Java: OBJ05-J, OBJ06-J, OBJ13-J \hUrl{wiki.sei.cmu.edu}
+		\item J.\ Bloch, ``Extra, Extra -- Read All About It: Nearly All Binary Searches and Mergesorts are Broken'', 2006
+		      \hUrl{research.google/blog}
+		\item \hCode{java.util.Arrays}, JDK 21 API documentation; Knuth \cite{knuth1973artv1}
+	\end{itemize}
+
+	\vspace{0.5em}
+	\setbeamertemplate{bibliography item}[text]
+	\bibliographystyle{IEEEtran}
+	\tiny\bibliography{../../hblib/hblibDataStructures}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

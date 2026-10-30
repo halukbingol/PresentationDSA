@@ -1,0 +1,8 @@
+$ javac -d out Total.java
+$ java -cp out Total 12 7 30
+3 arguments, total 49
+$ java -cp out Total
+0 arguments, total 0
+$ java -cp out Total 12 seven 2>&1 | grep -v java.base
+Exception in thread "main" java.lang.NumberFormatException: For input string: "seven"
+	at Total.main(Total.java:5)

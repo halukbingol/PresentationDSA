@@ -1,0 +1,6 @@
+$ javac -d out Sum.java
+$ javap -c -cp out Sum | grep -E 'newarray|iastore|iaload|arraylength'
+       1: newarray       int
+       8: iastore
+      15: arraylength
+      22: iaload

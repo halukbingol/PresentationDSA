@@ -1,0 +1,585 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+% v20261029T1800
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue, \hArray
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+
+
+\title[Arrays 1D: Sophomore]{
+	One-Dimensional Arrays\\
+	Sophomore
+}
+\subtitle{
+	\cisOOO\ -- Level 2: library, tests, input, good habits
+}
+\author[Erkovan]{Sait Erkovan}
+
+\institute[FCIS]{
+	Faculty of Computer and Information Sciences\\
+	Yeditepe University
+}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={1-4}, hideallsubsections]
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={5-8}, hideallsubsections]
+		\end{column}
+	\end{columns}
+
+	\vspace{1em}
+	\small Assumes \hCode{array1D-1-freshman}: creating arrays, loops, and the common errors.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Arrays class]{The class java.util.Arrays}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Do not write it again: java.util.Arrays}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/ArraysLibrary.java}{Java}{codeoutput/ArraysLibrary.txt}
+
+	\footnotesize Every method is \hCode{static}: call it as \hCode{Arrays.name(...)} after \hCode{import java.util.Arrays;}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The methods you will use most}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. Arrays methods
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.36\textwidth}L{0.56\textwidth}@{}}
+			\toprule
+			\textbf{Call} & \textbf{Does} \\
+			\midrule
+			\hCode{Arrays.toString(a)}            & \hCode{"[72, 85, 90]"}: for printing and debugging \\
+			\hCode{Arrays.sort(a)}                & sorts \hCode{a} \emph{in place}, smallest first \\
+			\hCode{Arrays.binarySearch(a, x)}     & index of \hCode{x} in a \hEmph{sorted} array; negative if absent \\
+			\hCode{Arrays.copyOf(a, n)}           & a new array of length \hCode{n}: cut, or padded with defaults \\
+			\hCode{Arrays.copyOfRange(a, from, to)} & a new array of \hCode{a[from]} \dots\ \hCode{a[to - 1]} \\
+			\hCode{Arrays.fill(a, v)}             & every element becomes \hCode{v} \\
+			\hCode{Arrays.equals(a, b)}           & same length and same elements? \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.5em}
+	\begin{alertblock}{binarySearch needs a sorted array}
+		\small On an unsorted array it returns a wrong answer \emph{without} an error.
+		How it works, and why it is fast: \hCode{array1D-3-junior}.
+	\end{alertblock}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Copy]{Copy and compare}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Three ways to copy, one way to compare}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/CopyCompare.java}{Java}{codeoutput/CopyCompare.txt}
+
+	\footnotesize \hCode{alias} sees the change, the copies do not; \hCode{==} compares arrows, \hCode{Arrays.equals} elements.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{System.arraycopy: the five arguments}
+	\hCode{System.arraycopy(src, srcPos, dest, destPos, length)} copies \hCode{length} elements.
+
+	\begin{center}
+		\begin{tikzpicture}
+			\hArray[id=s, name={src}, width=0.75, hot={1,2,3}]{10,20,30,40,50}
+			\hArray[id=d, name={dest}, at={(0,-1.5)}, width=0.75, hot={3,4,5}, unused={0,1,2,6}]{0,0,0,20,30,40,0}
+			\draw[->, colorStop, thick] (s-1.south) -- (d-3.north);
+			\draw[->, colorStop, thick] (s-3.south) -- (d-5.north);
+			\node[font=\small, anchor=west] at (5.8,-1.25) {\hCode{System.arraycopy(src, 1, dest, 3, 3)}};
+		\end{tikzpicture}
+	\end{center}
+
+	\begin{itemize}\small
+		\item \hCode{dest} must exist and be long enough, or: \hCode{ArrayIndexOutOfBoundsException}
+		\item Source and destination may be the \emph{same} array: this is how insert and remove
+		      shift elements (\hCode{array1D-3-junior})
+		\item \hCode{Arrays.copyOf} and \hCode{clone()} create the new array for you
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Methods]{Methods with a contract}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A small library: TempStats}
+	\lstcode[basicstyle=\ttfamily\scriptsize, lastline=18]{codeoutput/TempStats/TempStats.java}{Java}
+
+	\footnotesize The Javadoc is the \hDefined{contract}: what the caller must give (\emph{at least one}),
+	what the method promises (\emph{not changed}). There is a bug: the tests will find it.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A method that returns a new array}
+	\lstcode[basicstyle=\ttfamily\scriptsize, firstline=37, lastline=50, firstnumber=37]{codeoutput/TempStats/TempStats.java}{Java}
+
+	\begin{itemize}\small
+		\item The result has its own length, \hCode{t.length - 1}; \hCode{t} itself is only read
+		\item Line 46 does not do what line 41 promises. Can you see it before the test does?
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Checklist for a method that takes an array}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. checklist
+\begin{table}
+		\small
+		\begin{tabular}{@{}L{0.40\textwidth}L{0.52\textwidth}@{}}
+			\toprule
+			\textbf{Question} & \textbf{Write it in the Javadoc, test it} \\
+			\midrule
+			Can the array be empty?            & \hCode{max} of nothing has no answer: say ``at least one'' \\
+			Can it be \hCode{null}?            & usually not: say so, or throw an exception (week 11) \\
+			Does the method change it?         & ``not changed'', or ``sorts \hCode{a} in place'' \\
+			Does it return a new array?        & say its length and what is in it \\
+			Negative values, equal values?     & the start value of \emph{best so far}; ties \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.5em}
+	\small Eclipse writes the Javadoc skeleton for you: put the cursor on the method and press
+	\keys{Alt + Shift + J} (Windows) or \keys{\Alt + \cmd + J} (macOS).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Testing]{Testing array methods with JUnit 5}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Tests: normal, negative, arrays}
+	\lstcode[basicstyle=\ttfamily\scriptsize, firstline=8, lastline=27, firstnumber=8]{codeoutput/TempStats/TempStatsTest.java}{Java}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Tests: the input must not change}
+	\lstcode[basicstyle=\ttfamily\scriptsize, firstline=29, lastline=42, firstnumber=29]{codeoutput/TempStats/TempStatsTest.java}{Java}
+
+	\begin{itemize}\small
+		\item \hCode{assertArrayEquals} compares the \hEmph{elements}, one by one
+		\item \hCode{assertEquals} on two arrays compares the \hEmph{arrows}: two different arrays
+		      are never equal, even with the same elements
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reading the results}
+	\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/TempStats.txt}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. failures
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.26\textwidth}L{0.66\textwidth}@{}}
+			\toprule
+			\textbf{Failure} & \textbf{Meaning and fix} \\
+			\midrule
+			\hCode{maxOfAllNegative}      & 0 is not in the array: start with \hCode{t[0]}, not 0 \\
+			\hCode{keepsInputWrongAssert} & the \emph{test} is wrong: use \hCode{assertArrayEquals} \\
+			\hCode{changesOfFourDays}     & every sign is wrong at index 0: \hCode{t[i + 1] - t[i]} \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\footnotesize In Eclipse: \menu{Run As > JUnit Test}; \keys{Alt + Shift + X}, \keys{T} (Windows), \keys{\Alt + \cmd + X}, \keys{T} (macOS).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Input]{Reading values into an array}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Read until there is no number}
+	\begin{columns}[T]
+		\begin{column}{0.66\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, lastline=12]{codeoutput/ReadScores.java}{Java}
+		\end{column}
+		\begin{column}{0.32\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, numbers=none]{codeoutput/ReadScores.in}{}
+		\end{column}
+	\end{columns}
+
+	\begin{itemize}\small
+		\item How many scores? Unknown: a \hEmph{partially filled} array, \hCode{CAPACITY} and \hCode{size}
+		\item \hCode{size < CAPACITY} is checked first: the array never overflows
+		\item The loop ends at the first non-number (\hCode{q}), or at the end of the input:
+		      \keys{Ctrl + Z} then \keys{Enter} in the Windows Command Prompt, \keys{Ctrl + D} in the macOS Terminal
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Then work on the values that were read}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize, firstline=13, firstnumber=13]{codeoutput/ReadScores.java}{Java}{codeoutput/ReadScores.txt}
+
+	\footnotesize Both loops stop at \hCode{size}, never at \hCode{scores.length}.
+	The input came from \hCode{ReadScores.in}; \hCode{run\_examples.sh} feeds it to the program.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Arguments]{String[] args}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{main has had an array all along}
+	\lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/CmdArgs/Total.java}{Java}
+
+	\begin{itemize}\small
+		\item \hCode{String[] args} holds the words typed after the class name
+		\item \hCode{Integer.parseInt} turns \hCode{"12"} into the \hCode{int} 12
+		\item \hQuestion{What happens with no words? With the word \hCode{seven}?}
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Running it in a terminal}
+	\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/CmdArgs.txt}
+
+	\begin{itemize}\small
+		\item \hCode{12 7 30} become \hCode{args[0]}, \hCode{args[1]}, \hCode{args[2]}; no words: \hCode{args.length} is 0
+		\item \hCode{grep -v java.base} hides the lines inside the JDK; what is left points to \emph{our} line 5
+		\item Run here in a bash terminal; the next slide shows Windows, macOS and Eclipse
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Arguments on Windows, on macOS, in Eclipse}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\textbf{Windows} (Command Prompt) \hRemark{not run here}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. windows
+\begin{lstlisting}[style=codesnippet, language={}]
+C:\work> javac -d out Total.java
+C:\work> java -cp out Total 12 7 30
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\textbf{macOS} (Terminal) \hRemark{not run here}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. macos
+\begin{lstlisting}[style=codesnippet, language={}]
+~/work % javac -d out Total.java
+~/work % java -cp out Total 12 7 30
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+		\end{column}
+	\end{columns}
+
+	\vspace{0.3em}
+	\begin{itemize}\small
+		\item The commands are the same; only the prompt differs. A class path with
+		      \emph{several} folders is separated by a semicolon on Windows (\hCode{out;lib}) and by a colon on macOS (\hCode{out:lib})
+		\item Quotes keep spaces in one argument: \hCode{java -cp out Total "1 2"} gives one argument
+		\item Eclipse: \menu{Run > Run Configurations\dots > Arguments > Program arguments},
+		      type \hCode{12 7 30}, then \menu{Run}
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Habits]{Good habits}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{final does not freeze the elements}
+	\lstcoderightstep[0.62][basicstyle=\ttfamily\scriptsize]{codeoutput/FinalArray.java}{Java}{codeoutput/FinalArray.txt}
+
+	\small \hCode{final} fixes the \emph{arrow}, not the elements.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{But the arrow is final}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/FinalReassign.java}{Java}{codeoutput/FinalReassign.txt}
+
+	\small \uncover<2->{A new \emph{array} is refused; a new \emph{element} is not.
+	To protect the elements, give out copies (\hCode{array1D-4-senior}).}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Habits that prevent array bugs}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. habits
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.40\textwidth}L{0.52\textwidth}@{}}
+			\toprule
+			\textbf{Habit} & \textbf{Because} \\
+			\midrule
+			Loop to \hCode{a.length} (or \hCode{size}), never to a number & the length may change later; the loop must not \\
+			One constant for the capacity: \hCode{final int CAPACITY = 100;} & one place to change \\
+			Plural names: \hCode{scores}, \hCode{days}            & \hCode{scores[i]} reads ``score number \hCode{i}'' \\
+			Keep \hCode{size} next to a partially filled array    & together in a class later (\cisOOT) \\
+			Say in the Javadoc if a method changes the array      & callers expect ``not changed'' \\
+			Test: empty, one element, negatives, ties             & the bugs live at the edges \\
+			Print with \hCode{Arrays.toString} while debugging    & instead of \hCode{[I@\dots} \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\small Format the code before you read it: \keys{Ctrl + Shift + F} (Windows),
+	\keys{\shift + \cmd + F} (macOS).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Recipes}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. recipes
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.30\textwidth}L{0.62\textwidth}@{}}
+			\toprule
+			\textbf{To \dots} & \textbf{Write} \\
+			\midrule
+			print an array         & \hCode{Arrays.toString(a)} \\
+			copy it                & \hCode{a.clone()}, \hCode{Arrays.copyOf(a, a.length)} \\
+			copy a part            & \hCode{Arrays.copyOfRange(a, from, to)} \\
+			grow it                & \hCode{a = Arrays.copyOf(a, 2 * a.length);} \\
+			compare contents       & \hCode{Arrays.equals(a, b)}; in tests \hCode{assertArrayEquals} \\
+			sort, then search      & \hCode{Arrays.sort(a); Arrays.binarySearch(a, x)} \\
+			read an unknown number & partially filled array, \hCode{while (size < CAPACITY \&\& in.hasNextInt())} \\
+			get program arguments  & \hCode{args.length}, \hCode{Integer.parseInt(args[i])} \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises and a small project}
+	\textbf{Exercises}
+	\begin{enumerate}\small
+		\item Fix the two bugs of \hCode{TempStats} and the wrong test; run the tests until all pass.
+		\item Add \hCode{min}, \hCode{average} and \hCode{coldestDay} (an index) to \hCode{TempStats},
+		      each with Javadoc and at least three tests.
+		\item Change \hCode{Total} so that a non-number is skipped with a message instead of a crash.
+	\end{enumerate}
+
+	\textbf{Project: grade book}
+	\begin{itemize}\small
+		\item Read up to 200 scores (0--100) until a non-number; reject values outside 0--100
+		\item Print the count, the average, the highest and the lowest score
+		\item Print a letter grade histogram (\hCode{AA} \dots\ \hCode{FF}) with one \hCode{*} per student
+		\item Put the computations in a class with \hCode{static} methods and test them with JUnit 5
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{References}
+	\small The Java Tutorials, Arrays \cite{TheJavaTutorialsArray};
+	JUnit 5 \cite{homeJunit}; \hCode{java.util.Arrays} in the JDK API documentation.
+
+	\vspace{1em}
+	\setbeamertemplate{bibliography item}[text]
+	\bibliographystyle{IEEEtran}
+	\tiny\bibliography{../../hblib/hblibDataStructures}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}
