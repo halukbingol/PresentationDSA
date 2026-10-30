@@ -1,0 +1,12 @@
+$ cat .gitignore src/.gitignore
+*.class
+Gen.java
+$ cat .git/info/exclude | grep -v "^#"
+mine.txt
+$ cat ~/.config/git/ignore
+*.swp
+$ git check-ignore -v src/Main.class src/Gen.java notes.swp mine.txt | sed "s#$HOME#~#"
+.gitignore:1:*.class	src/Main.class
+src/.gitignore:1:Gen.java	src/Gen.java
+~/.config/git/ignore:1:*.swp	notes.swp
+.git/info/exclude:7:mine.txt	mine.txt

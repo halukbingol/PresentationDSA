@@ -1,0 +1,8 @@
+$ cat .gitignore
+*.log
+$ git status --short --ignored
+?? .gitignore
+?? notes.txt
+!! .secret.log
+!! app.log
+!! debug.log

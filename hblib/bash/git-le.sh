@@ -50,6 +50,8 @@ function gitAddLevel(){
 
 	fGitIgnore="${toTopicX}/${topicName}-${levelNo}-${levelName}/.gitignore"
 	gitAddGitIgnore "${fGitIgnore}"
+
+	
 }
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A gitAddLevel
 

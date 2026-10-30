@@ -1,0 +1,6 @@
+$ cat .gitignore
+!important.log
+*.log
+$ git check-ignore -v --non-matching important.log a.log
+.gitignore:2:*.log	important.log
+.gitignore:2:*.log	a.log

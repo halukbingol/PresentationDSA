@@ -1,0 +1,17 @@
+$ git status --short --ignored --untracked-files=all
+?? .env.example
+?? .gitignore
+?? pom.xml
+?? src/main/java/app/App.java
+!! .DS_Store
+!! .classpath
+!! .env
+!! .idea/workspace.xml
+!! .project
+!! .settings/org.eclipse.jdt.core.prefs
+!! Thumbs.db
+!! app.iml
+!! server.log
+!! src/.DS_Store
+!! target/app-1.0.jar
+!! target/classes/app/App.class

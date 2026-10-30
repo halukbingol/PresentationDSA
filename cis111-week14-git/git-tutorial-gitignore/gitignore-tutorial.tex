@@ -1,0 +1,535 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Tutorial -- Patterns in .gitignore: Globs, not Regular Expressions
+%  ---------------------------------------------------------------------
+%  Uses the libraries in ../../hblib/ (handout support in hblibPresentation v20261027T1800).
+%  Every output shown is real, made by:  bash run_examples.sh
+%     codeoutput/<Name>.sh    a terminal session in a copy of codeoutput/<Name>/ (a fresh git repository)
+%     codeoutput/<Name>.java  a program; codeoutput/<Name>.txt  what it printed
+% =====================================================================
+
+\documentclass[11pt,a4paper]{article}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} 
+	\usepackage{../../hblib/hblibCodeoutput} 
+%	\usepackage{../../hblib/hblibDatastructures} 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{parskip} % paragraphs: a blank line, no indentation
+\setlength{\emergencystretch}{3em} % long \texttt{...} names: allow wider spaces before running into the margin
+\DontPrintSemicolon % in algorithms
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+% ---------------------------------------------------------------------
+\title{Patterns in \texttt{.gitignore}\\[0.3em]\large Globs, not Regular Expressions -- a Tutorial}
+\author[Bingol]{Haluk O. Bingol}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{hbhandout}
+
+\begin{center}
+\fbox{\begin{minipage}{0.9\linewidth}\small
+\textbf{For:} students who know the Git basics (\texttt{add}, \texttt{commit}, \texttt{status}) and have seen regular expressions.
+\textbf{Time:} about one hour; type the examples yourself.
+\textbf{The one thing to remember:} the patterns in \texttt{.gitignore} are \emph{not} regular expressions.
+They are \emph{glob} (wildcard) patterns, like file names in a shell.
+\end{minipage}}
+\end{center}
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{Not a Regular Expression}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+\label{sec:notregex}
+
+
+A student wants Git to ignore every file that ends in \texttt{.log} and writes what would be right in Java's \texttt{String.matches}:
+
+\lstterminal[basicstyle=\ttfamily\footnotesize]{codeoutput/RegexHabit.txt}
+
+Git ignored only \texttt{.secret.log}. In a \texttt{.gitignore}, \texttt{.} is a dot, \texttt{*} is ``any characters'' and
+\texttt{\textbackslash.} is an escaped dot: so \texttt{.*\textbackslash.log} means ``a name that starts with a dot and ends in
+\texttt{.log}''. \texttt{??} marks untracked files, \texttt{!!} ignored ones. The glob that was meant:
+
+\lstterminal[basicstyle=\ttfamily\footnotesize]{codeoutput/GlobFix.txt}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl.
+\begin{table}[h]
+\centering\small
+\begin{tabular}{@{}L{0.2\linewidth}L{0.35\linewidth}L{0.35\linewidth}@{}}
+  \toprule
+  \textbf{symbol}           & \textbf{in a regular expression}           & \textbf{in .gitignore (glob)} \\
+  \midrule
+  \texttt{.}                & any one character                         & a dot \\
+  \texttt{*}                & the previous item, 0 or more times        & any characters except \texttt{/} \\
+  \texttt{?}                & the previous item, optional               & one character except \texttt{/} \\
+  \texttt{[0-9]}, \texttt{[\textasciicircum 0-9]} & a class, a negated class & \texttt{[0-9]}, \texttt{[!0-9]} \\
+  \texttt{**}               & an error (``dangling'')                   & any number of folders \\
+  \texttt{+}, \texttt{\{2\}}, \texttt{|}, \texttt{( )} & repetition, alternation, groups & ordinary characters \\
+  \texttt{\textasciicircum}, \texttt{\$} & start, end                   & ordinary characters \\
+  \texttt{/}                & an ordinary character                     & the folder separator; anchors the pattern \\
+  \texttt{!} at the start   & an ordinary character                     & negation: include again \\
+  \texttt{\#} at the start  & an ordinary character                     & a comment \\
+  \bottomrule
+\end{tabular}
+\caption{The same symbols, two languages}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+A glob always matches a \emph{whole} name (or path); there is no \texttt{find} versus \texttt{matches}.
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{Seeing What Git Ignores}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+Three commands answer ``is it ignored, and why?''. They are the same on Windows, macOS and Linux:
+
+\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Tools.txt}
+
+\begin{itemize}
+  \item \texttt{git status -{}-short -{}-ignored}: \texttt{!!} ignored, \texttt{??} untracked; \texttt{-{}-untracked-files=all} lists files instead of folders.
+  \item \texttt{git check-ignore -v PATH}: the file, the line number and the pattern that decided, then the path.
+  With \texttt{-{}-non-matching}, paths that are not ignored are printed too, with \texttt{::}.
+  \item \texttt{git ls-files -{}-others -{}-ignored -{}-exclude-standard}: every ignored file, one per line.
+\end{itemize}
+Use \texttt{check-ignore -v} whenever a pattern surprises you; it shows which line won.
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{One Character, Several Characters, a Set}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+\texttt{*} stands for any characters (also none), \texttt{?} for exactly one, \texttt{[\dots]} for one of a set:
+
+\noindent
+\begin{minipage}[t]{0.49\linewidth}
+
+\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Classes.txt}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}
+
+\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Negated.txt}
+\end{minipage}
+
+\texttt{report[0-9].txt} takes one digit only: \texttt{report10.txt} stays. In a set, \texttt{!} negates
+(\texttt{[!0-9]}: not a digit). None of them ever matches a \texttt{/}.
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{Where the Slash Is}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+\label{sec:slash}
+
+
+The position of \texttt{/} in a pattern decides \emph{where} it matches. The same six files, four \texttt{.gitignore} files:
+
+\noindent
+\begin{minipage}[t]{0.49\linewidth}
+
+\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/NoSlash.txt}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}
+
+\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Leading.txt}
+\end{minipage}
+
+\medskip
+
+\noindent
+\begin{minipage}[t]{0.49\linewidth}
+
+\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Trailing.txt}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}
+
+\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Middle.txt}
+\end{minipage}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl.
+\begin{table}[h]
+\centering\small
+\begin{tabular}{@{}L{0.22\linewidth}L{0.68\linewidth}@{}}
+  \toprule
+  \textbf{pattern}       & \textbf{meaning} \\
+  \midrule
+  \texttt{build}         & no slash: a file \emph{or} folder named \texttt{build} at any depth \\
+  \texttt{/build}        & leading slash: only next to the \texttt{.gitignore} \\
+  \texttt{build/}        & trailing slash: only \emph{folders} named \texttt{build}, at any depth \\
+  \texttt{docs/build}    & a slash in the middle: relative to the \texttt{.gitignore}, as if it started with \texttt{/} \\
+  \bottomrule
+\end{tabular}
+\caption{The slash rules}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+\texttt{build} never matches \texttt{build.txt}: the whole name must match. An ignored folder hides everything inside it.
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{Two Asterisks}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+\label{sec:two}
+
+
+\texttt{**} crosses folder boundaries, but only in three forms: \texttt{**/x} (\texttt{x} at any depth),
+\texttt{x/**} (everything inside \texttt{x}) and \texttt{a/**/b} (zero or more folders between):
+
+\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/DoubleStar.txt}
+
+\texttt{a/**/b/} matched \texttt{a/b}, \texttt{a/x/b} and \texttt{a/x/y/b}, but not the top-level \texttt{b}.
+\texttt{logs/**/*.log} kept \texttt{logs/README}. Any other \texttt{**} (for example \texttt{a**b}) is just two \texttt{*}.
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{Negation and Order}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+\label{sec:order}
+
+
+A pattern that starts with \texttt{!} takes a file back. The \emph{last} matching line decides:
+
+\noindent
+\begin{minipage}[t]{0.49\linewidth}
+
+\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Negation.txt}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}
+
+\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Order.txt}
+\end{minipage}
+
+On the right the lines are in the wrong order: \texttt{*.log} comes last and wins, also for \texttt{important.log}.
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection*{The trap: an ignored folder}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+\noindent
+\begin{minipage}[t]{0.49\linewidth}
+
+\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Trap.txt}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}
+
+\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/TrapFix.txt}
+\end{minipage}
+
+\texttt{build/} ignores the folder itself; Git then never looks inside it, so \texttt{!build/keep.txt} has no effect.
+\texttt{build/*} ignores the \emph{contents} instead, and the exception works. The decision, as an algorithm:
+
+
+% +++++++++++++++++++++++++++++++++++++++ V alg
+%: -Alg. 
+\begin{algorithm}[H]
+  \caption{Is the path $p = d_{1}/d_{2}/\dots/d_{k}$ ignored?}
+  \KwIn{the patterns of all sources, from the lowest precedence (global file) to the highest (the nearest \texttt{.gitignore})}
+  \For{$i \leftarrow 1$ \KwTo $k$}{
+    $q \leftarrow d_{1}/\dots/d_{i}$; \ $r \leftarrow$ \emph{not ignored}\;
+    \ForEach{pattern $x$, in that order}{
+      \lIf{$x$ matches $q$}{$r \leftarrow$ (\emph{not ignored} if $x$ starts with \texttt{!}, else \emph{ignored})}
+    }
+    \lIf{$r$ is ignored and $i < k$}{\Return{ignored}\tcp*[h]{a folder: Git does not look inside}}
+  }
+  \Return{$r$}\;
+\end{algorithm}
+% +++++++++++++++++++++++++++++++++++++++ A alg
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{Special Characters}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+Some characters need a backslash when they are meant literally:
+
+\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Special.txt}
+
+\begin{itemize}
+  \item \texttt{\textbackslash\#todo.txt} and \texttt{\textbackslash!urgent.txt}: without the backslash the line would be a comment or a negation.
+  \item Trailing spaces are removed (\texttt{a.txt\ \ } is \texttt{a.txt}); \texttt{b.txt\textbackslash\ } keeps one, and ignores the file named \texttt{"b.txt "}.
+  \item \texttt{c\textbackslash[1\textbackslash].txt}: brackets taken literally instead of as a set.
+\end{itemize}
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{Where Patterns Come From}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+A repository can have a \texttt{.gitignore} in any folder; there are also two personal places that are not committed:
+
+\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Sources.txt}
+
+\begin{enumerate}
+  \item a \texttt{.gitignore} in the folder of the path or above it; the deeper file wins; its patterns are relative to its own folder
+  (\texttt{src/.gitignore} with \texttt{Gen.java} means \texttt{src/Gen.java} and below);
+  \item \texttt{.git/info/exclude}: only for this clone, never shared;
+  \item the global file (\texttt{core.excludesFile}), by default \texttt{\textasciitilde/.config/git/ignore}: your editor's and system's files for every repository.
+\end{enumerate}
+The \texttt{| sed} only shortens the home folder to \texttt{\textasciitilde}. Setting a global file of your own (not run here):
+
+\noindent
+\begin{minipage}[t]{0.49\linewidth}
+\textbf{Windows} (Command Prompt or Git Bash)
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\footnotesize]
+git config --global core.excludesFile ^
+    "%USERPROFILE%\.gitignore_global"
+echo Thumbs.db>> "%USERPROFILE%\.gitignore_global"
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}
+\textbf{macOS} (Terminal)
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\footnotesize]
+git config --global core.excludesFile \
+    ~/.gitignore_global
+echo .DS_Store >> ~/.gitignore_global
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+\end{minipage}
+
+\medskip
+Rule of thumb: what every developer of the project produces (\texttt{target/}, \texttt{*.class}) goes into the committed
+\texttt{.gitignore}; what only \emph{you} produce (\texttt{.DS\_Store}, your editor's files) into the global file.
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{Files That Are Already Tracked}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+\texttt{.gitignore} only affects \emph{untracked} files. A file that was committed stays tracked, whatever the patterns say:
+
+\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Tracked.txt}
+
+\texttt{git rm -{}-cached} removes the file from the index (the next commit deletes it from the repository) but keeps it on the disk;
+from then on \texttt{.gitignore} applies. A secret that was committed stays in the history: change the secret.
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{Upper and Lower Case: Windows and macOS}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+On Windows and macOS file names are usually case-insensitive, and \texttt{git init} then sets
+\texttt{core.ignorecase} to \texttt{true}; so \texttt{*.log} also ignores \texttt{README.LOG}. On Linux it does not. The same check with both settings:
+
+\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Case.txt}
+
+Write patterns in the case the files really have, so the repository behaves the same on every system.
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{How a Glob Becomes a Regular Expression}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+Git matches globs with its own matcher (\emph{wildmatch}), not with regular expressions. Still, translating a glob into a regex
+shows exactly what it means. A simplified translator in Java (no \texttt{!}, no trailing \texttt{/}):
+
+\lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/GlobToRegex.java}{Java}
+
+Its output agrees with Git on these paths (compare with Section~\ref{sec:slash}):
+
+\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/GlobToRegex.txt}
+
+\begin{itemize}
+  \item \texttt{*} $\to$ \texttt{[\textasciicircum/]*}, \texttt{?} $\to$ \texttt{[\textasciicircum/]}, \texttt{.} $\to$ \texttt{\textbackslash.}, \texttt{**/} $\to$ \texttt{(.*/)?}.
+  \item No slash: \texttt{(.*/)?} in front (any depth). A slash: anchored at the \texttt{.gitignore}.
+  \item A path is ignored if it, or one of its parent folders, matches.
+\end{itemize}
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{A .gitignore for a Java Project}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+A good starting point for the projects of our courses (Maven or plain \texttt{javac}, Eclipse, IntelliJ IDEA, VS Code, Windows and macOS):
+
+\noindent
+\begin{minipage}[t]{0.42\linewidth}
+
+\lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/JavaProject/.gitignore}{{}}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.56\linewidth}
+
+\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/JavaProject.txt}
+\end{minipage}
+
+\texttt{.env} (local passwords) is ignored, \texttt{.env.example} (the template) is committed thanks to \texttt{!.env.example}.
+Ready-made collections: \texttt{github.com/github/gitignore}; read them before you copy them.
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{Regex Habits, Glob Answers}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl.
+\begin{table}[h]
+\centering\small
+\begin{tabular}{@{}L{0.32\linewidth}L{0.3\linewidth}L{0.28\linewidth}@{}}
+  \toprule
+  \textbf{you want}                         & \textbf{regex habit (wrong)}      & \textbf{.gitignore} \\
+  \midrule
+  files ending in \texttt{.log}             & \texttt{.*\textbackslash.log}     & \texttt{*.log} \\
+  \texttt{.log} or \texttt{.tmp}            & \texttt{.*\textbackslash.(log|tmp)} & two lines: \texttt{*.log}, \texttt{*.tmp} \\
+  one or more digits                        & \texttt{report\textbackslash d+.txt} & \texttt{report[0-9]*.txt} \\
+  exactly two digits                        & \texttt{img\textbackslash d\{2\}.png} & \texttt{img[0-9][0-9].png} \\
+  only at the top                           & \texttt{\textasciicircum build}   & \texttt{/build} \\
+  only folders                              & \texttt{build\$} (no way)         & \texttt{build/} \\
+  at any depth                              & \texttt{.*/build}                 & \texttt{build} or \texttt{**/build} \\
+  everything except one file                & look-ahead                        & \texttt{dir/*} then \texttt{!dir/keep} \\
+  \bottomrule
+\end{tabular}
+\caption{From a regex habit to a glob}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+\texttt{report[0-9]*.txt} is not exact: it also takes \texttt{report1a.txt}. Globs cannot say ``digits only'';
+usually that is precise enough, and \texttt{git check-ignore -v} shows what really matches.
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{Exercises}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+Predict for each path whether it is ignored by this \texttt{.gitignore}, and by which line. Then check yourself with
+\texttt{git check-ignore -v -{}-non-matching}; the answers are in Section~\ref{sec:answers}.
+
+\medskip
+\noindent
+\begin{minipage}[t]{0.3\linewidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst.
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\footnotesize]
+*.tmp
+/cache/
+doc/*.md
+img[0-9].png
+*.key
+!public.key
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+\end{minipage}\hfill
+\begin{minipage}[t]{0.66\linewidth}
+\texttt{a.tmp}, \texttt{src/a.tmp}, \texttt{cache/x}, \texttt{src/cache/y}, \texttt{doc/notes.md}, \texttt{doc/api/index.md},
+\texttt{img1.png}, \texttt{img12.png}, \texttt{secret.key}, \texttt{public.key}
+\end{minipage}
+
+\begin{enumerate}
+  \item Write a \texttt{.gitignore} line that ignores \texttt{*.log} files only inside \texttt{logs/} and its subfolders.
+  \item Ignore everything in \texttt{data/} except \texttt{data/README.md}. Why does \texttt{data/} with \texttt{!data/README.md} not work?
+  \item A team member on macOS says \texttt{Notes.TXT} is ignored, you on Linux see it as untracked. Explain.
+  \item You added \texttt{.idea/} to \texttt{.gitignore}, but \texttt{git status} still shows changes in the file \texttt{workspace.xml} there. Why, and what do you do?
+\end{enumerate}
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{Answers}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+\label{sec:answers}
+
+
+\texttt{-{}-no-index} also checks paths that are tracked or do not exist:
+
+\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Answers.txt}
+
+\begin{enumerate}
+  \item \texttt{logs/**/*.log} (Section~\ref{sec:two}).
+  \item \texttt{data/*} and \texttt{!data/README.md}; with \texttt{data/} the folder itself is ignored and Git never looks inside (the trap of Section~\ref{sec:order}).
+  \item \texttt{core.ignorecase} is \texttt{true} on macOS, \texttt{false} on Linux: a pattern such as \texttt{*.txt} matches \texttt{Notes.TXT} only on macOS.
+  \item The files were tracked before the pattern was added; \texttt{git rm -r -{}-cached .idea}, then commit.
+\end{enumerate}
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+\begin{itemize}
+  \item \texttt{.gitignore} lines are globs: \texttt{*}, \texttt{?}, \texttt{[\dots]}, \texttt{**}; not regular expressions.
+  \item No slash: any depth. Leading or middle slash: relative to the \texttt{.gitignore}. Trailing slash: folders only.
+  \item The last matching line wins; \texttt{!} takes back, but never out of an ignored folder: use \texttt{dir/*}.
+  \item Tracked files are not ignored: \texttt{git rm -{}-cached}.
+  \item Shared patterns in \texttt{.gitignore}, personal ones in the global file or \texttt{.git/info/exclude}.
+  \item When in doubt: \texttt{git check-ignore -v}.
+\end{itemize}
+
+
+
+\end{document}

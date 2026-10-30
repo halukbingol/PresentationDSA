@@ -1,0 +1,23 @@
+# ---- build output (Maven, Gradle, plain javac)
+target/
+build/
+out/
+*.class
+
+# ---- IDEs
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.vscode/
+
+# ---- operating systems
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- logs and secrets
+*.log
+.env
+!.env.example

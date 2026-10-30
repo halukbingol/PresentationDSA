@@ -1,0 +1,5 @@
+build            (.*/)?build                  build/out.txt src/build/Gen.java
+/build           build                        build/out.txt
+*.log            (.*/)?[^/]*\.log             app.log logs/old/2.log
+logs/**/*.log    logs/(.*/)?[^/]*\.log        logs/old/2.log
+report[0-9].txt  (.*/)?report[0-9]\.txt      

@@ -1,0 +1,12 @@
+$ cat .gitignore
+a/**/b/
+logs/**/*.log
+$ git status --short --ignored --untracked-files=all
+?? .gitignore
+?? b/w.txt
+?? logs/README
+!! a/b/x.txt
+!! a/x/b/y.txt
+!! a/x/y/b/z.txt
+!! logs/1.log
+!! logs/old/2.log

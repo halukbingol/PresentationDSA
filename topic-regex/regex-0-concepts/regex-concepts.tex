@@ -25,11 +25,11 @@
 
 \documentclass[aspectratio=169,10pt,compress]{beamer}
 
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
-	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
-	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
-	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} 
+	\usepackage{../../hblib/hblibCodeoutput} 
+	\usepackage{../../hblib/hblibDatastructures} 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
 
 
 % theme, i/N, fonts (T1, lmodern), booktabs, xcolor, array (L{width} columns), listings, tikz,
@@ -98,9 +98,9 @@
     \begin{column}{0.5\textwidth}
       \begin{itemize}\small
         \item A \textbf{regular expression} (regex) is a small formula for text.
-        \item It stands for a \emph{set} of strings: ``four digits'', ``a word with a capital first letter'', ``a Yeditepe student e-mail''.
+        \item It stands for a \hEmph{set} of strings: ``four digits'', ``a word with a capital first letter'', ``a Yeditepe student e-mail''.
         \item A string \textbf{matches} the regex if it is in the set.
-        \item One line of regex replaces a loop with many \texttt{if}s.
+        \item One line of regex replaces a loop with many \hCode{if}s.
       \end{itemize}
     \end{column}
     \begin{column}{0.46\textwidth}
@@ -109,11 +109,11 @@
         \toprule
         \textbf{regex}                       & \textbf{matches}  & \textbf{does not} \\
         \midrule
-        \texttt{cat}                         & cat               & Cat, cats \\
-        \texttt{c.t}                         & cat, cut, c9t     & ct, cart \\
-        \texttt{ca*t}                        & ct, cat, caaat    & cut \\
-        \texttt{[0-9]\{4\}}                  & 2026, 0042        & 202, 20a6 \\
-        \texttt{cat|dog}                     & cat, dog          & cow \\
+        \hCode{cat}                         & cat               & Cat, cats \\
+        \hCode{c.t}                         & cat, cut, c9t     & ct, cart \\
+        \hCode{ca*t}                        & ct, cat, caaat    & cut \\
+        \hCode{[0-9]\{4\}}                  & 2026, 0042        & 202, 20a6 \\
+        \hCode{cat|dog}                     & cat, dog          & cow \\
         \bottomrule
       \end{tabular}
       \end{center}
@@ -135,12 +135,12 @@
     validate           & Is the whole text of this form?                    & a student number has 11 digits \\
     search             & Where does the form occur?                         & every date in a report \\
     extract            & What are the parts?                                & year, month, day of a date \\
-    transform          & Replace or cut at the matches                      & \texttt{26.10.2026} $\to$ \texttt{2026-10-26}; split a CSV line \\
+    transform          & Replace or cut at the matches                      & \hCode{26.10.2026} $\to$ \hCode{2026-10-26}; split a CSV line \\
     \bottomrule
   \end{tabular}
   \end{center}
   \begin{itemize}\small
-    \item Everywhere: Java, Python, JavaScript, databases, \texttt{grep}, text editors and IDEs (Find with ``Regular expressions'').
+    \item Everywhere: Java, Python, JavaScript, databases, \hCode{grep}, text editors and IDEs (Find with ``Regular expressions'').
     \item The core syntax is shared; each tool adds its own extras.
   \end{itemize}
 \end{frame}
@@ -160,18 +160,18 @@
     \toprule
     \textbf{regex}                                   & \textbf{meaning}                       & \textbf{example match} \\
     \midrule
-    \texttt{a}                                       & the letter a itself (a \emph{literal}) & a \\
-    \texttt{.}                                       & any one character (not a newline)      & a, 7, \% \\
-    \texttt{[aeıioöuü]}                              & one of these                           & ö \\
-    \texttt{[a-z]}, \texttt{[0-9]}                   & one in this range                      & k, 4 \\
-    \texttt{[\textasciicircum 0-9]}                  & one \emph{not} in the set              & x \\
-    \texttt{\textbackslash d}, \texttt{\textbackslash w}, \texttt{\textbackslash s} & digit, word character, white space & 5, \_, (space) \\
-    \texttt{\textbackslash p\{L\}}                   & any letter, also Turkish               & ğ \\
-    \texttt{\textbackslash .}, \texttt{\textbackslash *} & the character itself (\emph{escaped}) & ., * \\
+    \hCode{a}                                       & the letter a itself (a \emph{literal}) & a \\
+    \hCode{.}                                       & any one character (not a newline)      & a, 7, \% \\
+    \hCode{[aeıioöuü]}                              & one of these                           & ö \\
+    \hCode{[a-z]}, \hCode{[0-9]}                   & one in this range                      & k, 4 \\
+    \hCode{[\textasciicircum 0-9]}                  & one \emph{not} in the set              & x \\
+    \hCode{\textbackslash d}, \hCode{\textbackslash w}, \hCode{\textbackslash s} & digit, word character, white space & 5, \_, (space) \\
+    \hCode{\textbackslash p\{L\}}                   & any letter, also Turkish               & ğ \\
+    \hCode{\textbackslash .}, \hCode{\textbackslash *} & the character itself (\emph{escaped}) & ., * \\
     \bottomrule
   \end{tabular}
   \end{center}
-  \small Special characters: \texttt{. [ ] ( ) \{ \} * + ? \textasciicircum{} \$ | \textbackslash}; a \texttt{\textbackslash} before one makes it ordinary.
+  \small Special characters: \hCode{. [ ] ( ) \{ \} * + ? \textasciicircum{} \$ | \textbackslash}; a \hCode{\textbackslash} before one makes it ordinary.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -187,12 +187,12 @@
         \toprule
         \textbf{quantifier}      & \textbf{how many times} \\
         \midrule
-        \texttt{x?}              & 0 or 1 \\
-        \texttt{x*}              & 0 or more \\
-        \texttt{x+}              & 1 or more \\
-        \texttt{x\{3\}}          & exactly 3 \\
-        \texttt{x\{2,4\}}        & 2 to 4 \\
-        \texttt{x\{2,\}}         & 2 or more \\
+        \hCode{x?}              & 0 or 1 \\
+        \hCode{x*}              & 0 or more \\
+        \hCode{x+}              & 1 or more \\
+        \hCode{x\{3\}}          & exactly 3 \\
+        \hCode{x\{2,4\}}        & 2 to 4 \\
+        \hCode{x\{2,\}}         & 2 or more \\
         \bottomrule
       \end{tabular}
       \end{center}
@@ -203,11 +203,11 @@
         \toprule
         \textbf{regex}                & \textbf{meaning} \\
         \midrule
-        \texttt{\textasciicircum}     & start of the text \\
-        \texttt{\$}                   & end of the text \\
-        \texttt{\textbackslash b}     & a word boundary \\
-        \texttt{(\dots)}              & a group: one unit, remembered \\
-        \texttt{x|y}                  & x or y \\
+        \hCode{\textasciicircum}     & start of the text \\
+        \hCode{\$}                   & end of the text \\
+        \hCode{\textbackslash b}     & a word boundary \\
+        \hCode{(\dots)}              & a group: one unit, remembered \\
+        \hCode{x|y}                  & x or y \\
         \bottomrule
       \end{tabular}
       \end{center}
@@ -215,8 +215,8 @@
   \end{columns}
   \vspace{0.5em}
   \begin{itemize}\small
-    \item A quantifier applies to the one thing before it: \texttt{ab+} is a, b, b, \dots; \texttt{(ab)+} is ab, abab, \dots
-    \item \texttt{|} binds weakest: \texttt{\textasciicircum cat|dog\$} is ``\texttt{\textasciicircum cat}'' or ``\texttt{dog\$}''; write \texttt{\textasciicircum (cat|dog)\$}.
+    \item A quantifier applies to the one thing before it: \hCode{ab+} is a, b, b, \dots; \hCode{(ab)+} is ab, abab, \dots
+    \item \hCode{|} binds weakest: \hCode{\textasciicircum cat|dog\$} is ``\hCode{\textasciicircum cat}'' or ``\hCode{dog\$}''; write \hCode{\textasciicircum (cat|dog)\$}.
   \end{itemize}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
@@ -230,14 +230,14 @@
   \small
   \begin{tabular}{@{}cccccccc@{}}
     \toprule
-    \texttt{\textasciicircum} & \texttt{(\textbackslash +90|0)?} & \texttt{5} & \texttt{\textbackslash d\{2\}} & \texttt{\textbackslash s?} & \texttt{\textbackslash d\{3\}} & \texttt{\textbackslash s?\textbackslash d\{4\}} & \texttt{\$} \\
+    \hCode{\textasciicircum} & \hCode{(\textbackslash +90|0)?} & \hCode{5} & \hCode{\textbackslash d\{2\}} & \hCode{\textbackslash s?} & \hCode{\textbackslash d\{3\}} & \hCode{\textbackslash s?\textbackslash d\{4\}} & \hCode{\$} \\
     \midrule
     start & +90 or 0, optional & a 5 & 2 digits & a space, optional & 3 digits & space?, 4 digits & end \\
     \bottomrule
   \end{tabular}
   \end{center}
   \begin{itemize}\small
-    \item Matches \texttt{05321234567}, \texttt{+90 532 123 4567}; not \texttt{0212 123 4567} (no 5), not \texttt{532-123-4567} (dash).
+    \item Matches \hCode{05321234567}, \hCode{+90 532 123 4567}; not \hCode{0212 123 4567} (no 5), not \hCode{532-123-4567} (dash).
     \item Read a regex left to right, one block at a time, as above.
   \end{itemize}
 \end{frame}
@@ -251,26 +251,26 @@
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{From text to answer: \texttt{Pattern} and \texttt{Matcher}}
+\begin{frame}[t,fragile] \frametitle{From text to answer: \hCode{Pattern} and \hCode{Matcher}}
   \begin{center}
   \begin{tikzpicture}[box/.style={draw, rounded corners, fill=blue!8, minimum height=0.9cm, minimum width=2.2cm, align=center, font=\small},
                       >=stealth, every edge/.style={draw, ->}]
-    \node[box] (s) at (0,0)    {regex\\\texttt{String}};
-    \node[box] (p) at (3.6,0)  {\texttt{Pattern}\\(compiled)};
-    \node[box] (m) at (7.4,0)  {\texttt{Matcher}\\(pattern + text)};
+    \node[box] (s) at (0,0)    {regex\\\hCode{String}};
+    \node[box] (p) at (3.6,0)  {\hCode{Pattern}\\(compiled)};
+    \node[box] (m) at (7.4,0)  {\hCode{Matcher}\\(pattern + text)};
     \node[box] (r) at (11,0)   {answers};
     \node[box] (t) at (7.4,-1.8) {text};
-    \path (s) edge node[above, font=\scriptsize] {\texttt{compile}} (p)
-          (p) edge node[above, font=\tiny] {\texttt{matcher}} (m)
+    \path (s) edge node[above, font=\scriptsize] {\hCode{compile}} (p)
+          (p) edge node[above, font=\tiny] {\hCode{matcher}} (m)
           (t) edge (m)
-          (m) edge node[above, font=\tiny] {\texttt{matches}} node[below, font=\tiny] {\texttt{find}} (r);
-    \node[font=\scriptsize, align=left, anchor=north] at (11,-0.7) {true / false\\\texttt{group(1)}\\\texttt{start}, \texttt{end}};
+          (m) edge node[above, font=\tiny] {\hCode{matches}} node[below, font=\tiny] {\hCode{find}} (r);
+    \node[font=\scriptsize, align=left, anchor=north] at (11,-0.7) {true / false\\\hCode{group(1)}\\\hCode{start}, \hCode{end}};
   \end{tikzpicture}
   \end{center}
   \begin{itemize}\small
-    \item \texttt{Pattern}: the regex turned into a matching program; immutable, safe to share, compile it once.
-    \item \texttt{Matcher}: walks one text; remembers where it is (not for sharing between threads).
-    \item Shortcuts on \texttt{String}: \texttt{matches}, \texttt{split}, \texttt{replaceAll}, \texttt{replaceFirst}: each compiles the regex again.
+    \item \hCode{Pattern}: the regex turned into a matching program; immutable, safe to share, compile it once.
+    \item \hCode{Matcher}: walks one text; remembers where it is (not for sharing between threads).
+    \item Shortcuts on \hCode{String}: \hCode{matches}, \hCode{split}, \hCode{replaceAll}, \hCode{replaceFirst}: each compiles the regex again.
   \end{itemize}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
@@ -287,7 +287,7 @@
         \node[box, fill=orange!10] (j) at (0,0)    {"\textbackslash\textbackslash d\{4\}"};
         \node[box, fill=blue!8]    (r) at (0,-1.8) {\textbackslash d\{4\}};
         \node[box, fill=green!10]  (s) at (0,-3.6) {\{2026, 0042, \dots\}};
-        \draw[->] (j) -- node[right, font=\scriptsize] {Java compiler: \texttt{\textbackslash\textbackslash} $\to$ \texttt{\textbackslash}} (r);
+        \draw[->] (j) -- node[right, font=\scriptsize] {Java compiler: \hCode{\textbackslash\textbackslash} $\to$ \hCode{\textbackslash}} (r);
         \draw[->] (r) -- node[right, font=\scriptsize] {regex engine: a digit, 4 times} (s);
       \end{tikzpicture}
       \end{center}
@@ -295,8 +295,8 @@
     \begin{column}{0.46\textwidth}
       \begin{itemize}\small
         \item In Java source, the regex is inside a string literal.
-        \item The compiler reads \texttt{\textbackslash\textbackslash} as one backslash; the regex engine then sees \texttt{\textbackslash d}.
-        \item A literal dot: regex \texttt{\textbackslash .}, Java \texttt{"\textbackslash\textbackslash ."}. A literal backslash: regex \texttt{\textbackslash\textbackslash}, Java \texttt{"\textbackslash\textbackslash\textbackslash\textbackslash"}.
+        \item The compiler reads \hCode{\textbackslash\textbackslash} as one backslash; the regex engine then sees \hCode{\textbackslash d}.
+        \item A literal dot: regex \hCode{\textbackslash .}, Java \hCode{"\textbackslash\textbackslash ."}. A literal backslash: regex \hCode{\textbackslash\textbackslash}, Java \hCode{"\textbackslash\textbackslash\textbackslash\textbackslash"}.
         \item Text blocks and string literals both need this; IDEs help when pasting.
       \end{itemize}
     \end{column}
@@ -312,7 +312,7 @@
   \lstcoderightstep[0.6][basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/First.java}{Java}{codeoutput/First.txt}
 
   \vspace{0.2em}
-  \small A date of the form \texttt{yyyy-mm-dd}. \texttt{matches}: the whole text; \texttt{replaceAll}: every place. The form is checked, not the value: \texttt{2026-13-45} matches too.
+  \small A date of the form \hCode{yyyy-mm-dd}. \hCode{matches}: the whole text; \hCode{replaceAll}: every place. The form is checked, not the value: \hCode{2026-13-45} matches too.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -337,7 +337,7 @@
                        edge node {t} (q2);
       \end{tikzpicture}
       \end{center}
-      \small An automaton for \texttt{ca*t}: \texttt{ct}, \texttt{cat}, \texttt{caaat} end in $q_{2}$; \texttt{ca} stops in $q_{1}$, \texttt{cut} has no arrow for \texttt{u}.
+      \small An automaton for \hCode{ca*t}: \hCode{ct}, \hCode{cat}, \hCode{caaat} end in $q_{2}$; \hCode{ca} stops in $q_{1}$, \hCode{cut} has no arrow for \hCode{u}.
     \end{column}
     \begin{column}{0.42\textwidth}
       \begin{itemize}\small
@@ -383,8 +383,8 @@
     \begin{column}{0.42\textwidth}
       \begin{itemize}\small
         \item Java, Python, JavaScript, Perl work this way.
-        \item It allows extras: back-references \texttt{\textbackslash 1}, look-ahead.
-        \item \texttt{a*} first takes as many as it can (\emph{greedy}), then gives back one at a time.
+        \item It allows extras: back-references \hCode{\textbackslash 1}, look-ahead.
+        \item \hCode{a*} first takes as many as it can (\emph{greedy}), then gives back one at a time.
         \item Too many choices to go back to: the time can explode (senior level).
       \end{itemize}
     \end{column}
@@ -398,10 +398,10 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Greedy, lazy and the cost of choices}
   \begin{itemize}\small
-    \item Text \texttt{<b>Bold</b> and <b>more</b>}, regex \texttt{<b>.*</b>}:
-      \texttt{.*} takes everything, gives back until \texttt{</b>} fits: the match runs to the \emph{last} \texttt{</b>}.
-    \item Lazy \texttt{<b>.*?</b>}: takes as little as possible: \texttt{<b>Bold</b>}.
-    \item Exact \texttt{<b>[\textasciicircum <]*</b>}: only one way to match, so nothing to try again.
+    \item Text \hCode{<b>Bold</b> and <b>more</b>}, regex \hCode{<b>.*</b>}:
+      \hCode{.*} takes everything, gives back until \hCode{</b>} fits: the match runs to the \emph{last} \hCode{</b>}.
+    \item Lazy \hCode{<b>.*?</b>}: takes as little as possible: \hCode{<b>Bold</b>}.
+    \item Exact \hCode{<b>[\textasciicircum <]*</b>}: only one way to match, so nothing to try again.
     \item With $n$ characters and two ways to split each, a backtracking engine may try up to
   \end{itemize}
   \[
@@ -421,12 +421,12 @@
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
-\begin{frame}[t,fragile] \frametitle{The same idea in a terminal: \texttt{grep}}
+\begin{frame}[t,fragile] \frametitle{The same idea in a terminal: \hCode{grep}}
   \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/Grep.txt}
 
   \vspace{0.1em}
   \small
-  \texttt{-E}: extended regex, \texttt{-o}: only the matching part, \texttt{-v}: lines that do \emph{not} match. Run on Linux; macOS Terminal has \texttt{grep} with the same options.
+  \hCode{-E}: extended regex, \hCode{-o}: only the matching part, \hCode{-v}: lines that do \emph{not} match. Run on Linux; macOS Terminal has \hCode{grep} with the same options.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -436,8 +436,8 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Windows and macOS}
   \begin{itemize}\small
-    \item \win: Command Prompt has \texttt{findstr /R} (a very small regex language), PowerShell has \texttt{Select-String} (.NET regex, close to Java). Not run here.
-    \item \mac: \texttt{grep -E} in Terminal (as on the previous slide).
+    \item \win: Command Prompt has \hCode{findstr /R} (a very small regex language), PowerShell has \hCode{Select-String} (.NET regex, close to Java). Not run here.
+    \item \mac: \hCode{grep -E} in Terminal (as on the previous slide).
     \item Both: IDEs (Eclipse, IntelliJ, VS Code) search and replace with regexes.
   \end{itemize}
   \begin{columns}[T]
@@ -485,9 +485,9 @@ grep -E -o '[0-9]{11}' students.txt
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{What a regex cannot (or should not) do}
   \begin{itemize}\small
-    \item \textbf{Counting without a bound}: ``as many \texttt{(} as \texttt{)}'' is not regular; brackets, HTML, JSON need a parser.
-    \item \textbf{Meaning}: \texttt{\textbackslash d\{2\}\textbackslash .\textbackslash d\{2\}\textbackslash .\textbackslash d\{4\}} accepts \texttt{31.02.2026}; the calendar check needs code (\texttt{LocalDate.parse}).
-    \item \textbf{Readability}: \texttt{\textasciicircum (?=.*\textbackslash d)(?=.*[a-z]).\{8,\}\$} is hard to read; comment it, name the groups, test it.
+    \item \textbf{Counting without a bound}: ``as many \hCode{(} as \hCode{)}'' is not regular; brackets, HTML, JSON need a parser.
+    \item \textbf{Meaning}: \hCode{\textbackslash d\{2\}\textbackslash .\textbackslash d\{2\}\textbackslash .\textbackslash d\{4\}} accepts \hCode{31.02.2026}; the calendar check needs code (\hCode{LocalDate.parse}).
+    \item \textbf{Readability}: \hCode{\textasciicircum (?=.*\textbackslash d)(?=.*[a-z]).\{8,\}\$} is hard to read; comment it, name the groups, test it.
     \item \textbf{Speed}: some patterns take exponential time on unlucky input.
     \item \textbf{Security}: a pattern built from user input can do unwanted things.
   \end{itemize}
@@ -510,8 +510,8 @@ grep -E -o '[0-9]{11}' students.txt
     \toprule
     \textbf{level}  & \textbf{topics} \\
     \midrule
-    freshman        & \texttt{matches}, classes, quantifiers, \texttt{split}, \texttt{replaceAll}, escaping, error messages \\
-    sophomore       & \texttt{Pattern}/\texttt{Matcher}, \texttt{find}, groups, flags, look-ahead, greedy and lazy, unit tests \\
+    freshman        & \hCode{matches}, classes, quantifiers, \hCode{split}, \hCode{replaceAll}, escaping, error messages \\
+    sophomore       & \hCode{Pattern}/\hCode{Matcher}, \hCode{find}, groups, flags, look-ahead, greedy and lazy, unit tests \\
     junior          & Unicode and Turkish letters, back-references, look-around, possessive, newer APIs, speed \\
     senior          & automata, engines, ReDoS, stack overflow, time limits, RE2/J, regex injection \\
     examples        & every concept of this deck as a real program \\
@@ -533,7 +533,7 @@ grep -E -o '[0-9]{11}' students.txt
   \begin{itemize}\small
     \item A regex describes a set of strings; a text matches if it is in the set.
     \item Building blocks: literals, classes, quantifiers, anchors, groups, alternation.
-    \item In Java: compile to a \texttt{Pattern}, ask a \texttt{Matcher}; write every \texttt{\textbackslash} twice in source.
+    \item In Java: compile to a \hCode{Pattern}, ask a \hCode{Matcher}; write every \hCode{\textbackslash} twice in source.
     \item Engines: an automaton (linear, fewer features) or backtracking (more features, can be slow).
     \item Regexes check the form of text; use parsers and code for structure and meaning.
   \end{itemize}
@@ -546,11 +546,11 @@ grep -E -o '[0-9]{11}' students.txt
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Exercises}
   \begin{enumerate}\small
-    \item Give three strings that match and three that do not: \texttt{[A-Z][a-z]+}, \texttt{\textbackslash d+(\textbackslash .\textbackslash d\{2\})?}, \texttt{(ab|ba)*}.
-    \item Write a regex for: a Yeditepe course code (\texttt{CSE101}), a time (\texttt{09:30}), a plate number (\texttt{34 ABC 123}).
-    \item Draw an automaton for \texttt{(ab)*} and for \texttt{a(b|c)d}.
-    \item Write the Java string literal for the regexes \texttt{\textbackslash d+\textbackslash .\textbackslash d+} and \texttt{C:\textbackslash\textbackslash Users}.
-    \item Why does \texttt{find} with \texttt{\textasciicircum cat|dog\$} succeed on \texttt{catalog} and \texttt{hotdog}? Fix it.
+    \item Give three strings that match and three that do not: \hCode{[A-Z][a-z]+}, \hCode{\textbackslash d+(\textbackslash .\textbackslash d\{2\})?}, \hCode{(ab|ba)*}.
+    \item Write a regex for: a Yeditepe course code (\hCode{CSE101}), a time (\hCode{09:30}), a plate number (\hCode{34 ABC 123}).
+    \item Draw an automaton for \hCode{(ab)*} and for \hCode{a(b|c)d}.
+    \item Write the Java string literal for the regexes \hCode{\textbackslash d+\textbackslash .\textbackslash d+} and \hCode{C:\textbackslash\textbackslash Users}.
+    \item Why does \hCode{find} with \hCode{\textasciicircum cat|dog\$} succeed on \hCode{catalog} and \hCode{hotdog}? Fix it.
   \end{enumerate}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm

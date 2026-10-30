@@ -1,0 +1,15 @@
+$ cat .gitignore
+# meant as the regex "anything ending in .log"
+.*\.log
+$ tree
+.gitignore
+.secret.log
+app.log
+debug.log
+notes.txt
+$ git status --short --ignored
+?? .gitignore
+?? app.log
+?? debug.log
+?? notes.txt
+!! .secret.log

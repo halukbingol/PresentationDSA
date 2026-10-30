@@ -1,0 +1,8 @@
+$ cat .gitignore
+*.log
+!important.log
+$ git status --short --ignored
+?? .gitignore
+?? important.log
+!! a.log
+!! b.log

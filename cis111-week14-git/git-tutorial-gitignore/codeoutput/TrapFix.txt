@@ -1,0 +1,7 @@
+$ cat .gitignore
+build/*
+!build/keep.txt
+$ git status --short --ignored --untracked-files=all
+?? .gitignore
+?? build/keep.txt
+!! build/a.class

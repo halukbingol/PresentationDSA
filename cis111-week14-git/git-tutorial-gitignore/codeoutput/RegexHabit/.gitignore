@@ -1,0 +1,2 @@
+# meant as the regex "anything ending in .log"
+.*\.log
