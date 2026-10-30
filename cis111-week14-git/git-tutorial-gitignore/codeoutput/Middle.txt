@@ -1,0 +1,10 @@
+$ cat .gitignore
+docs/build
+$ git status --short --ignored --untracked-files=all
+?? .gitignore
+?? TODO
+?? build.txt
+?? build/out.txt
+?? src/TODO
+?? src/build/Gen.java
+!! docs/build/index.html

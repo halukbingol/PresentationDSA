@@ -1,0 +1,6 @@
+$ cat .gitignore
+*.log
+$ git check-ignore -v --non-matching README.LOG
+::	README.LOG
+$ git -c core.ignorecase=true check-ignore -v README.LOG
+.gitignore:1:*.log	README.LOG

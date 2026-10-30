@@ -1,0 +1,18 @@
+$ cat .gitignore
+*.tmp
+/cache/
+doc/*.md
+img[0-9].png
+*.key
+!public.key
+$ git check-ignore --no-index -v --non-matching a.tmp src/a.tmp cache/x src/cache/y doc/notes.md doc/api/index.md img1.png img12.png secret.key public.key
+.gitignore:1:*.tmp	a.tmp
+.gitignore:1:*.tmp	src/a.tmp
+.gitignore:2:/cache/	cache/x
+::	src/cache/y
+.gitignore:3:doc/*.md	doc/notes.md
+::	doc/api/index.md
+.gitignore:4:img[0-9].png	img1.png
+::	img12.png
+.gitignore:5:*.key	secret.key
+.gitignore:6:!public.key	public.key

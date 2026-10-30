@@ -1,0 +1,7 @@
+$ cat .gitignore
+photo[!0-9].jpg
+$ git status --short --ignored
+?? .gitignore
+?? photo1.jpg
+!! photoA.jpg
+!! photo_.jpg

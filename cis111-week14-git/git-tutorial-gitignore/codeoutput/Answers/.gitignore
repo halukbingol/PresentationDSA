@@ -1,0 +1,6 @@
+*.tmp
+/cache/
+doc/*.md
+img[0-9].png
+*.key
+!public.key

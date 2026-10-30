@@ -1,0 +1,24 @@
+$ cat .gitignore
+*.class
+*.log
+.env
+$ git status --short --ignored --untracked-files=all
+?? .gitignore
+?? notes.txt
+?? src/Main.java
+!! .env
+!! app.log
+!! build/Main.class
+!! logs/2026-10-29.log
+!! src/Main.class
+$ git check-ignore -v app.log src/Main.class notes.txt
+.gitignore:2:*.log	app.log
+.gitignore:1:*.class	src/Main.class
+$ git check-ignore -v --non-matching notes.txt
+::	notes.txt
+$ git ls-files --others --ignored --exclude-standard
+.env
+app.log
+build/Main.class
+logs/2026-10-29.log
+src/Main.class

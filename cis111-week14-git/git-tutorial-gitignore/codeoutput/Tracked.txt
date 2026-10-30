@@ -1,0 +1,14 @@
+$ git add app.log && git commit -q -m "add log by mistake"
+$ echo '*.log' > .gitignore
+$ echo "new line" >> app.log
+$ git status --short
+ M app.log
+?? .gitignore
+?? notes.txt
+$ git rm --cached -q app.log
+$ git status --short
+D  app.log
+?? .gitignore
+?? notes.txt
+$ git check-ignore -v app.log
+.gitignore:1:*.log	app.log

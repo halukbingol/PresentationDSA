@@ -1,0 +1,14 @@
+$ cat -A .gitignore | sed 's/\$$//'
+\#todo.txt
+\!urgent.txt
+a.txt  
+b.txt\ 
+c\[1\].txt
+$ git status --short --ignored
+?? .gitignore
+?? b.txt
+!! !urgent.txt
+!! #todo.txt
+!! a.txt
+!! "b.txt "
+!! c[1].txt
