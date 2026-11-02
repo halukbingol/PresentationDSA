@@ -1,6 +1,6 @@
 % !TEX spellcheck = en_US
 
-% v20261016T1150
+% v20261029T1800
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 % (NC) 2024 Haluk Bingol
@@ -17,7 +17,7 @@
 
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{hblibPresentation}[2026/10/16 hbpresentation library]
+\ProvidesPackage{hblibPresentation}[2026/10/29 hbpresentation library]
 
 %: ~~~~~~~~~~~~~~~~ V HB packages
 \RequirePackage[utf8]{inputenc}   % unicode (default since LaTeX 2018, kept for older installations)
@@ -49,6 +49,7 @@
 \SetAlCapFnt{\small}
 \SetAlCapNameFnt{\small}
 \SetKwProg{Fn}{function}{}{end}
+\@ifclassloaded{beamer}{\resetcounteronoverlays{algocf}}{} % the same algorithm number on every overlay of a frame
 % ~~~~~~~~~~~~~~~~ A HB algorithm2e set-up
 
 %: ~~~~~~~~~~~~~~~~ V HB beamer theme
@@ -82,7 +83,7 @@
 %\keys{Ctrl + C}
 %\keys{\ctrl + \shift + N}
 %\menu{File > Save As}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A keyboard and menu
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 
 
