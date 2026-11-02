@@ -1,0 +1,9 @@
+$ javac -Xlint:unchecked GenericArrayWarn.java
+GenericArrayWarn.java:3: warning: [unchecked] unchecked cast
+        return (T[]) new Object[n];   // unchecked cast
+                     ^
+  required: T[]
+  found:    Object[]
+  where T is a type-variable:
+    T extends Object declared in method <T>makeArray(int)
+1 warning

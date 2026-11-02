@@ -1,0 +1,676 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Generic Stack and Queue -- Sophomore Level
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java   a program (classes without main() are only compiled)
+%     codeoutput/<Name>.txt    what it printed
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+% listings: fixed character cells, so the columns of a program's output stay aligned
+\lstset{columns=fixed}
+
+% algorithm2e set-up (the package is loaded by hblibPresentation)
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetKwProg{Fn}{function}{}{end}
+\SetKw{KwError}{error}
+
+% ---------------------------------------------------------------------
+\title{Set, Stack and Queue}
+\subtitle{Sophomore Level: Building Your Own Generic Containers}
+\author[Bingol]{Ruhan Alpaydin}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-4}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={5-8}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Ready]{From Using to Building}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{From using to building}
+  \begin{itemize}
+    \item Last week: \hCode{new ArrayDeque<>()}, \hCode{new HashSet<>()}, done.
+    \item This week: build them yourself, generic, on a plain array.
+    \item Three containers, one pattern: an \textbf{interface},
+          a \textbf{generic class}, a \textbf{growing array}, a
+          \textbf{test}.
+  \end{itemize}
+  \begin{block}{What you will be able to say by the end}
+    \small
+    \begin{itemize}
+      \item ``I know why \hCode{(T[]) new Object[n]} is needed and why it warns.''
+      \item ``I know how \hCode{push} and \hCode{enqueue} wrap \hCode{head}/\hCode{tail} with \hCode{\%}.``
+      \item ``I know why \hCode{a[--top] = null} matters and when to shrink.''
+      \item ``I know how \hCode{for (T x : s)} works: it is the iterator.''
+    \end{itemize}
+  \end{block}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The shape of a generic container}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item \textbf{Interface}: says \emph{what}, not \emph{how}.
+        \item \textbf{Class}: implements the interface on a backing store.
+        \item \textbf{Backing store}: here, an array that grows and
+              shrinks.
+        \item \textbf{Invariants}: what the class guarantees at all times.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Invariants we will keep}
+        \small
+        \begin{itemize}
+          \item Stack: elements at \hCode{a[0..top-1]},
+                \hCode{top = number of elements}.
+          \item Queue: elements at \hCode{a[(head+i)\%n]} for
+                \hCode{i = 0..size-1}.
+          \item Set: elements at \hCode{a[0..n-1]}, no duplicates.
+          \item \hCode{size() == number of elements} in all three.
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[ADT]{The Three ADT Interfaces}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{StackADT}
+  \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/StackADT.java}{Java}
+  \begin{itemize}\small
+    \item Five methods, nothing more.
+    \item \hCode{<T>} is the element type: any reference type.
+    \item \hCode{pop} and \hCode{peek} on empty: the contract says \emph{underflow}.
+    \item Errors: \hCode{NoSuchElementException} is the Java convention.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{QueueADT}
+  \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/QueueADT.java}{Java}
+  \begin{itemize}\small
+    \item Same five methods, different names: \hCode{enqueue} adds at
+          the rear, \hCode{dequeue} removes at the front.
+    \item The interface does not say \emph{how} the rear and front
+          are stored; circular array and linked list both satisfy it.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{SetADT}
+  \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/SetADT.java}{Java}
+  \begin{itemize}\small
+    \item \hCode{add} returns \hCode{boolean}: \hCode{true} if the element
+          was new, \hCode{false} if it was already there.
+    \item \hCode{remove} returns \hCode{boolean}: \hCode{true} if it was present.
+    \item These two return values are the free ``was it there?'' tests
+          that make sets convenient.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Why interfaces first}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Same caller, different store}
+        \small
+        \hCode{StackADT<Integer> s = new ArrayStack<>(4);}\\
+        \hCode{StackADT<Integer> s = new LinkedStack<>();}\\
+        \emph{same \hCode{s.push(1)} code compiles against both.}
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item The interface is a \textbf{contract}.
+        \item Tests written against the interface test every implementation.
+        \item This is the whole reason \hCode{java.util.Queue} is an interface,
+              not a class: \hCode{ArrayDeque} and \hCode{LinkedList} both
+              implement it.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[GenArr]{Generic Arrays in Java}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The problem: \texttt{new T[10]}}
+  \begin{block}{Attempt 1: what you would write first}
+    \begin{lstlisting}[language=Java, basicstyle=\ttfamily\scriptsize, frame=single]
+T[] a = new T[10];              // error: generic array creation
+    \end{lstlisting}
+  \end{block}
+  \small
+  Java erases \hCode{T} to \hCode{Object} at compile time and does not
+  know \emph{which} class to create at runtime. So \hCode{new T[n]}
+  is not allowed.
+
+  \begin{block}{Attempt 2: what people try next}
+    \begin{lstlisting}[language=Java, basicstyle=\ttfamily\scriptsize, frame=single]
+T[] a = (T[]) new Object[10];   // compiles, with a warning
+    \end{lstlisting}
+  \end{block}
+  \small
+  This \emph{works} in our classes, but the compiler warns:
+  \hRemark{unchecked cast}. See the next slide.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The fix, and the risk it hides}
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/GenericArrayWarn.txt}
+  \vspace{0.2em}
+  \small
+  \hRemark{The risk}: if you \emph{expose} the typed array to the
+  outside world, someone can store the wrong type, and Java throws
+  \hCode{ArrayStoreException} at the store, not at the cast.
+  \vspace{0.2em}
+
+  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/GenericArrayBug.txt}
+  \vspace{0.1em}
+  \small
+  \hRemark{Rule}: keep the cast private. \hCode{ArrayStack<T>} never
+  exposes \hCode{a[]}, so the cast is safe.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Stack]{ArrayStack<T>}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{ArrayStack<T>}: fields and constructor}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=4, lastline=13, firstnumber=4]{codeoutput/ArrayStack.java}{Java}
+  \begin{itemize}\small
+    \item \hCode{a} is the backing array. \hCode{top} is the number of elements
+          and the index of the next free slot.
+    \item \hCode{@SuppressWarnings("unchecked")} is the price of generic arrays:
+          we promise the compiler that the cast is safe.
+    \item A negative capacity is a programming error: throw early.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{ArrayStack<T>}: push}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=15, lastline=18, firstnumber=15]{codeoutput/ArrayStack.java}{Java}
+  \begin{itemize}\small
+    \item If the array is full, \hCode{grow()} first.
+    \item Then write at \hCode{top} and advance it.
+    \item \hRemark{Two statements, no loops}: \hCode{push} is $O(1)$
+          amortized.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{ArrayStack<T>}: pop and peek}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=20, lastline=31, firstnumber=20]{codeoutput/ArrayStack.java}{Java}
+  \begin{itemize}\small
+    \item \hCode{pop}: \hCode{--top} first (this is the new \hCode{top}),
+          read \hCode{a[top]}, clear it, shrink if tiny, return.
+    \item \hCode{peek}: read without moving \hCode{top}.
+    \item Empty: \hRemark{\hCode{NoSuchElementException}}, not \hCode{null}.
+          The contract has no ``return a special value'' form.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{ArrayStack<T>}: grow}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=36, lastline=41, firstnumber=36]{codeoutput/ArrayStack.java}{Java}
+  \begin{itemize}\small
+    \item Allocate the double, copy the \hCode{top} live elements,
+          replace the reference.
+    \item \hCode{System.arraycopy} is a native copy: fast.
+    \item The cost of the copy is charged to \hRemark{amortized}: one
+          \hCode{push} pays a small share.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Loitering}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Without \texttt{a[top] = null}}
+        \small
+        \hCode{pop} returns the reference but leaves it in \hCode{a[top]}.
+        The object is unreachable from your code, but the array
+        still holds it: the garbage collector cannot free it.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{With the clear}
+        \small
+        \begin{lstlisting}[language=Java, basicstyle=\ttfamily\tiny, frame=single]
+T item = a[--top];
+a[top] = null;          // let GC reclaim
+        \end{lstlisting}
+        One assignment; the object becomes collectible immediately.
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vspace{0.4em}
+  \small \hRemark{Same rule} in \hCode{ArrayQueue.dequeue} and
+  \hCode{ArraySet.remove}: clear the slot you no longer use.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{ArrayStack<T>}: toString}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=50, lastline=57, firstnumber=50]{codeoutput/ArrayStack.java}{Java}
+  \begin{itemize}\small
+    \item Iterate \emph{down} from \hCode{top-1} to \hCode{0}: print the top first.
+    \item The stack prints as \hCode{[top, ..., bottom]} — the same order
+          that \hCode{pop} uses.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{ArrayStack<T>}: first run}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/TestStack.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/TestStack.txt}
+    \end{column}
+  \end{columns}
+  \small
+  Five pushes on a stack that started with capacity 2: two grows.
+  Five pops shrink it once, at the quarter-full mark.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Shrinking: the quarter rule}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=43, lastline=48, firstnumber=43]{codeoutput/ArrayStack.java}{Java}
+  \begin{itemize}\small
+    \item Trigger: \hCode{a.length > 4} \emph{and} \hCode{top < a.length / 4}.
+    \item Halve to \hCode{a.length / 2}.
+    \item The quarter rule prevents \emph{thrashing}: a push-pop-push
+          at the boundary does not grow and shrink on every call.
+    \item At half, a push after a pop would grow; at quarter, the buffer
+          has room for a full cycle before the next decision.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Queue]{ArrayQueue<T>}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{ArrayQueue<T>}: the circular array}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=14, firstnumber=3]{codeoutput/ArrayQueue.java}{Java}
+  \begin{itemize}\small
+    \item Three indices: \hCode{head}, \hCode{tail}, \hCode{size}.
+    \item \hCode{head} moves forward on dequeue, \hCode{tail} on enqueue;
+          both wrap with \hCode{\% a.length}.
+    \item \hCode{size} resolves the empty/full ambiguity that
+          \hCode{head == tail} cannot.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{ArrayQueue<T>}: enqueue}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=16, lastline=21, firstnumber=16]{codeoutput/ArrayQueue.java}{Java}
+  \begin{itemize}\small
+    \item Grow if full (rare).
+    \item Write at \hCode{a[tail]}, then move \hCode{tail} forward
+          with wrap.
+    \item \hCode{size++} at the end.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{ArrayQueue<T>}: dequeue and peek}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=23, lastline=35, firstnumber=23]{codeoutput/ArrayQueue.java}{Java}
+  \begin{itemize}\small
+    \item Read \hCode{a[head]}, clear the slot (no loitering), advance
+          \hCode{head}, decrement \hCode{size}.
+    \item \hCode{peek} reads without changing anything.
+    \item Empty: \hCode{NoSuchElementException}, same convention as \hCode{Stack}.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{ArrayQueue<T>}: grow (unwrap)}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=40, lastline=48, firstnumber=40]{codeoutput/ArrayQueue.java}{Java}
+  \begin{itemize}\small
+    \item Copy element $i$ from \hCode{a[(head+i) \% n]} into \hCode{b[i]}:
+          this \hRemark{unwraps} the queue.
+    \item After the copy, \hCode{head = 0} and \hCode{tail = size}: the new
+          array starts at slot 0, no wrap to remember.
+    \item The alternative (copy from \hCode{head} straight into \hCode{b} at
+          \hCode{head}) keeps the wrap and is harder to reason about.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{ArrayQueue<T>}: first run}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/TestQueue.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/TestQueue.txt}
+    \end{column}
+  \end{columns}
+  \small
+  \hCode{[B, C, D]} is the interesting line: \hCode{head} was \hCode{1},
+  \hCode{tail} was \hCode{1}, and the queue wrapped into slot \hCode{0}
+  that \hCode{A} left behind.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Set]{ArraySet<T>}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{ArraySet<T>}: idea and fields}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=12, firstnumber=3]{codeoutput/ArraySet.java}{Java}
+  \begin{itemize}\small
+    \item The elements live at \hCode{a[0..n-1]}, no holes.
+    \item \hCode{contains} does a \textbf{linear scan} over that range.
+    \item Consequence: every operation is $O(n)$, unlike \hCode{HashSet}
+          which is $O(1)$ expected. This is a teaching set, not a
+          production set.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{ArraySet<T>}: add, contains, remove}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=14, lastline=37, firstnumber=14]{codeoutput/ArraySet.java}{Java}
+  \begin{itemize}\small
+    \item \hCode{add}: reject \hCode{null}, reject duplicates, grow, append,
+          return \hCode{true}.
+    \item \hCode{remove}: find the element, move the \emph{last} element
+          into its slot, clear the tail, decrement. This is $O(1)$
+          after the $O(n)$ search; shifting the tail would be $O(n)$
+          as well but a bigger constant.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{ArraySet<T>}: first run}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/TestSet.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/TestSet.txt}
+    \end{column}
+  \end{columns}
+  \small
+  The two \hCode{false} answers are the contract: duplicate add and
+  missing remove both report ``nothing happened''.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Iter]{Iterator and Parity}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Iterator: making \texttt{ArrayStack<T>} iterable}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=59, lastline=68, firstnumber=59]{codeoutput/ArrayStack.java}{Java}
+  \begin{itemize}\small
+    \item \hCode{ArrayStack<T> implements Iterable<T>} adds the method
+          \hCode{iterator()} to the class.
+    \item The anonymous inner class remembers its own \hCode{i},
+          independent of the stack's \hCode{top}.
+    \item Order: \hRemark{top to bottom}, same as \hCode{toString}.
+    \item \hCode{QueueADT} / \hCode{SetADT} can get the same treatment;
+          we do the stack to keep one slide.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Using the iterator (\texttt{for-each})}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/TestIterator.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/TestIterator.txt}
+    \end{column}
+  \end{columns}
+  \small
+  \hCode{for (String w : s)} calls \hCode{s.iterator()} once, then
+  \hCode{hasNext()} and \hCode{next()} until done. The stack itself is
+  not modified; a separate cursor does the walk.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Parity with the JDK}
+  \begin{center}\footnotesize
+  \begin{tabular}{@{}lL{0.20\textwidth}L{0.42\textwidth}@{}}
+    \toprule
+    \textbf{Your class} & \textbf{JDK counterpart} & \textbf{What the JDK adds} \\
+    \midrule
+    \hCode{ArrayStack<T>}  & \hCode{ArrayDeque} as stack & \hCode{Deque} methods (\hCode{addFirst}, \hCode{removeLast}, \ldots) \\
+    \hCode{ArrayQueue<T>}  & \hCode{ArrayDeque} as queue & same; \hCode{null} forbidden; \hCode{add}/\hCode{remove}/\hCode{element} throwing forms \\
+    \hCode{ArraySet<T>}    & \hCode{HashSet<T>}          & $O(1)$ via hashing, not $O(n)$ linear scan \\
+    \hCode{ArraySet<T>}    & \hCode{TreeSet<T>}          & sorted iteration, \hCode{Comparator} support \\
+    \hCode{ArraySet<T>}    & \hCode{LinkedHashSet<T>}    & insertion order preserved \\
+    \midrule
+    \emph{(no counterpart)} & \hCode{PriorityQueue<T>}  & min-heap order, \emph{not} FIFO \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.3em}
+  \small
+  Your classes and the JDK classes obey the \emph{same interfaces}:
+  swap one for the other in the caller without editing the caller.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Wrap]{Wrap-up}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Tests and questions}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/TestEverything.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \lstterminal[basicstyle=\ttfamily\tiny]{codeoutput/TestEverything.txt}
+      \small
+      \hRemark{Not run here:} JUnit, JMH. Write \hCode{@Test} on the same
+      assertions and you get a report with a red/green per method.
+    \end{column}
+  \end{columns}
+  \vspace{0.3em}
+  \begin{enumerate}\small
+    \item Why does \hCode{new T[10]} fail to compile but \hCode{(T[]) new Object[10]} works?
+    \item Why does \hCode{ArraySet.remove} move the last element, not shift the tail?
+    \item What does \hCode{a[--top] = null} prevent? Give a sentence.
+    \item Why does the queue keep \hCode{size} if \hCode{head} and \hCode{tail} are already there?
+  \end{enumerate}
+  \vspace{0.2em}
+  \begin{center}
+    \hRemark{\Huge Questions?}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+\end{document}

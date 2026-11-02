@@ -1,0 +1,5 @@
+$ javac StackDemo.java
+$ java StackDemo
+Python
+Python
+Java

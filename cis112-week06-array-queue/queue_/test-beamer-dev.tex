@@ -1,0 +1,115 @@
+\documentclass{beamer}
+	\usetheme{Dresden}
+\usepackage{beamerthemesplit}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V HB lib
+\usepackage{../hbcommon/hbdatastructures} 
+\usepackage{../hbcommon/hbpresentation} 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V specific	
+	\usepackage[normalem]{ulem} %strikethroug
+
+	\newcommand{\hDummy}{dummy}
+%  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}\frametitle{Implementation with array----}
+	\begin{columns}[T] % >>>>
+	\begin{column}{.5\linewidth} % ++++ V
+		\begin{itemize}
+			\item
+			\hEmph{enqueue(item)}
+			
+				\begin{itemize}
+					\item
+					on the right
+					\item 
+					at  \hEmph{head}
+					\sout{nextAvailableLocation}\\
+					nextToLastUsedLocation
+				\end{itemize}			
+
+			\item
+			\hEmph{dequeue()}
+			\sout{Deletion}
+				\begin{itemize}
+					\item
+					on the left
+					\item 
+					at  \hEmph{tail}
+					\sout{firstUsedLocation}
+				\end{itemize}			
+			\item
+			Use array
+				\begin{itemize}
+					\item 
+					keep track of  
+					\hEmph{nextAvailableLocation} and
+					\hEmph{firstUsedLocation}
+				\end{itemize}			
+		\end{itemize}
+	\end{column} % ++++ A
+	\begin{column}{.5\linewidth} % ++++ V
+	    	\textbf{Array}
+
+		% ~~~~~~~~~~~~~~~~~
+		\begin{tikzpicture}
+			\hQueue{0}{8}{1}{2}{D1, , , , , , , } [.5][.5]
+		\end{tikzpicture}\\
+		
+		% ~~~~~~~~~~~~~~~~~
+		\begin{tikzpicture}
+			\hQueue{0}{8}{1}{3}{D1, D2, , , , , , } [.5][.5]
+		\end{tikzpicture}\\
+		
+		% ~~~~~~~~~~~~~~~~~
+		\begin{tikzpicture}
+			\hQueue{0}{8}{1}{4}{D1, D2, D3, , , , , } [.5][.5]
+		\end{tikzpicture}\\
+		
+		% ~~~~~~~~~~~~~~~~~
+		\begin{tikzpicture}
+			\hQueue{0}{8}{2}{4}{D1, D2, D3, , , , , } [.5][.5]
+		\end{tikzpicture}\\
+		
+		% ~~~~~~~~~~~~~~~~~
+		\begin{tikzpicture}
+			\hQueue{0}{8}{2}{5}{D1, D2, D3, D4, , , , } [.5][.5]
+		\end{tikzpicture}\\
+		
+		% ~~~~~~~~~~~~~~~~~
+		\begin{tikzpicture}
+			\hQueue{0}{8}{3}{5}{D1, D2, D3, D4, , , , } [.5][.5]
+		\end{tikzpicture}\\
+		
+		% ~~~~~~~~~~~~~~~~~
+		\begin{tikzpicture}
+			\hQueue{0}{8}{4}{5}{D1, D2, D3, D4, , , , } [.5][.5]
+		\end{tikzpicture}\\
+		
+		% ~~~~~~~~~~~~~~~~~
+		\begin{tikzpicture}
+			\hQueue{0}{8}{5}{5}{D1, D2, D3, D4, , , , } [.5][.5]
+		\end{tikzpicture}\\
+
+	\end{column} % ++++ A
+	\end{columns} % <<<<
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+\end{document}

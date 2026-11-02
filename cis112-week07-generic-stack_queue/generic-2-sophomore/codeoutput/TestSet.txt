@@ -1,0 +1,8 @@
+true
+true
+false
+{apple, banana}
+contains("banana") = true
+remove("apple")  = true
+{banana}
+size = 1

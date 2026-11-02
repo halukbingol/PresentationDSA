@@ -1,0 +1,5 @@
+$ javac GenericArrayBug.java
+$ java GenericArrayBug
+assigned ok
+Exception in thread "main" java.lang.ArrayStoreException: java.lang.Integer
+    at GenericArrayBug.main(GenericArrayBug.java:13)

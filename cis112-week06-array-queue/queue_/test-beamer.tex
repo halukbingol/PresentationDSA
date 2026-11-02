@@ -1,0 +1,201 @@
+\documentclass{beamer}
+	\usetheme{Dresden}
+\usepackage{beamerthemesplit}
+
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V HB lib
+\usepackage{../hbcommon/hbdatastructures} 
+\usepackage{../hbcommon/hbpresentation} 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}\frametitle{aaa}
+\begin{center}
+	\begin{tabular}{l l}
+		a
+		&aa\\
+		\pause
+		b
+		&bb
+	\end{tabular}
+\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}\frametitle{test-Stack}
+	\begin{columns}[T] % >>>>
+	\begin{column}{.5\linewidth} % ++++ V
+		\begin{tikzpicture}
+			\hStack{0}{4}{1}{P1}[.5][.6]
+		\end{tikzpicture}
+
+		\begin{tikzpicture}
+			\hStack{0}{4}{2}{P1, P2}[.5][.6]
+		\end{tikzpicture}
+
+		\begin{tikzpicture}
+			\hStack{0}{4}{3}{P1, P2, P3}[.5][.6]
+		\end{tikzpicture}
+
+		\begin{tikzpicture}
+			\hStack{0}{4}{2}{P1, P2, P3}[.5][.6]
+		\end{tikzpicture}
+
+		\begin{tikzpicture}
+			\hStack{0}{4}{1}{P1, P2, P3}[.5][.6]
+		\end{tikzpicture}
+
+		\begin{tikzpicture}
+			\hStack{0}{4}{2}{P1, P4, P3}[.5][.6]
+		\end{tikzpicture}
+
+		\begin{tikzpicture}
+			\hStack{0}{4}{3}{P1, P4, P5}[.5][.6]
+		\end{tikzpicture}
+
+		\begin{tikzpicture}
+			\hStack{0}{4}{4}{P1, P4, P5, P6}[.5][.6]
+		\end{tikzpicture}
+
+		\begin{tikzpicture}
+			\hStack{0}{4}{3}{P1, P4, P5, P6}[.5][.6]
+		\end{tikzpicture}
+
+		\begin{tikzpicture}
+			\hStack{0}{4}{2}{P1, P4, P5, P6}[.5][.6]
+		\end{tikzpicture}
+	\end{column} % ++++ A
+	\begin{column}{.5\linewidth} % ++++ V
+		\begin{tikzpicture}
+			\hStack{1}{4}{1}{P1}[.5][.6]
+		\end{tikzpicture}
+
+		\begin{tikzpicture}
+			\hStack{1}{4}{2}{P1, P2}[.5][.6]
+		\end{tikzpicture}
+
+		\begin{tikzpicture}
+			\hStack{1}{4}{3}{P1, P2, P3}[.5][.6]
+		\end{tikzpicture}
+
+		\begin{tikzpicture}
+			\hStack{1}{4}{2}{P1, P2, P3}[.5][.6]
+		\end{tikzpicture}
+
+		\begin{tikzpicture}
+			\hStack{1}{4}{1}{P1, P2, P3}[.5][.6]
+		\end{tikzpicture}
+
+		\begin{tikzpicture}
+			\hStack{1}{4}{2}{P1, P4, P3}[.5][.6]
+		\end{tikzpicture}
+
+		\begin{tikzpicture}
+			\hStack{1}{4}{3}{P1, P4, P5}[.5][.6]
+		\end{tikzpicture}
+
+		\begin{tikzpicture}
+			\hStack{1}{4}{4}{P1, P4, P5, P6}[.5][.6]
+		\end{tikzpicture}
+
+		\begin{tikzpicture}
+			\hStack{1}{4}{3}{P1, P4, P5, P6}[.5][.6]
+		\end{tikzpicture}
+
+		\begin{tikzpicture}
+			\hStack{1}{4}{2}{P1, P4, P5, P6}[.5][.6]
+		\end{tikzpicture}
+	\end{column} % ++++ A
+	\end{columns} % <<<<
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}\frametitle{test-Queue}
+	\begin{columns}[T] % >>>>
+	\begin{column}{.5\linewidth} % ++++ V
+\begin{center}
+\begin{tabular}{l l}
+	%
+	{\tiny empty}
+	&\begin{tikzpicture}
+		\hQueue{0}{8}{1}{1}{, , , , , , , } [.5][.6]
+	\end{tikzpicture}\\
+	%
+	{\tiny enqueue(a)}
+	&\begin{tikzpicture}
+		\hQueue{0}{8}{1}{2}{A, , , , , , , } [.5][.6]
+	\end{tikzpicture}\\
+	%
+	{\tiny enqueue(b)}
+	&\begin{tikzpicture}
+		\hQueue{0}{8}{1}{3}{A, B, , , , , , } [.5][.6]
+	\end{tikzpicture}\\
+	%
+	{\tiny enqueue(c)}
+	&\begin{tikzpicture}
+		\hQueue{0}{8}{1}{4}{A, B, C, D, , , , } [.5][.6]
+	\end{tikzpicture}\\
+	%
+	{\tiny enqueue(c)}
+	&\begin{tikzpicture}
+		\hQueue{0}{8}{5}{2}{A, B, C, D, E, F, G, H} [.5][.6]
+	\end{tikzpicture}\\
+\end{tabular}
+\end{center}
+	\end{column} % ++++ A
+	\begin{column}{.5\linewidth} % ++++ V
+\begin{center}
+\begin{tabular}{l l}
+	%
+	{\tiny empty}
+	&\begin{tikzpicture}
+		\hQueue{1}{8}{1}{1}{, , , , , , , } [.5][.6]
+	\end{tikzpicture}\\
+	%
+	{\tiny enqueue(A)}
+	&\begin{tikzpicture}
+		\hQueue{1}{8}{1}{2}{A, , , , , , , } [.5][.6]
+	\end{tikzpicture}\\
+	%
+	{\tiny enqueue(B)}
+	&\begin{tikzpicture}
+		\hQueue{1}{8}{1}{3}{A, B, , , , , , } [.5][.6]
+	\end{tikzpicture}\\
+	%
+	{\tiny enqueue(C)}
+	&\begin{tikzpicture}
+		\hQueue{1}{8}{1}{4}{A, B, C, D, , , , } [.5][.6]
+	\end{tikzpicture}\\
+	%
+	{\tiny enqueue(...)}
+	&\begin{tikzpicture}
+		\hQueue{1}{8}{5}{2}{A, B, C, D, E, F, G, H} [.5][.6]
+	\end{tikzpicture}\\
+\end{tabular}
+\end{center}
+	\end{column} % ++++ A
+	\end{columns} % <<<<
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+\end{document}

@@ -1,0 +1,7 @@
+$ javac StackBug.java
+$ java StackBug
+only
+Exception in thread "main" java.util.NoSuchElementException
+    at java.base/java.util.ArrayDeque.removeFirst(ArrayDeque.java:362)
+    at java.base/java.util.ArrayDeque.pop(ArrayDeque.java:515)
+    at StackBug.main(StackBug.java:8)

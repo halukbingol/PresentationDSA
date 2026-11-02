@@ -1,0 +1,4 @@
+stack       = [3, 2, 1]  top = 3
+queue       = [A, B, C]
+set         = {x, y}
+all empty?  stack=false queue=false set=false

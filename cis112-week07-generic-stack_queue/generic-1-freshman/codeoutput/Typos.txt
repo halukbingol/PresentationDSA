@@ -1,0 +1,6 @@
+$ javac setdemo.java
+error: file not found: setdemo.java
+$ javac SetDemo.java
+$ java setdemo
+Error: Could not find or load main class setdemo.
+Caused by: java.lang.NoClassDefFoundError: setdemo (wrong name: SetDemo)
