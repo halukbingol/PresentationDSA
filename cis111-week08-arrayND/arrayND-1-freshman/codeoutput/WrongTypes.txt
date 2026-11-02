@@ -1,0 +1,7 @@
+WrongTypes.java:3: error: incompatible types: possible lossy conversion from double to int
+		int[][] t = {{1, 2}, {3.5, 4}};  // a double in an int table
+		                      ^
+WrongTypes.java:4: error: incompatible types: int[][] cannot be converted to int[]
+		int[] row = new int[2][2];       // a table is not a row
+		            ^
+2 errors

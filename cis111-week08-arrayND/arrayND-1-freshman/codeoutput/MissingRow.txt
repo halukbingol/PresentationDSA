@@ -1,0 +1,2 @@
+Exception in thread "main" java.lang.NullPointerException: Cannot store to int array because "t[0]" is null
+	at MissingRow.main(MissingRow.java:6)

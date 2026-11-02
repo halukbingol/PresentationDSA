@@ -1,0 +1,4 @@
+NoRowCount.java:3: error: ']' expected
+		int[][] t = new int[][3];
+		                      ^
+1 error

@@ -1,0 +1,11 @@
+$ javac -d out GradeBook.java GradeBookTest.java RunTests.java
+$ java RunTests GradeBookTest
+  FAIL  columnAverages()
+        array contents differ at index [0], expected: <63.5> but was: <63.0>
+  ok    isRectangular()
+  ok    rowTotalsRagged()
+  ok    withBonusCells()
+  ok    withBonusKeepsInput()
+  FAIL  withBonusWrongExpected()
+        array contents differ at index [1][0], expected: <61> but was: <60>
+6 tests: 4 passed, 2 failed

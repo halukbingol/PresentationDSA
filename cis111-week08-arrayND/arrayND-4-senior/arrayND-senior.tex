@@ -1,0 +1,370 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% v20261030T1200
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue, \hArray, \hGrid
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+
+
+\title[Arrays ND: Senior]{
+	Multi-Dimensional Arrays\\
+	Senior
+}
+\subtitle{
+	\cisOOO\ -- Level 4: internals, limits, security, production use
+}
+\author[Erkovan]{Sait Erkovan}
+
+\institute[FCIS]{
+	Faculty of Computer and Information Sciences\\
+	Yeditepe University
+}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={1-3}, hideallsubsections]
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={4-6}, hideallsubsections]
+		\end{column}
+	\end{columns}
+
+	\vspace{1em}
+	\small It builds on \hCode{array1D-4-senior}: array objects, index checks, covariance and threads in 1D are assumed.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[JVM]{Tables inside the JVM}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{An int[][] is an array of objects}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/TableTypes.java}{Java}{codeoutput/TableTypes.txt}
+
+	\footnotesize \uncover<2->{The JVM has no table type: \hCode{[[I} is an array whose elements are references
+	to \hCode{[I} objects. So an \hCode{int[][]} is also an \hCode{Object[]}, with the covariance rules of 1D.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{One object per row: the price}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize, linerange={2-6,9-16}][basicstyle=\ttfamily\scriptsize]{codeoutput/RowCost.java}{Java}{codeoutput/RowCost.txt}
+
+	\footnotesize \uncover<2->{Both hold 8 MB of ints. A million rows add a million object headers (16 bytes each) and references.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{new int[3][4] is one bytecode}
+	\begin{columns}[T]
+		\begin{column}{0.38\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Bytecode2D/Make.java}{Java}
+		\end{column}
+		\begin{column}{0.60\textwidth}
+			\uncover<2->{\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Bytecode2D.txt}}
+		\end{column}
+	\end{columns}
+
+	\begin{itemize}\small
+		\item<2-> \hCode{multianewarray} creates the outer array and all its rows in one instruction
+		\item<2-> \hCode{new int[3][]} is a plain \hCode{anewarray} of 3 references, all \hCode{null}
+		\item<2-> The 2 in \hCode{multianewarray \#7, 2} is the number of dimensions given
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Limits]{Limits}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{At most 255 dimensions}
+	\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Dims255.txt}
+
+	\begin{itemize}\small
+		\item An array type descriptor of the class file format may have at most 255 dimensions;
+			  \hCode{javac} refuses a 256th
+		\item \hCode{Gen.java} prints the source; \hCode{java Gen.java} runs a one-file program without \hCode{javac}
+		\item In practice three dimensions are rare and four are a design smell: use a class
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{rows times columns can overflow}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=14, firstnumber=3][basicstyle=\ttfamily\scriptsize]{codeoutput/FlatOverflow.java}{Java}{codeoutput/FlatOverflow.txt}
+
+	\footnotesize \uncover<2->{$2.5 \cdot 10^{9}$ does not fit in an \hCode{int}: an index \hCode{r * cols + c} silently wraps around.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Security]{Safety and security}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A shallow defensive copy leaks the rows}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize, linerange={3-10,13-18}][basicstyle=\ttfamily\scriptsize]{codeoutput/DefensiveDeep.java}{Java}{codeoutput/DefensiveDeep.txt}
+
+	\footnotesize \uncover<2->{\hCode{private final} protects only the reference; \hCode{clone()} hands out the real rows. Copy every row.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Tables as keys: equals is identity}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize, firstline=6, lastline=13, firstnumber=6][basicstyle=\ttfamily\scriptsize]{codeoutput/KeyTable.java}{Java}{codeoutput/KeyTable.txt}
+
+	\begin{itemize}\footnotesize
+		\item<2-> Arrays do not override \hCode{equals} and \hCode{hashCode}: a \hCode{HashSet} or \hCode{HashMap} of tables
+			  finds only the same object
+		\item<2-> A \hCode{record} with an \hCode{int[][]} component has the same problem
+		\item<2-> Wrap the table in a class whose \hCode{equals} and \hCode{hashCode} use \hCode{deepEquals} and \hCode{deepHashCode},
+			  and do not change it while it is a key
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Nested arrays can contain themselves}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{codeoutput/Cycle.java}{Java}{codeoutput/Cycle.txt}
+
+	\begin{itemize}\footnotesize
+		\item An \hCode{Object[]} can hold any array, even itself: a cycle
+		\item \hCode{deepToString} detects it and prints \hCode{[...]}; a hand-written recursive printer would
+			  never stop (week 12)
+		\item \hCode{deepEquals} and \hCode{deepHashCode} have no such guard: do not call them on cyclic structures
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Production]{Production use}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Streams over a table}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=14, firstnumber=3][basicstyle=\ttfamily\scriptsize]{codeoutput/StreamsTable.java}{Java}{codeoutput/StreamsTable.txt}
+
+	\footnotesize \hCode{Arrays.stream(s)} is a stream of rows; \hCode{mapToInt} turns each row into a number,
+	\hCode{flatMapToInt} joins all rows into one stream of cells.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Rows in parallel}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize, firstline=5, lastline=18, firstnumber=5][basicstyle=\ttfamily\scriptsize]{codeoutput/ParallelRows.java}{Java}{codeoutput/ParallelRows.txt}
+
+	\footnotesize Each task reads one row and writes one cell of \hCode{rowSum}: no two tasks write the same place,
+	so there are no lost updates (\hCode{array1D-4-senior}). A shared counter would need synchronization.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Tables in real systems}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. real systems
+\begin{table}
+		\small
+		\begin{tabular}{@{}L{0.24\textwidth}L{0.68\textwidth}@{}}
+			\toprule
+			\textbf{Where} & \textbf{How the table is stored} \\
+			\midrule
+			Images            & often one flat \hCode{int[]} with a row stride, not \hCode{int[h][w]}: one object, fast copies \\
+			Numeric libraries & flat arrays; Fortran-based ones (BLAS, LAPACK) store column by column \\
+			Sparse data       & only the non-zero cells: (row, column, value) lists, or compressed rows \\
+			Game boards       & small \hCode{char[][]} or \hCode{int[][]}; clarity matters more than speed \\
+			Spreadsheets      & sparse maps from (row, column) to a cell object, not a dense array \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\small Choose the storage by the access pattern: dense or sparse, by row or by column, fixed or growing.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Projects]{Open-ended projects}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Projects}
+	\begin{enumerate}\small
+		\item A \hCode{Matrix} class on one flat \hCode{double[]}: \hCode{get}, \hCode{set}, \hCode{times}, \hCode{transpose},
+			  \hCode{equals}, \hCode{hashCode}; measure it against \hCode{double[][]}
+		\item A sparse table that stores only the non-zero cells; compare its memory with \hCode{RowCost}
+		\item An immutable \hCode{Board} for a game: no method may leak a row; prove it with tests
+		\item Parallel image filters on rows; measure the speed-up for 1, 2, 4, \dots\ processors
+		\item Read a large CSV file into a ragged table; report the rows whose length is wrong
+	\end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. cheat sheet
+\begin{table}
+		\small
+		\begin{tabular}{@{}L{0.32\textwidth}L{0.60\textwidth}@{}}
+			\toprule
+			\textbf{Fact} & \textbf{Consequence} \\
+			\midrule
+			\hCode{int[][]} is \hCode{[[I}, an \hCode{Object[]} & rows are objects: headers, references, covariance \\
+			many short rows                      & much more memory than a few long ones \\
+			\hCode{multianewarray}               & one bytecode creates all rows of \hCode{new int[n][m]} \\
+			255 dimensions at most               & a limit of the class file format \\
+			\hCode{rows * cols} is an \hCode{int} & overflow: use \hCode{long} or \hCode{Math.multiplyExact} \\
+			\hCode{clone()} is shallow           & copy every row at the border of a class \\
+			no \hCode{equals} on arrays          & \hCode{deepEquals}, \hCode{deepHashCode}, or a wrapper class \\
+			rows are independent                 & process them in parallel, one writer per cell \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{References}
+	\small The Java Tutorials, Arrays \cite{TheJavaTutorialsArray}; arrays in memory \cite{knuth1973artv1}.
+
+	\vspace{1em}
+	\setbeamertemplate{bibliography item}[text]
+	\bibliographystyle{IEEEtran}
+	\tiny\bibliography{../../hblib/hblibDataStructures}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

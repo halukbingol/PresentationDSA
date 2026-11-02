@@ -1,0 +1,4 @@
+FinalTable.java:4: error: cannot assign a value to final variable t
+		t = new int[2][2];  // not allowed: the variable
+		^
+1 error

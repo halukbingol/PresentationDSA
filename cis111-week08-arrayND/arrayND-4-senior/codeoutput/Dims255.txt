@@ -1,0 +1,7 @@
+$ java Gen.java 255 > D255.java
+$ javac D255.java && echo "255 dimensions: compiled"
+255 dimensions: compiled
+$ java Gen.java 256 > D256.java
+$ javac D256.java 2>&1 | cut -c 1-70 | head -n 2
+D256.java:1: error: array type has too many dimensions
+public class D256 { int[][][][][][][][][][][][][][][][][][][][][][][][

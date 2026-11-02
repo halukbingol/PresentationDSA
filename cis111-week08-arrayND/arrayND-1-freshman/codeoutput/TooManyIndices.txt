@@ -1,0 +1,7 @@
+TooManyIndices.java:4: error: array required, but int found
+		int a = t[0][0][0];  // three indices for two dimensions
+		               ^
+TooManyIndices.java:5: error: incompatible types: int[] cannot be converted to int
+		int b = t[0];        // one index gives a row, not an int
+		         ^
+2 errors
