@@ -1,14 +1,20 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V specific
 
-# folders
+# folders ~~~~~~~~~~~~~~~~~~~~~
 /__v20261022
 /_old/
 *--v1/
 *--v2/
 /test*/
 
+# ~~~~~~~~~~~~~~~~~~~~~ V todo
+topic---template/
+topic---presentation-old/
+# ~~~~~~~~~~~~~~~~~~~~~ V todo
 
-# files
+
+
+# files ~~~~~~~~~~~~~~~~~~~~~
 /z-cis111-cis112-presentations-2026-3.xlsx
 /z-weekly-cis111+112+114+116.xlsx alias
 #

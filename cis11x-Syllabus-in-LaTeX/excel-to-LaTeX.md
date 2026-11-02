@@ -9,7 +9,7 @@ There are several ways, from manual to automated.
 ```excel
 =SUBSTITUTE(
 	TEXTJOIN(
-		" & ",TRUE,V4:Z4
+		" & ",false,V4:Z4
 	) & " \\",
 	"%", "\%"
 )
@@ -22,7 +22,7 @@ There are several ways, from manual to automated.
 If your row is in `A1:D1`, put this in `E1`:
 
 ```
-=TEXTJOIN(" & ",TRUE,A1:D1) & " \\"
+=TEXTJOIN(" & ",false,A1:D1) & " \\"
 ```
 
 You get:
