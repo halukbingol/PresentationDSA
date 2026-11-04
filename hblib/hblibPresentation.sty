@@ -1,5 +1,7 @@
 % !TEX spellcheck = en_US
 
+% v20261104T2350   reordered into numbered, documented sections; inputenc, xparse, epstopdf removed;
+%                  \hCode allowed in section titles (PDF bookmarks); \cisOOO after \ProvidesPackage
 % v20261029T1800
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
@@ -10,110 +12,144 @@
 % and remixes based on it only for non-commercial purposes.
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V specific
-\newcommand{\cisOOO}{\textsc{cis111}}
-\newcommand{\cisOOT}{\textsc{cis112}}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A specific
-
-
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{hblibPresentation}[2026/10/29 hbpresentation library]
+\ProvidesPackage{hblibPresentation}[2026/11/04 hb presentations (beamer) and handouts]
 
-%: ~~~~~~~~~~~~~~~~ V HB packages
-\RequirePackage[utf8]{inputenc}   % unicode (default since LaTeX 2018, kept for older installations)
-%\RequirePackage[iso]{datetime}    % \currenttime in \hbTimeStampDraft
-\RequirePackage[style=iso,showzone=false]{datetime2}    % yyyy-mm-dd \DTMnow
+% =====================================================================
+%  hblibPresentation -- the base library of the slide decks
+%  ---------------------------------------------------------------------
+%  \documentclass[aspectratio=169,10pt,compress]{beamer}
+%  \usepackage{../../hblib/hblibPresentation}      first
+%  \usepackage{../../hblib/hblibCodeoutput}        code and output read from files
+%  \usepackage{../../hblib/hblibDatastructures}    arrays, stacks, queues, trees
+%
+%  Contents of this file (in this order)
+%    1  Fonts                    T1, Latin Modern
+%    2  Packages                 graphics, colors, TikZ, tables, listings, algorithms, menus
+%    3  Algorithms               algorithm2e set-up
+%    4  Beamer theme             theme, "i / N" on every frame
+%    5  Course names             \cisOOO, \cisOOT
+%    6  Time stamps              \hbTimeStamp, \hbTimeStampDraft
+%    7  Colors and emphasis      \hDefined, \hEmph, \hRemark, \hQuestion, ...
+%    8  Separators               \hSection, \hSubsection, \hSeparator
+%    9  Inline code              \hCode, \hFontLarger
+%   10  Tables                   column type L{width}
+%   11  Old code listings        style mystyle, \hCodeOutput, \hCodeOutputOnly
+%   12  Math                     \hAbs
+%
+%  Removed (compared with v20261029T1800)
+%    inputenc   UTF-8 is the default input encoding of LaTeX since 2018
+%    xparse     \NewDocumentCommand is part of LaTeX since 2020
+%    epstopdf   graphicx converts .eps to .pdf by itself, and only when the .eps is newer
+%               (epstopdf-base, "update" is its default), so \epstopdfsetup{update} is not needed
+%    commented-out \hKeyboard and fancybox (use \keys from menukeys)
+%  Changed
+%    \hCode     can be used in \section and \hSection titles; the PDF bookmark gets the plain text
+%               (it gave "Token not allowed in a PDF string")
+% =====================================================================
 
-\RequirePackage{graphicx}
-\RequirePackage{epstopdf}         % eps 2 pdf
-\epstopdfsetup{update}            % only regenerate pdf files when eps file is newer
-\RequirePackage{xparse}           % \NewDocumentCommand on LaTeX older than 2020-10
-\RequirePackage{xcolor}
-\RequirePackage{tikz}             % also loads pgffor
-\usetikzlibrary{positioning, matrix, arrows.meta, calc} % calc: relative positioning in \hCodeOutput
-\RequirePackage[nomessages]{fp}   % calculations
-\RequirePackage{calc}             % calculations
-\RequirePackage{array}            % tables, \newcolumntype
-\RequirePackage{listings}
-\RequirePackage[ruled,vlined,linesnumbered]{algorithm2e} % pseudo code
-\RequirePackage[T1]{fontenc}      % T1 fonts: < > | and accented letters print correctly
-\RequirePackage{lmodern}          % scalable Latin Modern fonts for T1
-\RequirePackage{booktabs}         % \toprule, \midrule, \bottomrule
-\@ifclassloaded{beamer}{}{\RequirePackage{enumitem}} % enumitem breaks beamer's lists (\labelenumi loops)
 
-% ~~~~~~~~~~~~~~~~ A HB packages
 
-%: ~~~~~~~~~~~~~~~~ V HB algorithm2e set-up
-% Captions in \small and \Fn{name}{body} for "function ... end".
+% ===================================================================== 1 Fonts
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V fonts
+\RequirePackage[T1]{fontenc}      % T1 fonts: < > | and accented (Turkish) letters print correctly
+\RequirePackage{lmodern}          % Latin Modern: scalable, sharp in PDF viewers
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A fonts
+
+
+
+% ===================================================================== 2 Packages
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V packages
+\RequirePackage[style=iso,showzone=false]{datetime2} % \today as yyyy-mm-dd; \DTMcurrenttime
+\RequirePackage{graphicx}         % \includegraphics (pdf, png, jpg; eps is converted automatically)
+\RequirePackage{xcolor}           % colors: \color, \textcolor, \definecolor
+\RequirePackage{tikz}             % drawings (also loads pgffor: \foreach)
+\usetikzlibrary{positioning,      % right=1cm of a
+	matrix,                         % \matrix of nodes
+	arrows.meta,                    % -{Latex[length=2mm]}
+	calc}                           % ($(a) + (1,0)$), used by \hCodeOutputOnly
+\RequirePackage[nomessages]{fp}   % \FPeval: decimal calculations
+\RequirePackage{calc}             % \setlength{\x}{\widthof{text} + 2pt}
+\RequirePackage{array}            % tables: \newcolumntype, >{...} before a column
+\RequirePackage{booktabs}         % tables: \toprule, \midrule, \bottomrule
+\RequirePackage{listings}         % program code (styles in section 11 and in hblibCodeoutput)
+\RequirePackage[ruled,vlined,linesnumbered]{algorithm2e} % pseudo code (section 3)
+\@ifclassloaded{beamer}{}{\RequirePackage{enumitem}}      % lists of handouts; enumitem breaks beamer's lists
+\RequirePackage{menukeys}         % \menu{File > Save As}, \keys{Ctrl + C}, \keys{\shift + \cmd + B}
+                                  % (it defines \cmd, the Mac command key: use \hCode for commands)
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A packages
+
+
+
+% ===================================================================== 3 Algorithms
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V algorithms
+% Captions in \small; \Fn{name}{body} gives "function name ... end".
 % A deck may add its own keywords (\SetKwFunction, \SetKw) and \DontPrintSemicolon.
 \SetAlCapFnt{\small}
 \SetAlCapNameFnt{\small}
 \SetKwProg{Fn}{function}{}{end}
 \@ifclassloaded{beamer}{\resetcounteronoverlays{algocf}}{} % the same algorithm number on every overlay of a frame
-% ~~~~~~~~~~~~~~~~ A HB algorithm2e set-up
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A algorithms
 
-%: ~~~~~~~~~~~~~~~~ V HB beamer theme
-% Theme and "i / N" on every frame. Change after \usepackage{hblibPresentation},
+
+
+% ===================================================================== 4 Beamer theme
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V beamer theme
+% Theme and "i / N" on every frame. A deck can change it after \usepackage{hblibPresentation},
 % e.g. \usecolortheme{beaver}
 \@ifclassloaded{beamer}{%
 	\useoutertheme{split}
-	\useinnertheme{rounded} % also makes blocks rounded
+	\useinnertheme{rounded}       % also makes blocks rounded
 	\usecolortheme{whale}
 	\usecolortheme{orchid}
 	\setbeamertemplate{navigation symbols}{}
 	\setbeamertemplate{page number in head/foot}[totalframenumber] % i / N
 }{}
-% ~~~~~~~~~~~~~~~~ A HB beamer theme
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A beamer theme
 
 
 
-
-%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V \h stuff
-%\usepackage{fancybox}
-%%\usepackage{textcomp}
-%\newcommand{\hKeyboard}[1]{\fbox{\textsf{\small #1}}} % key press on keyboard
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
-
+% ===================================================================== 5 Course names
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V course names
+\newcommand{\cisOOO}{\textsc{cis111}}  % \cisOOO\ -- Week 7 lecture
+\newcommand{\cisOOT}{\textsc{cis112}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A course names
 
 
 
-
-%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V keyboard and menu
-\RequirePackage{menukeys} % defines \cmd (the Mac command key): decks use \hCode for commands
-%\keys{Ctrl + C}
-%\keys{\ctrl + \shift + N}
-%\menu{File > Save As}
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+% ===================================================================== 6 Time stamps
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V time stamps
+\newcommand{\hbTimeStamp}{v\today}                                              % v2026-11-04
+\newcommand{\hbTimeStampDraft}{{\color{red}--Draft-- v\today/\DTMcurrenttime}}  % with the time, red
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A time stamps
 
 
 
-%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V HB Header Presentation v2024-02-25
+% ===================================================================== 7 Colors and emphasis
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V colors and emphasis
+\definecolor{colorHEmph}{rgb}{.95, .69, .27}  % \hEmph: orange-yellow
+\definecolor{colorStop}{rgb}{.99, .27, .27}   % red: stop, wrong
+\definecolor{colorGo}{rgb}{.27, .69, .95}     % blue: go, right
+\definecolor{colorIndex}{rgb}{.27, .69, .95}  % indices (hblibDatastructures sets its own, purple)
+\providecolor{gitred}{RGB}{240,80,50}         % a deck may \definecolor{gitred} again
 
-%: ~~~~~~~~~~~~~~~~ V timestamp
-\newcommand{\hbTimeStampDraft}{{\color{red}--Draft-- v\today/\DTMcurrenttime}} % datetime2
-\newcommand{\hbTimeStamp}{v\today}
-% ~~~~~~~~~~~~~~~~ A timestamp
-
-%: ~~~~~~~~~~~~~~~~ V HB References
-\definecolor{colorHEmph}{rgb}{.95, .69, .27} % hEmph
-\definecolor{colorStop}{rgb}{.99, .27, .27}
-\definecolor{colorGo}{rgb}{.27, .69, .95}
-\definecolor{colorIndex}{rgb}{.27, .69, .95}
-\providecolor{gitred}{RGB}{240,80,50} % \hCode; a deck may \definecolor{gitred} again
-\newcommand{\hDefined}[1]{\textcolor{red}{#1}}
-\newcommand{\hEmph}[1]{\textcolor{colorHEmph}{#1}}
-\newcommand{\hColorBox}{\hEmph}
-\newcommand{\hIndex}[1]{\textcolor{colorIndex}{${}^{#1}$}}
+\newcommand{\hDefined}[1]{\textcolor{red}{#1}}              % a term defined here: \hDefined{reference}
+\newcommand{\hEmph}[1]{\textcolor{colorHEmph}{#1}}          % an important word
+\newcommand{\hColorBox}{\hEmph}                             % old name of \hEmph
+\newcommand{\hIndex}[1]{\textcolor{colorIndex}{${}^{#1}$}}  % a small raised index
 \newcommand{\hReference}[1]{\textcolor{blue}{\scriptsize [#1]}}
 \newcommand{\hCite}[1]{\textcolor{blue}{\tiny [#1]}}
 \newcommand{\hUrl}[1]{\textcolor{blue}{\scriptsize [#1]}}
-\newcommand{\hRemark}[1]{\textcolor{orange}{#1}}
-\newcommand{\hQuestion}[1]{\textcolor{orange}{\textbf{Q.} }#1}
-% ~~~~~~~~~~~~~~~~ A HB References
+\newcommand{\hRemark}[1]{\textcolor{orange}{#1}}            % a side remark: \hRemark{macOS}: ...
+\newcommand{\hQuestion}[1]{\textcolor{orange}{\textbf{Q.} }#1} % Q. question to the audience
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A colors and emphasis
 
-%: ~~~~~~~~~~~~~~~~ V HB separator
+
+
+% ===================================================================== 8 Separators
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V separators
 % \hSection[short]{Long}[line 1][line 2]: \section plus a title frame
-% \NewDocumentCommand{\hSection}{O{#2} m m m}{%
+%   \hSection[Basics]{Creating and using an array}[\small Create it, visit it with a loop]
 \NewDocumentCommand{\hSection}{O{#2} m O{} O{}}{%
 	\section[#1]{#2}%
 	\begin{frame}
@@ -124,6 +160,7 @@
 		\end{center}
 	\end{frame}%
 }
+% \hSubsection{small line}{Title}: \subsection plus a title frame
 \newcommand{\hSubsection}[2]{%
 	\subsection{#2}%
 	\begin{frame}
@@ -133,6 +170,7 @@
 		\end{center}
 	\end{frame}%
 }
+% \hSeparator{Title}{line}: a title frame, without a section
 \newcommand{\hSeparator}[2]{%
 	\begin{frame}
 		\begin{center}
@@ -141,9 +179,12 @@
 		\end{center}
 	\end{frame}%
 }
-% ~~~~~~~~~~~~~~~~ A HB separator
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A separators
 
-%: ~~~~~~~~~~~~~~~~ V HB font size
+
+
+% ===================================================================== 9 Inline code
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V inline code
 % \hb@fontshift{N}{text}: text N pt larger (N < 0: smaller)
 % https://tex.stackexchange.com/questions/365024/decrease-font-size-by-one-point
 \newcommand{\hb@fontshift}[2]{%
@@ -152,30 +193,36 @@
 		#2%
 	\endgroup
 }
-\newcommand{\hFontLarger}[2]{\hb@fontshift{#1}{#2}} % N pt larger
-\newcommand{\hCode}[1]{\hb@fontshift{-2}{\texttt{\color{gitred}#1}}} % inline code, 2 pt smaller
-% ~~~~~~~~~~~~~~~~ A HB font size
+\newcommand{\hFontLarger}[2]{\hb@fontshift{#1}{#2}}  % \hFontLarger{2}{text}: 2 pt larger
 
-%: ~~~~~~~~~~~~~~~~ V HB table
-% L{width}: ragged-right paragraph column
+\providecolor{colorHCode}{RGB}{240,80,50}           % a deck may \definecolor it again
+% \hCode{text}: inline code, 2 pt smaller, colored. Special characters as in text: \hCode{\{ \}}, \hCode{\_}.
+% In a section title the PDF bookmark gets the plain text (\texorpdfstring of hyperref).
+\newcommand{\hb@code}[1]{\hb@fontshift{-2}{\texttt{\color{colorHCode}#1}}}
+\newcommand{\hCode}[1]{%
+	\ifdefined\texorpdfstring \texorpdfstring{\hb@code{#1}}{#1}\else \hb@code{#1}\fi}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A inline code
+
+
+
+% ===================================================================== 10 Tables
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V tables
+% L{width}: a paragraph column, ragged right:  \begin{tabular}{@{}L{0.3\textwidth}L{0.6\textwidth}@{}}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
-% ~~~~~~~~~~~~~~~~ A HB table
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A HB Header Presentation v2024-02-25
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A tables
 
 
 
+% ===================================================================== 11 Old code listings
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V old code listings
+% Kept for older decks. New decks: hblibCodeoutput (\lstcode, \lstcoderightstep, style=codesnippet).
+\definecolor{codegreen}{rgb}{0,0.6,0}          % comments
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}       % line numbers
+\definecolor{codepurple}{rgb}{0.58,0,0.82}     % strings
+\definecolor{colorback}{rgb}{0.95,0.95,0.92}   % code background
+\definecolor{coloroutput}{rgb}{0.80,0.80,0.80} % output background
 
-%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V HB Code Listings v2024-02-25
-% For code and output read from files, prefer hblibCodeoutput.sty.
-
-% colors for syntax highlighting
-\definecolor{codegreen}{rgb}{0,0.6,0}
-\definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codepurple}{rgb}{0.58,0,0.82}
-\definecolor{colorback}{rgb}{0.95,0.95,0.92}
-\definecolor{coloroutput}{rgb}{0.80,0.80,0.80}
-
+% mystyle: tiny font, colored, line numbers. Also the default of every lstlisting.
 \lstdefinestyle{mystyle}{
 	backgroundcolor=\color{colorback},
 	commentstyle=\color{codegreen},
@@ -195,11 +242,10 @@
 	tabsize=2,
 	morekeywords={public, class, static, void}
 }
-\lstset{style=mystyle, literate={\ \ }{{\ }}1} % prints two spaces as one (halves indentation)
+\lstset{style=mystyle, literate={\ \ }{{\ }}1} % two spaces are printed as one (halves the indentation)
 
-%: ~~~~~~~~~~~~~~~~ V \hCodeOutput, \hCodeOutputOnly
-% \hCodeOutput{name}[dx][dy]:     code from name.src, output from name.zzz on slide 2
-% \hCodeOutputOnly{name}[dx][dy]: only the output from name.zzz on slide 2
+% \hCodeOutput{name}[dx][dy]:     code from name.src; on slide 2 the output from name.zzz
+% \hCodeOutputOnly{name}[dx][dy]: only the output from name.zzz, on slide 2
 % The output is centered at (dx cm, dy cm) from the center of the slide (default 2, 0).
 \NewDocumentCommand{\hCodeOutputOnly}{m O{2} O{0}}{%
 	{\tiny
@@ -217,14 +263,13 @@
 	{\tiny \lstinputlisting[style=mystyle, language=Java]{#1.src}}%
 	\hCodeOutputOnly{#1}[#2][#3]%
 }
-% ~~~~~~~~~~~~~~~~ A \hCodeOutput, \hCodeOutputOnly
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A HB Code Listings v2024-02-25
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A old code listings
 
 
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\newcommand{\hAbs}[1]{\ensuremath{\left\lvert \, #1 \, \right\rvert}} % |x|
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
+% ===================================================================== 12 Math
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V math
+\newcommand{\hAbs}[1]{\ensuremath{\left\lvert\, #1 \,\right\rvert}} % |x| with fitting bars (amsmath; beamer loads it)
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A math
 
 \endinput

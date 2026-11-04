@@ -1,5 +1,7 @@
 % !TEX spellcheck = en_US
 
+% v20261104T2350   tcolorbox loaded before \tcbuselibrary (it gave "Undefined control sequence" and
+%                  "Missing \begin{document}"); xparse removed; numbered, documented sections
 % v20261016T1749
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
@@ -61,56 +63,78 @@
 %  print in code and output; the lira and rupee signs are drawn (\hbLira, \hbRupee).
 %
 %  Colors can be changed after \usepackage{hblibCodeoutput} with \definecolor:
-%    codebg codeframe codekw codestr codecmt termbg termfg termframe
+%    codebg codeframe codekw codestr codecmt termbg termfg termframe termcmd
+%
+%  Contents of this file (in this order)
+%    1  Packages
+%    2  Inline code           \code, \hCodeJ, \hCodeB
+%    3  Colors
+%    4  listings styles       codestyle, outputstyle, terminalstyle, codesnippet, texsnippet
+%    5  Boxes                 tcolorbox styles codebox, outbox, overlaybox, missingbox
+%    6  Building blocks       \lstcode, \lstoutput, \lstterminal
+%    7  One slide             \lstcodedown, \lstcoderight
+%    8  Two slides            \lstcodedownstep, \lstcoderightstep, \lstcodeoverlaystep
+%    9  Helper                \slidegrid
+%
+%  Removed (compared with v20261016T1749)
+%    xparse     \NewDocumentCommand is part of LaTeX since 2020
+%  Fixed
+%    \tcbuselibrary was called before tcolorbox was loaded
 % =====================================================================
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{hblibCodeoutput}[2026/10/16 code and output from files for beamer]
-
-\RequirePackage{xparse} % \NewDocumentCommand on LaTeX older than 2020-10
-\RequirePackage{xcolor}
-\RequirePackage{listings}
-\RequirePackage{tcolorbox}
-\tcbuselibrary{listings,skins}
-\RequirePackage{tikz}
-\RequirePackage[absolute,overlay]{textpos}
+\ProvidesPackage{hblibCodeoutput}[2026/11/04 code and output from files for beamer]
 
 
 
-
-%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V code
-% inline code in the text (not in frame titles); the frame must be [fragile]
-%\newcommand{\hCode}[1]{\texttt{\color{gitred}#1}}   % \hCode is in hblibPresentation
-\newcommand{\code}[1]{%
-  \lstinline[language=Java,basicstyle=\ttfamily\small]{#1}%
-%  \lstinline[language=Java,basicstyle=\ttfamily\footnotesize]{#1}%
-}
-\newcommand{\hCodeJ}[1]{\lstinline[language=Java,basicstyle=\ttfamily\small]{#1}} % java
-\newcommand{\hCodeB}[1]{\lstinline[language=bash,basicstyle=\ttfamily\small]{#1}} % bash
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A code
-
-
-
+% ===================================================================== 1 Packages
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V packages
+\RequirePackage{xcolor}                    % colors
+\RequirePackage{listings}                  % code typesetting
+\RequirePackage{tcolorbox}                 % the boxes around code and output
+\tcbuselibrary{listings,skins}             % listings: \tcbinputlisting; skins: enhanced, shadows
+                                           % (a library can be used only after tcolorbox is loaded)
+\RequirePackage{tikz}                      % \hbLira, \hbRupee, \slidegrid
+\RequirePackage[absolute,overlay]{textpos} % \lstcodeoverlaystep, \slidegrid: place at (x,y) on the slide
 
 \@ifclassloaded{beamer}{}{%
   \PackageWarningNoLine{hblibCodeoutput}{This package is made for beamer.
     The *step and overlay macros need beamer's overlays}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A packages
 
-% ---------------------------------------------------------------------
-%  Colors
-% ---------------------------------------------------------------------
-\definecolor{codebg}{RGB}{248,248,248}
-\definecolor{codeframe}{RGB}{40,90,160}
-\definecolor{codekw}{RGB}{0,70,160}
-\definecolor{codestr}{RGB}{30,130,60}
-\definecolor{codecmt}{RGB}{120,120,120}
-\definecolor{termbg}{RGB}{35,38,45}
-\definecolor{termfg}{RGB}{225,230,235}
-\definecolor{termframe}{RGB}{70,75,85}
 
-% ---------------------------------------------------------------------
-%  listings styles
-% ---------------------------------------------------------------------
+
+
+
+
+% ===================================================================== 2 Inline code
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V inline code
+% syntax-colored inline code in the text (not in frame titles); the frame must be [fragile].
+% Plain colored code without listings: \hCode (hblibPresentation).
+\newcommand{\hCodeJ}[1]{\lstinline[language=Java,basicstyle=\ttfamily\small]{#1}} % Java: \hCodeJ{int n = a.length;}
+\newcommand{\hCodeB}[1]{\lstinline[language=bash,basicstyle=\ttfamily\small]{#1}} % bash: \hCodeB{ls -l}
+\newcommand{\code}[1]{\hCodeJ{#1}}                                                  % old name of \hCodeJ
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A inline code
+
+
+
+% ===================================================================== 3 Colors
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V colors
+\definecolor{codebg}{RGB}{248,248,248}     % code box: background
+\definecolor{codeframe}{RGB}{40,90,160}    % code box: frame and title bar
+\definecolor{codekw}{RGB}{0,70,160}        % keywords
+\definecolor{codestr}{RGB}{30,130,60}      % strings
+\definecolor{codecmt}{RGB}{120,120,120}    % comments and line numbers
+\definecolor{termbg}{RGB}{35,38,45}        % output box: background (dark, like a terminal)
+\definecolor{termfg}{RGB}{225,230,235}     % output box: text
+\definecolor{termframe}{RGB}{70,75,85}     % output box: frame and title bar
+\definecolor{termcmd}{RGB}{255,214,102}    % terminal: lines starting with "$ "
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A colors
+
+
+
+% ===================================================================== 4 listings styles
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V listings styles
 % Undo settings that other packages may have made globally with \lstset
 % (e.g. a light backgroundcolor, which hides the light text of the output box).
 % Both styles below start from this, so they look the same whatever is loaded.
@@ -165,7 +189,7 @@
   \draw (0.08,0.56) -- (0.54,0.56);
   \draw (0.16,0.70) .. controls (0.52,0.70) and (0.52,0.38) .. (0.12,0.38) -- (0.50,0.0);}}
 
-% common to code and output
+% common to code and output: typewriter, no extra letter spacing, long lines broken
 \lstdefinestyle{codeoutbase}{
   style=codeoutreset,
   style=utf8letters,
@@ -179,6 +203,7 @@
   belowskip=0pt
 }
 
+% program code: colored keywords, strings, comments; line numbers on the left
 \lstdefinestyle{codestyle}{
   style=codeoutbase,
   keywordstyle=\color{codekw}\bfseries,
@@ -190,6 +215,7 @@
   tabsize=4
 }
 
+% program output: no colors, no numbers
 \lstdefinestyle{outputstyle}{
   style=codeoutbase,
   language={},
@@ -207,7 +233,6 @@
 }
 
 % a terminal transcript: lines starting with "$ " are commands (highlighted)
-\definecolor{termcmd}{RGB}{255,214,102}
 \lstdefinestyle{terminalstyle}{
   style=outputstyle,
   morecomment=[f][\color{termcmd}\bfseries]{\$},
@@ -226,9 +251,16 @@
   belowskip=3pt
 }
 
-% ---------------------------------------------------------------------
-%  Boxes
-% ---------------------------------------------------------------------
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A listings styles
+
+
+
+% ===================================================================== 5 Boxes
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V boxes
+% codebox     light box, blue title bar with the file name and the language
+% outbox      dark box, "Output" (or "Terminal") and the file name in the title bar
+% overlaybox  an output box floating on the slide, with a shadow
+% missingbox  a red box shown instead of an error when a file does not exist (yet)
 \tcbset{
   codeoutboxbase/.style={enhanced, listing only, before skip=2pt,
     boxrule=0.6pt, arc=2pt, right=1mm, top=0.3mm, bottom=0.3mm,
@@ -254,9 +286,12 @@
     missing file: \codeout@path{#1}
   \end{tcolorbox}}
 
-% ---------------------------------------------------------------------
-%  Building blocks
-% ---------------------------------------------------------------------
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A boxes
+
+
+
+% ===================================================================== 6 Building blocks
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V building blocks
 % \lstcode[listings options]{code path}{Language}
 \NewDocumentCommand{\lstcode}{O{} m m}{%
   \IfFileExists{#2}{%
@@ -303,9 +338,12 @@
     \end{column}
   \end{columns}}
 
-% ---------------------------------------------------------------------
-%  One slide
-% ---------------------------------------------------------------------
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A building blocks
+
+
+
+% ===================================================================== 7 One slide
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V one slide
 % \lstcodedown[code opts][output opts]{code path}{Language}{output path}
 \NewDocumentCommand{\lstcodedown}{O{} O{} m m m}{%
   \codeout@down{1-}{#1}{#2}{#3}{#4}{#5}}
@@ -314,11 +352,15 @@
 \NewDocumentCommand{\lstcoderight}{O{0.56} O{} O{} m m m}{%
   \codeout@side{1-}{#1}{#2}{#3}{#4}{#5}{#6}}
 
-% ---------------------------------------------------------------------
-%  Two slides: code on slide 1, output added on slide 2
-%  (\uncover keeps the output's space reserved, so nothing jumps, and
-%   the rest of the frame is not delayed)
-% ---------------------------------------------------------------------
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A one slide
+
+
+
+% ===================================================================== 8 Two slides
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V two slides
+% Code on slide 1, output added on slide 2.
+% (\uncover keeps the output's space reserved, so nothing jumps, and
+%  the rest of the frame is not delayed)
 % \lstcodedownstep[code opts][output opts]{code path}{Language}{output path}
 \NewDocumentCommand{\lstcodedownstep}{O{} O{} m m m}{%
   \codeout@down{2-}{#1}{#2}{#3}{#4}{#5}}
@@ -340,10 +382,14 @@
       \codeout@output{overlaybox}{#2}{#7}%
     \end{textblock*}}}
 
-% ---------------------------------------------------------------------
-%  Helper: \slidegrid draws a labeled 1 cm grid over the whole slide
-%  (works for any slide size, e.g. 16 x 9 cm or 12.8 x 9.6 cm)
-% ---------------------------------------------------------------------
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A two slides
+
+
+
+% ===================================================================== 9 Helper
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V helper
+% \slidegrid draws a labeled 1 cm grid over the whole slide, to find x,y for
+% \lstcodeoverlaystep (works for any slide size, e.g. 16 x 9 cm or 12.8 x 9.6 cm)
 \newcommand{\slidegrid}{%
   \pgfmathsetmacro{\codeout@W}{\paperwidth/1cm}%
   \pgfmathsetmacro{\codeout@H}{\paperheight/1cm}%
@@ -358,5 +404,6 @@
       \foreach \j in {1,...,\codeout@ny} \node[gridlabel] at (0.3,\j) {\j};
     \end{tikzpicture}
   \end{textblock*}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A helper
 
 \endinput
