@@ -25,23 +25,20 @@
 
 \documentclass[aspectratio=169,10pt,compress]{beamer}
 
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
-	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
-	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
-	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
 
 
-% theme, i/N, fonts (T1, lmodern), booktabs, xcolor, array (L{width} columns), listings, tikz,
-% algorithm2e (\small captions, \Fn) and the color gitred come from the hblib libraries
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation}
+	\usepackage{../../hblib/hblibCodeoutput}
+	\usepackage{../../hblib/hblibDatastructures}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
 
 
 
 
 % +++++++++++++++++++++++++++++++++++++++ V specific
 \DontPrintSemicolon % in algorithms
-\newcommand{\win}{\textbf{Windows}}
-\newcommand{\mac}{\textbf{macOS}}
 % +++++++++++++++++++++++++++++++++++++++ A specific
 
 % ---------------------------------------------------------------------
@@ -98,9 +95,9 @@
       \begin{block}{\win}
         \small
         \begin{enumerate}
-          \item Open \texttt{eclipse.org/downloads}, choose \textbf{Download Packages}.
-          \item \emph{Eclipse IDE for Java Developers}, 2026-06, \textbf{Windows x86\_64}: a \texttt{.zip} file.
-          \item Unzip it, e.g.\ to \texttt{C:\textbackslash eclipse}; start \texttt{eclipse.exe}.
+          \item Open \hCode{eclipse.org/downloads}, choose \textbf{Download Packages}.
+          \item \emph{Eclipse IDE for Java Developers}, 2026-06, \textbf{Windows x86\_64}: a \hCode{.zip} file.
+          \item Unzip it, e.g.\ to \hCode{C:\textbackslash eclipse}; start \hCode{eclipse.exe}.
         \end{enumerate}
       \end{block}
     \end{column}
@@ -108,8 +105,8 @@
       \begin{block}{\mac}
         \small
         \begin{enumerate}
-          \item Open \texttt{eclipse.org/downloads}, choose \textbf{Download Packages}.
-          \item \emph{Eclipse IDE for Java Developers}, 2026-06, \textbf{AArch64} (Apple silicon) or \textbf{x86\_64} (Intel): a \texttt{.dmg}.
+          \item Open \hCode{eclipse.org/downloads}, choose \textbf{Download Packages}.
+          \item \emph{Eclipse IDE for Java Developers}, 2026-06, \textbf{AArch64} (Apple silicon) or \textbf{x86\_64} (Intel): a \hCode{.dmg}.
           \item Open it, drag \emph{Eclipse} to \emph{Applications}; start it from there.
         \end{enumerate}
       \end{block}
@@ -132,8 +129,8 @@
       \begin{itemize}\small
         \item Eclipse asks for a \textbf{workspace} folder: all your projects go there.
         \item Choose one folder for the course, e.g.\\
-              \win: \texttt{C:\textbackslash Users\textbackslash ayse\textbackslash cis111-workspace}\\
-              \mac: \texttt{/Users/ayse/cis111-workspace}
+              \win: \hCode{C:\textbackslash Users\textbackslash ayse\textbackslash cis111-workspace}\\
+              \mac: \hCode{/Users/ayse/cis111-workspace}
         \item Avoid cloud-synced folders (OneDrive, iCloud): they can lock files while Eclipse writes them.
         \item Close the \emph{Welcome} tab: the \textbf{Java perspective} appears.
       \end{itemize}
@@ -144,7 +141,9 @@
         or allow it in \menu{System Settings > Privacy \& Security}.
       \end{block}
       \begin{block}{Which version do I have?}
-        \small \menu{Help > About Eclipse IDE} (\win), \menu{Eclipse > About Eclipse IDE} (\mac).
+        \small 
+        \menu{Help > About Eclipse IDE} (\win), \\
+        \menu{Eclipse > About Eclipse IDE} (\mac).
       \end{block}
     \end{column}
   \end{columns}
@@ -161,10 +160,10 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{A Java project and a class}
   \begin{enumerate}\small
-    \item \menu{File > New > Java Project}. Project name: \texttt{Hello}. Keep the JRE suggested by Eclipse.
+    \item \menu{File > New > Java Project}. Project name: \hCode{Hello}. Keep the JRE suggested by Eclipse.
     \item \textbf{Uncheck} \emph{Create module-info.java file} (modules are for later; with it, some imports fail).
-    \item \textbf{Finish}. The Package Explorer shows \texttt{Hello} with \texttt{src} and \emph{JRE System Library}.
-    \item Right click \texttt{src}: \menu{New > Class}. Name: \texttt{Hello}; tick
+    \item \textbf{Finish}. The Package Explorer shows \hCode{Hello} with \hCode{src} and \emph{JRE System Library}.
+    \item Right click \hCode{src}: \menu{New > Class}. Name: \hCode{Hello}; tick
           \emph{public static void main(String[] args)}; \textbf{Finish}.
     \item Type the body, save with \keys{Ctrl+S} (\win) / \keys{\cmd+S} (\mac).
   \end{enumerate}
@@ -172,7 +171,7 @@
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}
       \begin{block}{Class names}
-        \small Start with a capital letter: \texttt{Hello}, \texttt{GradeCalculator}. The file is \texttt{Hello.java}.
+        \small Start with a capital letter: \hCode{Hello}, \hCode{GradeCalculator}. The file is \hCode{Hello.java}.
       \end{block}
     \end{column}
     \begin{column}{0.48\textwidth}
@@ -209,10 +208,10 @@
         \toprule
         \textbf{type, then \keys{Ctrl+Space}} & \textbf{you get} \\
         \midrule
-        \texttt{main}    & a \texttt{main} method \\
-        \texttt{sysout}  & \texttt{System.out.println();} \\
-        \texttt{for}     & a \texttt{for} loop over an array \\
-        \texttt{System.} & the members of \texttt{System} \\
+        \hCode{main}    & a \hCode{main} method \\
+        \hCode{sysout}  & \hCode{System.out.println();} \\
+        \hCode{for}     & a \hCode{for} loop over an array \\
+        \hCode{System.} & the members of \hCode{System} \\
         \bottomrule
       \end{tabular}
       \end{center}
@@ -282,9 +281,9 @@
     \end{column}
     \begin{column}{0.41\textwidth}
       \begin{itemize}\small
-        \item \menu{Run > Run Configurations\dots}, choose \texttt{Greet}, tab \textbf{Arguments}.
-        \item \emph{Program arguments}: \texttt{Ayşe Ali}. \textbf{Run}.
-        \item They arrive in \texttt{args}, split at spaces.
+        \item \menu{Run > Run Configurations\dots}, choose \hCode{Greet}, tab \textbf{Arguments}.
+        \item \emph{Program arguments}: \hCode{Ayşe Ali}. \textbf{Run}.
+        \item They arrive in \hCode{args}, split at spaces.
       \end{itemize}
       \uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Greet.txt}}
     \end{column}
@@ -319,7 +318,7 @@
           \item Fix the \textbf{first} error first: one mistake can cause several messages.
         \end{enumerate}
       \end{block}
-      \small The next slides show the messages of Eclipse's compiler, \texttt{ecj}, exactly as the Problems view lists them.
+      \small The next slides show the messages of Eclipse's compiler, \hCode{ecj}, exactly as the Problems view lists them.
     \end{column}
   \end{columns}
 \end{frame}
@@ -340,7 +339,7 @@
   \end{columns}
 
   \vspace{0.2em}
-  \small Eclipse tells you \textbf{what to insert}. The \texttt{\textasciicircum} points to where it is missing: the end of the line.
+  \small Eclipse tells you \textbf{what to insert}. The \hCode{\textasciicircum} points to where it is missing: the end of the line.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -359,7 +358,7 @@
   \end{columns}
 
   \vspace{0.2em}
-  \small A missing \texttt{import java.util.Scanner;}. Quick Fix offers \emph{Import `Scanner' (java.util)}; \keys{Ctrl+\shift+O} / \keys{\cmd+\shift+O} adds it, too.
+  \small A missing \hCode{import java.util.Scanner;}. Quick Fix offers \emph{Import `Scanner' (java.util)}; \keys{Ctrl+\shift+O} / \keys{\cmd+\shift+O} adds it, too.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -378,7 +377,7 @@
   \end{columns}
 
   \vspace{0.2em}
-  \small A \texttt{public class} must be in a file with the same name. Quick Fix: rename the class or the file
+  \small A \hCode{public class} must be in a file with the same name. Quick Fix: rename the class or the file
   (better: \menu{Refactor > Rename}).
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
@@ -398,7 +397,7 @@
   \end{columns}
 
   \vspace{0.2em}
-  \small Java is case sensitive: \texttt{String}, \texttt{System} start with capitals. Content Assist (\keys{Ctrl+Space}) never makes this mistake.
+  \small Java is case sensitive: \hCode{String}, \hCode{System} start with capitals. Content Assist (\keys{Ctrl+Space}) never makes this mistake.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -417,7 +416,7 @@
   \end{columns}
 
   \vspace{0.2em}
-  \small If \texttt{a == b}, no \texttt{return} is reached. Every path through the method must return a value.
+  \small If \hCode{a == b}, no \hCode{return} is reached. Every path through the method must return a value.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -436,7 +435,7 @@
   \end{columns}
 
   \vspace{0.2em}
-  \small A local variable has no default value: write \texttt{int sum = 0;}. (Fields get default values, locals do not.)
+  \small A local variable has no default value: write \hCode{int sum = 0;}. (Fields get default values, locals do not.)
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -455,7 +454,7 @@
   \end{columns}
 
   \vspace{0.2em}
-  \small One \texttt{\}} is missing; the error is reported at the \textbf{end}, far from the real place.
+  \small One \hCode{\}} is missing; the error is reported at the \textbf{end}, far from the real place.
   \keys{Ctrl+\shift+F} / \keys{\cmd+\shift+F} (Format) shows the wrong indentation.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
@@ -475,7 +474,7 @@
   \end{columns}
 
   \vspace{0.2em}
-  \small A variable that is never used is often a bug: here the value \texttt{pi} was meant to be used, but \texttt{Math.PI} is.
+  \small A variable that is never used is often a bug: here the value \hCode{pi} was meant to be used, but \hCode{Math.PI} is.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -491,7 +490,7 @@
   \lstcoderightstep[0.5][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/GradeBad.java}{Java}{codeoutput/GradeBad.txt}
 
   \vspace{0.2em}
-  \small Read the \textbf{stack trace} from the top: the exception, then \texttt{Grade\-Bad.java:9}: line 9 of our file.
+  \small Read the \textbf{stack trace} from the top: the exception, then \hCode{Grade\-Bad.java:9}: line 9 of our file.
   In the Console the file names are links: a click opens the line.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
@@ -504,7 +503,7 @@
   \lstcoderightstep[0.56][basicstyle=\ttfamily\tiny][basicstyle=\ttfamily\tiny]{codeoutput/GreetNone.java}{Java}{codeoutput/GreetNone.txt}
 
   \vspace{0.2em}
-  \small Started with \menu{Run As > Java Application}, without program arguments: \texttt{args} is empty, \texttt{args[0]} does not exist.
+  \small Started with \menu{Run As > Java Application}, without program arguments: \hCode{args} is empty, \hCode{args[0]} does not exist.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -518,9 +517,9 @@
     \toprule
     \textbf{message}                                          & \textbf{what to do} \\
     \midrule
-    \emph{Selection does not contain a main type}             & the class you right-clicked has no \texttt{main}; open the class that has one \\
+    \emph{Selection does not contain a main type}             & the class you right-clicked has no \hCode{main}; open the class that has one \\
     \emph{Errors exist in required project(s). Proceed with launch?} & answer \textbf{Cancel} and fix the Problems view first \\
-    \emph{The import \dots{} is not accessible} / \emph{\dots{} is not visible} & the project has a \texttt{module-info.java}; delete it in small exercises \\
+    \emph{The import \dots{} is not accessible} / \emph{\dots{} is not visible} & the project has a \hCode{module-info.java}; delete it in small exercises \\
     The Console is empty or gone                              & \menu{Window > Show View > Console} \\
     Views moved or closed                                     & \menu{Window > Perspective > Reset Perspective} \\
     \bottomrule
@@ -573,11 +572,11 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Exercises}
   \begin{enumerate}\small
-    \item Install Eclipse 2026-06, create the workspace \texttt{cis111-workspace} and a project \texttt{Week1}.
-    \item Write \texttt{Hello} using only templates (\texttt{main}, \texttt{sysout}) and Content Assist.
+    \item Install Eclipse 2026-06, create the workspace \hCode{cis111-workspace} and a project \hCode{Week1}.
+    \item Write \hCode{Hello} using only templates (\hCode{main}, \hCode{sysout}) and Content Assist.
     \item Make each compile error of section 4 happen on purpose, then fix it with Quick Fix where Eclipse offers one.
-    \item Run \texttt{Grade}, type a word instead of a number and find the line of the error from the stack trace.
-    \item Give \texttt{Greet} three names as program arguments, then a name with a space: \texttt{"Ayşe Nur"}. What changes?
+    \item Run \hCode{Grade}, type a word instead of a number and find the line of the error from the stack trace.
+    \item Give \hCode{Greet} three names as program arguments, then a name with a space: \hCode{"Ayşe Nur"}. What changes?
   \end{enumerate}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm

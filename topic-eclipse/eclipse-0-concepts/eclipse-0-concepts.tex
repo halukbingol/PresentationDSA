@@ -25,11 +25,14 @@
 
 \documentclass[aspectratio=169,10pt,compress]{beamer}
 
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
-	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
-	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
-	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation}
+	\usepackage{../../hblib/hblibCodeoutput}
+	\usepackage{../../hblib/hblibDatastructures}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
 
 
 % theme, i/N, fonts (T1, lmodern), booktabs, xcolor, array (L{width} columns), listings, tikz,
@@ -40,8 +43,6 @@
 
 % +++++++++++++++++++++++++++++++++++++++ V specific
 \DontPrintSemicolon % in algorithms
-\newcommand{\win}{\textbf{Windows}}
-\newcommand{\mac}{\textbf{macOS}}
 % +++++++++++++++++++++++++++++++++++++++ A specific
 
 % ---------------------------------------------------------------------
@@ -85,7 +86,9 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\hSection[IDE]{What Is an IDE?}
+\hSection[IDE]
+	{What Is an IDE?}
+	{Integrated Development Environment (IDE)}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 
@@ -96,10 +99,10 @@
   \begin{center}
   \begin{tikzpicture}[tool/.style={draw, thick, rounded corners, minimum width=2.2cm, minimum height=0.8cm, font=\small, align=center}]
     \node[tool, fill=yellow!20] (e) at (0,0)   {editor};
-    \node[tool, fill=green!15]  (c) at (3,0)   {compiler\\ \scriptsize\texttt{javac}};
-    \node[tool, fill=blue!12]   (r) at (6,0)   {runner\\ \scriptsize\texttt{java}};
-    \node[tool, fill=red!12]    (g) at (9,0)   {debugger\\ \scriptsize\texttt{jdb}};
-    \node[tool, fill=gray!15]   (v) at (12,0)  {version control\\ \scriptsize\texttt{git}};
+    \node[tool, fill=green!15]  (c) at (3,0)   {compiler\\ \scriptsize\hCode{javac}};
+    \node[tool, fill=blue!12]   (r) at (6,0)   {runner\\ \scriptsize\hCode{java}};
+    \node[tool, fill=red!12]    (g) at (9,0)   {debugger\\ \scriptsize\hCode{jdb}};
+    \node[tool, fill=gray!15]   (v) at (12,0)  {version control\\ \scriptsize\hCode{git}};
     \draw[very thick, rounded corners, colorGo] (-1.4,-0.8) rectangle (13.4,0.8);
     \node[font=\small\bfseries, colorGo] at (6,-1.15) {Integrated Development Environment: one window, one project model};
   \end{tikzpicture}
@@ -123,7 +126,7 @@
         \item Started at IBM; open source since \textbf{2001}; run by the \textbf{Eclipse Foundation} since 2004.
         \item Free, license EPL-2.0; Windows, macOS, Linux.
         \item A new release every \textbf{three months}, named by date: \textbf{2026-06} is Eclipse 4.40.
-        \item Download from \texttt{eclipse.org}: the \emph{Eclipse IDE for Java Developers} package
+        \item Download from \hCode{eclipse.org}: the \emph{Eclipse IDE for Java Developers} package
               includes the Java runtime that Eclipse itself needs.
       \end{itemize}
     \end{column}
@@ -136,7 +139,7 @@
         Eclipse                 & JDT (Java Development Tools) \\
         VS Code                 & extension based on Eclipse JDT \\
         IntelliJ IDEA           & JetBrains, own engine \\
-        NetBeans                & Apache, uses \texttt{javac} \\
+        NetBeans                & Apache, uses \hCode{javac} \\
         \bottomrule
       \end{tabular}
       \end{center}
@@ -165,11 +168,11 @@
     \end{column}
     \begin{column}{0.46\textwidth}
       \begin{itemize}\small
-        \item \textbf{Workspace}: a folder that holds your projects and Eclipse's settings (\texttt{.metadata}).
+        \item \textbf{Workspace}: a folder that holds your projects and Eclipse's settings (\hCode{.metadata}).
               Eclipse asks for it at start.
         \item \textbf{Project}: one program or library; Eclipse builds, runs and shares it as a unit.
-        \item Java project: sources in \texttt{src/}, compiled classes in \texttt{bin/}.
-        \item The project's settings are plain files: \texttt{.project}, \texttt{.classpath}, \texttt{.settings/}.
+        \item Java project: sources in \hCode{src/}, compiled classes in \hCode{bin/}.
+        \item The project's settings are plain files: \hCode{.project}, \hCode{.classpath}, \hCode{.settings/}.
       \end{itemize}
     \end{column}
   \end{columns}
@@ -194,7 +197,7 @@
     \end{column}
     \begin{column}{0.36\textwidth}
       \begin{itemize}\small
-        \item \textbf{Editors} (middle): files you change; a \texttt{*} in the tab means unsaved.
+        \item \textbf{Editors} (middle): files you change; a \hCode{*} in the tab means unsaved.
         \item \textbf{Views} (around): information about the project: files, problems, output.
         \item A \textbf{perspective} is an arrangement of views for one job.
       \end{itemize}
@@ -240,13 +243,13 @@
   \begin{tikzpicture}[st/.style={draw, thick, rounded corners, minimum width=2.3cm, minimum height=0.9cm, align=center, font=\small}]
     \node[st, fill=yellow!20] (s) at (0,0)    {you save\\ \scriptsize\keys{Ctrl+S} / \keys{\cmd+S}};
     \node[st, fill=green!15]  (c) at (3.8,0)  {ecj compiles\\ \scriptsize changed files};
-    \node[st, fill=blue!12]   (b) at (7.6,0)  {\texttt{bin/*.class}\\ \scriptsize updated};
+    \node[st, fill=blue!12]   (b) at (7.6,0)  {\hCode{bin/*.class}\\ \scriptsize updated};
     \node[st, fill=red!12]    (p) at (11.4,0) {markers\\ \scriptsize Problems view};
     \draw[-latex, thick] (s) -- (c);  \draw[-latex, thick] (c) -- (b);  \draw[-latex, thick] (c.south) |- ++(0,-0.6) -| (p.south);
   \end{tikzpicture}
   \end{center}
   \begin{itemize}\small
-    \item Eclipse has its \textbf{own Java compiler}, \texttt{ecj}, not \texttt{javac}. It compiles \textbf{on every save}
+    \item Eclipse has its \textbf{own Java compiler}, \hCode{ecj}, not \hCode{javac}. It compiles \textbf{on every save}
           (\menu{Project > Build Automatically}).
     \item Errors and warnings become \textbf{markers}: red/yellow icons in the editor and lines in the \textbf{Problems} view.
     \item No separate ``compile'' step: when the Problems view is empty, the program is ready to run.
@@ -263,8 +266,8 @@
 
   \vspace{0.1em}
   \small
-  This is \texttt{ecj}, the compiler inside Eclipse, run in a terminal: the Problems view shows exactly these messages,
-  one per line, and the editor underlines the \texttt{\textasciicircum} positions.
+  This is \hCode{ecj}, the compiler inside Eclipse, run in a terminal: the Problems view shows exactly these messages,
+  one per line, and the editor underlines the \hCode{\textasciicircum} positions.
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -317,10 +320,10 @@
   \begin{columns}[T]
     \begin{column}{0.5\textwidth}
       \begin{itemize}\small
-        \item \menu{Run As > Java Application} (right click on a class with \texttt{main}) runs it; output and keyboard input
+        \item \menu{Run As > Java Application} (right click on a class with \hCode{main}) runs it; output and keyboard input
               go through the \textbf{Console} view.
         \item The first run creates a \textbf{launch configuration}: which class, which JRE,
-              \textbf{program arguments} (\texttt{args}), \textbf{VM arguments} (e.g.\ \texttt{-ea}).
+              \textbf{program arguments} (\hCode{args}), \textbf{VM arguments} (e.g.\ \hCode{-ea}).
         \item Edit them in \menu{Run > Run Configurations\dots}
       \end{itemize}
     \end{column}
@@ -358,7 +361,7 @@
         \item \textbf{Debug As > Java Application}: the program runs until it reaches a breakpoint, then
               Eclipse switches to the \textbf{Debug perspective}.
         \item \textbf{Variables} view: the current values; change them, too.
-        \item \textbf{Expressions} view: any expression, e.g.\ \texttt{sum / 3.0}.
+        \item \textbf{Expressions} view: any expression, e.g.\ \hCode{sum / 3.0}.
       \end{itemize}
     \end{column}
     \begin{column}{0.46\textwidth}
@@ -393,7 +396,7 @@
   \end{tikzpicture}
   \end{center}
   \begin{itemize}\small
-    \item \textbf{JDWP}, the Java Debug Wire Protocol, is a standard: Eclipse, IntelliJ, VS Code and the command-line \texttt{jdb} use it.
+    \item \textbf{JDWP}, the Java Debug Wire Protocol, is a standard: Eclipse, IntelliJ, VS Code and the command-line \hCode{jdb} use it.
     \item So you can debug a program running on another machine, too (\emph{remote debugging}).
     \item The class files need debug information (line numbers, variable names); Eclipse adds it by default.
   \end{itemize}
@@ -414,9 +417,9 @@
     \toprule
     \textbf{feature}  & \textbf{what it does}                                    & \win                 & \mac \\
     \midrule
-    Content Assist    & complete names; show methods after \texttt{.}             & \keys{Ctrl+Space}    & \keys{Ctrl+Space} \\
+    Content Assist    & complete names; show methods after \hCode{.}             & \keys{Ctrl+Space}    & \keys{Ctrl+Space} \\
     Quick Fix         & offer fixes for the error under the cursor                & \keys{Ctrl+1}        & \keys{\cmd+1} \\
-    Templates         & \texttt{sysout}, \texttt{main}, \texttt{for} + Content Assist & \keys{Ctrl+Space} & \keys{Ctrl+Space} \\
+    Templates         & \hCode{sysout}, \hCode{main}, \hCode{for} + Content Assist & \keys{Ctrl+Space} & \keys{Ctrl+Space} \\
     Format            & indent and space the code                                 & \keys{Ctrl+\shift+F} & \keys{\cmd+\shift+F} \\
     Organize Imports  & add missing, remove unused imports                        & \keys{Ctrl+\shift+O} & \keys{\cmd+\shift+O} \\
     Open Declaration  & jump to where a name is defined                           & \keys{F3}            & \keys{F3} \\
@@ -501,9 +504,9 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Big ideas}
   \begin{itemize}
-    \item A \textbf{workspace} holds \textbf{projects}; a Java project keeps sources in \texttt{src/}, classes in \texttt{bin/}.
+    \item A \textbf{workspace} holds \textbf{projects}; a Java project keeps sources in \hCode{src/}, classes in \hCode{bin/}.
     \item The \textbf{workbench} shows editors and views; a \textbf{perspective} arranges them for a job.
-    \item Eclipse compiles with its own compiler \texttt{ecj} \textbf{on every save}; problems appear as markers at once.
+    \item Eclipse compiles with its own compiler \hCode{ecj} \textbf{on every save}; problems appear as markers at once.
     \item \textbf{Launch configurations} remember how to run a program; the \textbf{debugger} stops it at breakpoints (JDWP).
     \item Content Assist, Quick Fix and Refactoring work because the IDE understands the code.
     \item Eclipse is a platform of plug-ins: JDT, m2e, Buildship, EGit and many more.
@@ -519,7 +522,7 @@
   \begin{enumerate}\small
     \item Why can Eclipse show an error before you run the program, but not a wrong result?
     \item What is the difference between a workspace and a project? Can two workspaces share a project folder?
-    \item Rename a method called \texttt{size} with search-and-replace and with \menu{Refactor > Rename}: what can go wrong with the first?
+    \item Rename a method called \hCode{size} with search-and-replace and with \menu{Refactor > Rename}: what can go wrong with the first?
     \item Why does a debugger need the line numbers and variable names inside the class files?
     \item Find three views that are not in the Java perspective and say what they show.
   \end{enumerate}
