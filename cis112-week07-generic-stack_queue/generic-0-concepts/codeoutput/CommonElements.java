@@ -11,7 +11,7 @@ public class CommonElements {
 		aSet.add(a[i]);
 	}
 
-        Set<Integer> common = new HashSet<>();
+	Set<Integer> common = new HashSet<>();
 
 	for (int i=0; i<b.length; i++) {
 		if (aSet.contains(b[i])) {

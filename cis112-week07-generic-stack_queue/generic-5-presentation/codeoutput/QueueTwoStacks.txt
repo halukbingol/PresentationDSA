@@ -1,0 +1,7 @@
+$ javac QueueTwoStacks.java
+$ java QueueTwoStacks
+A
+B
+C
+D
+true
