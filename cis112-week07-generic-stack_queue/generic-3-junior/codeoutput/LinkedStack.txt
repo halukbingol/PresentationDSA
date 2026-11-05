@@ -1,0 +1,6 @@
+$ javac LinkedStack.java
+$ java LinkedStack
+stack = [4, 3, 2, 1]
+pop   = 4
+pop   = 3
+stack = [2, 1]

@@ -1,0 +1,4 @@
+$ javac BenchStack.java
+$ java BenchStack
+ArrayDeque :  290 ms  (sum 12499997500000)
+LinkedStack: 1480 ms  (sum 12499997500000)

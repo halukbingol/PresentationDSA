@@ -1,0 +1,5 @@
+$ javac AbaDemo.java
+$ java AbaDemo
+plain CAS succeeds? true
+stamped CAS succeeds? false
+current stamp = 3

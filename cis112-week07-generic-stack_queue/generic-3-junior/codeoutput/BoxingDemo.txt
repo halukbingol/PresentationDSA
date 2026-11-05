@@ -1,0 +1,4 @@
+$ javac BoxingDemo.java
+$ java BoxingDemo
+primitive: 4 ms, sum = 499999500000
+boxed:     22 ms, sum = 499999500000

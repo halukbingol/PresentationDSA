@@ -1,0 +1,38 @@
+$ javap -p java.util.ArrayDeque
+Compiled from "ArrayDeque.java"
+public class java.util.ArrayDeque<E> extends java.util.AbstractCollection<E> implements java.util.Deque<E>, java.lang.Cloneable, java.io.Serializable {
+  private static final int MAX_ARRAY_SIZE;
+  transient java.lang.Object[] elements;
+  transient int head;
+  transient int tail;
+  public java.util.ArrayDeque();
+  public java.util.ArrayDeque(int);
+  public java.util.ArrayDeque(java.util.Collection<? extends E>);
+  public void addFirst(E);
+  public void addLast(E);
+  public boolean offerFirst(E);
+  public boolean offerLast(E);
+  public E removeFirst();
+  public E removeLast();
+  public E pollFirst();
+  public E pollLast();
+  public E getFirst();
+  public E getLast();
+  public E peekFirst();
+  public E peekLast();
+  public boolean removeFirstOccurrence(java.lang.Object);
+  public boolean removeLastOccurrence(java.lang.Object);
+  public boolean add(E);
+  public boolean offer(E);
+  public E remove();
+  public E poll();
+  public E element();
+  public E peek();
+  public void push(E);
+  public E pop();
+  public int size();
+  public boolean isEmpty();
+  public java.util.Iterator<E> iterator();
+  public java.util.Iterator<E> descendingIterator();
+  public java.lang.Object[] toArray();
+}
