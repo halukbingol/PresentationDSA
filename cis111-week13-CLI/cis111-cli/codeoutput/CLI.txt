@@ -1,0 +1,15 @@
+$ pwd
+/Users/.../src/cis111_week01
+$ ls
+0-config.txt  lab/
+$ ls lab
+CircleTwoV0.java     ShapesAllV0.java      ShapesAllV0.java
+cis111-week01.pdf    z-10-KidsCoding.html  MyFirstProgram.java
+$ cat lab/MyFirstProgram.java
+package cis111_week01.lab;
+public class MyFirstProgram {
+	public static void main(String[] args) {
+		System.out.println("hello world");
+	}
+}
+$

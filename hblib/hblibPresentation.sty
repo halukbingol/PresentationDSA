@@ -1,5 +1,7 @@
 % !TEX spellcheck = en_US
 
+% v20261105T1015   \hSection: old [line 1][line 2] arguments removed; use {line}
+% v20261105T1010   \hSection[short]{Long}{line under the title}; the old form \hSection[short]{Long}[line] still works
 % v20261104T2350   reordered into numbered, documented sections; inputenc, xparse, epstopdf removed;
 %                  \hCode allowed in section titles (PDF bookmarks); \cisOOO after \ProvidesPackage
 % v20261029T1800
@@ -13,7 +15,7 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{hblibPresentation}[2026/11/04 hb presentations (beamer) and handouts]
+\ProvidesPackage{hblibPresentation}[2026/11/05 hb presentations (beamer) and handouts]
 
 % =====================================================================
 %  hblibPresentation -- the base library of the slide decks
@@ -44,6 +46,8 @@
 %               (epstopdf-base, "update" is its default), so \epstopdfsetup{update} is not needed
 %    commented-out \hKeyboard and fancybox (use \keys from menukeys)
 %  Changed
+%    \hSection  \hSection[short]{Long}{a line under the title, smaller};
+%               the old [line 1][line 2] after {Long} are no longer accepted
 %    \hCode     can be used in \section and \hSection titles; the PDF bookmark gets the plain text
 %               (it gave "Token not allowed in a PDF string")
 % =====================================================================
@@ -142,21 +146,29 @@
 \newcommand{\hUrl}[1]{\textcolor{blue}{\scriptsize [#1]}}
 \newcommand{\hRemark}[1]{\textcolor{orange}{#1}}            % a side remark: \hRemark{macOS}: ...
 \newcommand{\hQuestion}[1]{\textcolor{orange}{\textbf{Q.} }#1} % Q. question to the audience
+
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+\newcommand{\hSkipSection}{\small ~\\(skip this section, read at home)}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A colors and emphasis
 
 
 
 % ===================================================================== 8 Separators
 %: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V separators
-% \hSection[short]{Long}[line 1][line 2]: \section plus a title frame
-%   \hSection[Basics]{Creating and using an array}[\small Create it, visit it with a loop]
-\NewDocumentCommand{\hSection}{O{#2} m O{} O{}}{%
+% \hSection[short]{Long}{line}: \section plus a title frame
+%   short   in the navigation bar and the outline (optional; default: Long)
+%   Long    the title on the frame, \Huge
+%   line    under the title, \Large (optional)
+%   \hSection[Basics]{Creating and using an array}{Create it, visit it with a loop}
+%   \hSection[End]{Summary}
+\NewDocumentCommand{\hSection}{O{#2} m g}{%
 	\section[#1]{#2}%
 	\begin{frame}
 		\begin{center}
-			\hRemark{\Huge #2}\\
-			#3
-			#4
+			\hRemark{\Huge #2}\par\vspace{0.5cm}
+			\IfValueT{#3}{\vspace{0.6em}{\hRemark{\Large #3}}\\}%
 		\end{center}
 	\end{frame}%
 }

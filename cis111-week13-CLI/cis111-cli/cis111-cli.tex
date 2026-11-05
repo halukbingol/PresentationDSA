@@ -34,9 +34,6 @@
 
 
 
-\newcommand{\win}{\textbf{Windows}}
-\newcommand{\mac}{\textbf{macOS}}
-%
 \usetikzlibrary{fit, shapes.geometric}
 \tikzset{
   file/.style={draw, thick, rounded corners=2pt, fill=blue!7, font=\ttfamily\small,
@@ -55,7 +52,7 @@
 }
 
 \subtitle{
-	\cisOOO-week09
+	\cisOOO-week13
 }
 
 \author[Bingol]{
@@ -103,7 +100,38 @@
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\hSection[Picture]{The Big Picture}{}{}
+\hSection[Picture]
+	{The Big Picture}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[CLI]
+	{What is CLI?}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\begin{frame}[t]\frametitle{What is CLI?}
+	\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/CLI.txt}
+	\small
+	\begin{itemize}
+
+		\item 
+		\hCode{pwd} print working directory
+
+		\item 
+		\hCode{ls} list files in the working directory
+
+		\item 
+		\hCode{cat} print the content of the file
+		
+	\end{itemize}
+\end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 
@@ -156,7 +184,7 @@
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{The whole pipeline in six commands}
-  \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Pipeline.txt}
+	\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Pipeline.txt}
 
   \vspace{0.1em}
   \small
@@ -258,12 +286,18 @@
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
+
+
+
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\hSection[Getting]{Getting a JDK}{}{}
+\hSection[x-Getting]
+	{Getting a JDK}
+	{\hSkipSection}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[Distributions]{Distributions}
+\subsection[Distributions]
+	{Distributions}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 
@@ -386,12 +420,18 @@
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
+
+
+
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\hSection[Shell]{How the Shell Finds the Tools}{}{}
+\hSection[Shell]
+	{How the Shell Finds the Tools}
+	{\hSkipSection}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\subsection[PATH]{The PATH variable}
+\subsection[PATH]
+	{The PATH variable}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 
@@ -459,7 +499,8 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\hSection[Compiling]{Compiling and Running}{}{}
+\hSection[Compiling]
+	{Compiling and Running}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
@@ -589,8 +630,11 @@ java Hello.java       # compile + run
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
+
+
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\hSection[Packaging]{Packaging}{}{}
+\hSection[Packaging]
+	{Packaging}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
@@ -718,8 +762,12 @@ module edu.yeditepe.app {
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
+
+
+
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
-\hSection[Summary]{Summary}{}{}
+\hSection[Summary]
+	{Summary}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
