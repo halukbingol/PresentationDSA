@@ -1,0 +1,3 @@
+$ javac BoxingNPE.java
+$ java BoxingNPE
+NPE: Cannot invoke "java.lang.Integer.intValue()" because "a" is null

@@ -1,0 +1,786 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Generic Stack and Queue -- Junior Level
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/.
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation}
+	\usepackage{../../hblib/hblibCodeoutput}
+	\usepackage{../../hblib/hblibDatastructures}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+\lstset{columns=fixed}
+
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetKwProg{Fn}{function}{}{end}
+\SetKw{KwError}{error}
+
+% ---------------------------------------------------------------------
+\title{Set, Stack and Queue}
+\subtitle{Junior Level: Choosing the Right Container}
+\author[Bingol]{Ruhan Alpaydin}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-4}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={5-8}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Ready]{From Building to Choosing}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{From building to choosing}
+  \begin{itemize}
+    \item Freshman: \hCode{new ArrayDeque<>()}, done.
+    \item Sophomore: build \hCode{ArrayStack<T>}, \hCode{ArrayQueue<T>}, \hCode{ArraySet<T>}.
+    \item Junior: \hRemark{which one}, when, and \emph{why}.
+  \end{itemize}
+  \begin{block}{This deck answers three questions}
+    \small
+    \begin{itemize}
+      \item \textbf{Array or linked?} Different costs, different caches.
+      \item \textbf{Primitive or boxed?} \hCode{int} vs \hCode{Integer}, in a stack or in a queue.
+      \item \textbf{Array or heap?} FIFO queue vs \hCode{PriorityQueue}.
+    \end{itemize}
+  \end{block}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Three backing stores}
+  \begin{center}\small
+  \begin{tabular}{L{0.20\textwidth}L{0.22\textwidth}L{0.24\textwidth}L{0.24\textwidth}}
+    \toprule
+    \textbf{Store}  & \textbf{What you pay} & \textbf{What you save} & \textbf{When it wins} \\
+    \midrule
+    Fixed array     & overflow possible      & nothing to allocate    & small, bounded \\
+    Circular array (growing) & copies at $1,2,4,\dots$ & one array, one reference & \textbf{almost always} \\
+    Linked list     & one object per element & no copies, no wrap      & splice, iterate, unknown size \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.4em}
+  \small
+  The JDK ships both. \hCode{ArrayDeque} is a growing circular array;
+  \hCode{LinkedList} is a doubly linked list. Neither is ``best'':
+  each wins on a different workload.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{When each wins}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Array wins}
+        \small
+        \begin{itemize}
+          \item push / pop / enqueue / dequeue only
+          \item \textbf{sequential} iteration
+          \item many small elements
+          \item the CPU cache can help
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Linked list wins}
+        \small
+        \begin{itemize}
+          \item insert or remove in the \textbf{middle} (iterator)
+          \item no reallocation ever
+          \item \hCode{null} is allowed (unlike \hCode{ArrayDeque})
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vspace{0.6em}
+  \small
+  For a stack or a queue, the array usually wins.
+  The rest of this deck shows \emph{why}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Linked]{Linked Backing}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{LinkedStack<T>}: structure}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=10, firstnumber=3]{codeoutput/LinkedStack.java}{Java}
+  \begin{itemize}\small
+    \item A node has the item and a reference to the \emph{next} node.
+    \item \hCode{top} is the most recently pushed node, not an index.
+    \item No array, no wrap, no capacity. \hRemark{One} object per element.
+    \item Memory cost: the item plus a reference (usually $4$ or $8$ bytes).
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{LinkedStack<T>}: push and pop}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=12, lastline=23, firstnumber=12]{codeoutput/LinkedStack.java}{Java}
+  \begin{itemize}\small
+    \item \hCode{push}: build a new node pointing at the old \hCode{top}, then advance \hCode{top}.
+    \item \hCode{pop}: read \hCode{top.item}, advance \hCode{top}, decrement \hCode{size}.
+    \item No \emph{loitering} here: \hCode{top} moves and the old node becomes
+          unreachable, so the GC handles it.
+    \item \hRemark{Constant work in the worst case}: no copy, ever.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{LinkedQueue<T>}: enqueue and dequeue}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=13, lastline=27, firstnumber=13]{codeoutput/LinkedQueue.java}{Java}
+  \begin{itemize}\small
+    \item \hCode{enqueue}: append at \hCode{tail}; if empty, both \hCode{head} and
+          \hCode{tail} become the new node.
+    \item \hCode{dequeue}: advance \hCode{head}; if it becomes \hCode{null},
+          reset \hCode{tail} too.
+    \item Forgetting the \hCode{tail = null} on the last dequeue leaves a
+          \emph{dangling} tail: the queue looks empty but the next enqueue
+          chains from a stale node.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Boxing]{Boxing and Bytes}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Boxing: \texttt{int} vs \texttt{Integer}}
+  \begin{block}{You cannot put an \texttt{int} in a \texttt{Stack<Integer>}}
+    \small
+    Generics work only with \textbf{reference types}, so every
+    \hCode{push(1)} creates an \hCode{Integer} object (autoboxing)
+    and every \hCode{pop()} reads it back (unboxing).
+  \end{block}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Cheap}
+        \small \hCode{-128..127} come from a cached pool:
+        no allocation for small values.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Expensive}
+        \small Otherwise, one \hCode{Integer} object per push: more bytes,
+        more GC pressure, worse locality.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Boxing: measured}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/BoxingDemo.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/BoxingDemo.txt}
+      \small
+      One million elements, one run on this machine.
+      The boxed array is \hRemark{several times} slower to fill and sum.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Bytes per element}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/BytesPerElement.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/BytesPerElement.txt}
+      \small
+      Rule of thumb: \hCode{Integer} on a 64-bit JVM is
+      about \hRemark{16--20 bytes}, versus $4$ bytes for \hCode{int}.
+      That is why \hCode{ArrayList<Integer>} of a million elements
+      is much bigger than \hCode{int[]}.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cache locality}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/CacheLocality.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/CacheLocality.txt}
+      \small
+      Arrays keep elements \textbf{next to each other} in memory.
+      A linked list hops from one heap object to another:
+      the CPU cache is useless because each hop is a different line.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Bench]{Benchmark and Potential}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Benchmark: \texttt{ArrayDeque} vs \texttt{LinkedStack}}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/BenchStack.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/BenchStack.txt}
+      \small
+      Five million pushes and pops, one run on this machine.
+      \hRemark{Always measure}: JIT warm-up, GC, and CPU
+      change the numbers between runs.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The same numbers, side by side}
+  \begin{center}\small
+  \begin{tabular}{@{}lrr@{}}
+    \toprule
+    & \hCode{ArrayDeque<Integer>} & \hCode{LinkedStack<Integer>} \\
+    \midrule
+    pushes + pops & $5{\cdot}10^6$          & $5{\cdot}10^6$ \\
+    wall time (one run) & $\sim 290$\,ms   & $\sim 1480$\,ms \\
+    allocations   & grows about $24$ times  & $5{\cdot}10^6$ nodes \\
+    GC pressure   & very low                & high \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.4em}
+  \small
+  \emph{One run on this machine.} The ratio $\sim 5\times$ is typical; the
+  absolute numbers depend on the JDK, the GC, and the CPU.
+  \hRemark{The constant factor of a linked structure is large},
+  because each push is an allocation and each pop lets the GC work.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Growth copies: what a push really costs}
+  A \hCode{ArrayStack<T>} that starts with capacity $1$ and doubles when full:
+  \begin{center}\small
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    \textbf{Size before push} & \textbf{Cost} & \textbf{Why} \\
+    \midrule
+    $0, 1, 2, 4, 8, \dots, 2^k$ & copy $2^k$ elements & array is full \\
+    anything else               & write one element   & spare slot present \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.3em}
+  \small
+  Over $n$ pushes, total copies:
+  \[
+    1 + 2 + 4 + \dots + 2^{k} = 2^{k+1} - 1 < 2n .
+  \]
+  So \hRemark{each push is $O(1)$ amortized}, even though the
+  \emph{one} that copies costs $O(n)$.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The potential method, in one page}
+  Attach a \textbf{potential} $\Phi$ to the data structure. The
+  \emph{amortized} cost of operation $i$ is
+  \[
+    \hat{c}_i = c_i + \Phi(D_i) - \Phi(D_{i-1}),
+  \]
+  so the sum of $\hat{c}_i$ over any sequence bounds the real cost.
+  \vspace{0.4em}
+  \begin{block}{For \texttt{ArrayStack} with doubling}
+    \small
+    Let $\Phi = 2 \cdot \text{size} - \text{capacity}$ (never negative if
+    capacity is at least twice the size, which doubling guarantees).
+    \begin{itemize}
+      \item Push without copy: $c=1$, $\Delta\Phi=2$, so $\hat{c}=3$.
+      \item Push with copy of $k$ elements: $c = 1+k$, $\Delta\Phi = 2 - k$,
+            so $\hat{c} = 3$.
+    \end{itemize}
+    \hRemark{Every push has amortized cost at most 3}, independent of $n$.
+  \end{block}
+  \vspace{0.2em}
+  \small
+  A \hCode{LinkedStack} does not need this argument: its push and pop are
+  $O(1)$ in the \emph{worst} case, since there is no copy to perform.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Apps]{The Queue in Real Systems}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Breadth-first search is a queue}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Bfs.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Bfs.txt}
+      \small
+      Every cell is enqueued once. The queue is the \textbf{frontier}:
+      all cells at distance $d$ are processed before any cell at $d+1$.
+      The first time the target is dequeued, its distance is the shortest.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Depth-first search is a stack}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Dfs.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Dfs.txt}
+      \small
+      Same code, \hRemark{same frontier idea}, different container.
+      \hCode{push} instead of \hCode{offer}, \hCode{pop} instead of \hCode{poll}.
+      The BFS/DFS choice is a container choice.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Producer / consumer: a blocking queue}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/ProducerConsumer.java}{Java}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/ProducerConsumer.txt}
+      \small
+      \hCode{ArrayBlockingQueue} (capacity 4): \hCode{put} blocks when full,
+      \hCode{take} blocks when empty. Producer and consumer work at different speeds;
+      the queue is the buffer between them.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A thread pool is a queue of jobs}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/ThreadPool.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/ThreadPool.txt}
+      \small
+      \hCode{newFixedThreadPool(2)} keeps two worker threads waiting on a
+      \hCode{BlockingQueue}. Each \hCode{submit} enqueues a job; the first
+      free worker dequeues it and runs it.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Choose]{Choosing the Container}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Bounded vs unbounded}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Bounded (fixed capacity)}
+        \small
+        \begin{itemize}
+          \item \hCode{ArrayBlockingQueue}
+          \item back-pressure: producer slows down
+          \item predictable memory
+          \item a full queue is a \emph{signal}, not a bug
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Unbounded (grows)}
+        \small
+        \begin{itemize}
+          \item \hCode{LinkedBlockingQueue}, \hCode{ArrayDeque}
+          \item no producer slowdown \dots
+          \item \dots but memory can explode under a burst
+          \item \hRemark{Hidden DoS}: one producer can starve the heap
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vspace{0.5em}
+  \small
+  Rule of thumb: \hRemark{prefer bounded} on the boundary between two
+  subsystems. Unbounded only when you can afford the peak.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{PriorityQueue} is a heap, not a FIFO queue}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/PriorityQueueDemo.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/PriorityQueueDemo.txt}
+      \small
+      Interface \hCode{Queue}, yes. But the element that leaves first is
+      the \textbf{smallest}, not the oldest. Real uses:
+      Dijkstra, schedulers, top-$k$.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Choosing the container: a decision tree}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Order is ``first in, first out''}
+        \small
+        \begin{itemize}
+          \item bounded? \hCode{ArrayBlockingQueue}
+          \item else \hCode{ArrayDeque}
+          \item splice in the middle? \hCode{LinkedList}
+        \end{itemize}
+      \end{block}
+      \begin{block}{Order is ``last in, first out''}
+        \small
+        \hCode{ArrayDeque} with \hCode{push/pop}.
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Order is ``priority''}
+        \small
+        \hCode{PriorityQueue}, or \hCode{PriorityBlockingQueue} for threads.
+      \end{block}
+      \begin{block}{Order is ``no duplicates''}
+        \small
+        \begin{itemize}
+          \item unordered: \hCode{HashSet}
+          \item insertion order: \hCode{LinkedHashSet}
+          \item sorted: \hCode{TreeSet}
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Which Java class, in one table}
+  \begin{center}\footnotesize
+  \begin{tabular}{@{}lL{0.18\textwidth}L{0.24\textwidth}L{0.28\textwidth}@{}}
+    \toprule
+    \textbf{Interface} & \textbf{Default} & \textbf{Alternatives} & \textbf{Pick it when} \\
+    \midrule
+    \hCode{Set<E>}   & \hCode{HashSet}        & \hCode{LinkedHashSet}, \hCode{TreeSet} & membership tests \\
+    \hCode{Deque<E>} & \hCode{ArrayDeque}     & \hCode{LinkedList}                    & stack or FIFO queue \\
+    \hCode{Queue<E>} & \hCode{ArrayDeque}     & \hCode{LinkedList}, \hCode{ArrayBlockingQueue} & unbounded or bounded queue \\
+    \hCode{BlockingQueue<E>} & \hCode{LinkedBlockingQueue} & \hCode{ArrayBlockingQueue} & threads on both ends \\
+    \hCode{Queue<E>} (priority) & \hCode{PriorityQueue} & \hCode{PriorityBlockingQueue} & smallest (or comparator) first \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.3em}
+  \small
+  \hRemark{Reach for the interface} (\hCode{Set}, \hCode{Queue}, \hCode{Deque}),
+  not the class, so you can swap one for another without editing the
+  caller.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Pitfalls]{Three Pitfalls You Will Meet}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Pitfall 1: boxing NPE}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/BoxingNPE.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/BoxingNPE.txt}
+      \small
+      \hCode{a} is \hCode{null}; \hCode{a + 1} unboxes it and throws.
+      Autoboxing hides the reference, so the NPE is not obvious at the call.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Pitfall 2: mutable elements in a Set}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/NullInSet.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/NullInSet.txt}
+      \small
+      \hCode{HashSet} stores objects by \hCode{hashCode}; a mutable element
+      whose hash changes after insertion is \emph{lost}.
+      Use immutable elements as keys.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Pitfall 3: tests and measurements}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{JUnit: \emph{Not run here}}
+        \small
+        \begin{lstlisting}[language=Java, basicstyle=\ttfamily\tiny, frame=single]
+@Test
+void popReducesSize() {
+    ArrayStack<Integer> s = new ArrayStack<>(4);
+    s.push(1); s.push(2);
+    assertEquals(2, s.size());
+    assertEquals(2, s.pop());
+    assertEquals(1, s.size());
+}
+        \end{lstlisting}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{JMH: \emph{Not run here}}
+        \small
+        \begin{lstlisting}[language=Java, basicstyle=\ttfamily\tiny, frame=single]
+@Benchmark
+public int arrayDequePushPop() {
+    Deque<Integer> s = new ArrayDeque<>();
+    for (int i = 0; i < 1000; i++) s.push(i);
+    int sum = 0;
+    while (!s.isEmpty()) sum += s.pop();
+    return sum;
+}
+        \end{lstlisting}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vspace{0.3em}
+  \small
+  \hRemark{Both tools fight warm-up}. JUnit warms up the JIT by doing
+  many small runs; JMH is designed for benchmarks that are
+  \emph{repeatable}. Use JUnit for \emph{correctness},
+  JMH for \emph{speed}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Wrap]{Wrap-up}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Big ideas}
+  \begin{itemize}
+    \item For a stack or a queue, the \textbf{circular array} is
+          usually faster, smaller, and more cache friendly than a
+          linked list.
+    \item A \hCode{LinkedStack} is $O(1)$ in the worst case; an
+          \hCode{ArrayStack} is $O(1)$ \emph{amortized}, and every
+          growth copies the live elements.
+    \item The potential method is the formal justification of ``amortized''.
+    \item Boxing costs memory ($\sim 16$--$20$ bytes per \hCode{Integer})
+          and cache locality; keep primitive arrays for hot loops.
+    \item \hRemark{BFS uses a queue, DFS uses a stack}: the same
+          frontier idea, two containers.
+    \item Producer/consumer and thread pools are \hCode{BlockingQueue}
+          workloads; prefer \textbf{bounded} on a boundary.
+    \item \hCode{PriorityQueue} is a \hCode{Queue} by interface, but the
+          order is by key, not by arrival.
+    \item Reach for the \emph{interface}, not the class.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Check yourself}
+  \begin{enumerate}\small
+    \item Why is \hCode{push} on an \hCode{ArrayStack} amortized
+          $O(1)$ and not worst-case $O(1)$?
+    \item Where does the potential $\Phi = 2 \cdot \text{size} - \text{capacity}$
+          come from, and why is it never negative?
+    \item Why is an \hCode{Integer} about $16$--$20$ bytes and an
+          \hCode{int} exactly $4$?
+    \item Why is a linked traversal slower than an array traversal
+          even when both are $O(n)$?
+    \item When would you choose \hCode{LinkedList} over \hCode{ArrayDeque}?
+    \item Why is \hCode{PriorityQueue} not FIFO?
+    \item What is the difference between a bounded and an unbounded queue,
+          in terms of failure?
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+\end{document}
