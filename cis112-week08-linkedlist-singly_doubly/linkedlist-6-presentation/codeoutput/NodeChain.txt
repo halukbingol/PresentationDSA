@@ -1,0 +1,5 @@
+$ javac NodeChain.java
+$ java NodeChain
+10
+20
+30

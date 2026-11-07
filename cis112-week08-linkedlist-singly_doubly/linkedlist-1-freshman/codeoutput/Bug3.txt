@@ -1,0 +1,4 @@
+$ javac Bug3.java
+$ java Bug3
+first.item = 2
+first.next == first? true

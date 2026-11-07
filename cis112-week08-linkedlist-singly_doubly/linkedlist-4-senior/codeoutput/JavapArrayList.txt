@@ -1,0 +1,20 @@
+Compiled from "ArrayList.java"
+public class java.util.ArrayList<E> extends java.util.AbstractList<E> implements java.util.List<E>, java.util.RandomAccess, java.lang.Cloneable, java.io.Serializable {
+  private static final long serialVersionUID;
+  private static final int DEFAULT_CAPACITY;
+  private static final java.lang.Object[] EMPTY_ELEMENTDATA;
+  private static final java.lang.Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA;
+  transient java.lang.Object[] elementData;
+  private int size;
+  public java.util.ArrayList(int);
+  public java.util.ArrayList();
+  public java.util.ArrayList(java.util.Collection<? extends E>);
+  public void trimToSize();
+  public void ensureCapacity(int);
+  private java.lang.Object[] grow(int);
+  private java.lang.Object[] grow();
+  public int size();
+  public boolean isEmpty();
+  public boolean contains(java.lang.Object);
+  public int indexOf(java.lang.Object);
+  int indexOfRange(java.lang.Object, int, int);

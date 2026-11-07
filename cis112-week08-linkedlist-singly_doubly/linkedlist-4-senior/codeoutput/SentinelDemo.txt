@@ -1,0 +1,3 @@
+$ javac SentinelDemo.java
+$ java SentinelDemo
+3 2 1 

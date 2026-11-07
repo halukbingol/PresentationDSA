@@ -1,0 +1,372 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Linked Lists -- Examples
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java   a program
+%     codeoutput/<Name>.txt    what it printed
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation}
+	\usepackage{../../hblib/hblibCodeoutput}
+	\usepackage{../../hblib/hblibDatastructures}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+% long Java lines: wrap instead of running off the frame
+\lstset{columns=fixed, breaklines=true, breakatwhitespace=false}
+
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetKwProg{Fn}{function}{}{end}
+\SetKw{KwError}{error}
+
+% ---------------------------------------------------------------------
+\title{Linked Lists}
+\subtitle{Real Programs}
+\author[Bingol]{Ruhan Alpaydin}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-2}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={3-4}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[PPTX]{The Two Exercises from previous years}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Stutter: duplicate every element}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Stutter.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Stutter.txt}
+      \small
+      \begin{itemize}
+        \item Build a new list with each element twice, then swap it in.
+        \item \hCode{[1, 2, 3, 4]} $\to$ \hCode{[1, 1, 2, 2, 3, 3, 4, 4]}.
+        \item One pass, $O(n)$ time, $O(n)$ extra space.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Mirror: append the reverse of itself}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Mirror.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Mirror.txt}
+      \small
+      \begin{itemize}
+        \item Copy the list, reverse the copy, append it.
+        \item \hCode{[1, 2, 3, 4]} $\to$ \hCode{[1, 2, 3, 4, 4, 3, 2, 1]}.
+        \item Symmetric input is a palindrome; the deque version needs no copy.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Classic]{Classic Problems}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reverse in place}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/ReverseList.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/ReverseList.txt}
+      \small
+      \begin{itemize}
+        \item Three pointers, one pass: \hCode{prev}, \hCode{cur}, \hCode{next}.
+        \item Redirect each \hCode{next} backwards, then advance.
+        \item $O(n)$ time, $O(1)$ space, no new nodes.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Palindrome check}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Palindrome.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Palindrome.txt}
+      \small
+      \begin{itemize}
+        \item Two indices, one from each end, meet in the middle.
+        \item \hCode{r a c e c a r} $\to$ \hCode{true};
+              \hCode{a b c} $\to$ \hCode{false}.
+        \item On a linked list without \hCode{get(i)}, the same idea
+              needs a stack or a recursion.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Josephus problem}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Josephus.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Josephus.txt}
+      \small
+      \begin{itemize}
+        \item $n$ people in a circle, every $k$-th is removed.
+        \item For $n = 7$, $k = 3$, the survivor is $4$.
+        \item A circular list is the natural model; the array version
+              is $O(n^2)$, the linked version $O(nk)$.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{LRU cache with a doubly linked list}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/LruCache.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/LruCache.txt}
+      \small
+      \begin{itemize}
+        \item Every access moves the entry to the front (most recent).
+        \item A \hCode{put} past the capacity evicts the tail
+              (least recent).
+        \item The JDK ships this as \hCode{LinkedHashMap} with
+              \hCode{accessOrder=true} and a \hCode{removeEldestEntry} override.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Table]{All in One Table}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{All the examples in one table}
+  \begin{center}\footnotesize
+  \begin{tabular}{@{}L{0.14\textwidth}L{0.34\textwidth}L{0.20\textwidth}L{0.18\textwidth}@{}}
+    \toprule
+    \textbf{Problem} & \textbf{Technique} & \textbf{Time} & \textbf{Space} \\
+    \midrule
+    Stutter     & rebuild with each element twice           & $O(n)$     & $O(n)$ \\
+    Mirror      & copy + reverse + append                    & $O(n)$     & $O(n)$ \\
+    ReverseList & three pointers, reverse in place           & $O(n)$     & $O(1)$ \\
+    Palindrome  & two indices from the ends                  & $O(n)$     & $O(1)$ \\
+    Josephus    & circular list, remove every $k$-th         & $O(nk)$    & $O(n)$ \\
+    LruCache    & doubly linked + map, move on access        & $O(1)$     & $O(c)$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.4em}
+  \small
+  \hRemark{The two that need no extra memory} are ReverseList and
+  Palindrome — both use only a couple of pointers. Every other example
+  trades space for simplicity.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Practice}
+  \begin{enumerate}\small
+    \item Rewrite \hCode{Stutter} so it uses a single node-level
+          insertion loop. Does the complexity change?
+    \item Rewrite \hCode{Mirror} without copying the list. Which
+          extra data structure do you need?
+    \item Extend \hCode{ReverseList} to reverse a sub-range
+          \hCode{[lo, hi)}.
+    \item Extend \hCode{Palindrome} to work on a singly linked list
+          without \hCode{get(i)} — first with a stack, then with
+          the slow/fast trick from the junior deck.
+    \item Extend \hCode{Josephus} to report the \emph{order} of
+          removal, not just the survivor.
+    \item Implement \hCode{LruCache} from scratch with a
+          \hCode{HashMap<K, Node>} and a doubly linked list, no
+          \hCode{LinkedHashMap}.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Wrap]{Wrap-up}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Big ideas}
+  \begin{itemize}
+    \item Every example in this deck is a \textbf{node operation}:
+          redirect \hCode{next}, \hCode{prev}, or both.
+    \item \hRemark{No element is ever moved}; only the links change.
+          That is why every operation is $O(1)$ per node touched.
+    \item A \textbf{two-pointer walk} (\hCode{prev} + \hCode{cur})
+          is the standard way to delete or reverse inside a list.
+    \item A \textbf{slow/fast walk} finds the middle or detects a cycle
+          in $O(1)$ extra space.
+    \item When the problem mentions \emph{recently used} or
+          \emph{both ends}, reach for a doubly linked list.
+    \item The JDK's \hCode{LinkedList} is a doubly linked list:
+          every technique here works on it unchanged.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Check yourself}
+  \begin{enumerate}\small
+    \item Why does \hCode{ReverseList} need three pointers, not two?
+    \item What does \hCode{Stutter} cost in memory if the input list
+          has $n$ elements?
+    \item Why is the linked-list \hCode{Palindrome} more expensive than
+          the array version?
+    \item In \hCode{Josephus}, why is the complexity $O(nk)$ rather than $O(n)$?
+    \item What data structure does the JDK's \hCode{LinkedHashMap}
+          actually use under the hood?
+    \item Name the two examples in this deck that use $O(1)$ extra memory.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{References}
+  \begin{enumerate}\small
+    \item Robert Lafore, \emph{Data Structures \& Algorithms in Java},
+          2nd ed., Sams, 2002. (Chapter 5: linked lists.)
+    \item Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest,
+          Clifford Stein, \emph{Introduction to Algorithms},
+          4th ed., MIT Press, 2022. (Chapter 10: linked lists.)
+    \item Robert Sedgewick and Kevin Wayne, \emph{Algorithms},
+          4th ed., Addison-Wesley, 2011. (Section 1.3.)
+    \item Flavius Josephus (as retold in Knuth, \emph{The Art of
+          Computer Programming}, Vol.~1, Section 1.3.2).
+    \item Oracle, \emph{Java SE 21 API Specification}:
+          \hCode{java.util.LinkedList},
+          \hCode{java.util.LinkedHashMap}.
+    \item Oracle, \emph{The Java Tutorials: Trail: Collections}.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \begin{center}
+    \vspace{4cm}
+    \hRemark{\Huge Questions?}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+\end{document}

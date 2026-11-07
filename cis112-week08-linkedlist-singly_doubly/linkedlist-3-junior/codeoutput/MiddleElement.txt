@@ -1,0 +1,3 @@
+$ javac MiddleElement.java
+$ java MiddleElement
+middle: 3

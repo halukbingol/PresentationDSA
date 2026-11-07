@@ -1,0 +1,7 @@
+$ javac JavaContainers.java
+$ java JavaContainers
+list:       [a, b, c]
+getFirst(): a
+getLast():  c
+peel:       c b a 
+list:       []

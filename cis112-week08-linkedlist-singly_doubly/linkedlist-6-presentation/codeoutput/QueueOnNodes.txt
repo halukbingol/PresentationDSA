@@ -1,0 +1,5 @@
+$ javac QueueOnNodes.java
+$ java QueueOnNodes
+1
+2
+3
