@@ -1,9 +1,14 @@
 import java.util.LinkedList;
 
 public class Palindrome {
+
     static boolean isPalindrome(LinkedList<Character> list) {
+
         int i = 0, j = list.size() - 1;
-        while (i < j) if (!list.get(i++).equals(list.get(j--))) return false;
+
+        while (i < j) 
+		if (!list.get(i++).equals(list.get(j--))) 
+			return false;
         return true;
     }
     public static void main(String[] args) {
