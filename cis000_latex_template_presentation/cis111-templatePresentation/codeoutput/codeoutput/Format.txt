@@ -1,0 +1,6 @@
+Ayşe has 6 credits
+GPA: 3.46
+GPA: 3,46
+[Ayşe    ][    Ayşe]
+[    6][00006]
+rate: 87.3%

@@ -1,5 +1,7 @@
 % !TEX spellcheck = en_US
 
+% v20261107T1215   \hCodeOutputOnly: the output listing in a \parbox inside the TikZ node; listings 1.11
+%                  (TeX Live 2026) gave "Giving up on this path"; width \hCodeOutputWidth
 % v20261105T1015   \hSection: old [line 1][line 2] arguments removed; use {line}
 % v20261105T1010   \hSection[short]{Long}{line under the title}; the old form \hSection[short]{Long}[line] still works
 % v20261104T2350   reordered into numbered, documented sections; inputenc, xparse, epstopdf removed;
@@ -15,7 +17,7 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{hblibPresentation}[2026/11/05 hb presentations (beamer) and handouts]
+\ProvidesPackage{hblibPresentation}[2026/11/07 hb presentations (beamer) and handouts]
 
 % =====================================================================
 %  hblibPresentation -- the base library of the slide decks
@@ -45,6 +47,8 @@
 %    epstopdf   graphicx converts .eps to .pdf by itself, and only when the .eps is newer
 %               (epstopdf-base, "update" is its default), so \epstopdfsetup{update} is not needed
 %    commented-out \hKeyboard and fancybox (use \keys from menukeys)
+%  Fixed (v20261107T1215)
+%    \hCodeOutputOnly, \hCodeOutput   "Package tikz Error: Giving up on this path" with listings 1.11
 %  Changed
 %    \hSection  \hSection[short]{Long}{a line under the title, smaller};
 %               the old [line 1][line 2] after {Long} are no longer accepted
@@ -259,13 +263,17 @@
 % \hCodeOutput{name}[dx][dy]:     code from name.src; on slide 2 the output from name.zzz
 % \hCodeOutputOnly{name}[dx][dy]: only the output from name.zzz, on slide 2
 % The output is centered at (dx cm, dy cm) from the center of the slide (default 2, 0).
+% Its box is \hCodeOutputWidth wide; a deck may change it: \renewcommand{\hCodeOutputWidth}{6cm}
+% (the listing is in a \parbox: listings 1.11 cannot be set directly in a TikZ node)
+\newcommand{\hCodeOutputWidth}{0.42\textwidth}
 \NewDocumentCommand{\hCodeOutputOnly}{m O{2} O{0}}{%
 	{\tiny
 	\begin{tikzpicture}[remember picture,overlay]
-		\node[anchor=center] at ($(current page.center) + (#2 cm, #3 cm)$) {%
+		\node[anchor=center, inner sep=0pt] at ($(current page.center) + (#2 cm, #3 cm)$) {%
 			\only<2->{%
-				\lstinputlisting[style=mystyle, backgroundcolor=\color{coloroutput},
-					language={}, frame=trbl, frameround=tttt]{#1.zzz}%
+				\parbox{\hCodeOutputWidth}{%
+					\lstinputlisting[style=mystyle, backgroundcolor=\color{coloroutput},
+						language={}, frame=trbl, frameround=tttt]{#1.zzz}}%
 			}%
 		};
 	\end{tikzpicture}%

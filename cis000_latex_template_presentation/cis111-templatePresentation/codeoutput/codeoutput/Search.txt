@@ -1,0 +1,8 @@
+4
+10
+19
+-1
+true
+true
+true
+'s' occurs 6 times

@@ -1,0 +1,2 @@
+65536 keys, distinct hashes: 1
+colliding 110 ms, distinct 6 ms

@@ -1,0 +1,385 @@
+% !TEX spellcheck = en_US
+
+% v20261109T0615   a plain lstlisting uses codestyle in articles and slides alike (\lstset moved here
+%                  from hblibArticle; hblibPresentation no longer has the old mystyle)
+% v20261108T0900   split: hblibCommon is now the core shared by articles (hblibArticle) and slide decks
+%                  (hblibPresentation); the article material moved to hblibArticle. Loaded alone in an
+%                  article it loads hblibArticle, so documents with \usepackage{hblibCommon} still compile.
+%                  Code styles and \hbLira, \hbRupee from hblibCodeoutput; emphasis, course names and
+%                  column type L from hblibPresentation.
+% v20261107T1230   visible links: a red box around internal links (contents, \ref), a blue box around URLs
+% v20261106T0815   table of contents one size smaller; code boxes show their language: \hCodeTag
+% v20261106T0730   table of contents: subsubsections listed too; indented
+% v20261106T0720   table of contents: sections in bold
+% v20261105T2320   section numbering that switches: \hNumbersLetter{G}, \hNumbersArabic
+% v20261104T2310   renamed hblibMerged to hblibCommon
+% v20261104T1900   hblibSimple and hblibExam merged into one library
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works
+% and remixes based on it only for non-commercial purposes.
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+\NeedsTeXFormat{LaTeX2e}[2020/10/01]   % \CurrentFilePath, \NewDocumentCommand
+\ifdefined\hbC@loaded \endinput \fi    % loaded already (perhaps by another path, e.g. hblibCommon and ../lib/hblibCommon)
+\def\hbC@loaded{}
+\ProvidesPackage{hblibCommon}[2026/11/09 hb libraries: the core shared by articles and slide decks]
+
+% =====================================================================
+%  hblibCommon -- the core of the hb libraries
+%  ---------------------------------------------------------------------
+%  Do not load it yourself; it is loaded by
+%    hblibArticle        articles, exams, lab descriptions (article, amsart)
+%    hblibPresentation   slide decks (beamer)
+%  Optional, on top of either:
+%    hblibDatastructures   arrays, stacks, queues, trees, commit graphs (TikZ)
+%    hblibCodeoutput       code and output read from files, in boxes
+%  All libraries in one folder: each loads the others from its own folder,
+%  e.g. \usepackage{../../hblib/hblibArticle} finds ../../hblib/hblibCommon.
+%
+%  Old documents: \usepackage{hblibCommon} in an article still works; it loads hblibArticle
+%  (and says so in the log).
+%
+%  Contents of this file (in this order)
+%    1  Fonts                 T1, Latin Modern
+%    2  Packages              math, graphics, colors, TikZ, tables, trees, dates, menus, listings, algorithms
+%    3  Algorithms            algorithm2e set-up
+%    4  Colors and emphasis   \hDefined, \hEmph, \hRemark, \hQuestion, ...; \cisOOO, \win, \mac
+%    5  Code                  styles; javacode, bashcode, \javafile, \bashfile, \hCodeJ, \hCodeB, \hCodeTag
+%    6  Inline code, sizes    \hCode, \hFontLarger
+%    7  Time stamps           \hbTimeStamp, \hbTimeStampDraft
+%    8  References            \reffig, \refsec, \reftbl, ...
+%    9  Text                  \hQuote, \hIdea, \hFootnote, \hAbs, \YULearn
+%   10  Tables                column type L{width}
+%   11  Old documents         \usepackage{hblibCommon} in an article loads hblibArticle
+%
+%  Not here: page, lists, titles, contents, footer, hyperlinks (hblibArticle);
+%  theme, \hSection (hblibPresentation); the old name "mystyle" (hblibArticle).
+% =====================================================================
+
+\edef\hbC@dir{\CurrentFilePath}\edef\hbC@dir{\ifx\hbC@dir\@empty\else\hbC@dir/\fi} % this file's folder
+
+% option amsheadings: kept for old documents (\usepackage[amsheadings]{hblibCommon}); passed to hblibArticle
+\DeclareOption{amsheadings}{\def\hb@amsheadingsopt{}}
+\DeclareOption*{\PackageWarning{hblibCommon}{Unknown option `\CurrentOption' ignored}}
+\ProcessOptions\relax
+
+
+
+%: ===================================================================== 1 Fonts
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V fonts
+\RequirePackage[T1]{fontenc}      % T1 fonts: < > | and accented (Turkish) letters print correctly
+\RequirePackage{lmodern}          % Latin Modern: scalable, sharp in PDF viewers
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A fonts
+
+
+
+%: ===================================================================== 2 Packages
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V packages
+\RequirePackage{amsmath}          % math: align, \text, \lvert ... \rvert (\hAbs); amsart and beamer load it too
+\RequirePackage{amssymb}          % math symbols: \mathbb, \checkmark, \square, ...
+\RequirePackage{graphicx}         % \includegraphics (pdf, png, jpg; eps is converted automatically)
+\RequirePackage{xcolor}           % colors: \color, \textcolor, \definecolor
+\RequirePackage{tikz}             % drawings (also loads pgffor: \foreach)
+\usetikzlibrary{positioning,      % right=1cm of a
+	matrix,                         % \matrix of nodes
+	arrows.meta,                    % -{Latex[length=2mm]}
+	calc}                           % ($(a) + (1,0)$)
+\RequirePackage{calc}             % \setlength{\x}{\widthof{text} + 2pt}
+\RequirePackage{array}            % tables: \newcolumntype, >{...} before a column
+\RequirePackage{booktabs}         % tables: \toprule, \midrule, \bottomrule
+\RequirePackage[edges]{forest}    % trees, also folder trees: for tree={folder, grow'=0}
+\RequirePackage[style=iso,showzone=false]{datetime2} % \today as yyyy-mm-dd; \DTMcurrenttime
+\RequirePackage{menukeys}         % \menu{File > Save As}, \keys{Ctrl + C}, \keys{\shift + \cmd + B}
+                                  % (it defines \cmd, the Mac command key: use \hCode for commands)
+\RequirePackage{listings}         % program code (section 5)
+\@ifpackageloaded{algorithm2e}{}{% pseudo code (section 3); a document may load it first with its own options
+	\RequirePackage[ruled,vlined,linesnumbered]{algorithm2e}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A packages
+
+
+
+%: ===================================================================== 3 Algorithms
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V algorithms
+% Ruled, vertical lines, line numbers, captions in \small.
+%   \begin{algorithm}[H]
+%     \caption{isBalanced($s$)}
+%     \KwIn{a string $s$}  \KwOut{true or false}
+%     \ForEach{character $c$ of $s$}{ ... }
+%     \Return{$S$ is empty}\;
+%   \end{algorithm}
+% \Fn{name}{body}: "function name ... end"; \Input, \Output: aligned input/output lines.
+% A document may add its own keywords (\SetKwFunction, \SetKw) and \DontPrintSemicolon.
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetKwProg{Fn}{function}{}{end}
+\SetKwInOut{Input}{Input}
+\SetKwInOut{Output}{Output}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A algorithms
+
+
+
+%: ===================================================================== 4 Colors and emphasis
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V colors and emphasis
+\definecolor{colorHEmph}{rgb}{.95, .69, .27}  % \hEmph: orange-yellow
+\definecolor{colorStop}{rgb}{.99, .27, .27}   % red: stop, wrong
+\definecolor{colorGo}{rgb}{.27, .69, .95}     % blue: go, right
+\definecolor{colorIndex}{rgb}{.27, .69, .95}  % indices (hblibDatastructures sets its own, purple)
+\providecolor{gitred}{RGB}{240,80,50}         % a document may \definecolor{gitred} again
+
+\newcommand{\hDefined}[1]{\textcolor{red}{#1}}              % a term defined here: \hDefined{reference}
+\newcommand{\hEmph}[1]{\textcolor{colorHEmph}{#1}}          % an important word
+\newcommand{\hColorBox}{\hEmph}                             % old name of \hEmph
+\newcommand{\hIndex}[1]{\textcolor{colorIndex}{${}^{#1}$}}  % a small raised index
+\newcommand{\hReference}[1]{\textcolor{blue}{\scriptsize [#1]}}
+\newcommand{\hCite}[1]{\textcolor{blue}{\tiny [#1]}}
+\newcommand{\hUrl}[1]{\textcolor{blue}{\scriptsize [#1]}}
+\newcommand{\hRemark}[1]{\textcolor{orange}{#1}}            % a side remark: \hRemark{macOS}: ...
+\newcommand{\hQuestion}[1]{\textcolor{orange}{\textbf{Q.} }#1} % Q. question to the reader
+
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+\newcommand{\cisOOO}{\textsc{cis111}}  % course names: \cisOOO\ -- Week 7 lecture
+\newcommand{\cisOOT}{\textsc{cis112}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A colors and emphasis
+
+
+
+%: ===================================================================== 5 Code
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V code: colors and styles
+%   typed code    \begin{javacode} ... \end{javacode}     \begin{bashcode} ... \end{bashcode}
+%                 \begin{javacode}[numbers=left] ...       (any listings option in [ ])
+%                 \begin{lstlisting}[style=codesnippet, language=Java] ... \end{lstlisting}
+%   from a file   \javafile[firstline=3, lastline=9, firstnumber=3]{src/Stack.java}     \bashfile{run.sh}
+%   inline        \hCodeJ{int n = s.length();}  \hCodeB{ls -l}  (\code = \hCodeJ)
+%   language tag  javacode, bashcode, \javafile, \bashfile show "java" or "bash" in the upper right
+%                 corner, as in markdown. Any other listing: \hCodeTag{python} right before it.
+%                 \hCodeTagsfalse: no tags from there on.
+%   in boxes, with code and output read from files: hblibCodeoutput
+% Colors can be changed with \definecolor after loading.
+\definecolor{codebg}{RGB}{248,248,248}     % code box: background
+\definecolor{codeframe}{RGB}{40,90,160}    % code box: frame and title bar (hblibCodeoutput)
+\definecolor{codekw}{RGB}{0,70,160}        % keywords
+\definecolor{codestr}{RGB}{30,130,60}      % strings
+\definecolor{codecmt}{RGB}{120,120,120}    % comments, line numbers, language tags
+\definecolor{termbg}{RGB}{35,38,45}        % output and terminal: background (dark)
+\definecolor{termfg}{RGB}{225,230,235}     % output and terminal: text
+\definecolor{termframe}{RGB}{70,75,85}     % output and terminal: frame
+\definecolor{termcmd}{RGB}{255,214,102}    % terminal: lines starting with "$ "
+
+% the Turkish lira sign (U+20BA) and the Indian rupee sign (U+20B9), drawn, since few TeX fonts
+% have them; they scale with the font. In text: \hbLira, \hbRupee; in listings: ₺, ₹
+\providecommand{\hbLira}{\tikz[baseline=0pt, x=1em, y=1em, line width=0.07em, line cap=round]{%
+  \useasboundingbox (0,0) rectangle (0.62,0.72);
+  \draw (0.22,0.70) -- (0.22,0.02) .. controls (0.48,0.02) and (0.58,0.18) .. (0.58,0.42);
+  \draw (0.06,0.30) -- (0.42,0.46);
+  \draw (0.06,0.14) -- (0.42,0.30);}}
+\providecommand{\hbRupee}{\tikz[baseline=0pt, x=1em, y=1em, line width=0.07em, line cap=round, line join=round]{%
+  \useasboundingbox (0,0) rectangle (0.62,0.72);
+  \draw (0.08,0.70) -- (0.54,0.70);
+  \draw (0.08,0.56) -- (0.54,0.56);
+  \draw (0.16,0.70) .. controls (0.52,0.70) and (0.52,0.38) .. (0.12,0.38) -- (0.50,0.0);}}
+
+% start from a clean state, whatever was set globally with \lstset (e.g. a background)
+\lstdefinestyle{codeoutreset}{
+  backgroundcolor={}, frame=none, frameround=ffff, captionpos=t,
+  showspaces=false, showtabs=false, breakatwhitespace=false, morekeywords={}
+}
+
+% Turkish and common Latin-1 letters, currency signs, quotes, dashes and no-break spaces
+% print in listings (also "mojibake", e.g. "AÄŸaÃ§" for a wrongly decoded "Ağaç")
+\lstdefinestyle{utf8letters}{
+  literate=
+    {ç}{{\c{c}}}1 {Ç}{{\c{C}}}1 {ğ}{{\u{g}}}1 {Ğ}{{\u{G}}}1
+    {ı}{{\i}}1    {İ}{{\.I}}1   {ö}{{\"o}}1   {Ö}{{\"O}}1
+    {ş}{{\c{s}}}1 {Ş}{{\c{S}}}1 {ü}{{\"u}}1   {Ü}{{\"U}}1
+    {é}{{\'e}}1   {è}{{\`e}}1   {ê}{{\^e}}1   {ë}{{\"e}}1
+    {á}{{\'a}}1   {à}{{\`a}}1   {â}{{\^a}}1   {ä}{{\"a}}1
+    {ã}{{\~a}}1   {å}{{\aa}}1   {í}{{\'i}}1   {î}{{\^i}}1
+    {ó}{{\'o}}1   {ô}{{\^o}}1   {ú}{{\'u}}1   {û}{{\^u}}1
+    {ñ}{{\~n}}1   {ß}{{\ss}}1   {ÿ}{{\"y}}1   {É}{{\'E}}1
+    {Á}{{\'A}}1   {À}{{\`A}}1   {Â}{{\^A}}1   {Ä}{{\"A}}1
+    {Ã}{{\~A}}1   {Å}{{\AA}}1   {Î}{{\^I}}1   {Ó}{{\'O}}1
+    {Û}{{\^U}}1   {Ÿ}{{\"Y}}1   {§}{{\S}}1
+    {ì}{{\`i}}1   {ò}{{\`o}}1   {ù}{{\`u}}1   {Ñ}{{\~N}}1
+    {ý}{{\'y}}1   {Ý}{{\'Y}}1   {þ}{{\th}}1   {Þ}{{\TH}}1   {ð}{{\dh}}1   {Ð}{{\DH}}1
+    {ï}{{\"i}}1   {Ï}{{\"I}}1   {ﬁ}{{fi}}1   {ﬂ}{{fl}}1   {œ}{{\oe}}1   {æ}{{\ae}}1   {ø}{{\o}}1   {Ø}{{\O}}1
+    {€}{{\texteuro}}1 {£}{{\pounds}}1 {¥}{{\textyen}}1 {₺}{{\hbLira}}1 {₹}{{\hbRupee}}1 {°}{{\textdegree}}1
+    {’}{{\textquoteright}}1 {‘}{{\textquoteleft}}1
+    {“}{{\textquotedblleft}}1 {”}{{\textquotedblright}}1
+    {«}{{\guillemetleft}}1 {»}{{\guillemetright}}1 {–}{{--}}1 {—}{{---}}1
+    { }{{\ }}1    % U+00A0 no-break space (e.g. "25 %" in German)
+    { }{{\,}}1    % U+202F narrow no-break space (e.g. "1 234" in French)
+}
+
+% common to code and output: typewriter, no extra letter spacing, long lines broken
+\lstdefinestyle{codeoutbase}{
+  style=codeoutreset, style=utf8letters,
+  basicstyle=\ttfamily\footnotesize, columns=fullflexible, keepspaces=true,
+  showstringspaces=false, upquote=true, breaklines=true,
+  aboveskip=0pt, belowskip=0pt
+}
+
+% program code: colored keywords, strings, comments; line numbers on the left
+\lstdefinestyle{codestyle}{
+  style=codeoutbase,
+  keywordstyle=\color{codekw}\bfseries, stringstyle=\color{codestr},
+  commentstyle=\color{codecmt}\itshape,
+  numbers=left, numberstyle=\tiny\color{codecmt}, numbersep=5pt, tabsize=4
+}
+
+% program output: no colors, no numbers
+\lstdefinestyle{outputstyle}{
+  style=codeoutbase, language={}, numbers=none, tabsize=8
+}
+
+% a terminal transcript: lines starting with "$ " are highlighted commands
+% (light text: use it on termbg, e.g. backgroundcolor=\color{termbg}, basicstyle=...\color{termfg})
+\lstdefinestyle{terminalstyle}{
+  style=outputstyle, morecomment=[f][\color{termcmd}\bfseries]{\$}, commentstyle={}
+}
+
+% short code typed in the .tex: framed, light background, no line numbers
+\lstdefinestyle{codesnippet}{
+  style=codestyle, basicstyle=\ttfamily\footnotesize, numbers=none,
+  frame=single, backgroundcolor=\color{codebg}, rulecolor=\color{gray!40},
+  xleftmargin=2pt, xrightmargin=2pt, aboveskip=4pt, belowskip=4pt
+}
+
+% LaTeX source typed in the .tex: \begin{lstlisting}[style=texsnippet]
+\lstdefinestyle{texsnippet}{
+  style=codeoutreset, style=utf8letters,
+  language={[LaTeX]TeX}, basicstyle=\ttfamily\scriptsize, columns=fullflexible, keepspaces=true,
+  breaklines=true, numbers=none,
+  frame=single, backgroundcolor=\color{codebg}, rulecolor=\color{gray!40}
+}
+
+% the default of every lstlisting, in articles and slides: \begin{lstlisting}[language=Java] ... looks like code
+\lstset{style=codestyle}
+
+% Java and bash, with a few newer keywords and commands
+\lstdefinestyle{javastyle}{style=codesnippet, language=Java,
+  morekeywords={var, record, sealed, permits, yield}}
+\lstdefinestyle{bashstyle}{style=codesnippet, language=bash,
+  morekeywords={cd, ls, mkdir, javac, java, git, mvn, unzip, tar, echo}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A code: colors and styles
+
+
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V code: language tag
+% \hCodeTag{text}: the next listing shows "text" small and gray at the right end of its first line.
+% The tag is drawn by listings at the start of the first printed line (hook EveryPar),
+% so it takes no space; a very long first line may run under it.
+\newif\ifhCodeTags \hCodeTagstrue            % \hCodeTagsfalse: no tags
+\newif\ifhb@tagpending
+\newcommand{\hb@tagtext}{}
+\newcommand{\hCodeTag}[1]{%
+	\ifhCodeTags \gdef\hb@tagtext{#1}\global\hb@tagpendingtrue \fi}
+\lst@AddToHook{EveryPar}{%
+	\ifhb@tagpending \global\hb@tagpendingfalse
+		\rlap{\hbox to \linewidth{\hfill\raisebox{0.15ex}{\tiny\sffamily\color{codecmt}\hb@tagtext}}}%
+	\fi}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A code: language tag
+
+
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V code: environments, files, inline
+% (in beamer: the frame must be [fragile])
+\lstnewenvironment{javacode}[1][]{\hCodeTag{java}\lstset{style=javastyle, #1}}{}   % typed Java
+\lstnewenvironment{bashcode}[1][]{\hCodeTag{bash}\lstset{style=bashstyle, #1}}{}   % typed bash
+
+\newcommand{\javafile}[2][]{\hCodeTag{java}\lstinputlisting[style=javastyle, numbers=left, #1]{#2}} % Java from a file
+\newcommand{\bashfile}[2][]{\hCodeTag{bash}\lstinputlisting[style=bashstyle, #1]{#2}}               % bash from a file
+
+% inline, syntax colored, typed as is; not in titles, captions or footnotes; no % or # inside
+\newcommand{\hCodeJ}[1]{\lstinline[style=codestyle, numbers=none, language=Java, basicstyle=\ttfamily\small]{#1}} % Java
+\newcommand{\hCodeB}[1]{\lstinline[style=codestyle, numbers=none, language=bash, basicstyle=\ttfamily\small]{#1}} % bash
+\newcommand{\code}[1]{\hCodeJ{#1}}                                                                                 % old name
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A code: environments, files, inline
+
+
+
+%: ===================================================================== 6 Inline code, sizes
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V inline code and font size
+% \hb@fontshift{N}{text}: text N pt larger (N < 0: smaller)
+% https://tex.stackexchange.com/questions/365024/decrease-font-size-by-one-point
+\newcommand{\hb@fontshift}[2]{%
+	\begingroup
+		\fontsize{\dimexpr\f@size pt+#1pt}{\f@baselineskip}\selectfont
+		#2%
+	\endgroup
+}
+\newcommand{\hFontLarger}[2]{\hb@fontshift{#1}{#2}}  % \hFontLarger{2}{text}: 2 pt larger
+\newcommand{\hbFontShift}[2]{\hb@fontshift{#1}{#2}}  % old name (hblibSimple)
+
+\providecolor{colorHCode}{RGB}{240,80,50}           % a document may \definecolor it again
+% \hCode{text}: plain inline code, colored, 2 pt smaller; escape \_ \{ \} as in text.
+% Works everywhere, also in titles; in a section title the PDF bookmark gets the plain text.
+\newcommand{\hb@code}[1]{\hb@fontshift{-2}{\texttt{\color{colorHCode}#1}}}
+\newcommand{\hCode}[1]{%
+	\ifdefined\texorpdfstring \texorpdfstring{\hb@code{#1}}{#1}\else \hb@code{#1}\fi}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A inline code and font size
+
+
+
+%: ===================================================================== 7 Time stamps
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V time stamps
+\newcommand{\hbTimeStamp}{v\today}                                              % v2026-11-08
+\newcommand{\hbTimeStampDraft}{{\color{red}--Draft-- v\today/\DTMcurrenttime}}  % with the time, red
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A time stamps
+
+
+
+%: ===================================================================== 8 References
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V references
+\newcommand{\reffig}[1]{Fig.~\ref{#1}}          % Fig. 3
+\newcommand{\refeq}[1]{Eq.~\ref{#1}}            % Eq. 2
+\newcommand{\reftbl}[1]{Table~\ref{#1}}         % Table 1
+\newcommand{\refsec}[1]{Sec.~\ref{#1}}          % Sec. 4
+\newcommand{\refcite}[1]{Ref.~\cite{#1}}        % Ref. [7]
+\newcommand{\refalg}[1]{Alg.~\ref{#1}}          % Alg. 1
+\newcommand{\reflst}[1]{List~\ref{#1}}          % List 2 (a code listing)
+\newcommand{\refthm}[1]{Theorem~\ref{#1}}       % Theorem 1
+\newcommand{\refthmA}[2]{\refthm{#1}(\ref{#2})} % Theorem 1(b)
+\newcommand{\reflem}[1]{Lemma~\ref{#1}}         % Lemma 2
+\newcommand{\refdef}[1]{Definition~\ref{#1}}    % Definition 3
+\newcommand{\refexmp}[1]{Example~\ref{#1}}      % Example 4
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A references
+
+
+
+%: ===================================================================== 9 Text
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V text
+\newcommand{\hQuote}[1]{{\small \textsf{``#1''}}}                       % a short quotation
+\newcommand{\hIdea}[1]{{\color{olive}{\scriptsize [{#1}]}}}             % a note to self, small, olive
+\newcommand{\hFootnote}[2]{\footnote{{\color{red} @#1 : }#2}}           % \hFootnote{who}{text}
+\newcommand{\hAbs}[1]{\ensuremath{\left\lvert\, #1 \,\right\rvert}}     % |x| with fitting bars
+\AtBeginDocument{\providecommand{\YULearn}{\textsc{YUL}earn}}           % the course web site
+                                       % (given at \begin{document}, so a document may define its own)
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A text
+
+
+
+%: ===================================================================== 10 Tables
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V tables
+% L{width}: a paragraph column, ragged right:  \begin{tabular}{@{}L{0.3\textwidth}L{0.6\textwidth}@{}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A tables
+
+
+
+%: ===================================================================== 11 Old documents
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V old documents
+% Before v20261108T0900 hblibCommon was the article library. If it is loaded by the document
+% itself (not by hblibArticle or hblibPresentation) and the class is not beamer, load hblibArticle.
+\ifdefined\hb@loadedbylib\else
+	\@ifclassloaded{beamer}{}{%
+		\PackageInfo{hblibCommon}{loaded by the document: loading hblibArticle too\MessageBreak
+			(for new documents write \string\usepackage{hblibArticle})}%
+		\AtEndOfPackage{\RequirePackage{\hbC@dir hblibArticle}}}
+\fi
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A old documents
+
+\endinput

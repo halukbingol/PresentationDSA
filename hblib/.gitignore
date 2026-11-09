@@ -9,6 +9,13 @@
 /forPrompt-2*.zip
 /hblibPresentation-20*.sty
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V generated
+/hblibCodeoutput-UserManual.pdf
+/hblibDatastructures-UserManual.pdf
+/hblibPresentation-UserManual.pdf
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A generated
+
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A specific
 
 

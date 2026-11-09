@@ -1,0 +1,4 @@
+kayak -> true
+Level -> true
+java -> false
+ey edip adanada pide ye -> true

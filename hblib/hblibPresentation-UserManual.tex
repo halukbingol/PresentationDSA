@@ -1,0 +1,708 @@
+% !TEX spellcheck = en_US
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works
+% and remixes based on it only for non-commercial purposes.
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% v20261107T1220   \hCodeOutputWidth shown (hblibPresentation v20261107T1215)
+% v20261107T1130   user manual of hblibPresentation.sty v20261105T1015
+%
+% hblibPresentation-UserManual.tex -- every feature of hblibPresentation.sty, as a deck:
+% the LaTeX source next to the result.
+% Put it next to hblibPresentation.sty and hblibDataStructures.bib, then
+%   pdflatex hblibPresentation-UserManual
+%   bibtex   hblibPresentation-UserManual
+%   pdflatex hblibPresentation-UserManual
+%   pdflatex hblibPresentation-UserManual
+% It writes Demo.src and Demo.zzz next to itself (see "Example files" below).
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{hblibPresentation}     % in a deck: \usepackage{../../hblib/hblibPresentation}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+% texcode: LaTeX source in a light box (this manual only)
+\lstdefinestyle{manualtex}{language={[LaTeX]TeX}, basicstyle=\ttfamily\scriptsize,
+	frame=single, rulecolor=\color{gray!40}, backgroundcolor=\color{black!3},
+	numbers=none, literate={}, columns=fullflexible, keepspaces=true, breaklines=true,
+	showstringspaces=false, texcsstyle=*\color{blue!55!black}, commentstyle=\color{gray}\itshape,
+	aboveskip=2pt, belowskip=2pt,
+	escapeinside={(*@}{@*)}}   % (*@\hbEndFrame@*) prints \end{frame}: a fragile frame ends at the first \end{frame} line
+\newcommand{\hbEndFrame}{\textcolor{blue!55!black}{\textbackslash end}\{frame\}}
+\lstnewenvironment{texcode}{\lstset{style=manualtex}}{}
+\DontPrintSemicolon % in algorithms
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V example files
+% real program and output for \hCodeOutput (Demo.java compiled and run with JDK 21)
+\begin{filecontents*}[overwrite]{Demo.src}
+public class Demo {
+    public static void main(String[] args) {
+        for (int i = 1; i <= 3; i++) {
+            System.out.println("i = " + i);
+        }
+    }
+}
+\end{filecontents*}
+\begin{filecontents*}[overwrite]{Demo.zzz}
+i = 1
+i = 2
+i = 3
+\end{filecontents*}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A example files
+
+
+
+
+\title[hblibPresentation: User Manual]{
+	hblibPresentation: User Manual
+}
+\subtitle{
+	for hblibPresentation.sty v20261105T1015
+}
+\author[Bingol]{Haluk Bingol}
+
+\institute[FCIS]{
+	Faculty of Computer and Information Sciences\\
+	Yeditepe University
+}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={1-4}, hideallsubsections]
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={5-8}, hideallsubsections]
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Start]{Getting started}{Loading, packages, theme}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Loading the libraries}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+\usepackage{../../hblib/hblibPresentation}     % first: the base library
+\usepackage{../../hblib/hblibCodeoutput}       % code and output read from files
+\usepackage{../../hblib/hblibDatastructures}   % arrays, stacks, queues, trees
+
+\title[Arrays 1D: Lecture]{One-Dimensional Arrays}
+\subtitle{\cisOOO\ -- Week 7 lecture}
+\author[Bingol]{Haluk Bingol}
+\institute[FCIS]{Faculty of Computer and Information Sciences\\ Yeditepe University}
+\date{{\tiny \hbTimeStamp}}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+	\begin{itemize}\small
+		\item Load with \hCode{\textbackslash usepackage}, without \hCode{.sty}; a relative path gives a harmless
+		``You have requested package \dots'' warning
+		\item Use \hCode{[t,fragile]} frames: code listings and \hCode{\textbackslash lstinline} need \hCode{fragile}
+		\item Compile twice: the outline and ``i / N'' need the second run
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What the library loads}
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. packages
+\begin{table}
+		\scriptsize
+		\begin{tabular}{@{}L{0.22\textwidth}L{0.70\textwidth}@{}}
+			\toprule
+			\textbf{Package} & \textbf{Gives} \\
+			\midrule
+			fontenc (T1), lmodern       & accented (Turkish) letters, \hCode{<} \hCode{>} \hCode{|}; sharp fonts \\
+			datetime2                   & \hCode{\textbackslash today} as \today; \hCode{\textbackslash DTMcurrenttime} \\
+			graphicx, xcolor            & \hCode{\textbackslash includegraphics} (also .eps), colors \\
+			tikz                        & drawings; libraries positioning, matrix, arrows.meta, calc \\
+			fp, calc                    & \hCode{\textbackslash FPeval}; \hCode{\textbackslash widthof} \\
+			array, booktabs             & column type \hCode{L\{width\}}, \hCode{\textbackslash toprule} \dots \\
+			listings                    & program code (style mystyle; better: hblibCodeoutput) \\
+			algorithm2e                 & pseudo code: ruled, vlined, linesnumbered \\
+			menukeys                    & \hCode{\textbackslash menu}, \hCode{\textbackslash keys} \\
+			enumitem                    & only outside beamer (it breaks beamer's lists) \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+	\small Not needed any more, so not loaded: inputenc (UTF-8 is the default), xparse (in LaTeX since 2020),
+	epstopdf (graphicx converts .eps by itself).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Theme and frame numbers}
+	\small The library sets the look of every deck:
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\useoutertheme{split}           % sections and subsections in the head line
+\useinnertheme{rounded}         % rounded blocks and bullets
+\usecolortheme{whale}
+\usecolortheme{orchid}
+\setbeamertemplate{navigation symbols}{}                         % no navigation symbols
+\setbeamertemplate{page number in head/foot}[totalframenumber]   % "i / N" at the bottom
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+	\begin{itemize}\small
+		\item A deck can change it after \hCode{\textbackslash usepackage\{hblibPresentation\}}, e.g.\
+		\hCode{\textbackslash usecolortheme\{beaver\}}
+		\item The short title \hCode{\textbackslash title[short]\{\dots\}} and the short author
+		\hCode{\textbackslash author[Bingol]\{\dots\}} go to the foot line
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Text]{Text and emphasis}{Colors, inline code, small helpers}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Emphasis}
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. emphasis
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.36\textwidth}L{0.30\textwidth}L{0.26\textwidth}@{}}
+			\toprule
+			\textbf{Write} & \textbf{Result} & \textbf{Use} \\
+			\midrule
+			\hCode{\textbackslash hDefined\{reference\}} & \hDefined{reference}     & a term defined here \\
+			\hCode{\textbackslash hEmph\{important\}}     & \hEmph{important}       & an important word \\
+			\hCode{\textbackslash hRemark\{macOS\}}       & \hRemark{macOS}          & a side remark \\
+			\hCode{\textbackslash hQuestion\{Why?\}}      & \hQuestion{Why?}         & a question to the audience \\
+			\hCode{n\textbackslash hIndex\{2\}}           & n\hIndex{2}              & a small raised index \\
+			\hCode{\textbackslash hReference\{CLRS\}}     & \hReference{CLRS}        & a source, small \\
+			\hCode{\textbackslash hCite\{p.\ 12\}}        & \hCite{p.\ 12}           & a source, tiny \\
+			\hCode{\textbackslash hUrl\{oracle.com\}}     & \hUrl{oracle.com}        & a web address \\
+			\hCode{\textbackslash hColorBox\{x\}}         & \hColorBox{x}            & old name of \hCode{\textbackslash hEmph} \\
+			\hCode{\textbackslash win}, \hCode{\textbackslash mac} & \win, \mac      & the two systems \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+	\small Colors used: \textcolor{red}{red}, \textcolor{colorHEmph}{colorHEmph}, \textcolor{orange}{orange},
+	\textcolor{colorIndex}{colorIndex}, \textcolor{colorStop}{colorStop}, \textcolor{colorGo}{colorGo}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Inline code, sizes, names, dates}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\hCode{int[] a = new int[5];}    \hCode{project\_dir}    \hCode{\{3, 1, 4\}}
+\hFontLarger{2}{2 pt larger}  \hFontLarger{-2}{2 pt smaller}
+\hAbs{x - y}    \cisOOO    \cisOOT    \hbTimeStamp    \hbTimeStampDraft
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+	\begin{center}
+		\hCode{int[] a = new int[5];} \quad \hCode{project\_dir} \quad \hCode{\{3, 1, 4\}}\\[2pt]
+		\hFontLarger{2}{2 pt larger} \quad \hFontLarger{-2}{2 pt smaller}\\[2pt]
+		\hAbs{x - y} \quad \cisOOO \quad \cisOOT \quad \hbTimeStamp \quad \hbTimeStampDraft
+	\end{center}
+
+	\begin{itemize}\small
+		\item \hCode{\textbackslash hCode}: typewriter, colored (colorHCode), 2\,pt smaller.
+		Write \hCode{\textbackslash \_ \textbackslash \{ \textbackslash \}} as in text.
+		It also works in frame titles and in \hCode{\textbackslash hSection} titles (the PDF bookmark gets plain text)
+		\item A deck may change the color: \hCode{\textbackslash definecolor\{colorHCode\}\{RGB\}\{0,90,200\}}
+		\item For syntax-colored code use \hCode{\textbackslash hCodeJ} of hblibCodeoutput
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Sections]{Sections and separators}{\hCode{\textbackslash hSection}, \hCode{\textbackslash hSubsection}, \hCode{\textbackslash hSeparator}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\hCode{\textbackslash hSection}: a section and its title frame}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\hSection[short]{Long}{line}         % between frames, not inside one
+\hSection[Basics]{Creating and using an array}{Create it, visit it with a loop}
+\hSection[End]{Summary}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+	\begin{itemize}\small
+		\item \hCode{short} (optional): in the head line; the outline and the frame show \hCode{Long}
+		\item \hCode{Long}: the title on the frame, \hCode{\textbackslash Huge}, orange
+		\item \hCode{line} (optional): under the title, \hCode{\textbackslash Large}
+		\item The previous frame was made by
+		\hCode{\textbackslash hSection[Sections]\{Sections and separators\}\{\dots\}}
+		\item Old form \hCode{\textbackslash hSection[short]\{Long\}[line]} is no longer accepted:
+		write \hCode{\{line\}}
+		\item \hCode{\textbackslash hSkipSection} as the line marks a section for self-study (next frames)
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\hCode{\textbackslash hSubsection}, \hCode{\textbackslash hSeparator}, \hCode{\textbackslash hSkipSection}}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\hSubsection{small line}{Title}   % \subsection plus a title frame (small line on top)
+\hSeparator{Title}{line}          % a title frame, without a section
+\hSection[Extra]{Extra material}{\hSkipSection}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+	\small The next three frames are made by these lines, with
+	\hCode{\textbackslash hSubsection\{Sections\}\{A subsection\}},
+	\hCode{\textbackslash hSeparator\{A separator\}\{without a section\}} and
+	\hCode{\textbackslash hSection[Extra]\{Extra material\}\{\textbackslash hSkipSection\}}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSubsection{Sections}{A subsection}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSeparator{A separator}{without a section}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Extra]{Extra material}{\hSkipSection}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{An optional part: switches}
+	\small A deck can make optional parts with a switch, as the lecture decks do:
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\newif\ifActivities  \Activitiestrue    % in the preamble; \Activitiesfalse hides the frames
+
+\ifActivities % EXTRA activities V
+  \begin{frame}[t,fragile] \frametitle{Quick check}
+    ...
+  (*@\hbEndFrame@*)
+\fi % EXTRA activities A
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+	\small This is plain LaTeX (\hCode{\textbackslash newif}), not part of the library;
+	it combines well with \hCode{\textbackslash hSection[\dots]\{\dots\}\{\textbackslash hSkipSection\}}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Tables]{Tables, algorithms, keys}{Column type L, algorithm2e, menukeys}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Tables: column type \hCode{L\{width\}}}
+	\begin{columns}[T]
+		\begin{column}{0.52\textwidth}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\begin{table}
+  \footnotesize
+  \begin{tabular}{@{}L{0.30\textwidth}L{0.55\textwidth}@{}}
+    \toprule
+    \textbf{Term} & \textbf{Meaning} \\
+    \midrule
+    element & one stored value \\
+    index   & its position: $0, 1, \dots, n-1$;
+              long text wraps in the column \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+		\end{column}
+		\begin{column}{0.44\textwidth}
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. L column
+\begin{table}
+	\footnotesize
+	\begin{tabular}{@{}L{0.30\textwidth}L{0.55\textwidth}@{}}
+		\toprule
+		\textbf{Term} & \textbf{Meaning} \\
+		\midrule
+		element & one stored value \\
+		index   & its position: $0, 1, \dots, n-1$; long text wraps in the column \\
+		\bottomrule
+	\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+			\small \hCode{L\{w\}} is a paragraph column, ragged right;
+			\hCode{\textbackslash textwidth} here is the column's width.
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Algorithms (algorithm2e), step by step}
+	\begin{columns}[T]
+		\begin{column}{0.50\textwidth}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\begin{algorithm}[H]
+  \caption{Largest($a$)}
+  \KwIn{an array $a$ of $n \ge 1$ numbers}
+  \KwOut{the index of the largest}
+  $b \gets 0$\;
+  \For{$i \gets 1$ \KwTo $n - 1$}{
+    \uncover<2->{\lIf{$a[i] > a[b]$}{$b \gets i$}}
+  }
+  \uncover<3->{\Return{$b$}\;}
+\end{algorithm}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+		\end{column}
+		\begin{column}{0.46\textwidth}
+			\begin{algorithm}[H]
+				\caption{Largest($a$)}
+				\KwIn{an array $a$ of $n \ge 1$ numbers}
+				\KwOut{the index of the largest}
+				$b \gets 0$\;
+				\For{$i \gets 1$ \KwTo $n - 1$}{
+					\uncover<2->{\lIf{$a[i] > a[b]$}{$b \gets i$}}
+				}
+				\uncover<3->{\Return{$b$}\;}
+			\end{algorithm}
+
+			\footnotesize
+			\begin{itemize}
+				\item The number ``Algorithm 1'' stays the same on all three slides
+				(\hCode{\textbackslash resetcounteronoverlays\{algocf\}})
+				\item \hCode{\textbackslash Fn\{name\}\{body\}}: ``function \dots\ end'';
+				captions in \hCode{\textbackslash small}
+				\item \hCode{\textbackslash DontPrintSemicolon} in a deck's preamble hides the semicolons
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Menus and keys (menukeys)}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\menu{Run > Debug As > Java Application}    \keys{Ctrl + Shift + B}    \keys{\shift + \cmd + B}    \keys{F6}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+	\begin{center}
+		\menu{Run > Debug As > Java Application} \quad \keys{Ctrl + Shift + B} \quad \keys{\shift + \cmd + B} \quad \keys{F6}
+	\end{center}
+
+	\begin{itemize}\small
+		\item menukeys defines \hCode{\textbackslash cmd} (the Mac command key \keys{\cmd}),
+		so the library uses \hCode{\textbackslash hCode} for commands
+		\item In a table: \win\ \keys{Ctrl + C} \quad \mac\ \keys{\cmd + C}
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Old code]{Old code listings}{mystyle, \hCode{\textbackslash hCodeOutput}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\hCode{\textbackslash hCodeOutput}: code, then its output on slide 2}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\hCodeOutput{Demo}           % code from Demo.src; on slide 2 the output from Demo.zzz
+\hCodeOutput{Demo}[2][0]     % output centered at (2 cm, 0 cm) from the slide center (default)
+\renewcommand{\hCodeOutputWidth}{5cm}   % width of the output box (default 0.42\textwidth)
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+	\hCodeOutput{Demo}[2][1]
+
+	\vspace{1em}
+	\small Kept for older decks. New decks: hblibCodeoutput (\hCode{\textbackslash lstcoderightstep} and others).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{mystyle: the default of a plain lstlisting}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\begin{lstlisting}[language=Java]
+if (n > 0) {
+    n--;          // 4 spaces of indentation
+}
+\end{lstlisting}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+		\end{column}
+		\begin{column}{0.48\textwidth}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{lstlisting}[language=Java]
+if (n > 0) {
+    n--;          // 4 spaces of indentation
+}
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+		\end{column}
+	\end{columns}
+
+	\begin{itemize}\small
+		\item \hCode{\textbackslash tiny} font, line numbers, light background
+		\item Two spaces are printed as one: the indentation is halved (\hCode{literate} in \hCode{\textbackslash lstset})
+		\item hblibCodeoutput's styles (\hCode{codesnippet}, \hCode{codestyle}) undo this
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Refs]{References}{\hCode{\textbackslash cite} and a .bib file}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Citing and the references frame}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+Arrays~\cite{TheJavaTutorialsArray}; queues and stacks~\cite{cormen2022introduction}.
+
+  \begin{frame}[t,fragile] \frametitle{References}
+  \setbeamertemplate{bibliography item}[text]     % [1], [2] instead of icons
+  \bibliographystyle{IEEEtran}
+  \tiny\bibliography{../../hblib/hblibDataStructures}
+(*@\hbEndFrame@*)
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+	\small Result: Arrays~\cite{TheJavaTutorialsArray}; queues and stacks~\cite{cormen2022introduction}
+	(the last frame of this manual).
+
+	\begin{itemize}\small
+		\item Compile: \hCode{pdflatex}, \hCode{bibtex}, \hCode{pdflatex}, \hCode{pdflatex}
+		\item The file is \hCode{hblibDataStructures.bib} (capital S), next to the libraries
+		\item Only cited entries are listed; \hCode{\textbackslash nocite\{*\}} lists all
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Notes]{Notes and troubleshooting}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Troubleshooting}
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. troubleshooting
+\begin{table}
+		\scriptsize
+		\begin{tabular}{@{}L{0.38\textwidth}L{0.27\textwidth}L{0.27\textwidth}@{}}
+			\toprule
+			\textbf{Message or problem} & \textbf{Cause} & \textbf{Fix} \\
+			\midrule
+			Missing \textbackslash begin\{document\} after loading & \hCode{\textbackslash input} of the .sty & \hCode{\textbackslash usepackage} \\
+			You have requested package `../../hblib/\dots' & a relative path & harmless \\
+			``i / ??'' or an empty outline & first run & compile again \\
+			Undefined control sequence in a listing frame & frame not \hCode{fragile} & \hCode{\textbackslash begin\{frame\}[t,fragile]} \\
+			the line of an old \hCode{\textbackslash hSection[s]\{L\}[line]} shows as stray text & old form & \hCode{\textbackslash hSection[s]\{L\}\{line\}} \\
+			a \hCode{\{\dots\}} group right after \hCode{\textbackslash hSection} becomes its line & the optional \hCode{\{line\}} & put something else first, e.g.\ \hCode{\textbackslash relax} \\
+			indices purple, not blue & hblibDatastructures loaded after & as intended (it sets colorIndex) \\
+			Citation `\dots' undefined, ``[?]'' & bibtex not run & run \hCode{bibtex}, then pdflatex twice \\
+			enumitem options ignored & not loaded in beamer & beamer's own lists \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Quick reference}
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. quick reference
+\begin{table}
+		\scriptsize
+		\begin{tabular}{@{}L{0.47\textwidth}L{0.45\textwidth}@{}}
+			\toprule
+			\textbf{Command} & \textbf{Result} \\
+			\midrule
+			\hCode{\textbackslash hSection[short]\{Long\}\{line\}} & section and title frame \\
+			\hCode{\textbackslash hSubsection\{small line\}\{Title\}} & subsection and title frame \\
+			\hCode{\textbackslash hSeparator\{Title\}\{line\}} & title frame only \\
+			\hCode{\textbackslash hSkipSection} & ``(skip this section, read at home)'' \\
+			\hCode{\textbackslash hDefined \textbackslash hEmph \textbackslash hRemark \textbackslash hQuestion} & emphasis (\{text\}) \\
+			\hCode{\textbackslash hIndex \textbackslash hReference \textbackslash hCite \textbackslash hUrl} & small notes (\{text\}) \\
+			\hCode{\textbackslash hCode\{text\}}, \hCode{\textbackslash hFontLarger\{N\}\{text\}} & inline code; size change \\
+			\hCode{\textbackslash hAbs\{x\}} & $\lvert x \rvert$ \\
+			\hCode{\textbackslash cisOOO \textbackslash cisOOT \textbackslash win \textbackslash mac} & \cisOOO, \cisOOT, \win, \mac \\
+			\hCode{\textbackslash hbTimeStamp \textbackslash hbTimeStampDraft} & date stamps \\
+			\hCode{L\{width\}} & table column \\
+			\hCode{\textbackslash hCodeOutput\{name\}[dx][dy]}, \hCode{\textbackslash hCodeOutputOnly} & old: name.src, name.zzz \\
+			colors: colorHEmph colorStop colorGo colorIndex colorHCode gitred & \hCode{\textbackslash definecolor} to change \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{References}
+	\setbeamertemplate{bibliography item}[text]
+	\bibliographystyle{IEEEtran}
+	\tiny\bibliography{hblibDataStructures}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

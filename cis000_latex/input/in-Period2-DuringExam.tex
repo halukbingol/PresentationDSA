@@ -1,0 +1,85 @@
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection{Period-2. During exam (internet oﬀ)}
+
+The exam starts after the internet is disconnected.
+
+\begin{enumerate}[label=\roman*.]  
+	
+	\item \textbf{Import question.}
+	Note that \hCode{question.zip} is password protected. 
+	After the password is shared, you can import it in eclipse. 
+	After the required packages are imported, 
+	your Package Explorer in eclipse should be like \reffig{fig:DirectoryStructure}
+	
+
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Fig.
+\begin{figure}[htbp]
+\begin{center}
+	\begin{forest}
+%	for tree={font=\ttfamily, grow'=0, folder, draw=none}
+	for tree={font=\ttfamily, grow'=0, folder, draw=none,
+	          s sep=0pt,        % no extra gap between lines
+	          inner ysep=1pt}   % less padding around each name
+		[project/
+			[src/
+				[packageA/ 
+					[question.pdf] 
+					[modifyMe.java] 
+					[doNotModifyMe.java] 
+					[TS\_question\_jUnit.java]
+				]
+				[packageB/ 
+					[aaa.java] 
+					[ccc.java]
+				]
+			]
+		]
+	\end{forest}
+
+	\caption{\small
+		\textbf{Directory structure.}
+		The codes are under package \hCode{packageA}.
+		It may be the case that there are multiple packages such as  \hCode{packageB}.
+		\hCode{question.pdf} is the description of the question.
+		\hCode{modifyMe.java} is the file you are expected to modify.
+		There may be multiple such files.
+		\hCode{doNotModifyMe.java} is the file that is used but you are not allow to modify.
+		There may be multiple such files.
+		\hCode{TS\_question\_jUnit.java} is the jUnit file shared with you 
+		so that you can test your development.
+	}
+	\label{fig:DirectoryStructure}
+\end{center}
+\end{figure}
+% +++++++++++++++++++++++++++++++++++++++ A
+	
+	\begin{enumerate}[itemsep=1pt, topsep=1pt] 
+		
+		\item The password of \hCode{question.zip} is given.
+		
+		\item Uncompress \hCode{question.zip} using the given password.
+		
+		\item Import \hCode{question.zip} package(s) into eclipse. 
+		Make sure that the package is under \hCode{src}.
+		\item Start reading the description pdf.
+		
+	\end{enumerate}
+
+	\item \textbf{Open pdf files.} 
+	It is not recommended to opening \hCode{.pdf} files within eclipse.
+	\begin{enumerate}
+		
+		\item Right click on the \hCode{.pdf} file.
+		
+		\item \menu{Open With > Default Editor} (or \menu{System Editor})
+		
+	\end{enumerate}
+	
+\end{enumerate}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+

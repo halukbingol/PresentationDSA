@@ -1,0 +1,128 @@
+% !TEX spellcheck = en_US
+
+\documentclass[11pt]{amsart}
+
+
+
+
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V lib
+%\usepackage{../../cis000_latex/lib/hblibCommon}
+%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A lib
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V lib
+% Note that hblibCommon is loaded by hblibArticle
+\usepackage{../../cis000_latex/lib/hblibArticle}
+\usepackage{../../cis000_latex/lib/hblibDatastructures}
+\usepackage{../../cis000_latex/lib/hblibCodeoutput}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A lib
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V specific
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A specific
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A titleParam
+\newcommand{\cisno}{111}	% 111		
+\newcommand{\weekno}{week00}	% week08	
+\newcommand{\topic}{ALatexTemplateForLabDescription}	% Command Line Interface
+\newcommand{\topicshort}{LabTemplate}		% CLI
+\newcommand{\myauthor}{Haluk Bingol}		% Haluk Bingol
+\newcommand{\myauthorshort}{Bingol}		% Bingol
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A titleParam
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V derived
+% do not change
+\newcommand{\cisxxx}{\textsc{cis\cisno}}	% do not change
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A derived
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V title
+% Common title format for lab description
+\input{../../cis000_latex/input/in-TitleLabDescription.tex}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A title
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% Document starts heres
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{Introduction}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSectionWarmUp
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSectionGoal
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSectionChallenge
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSectionHome
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hNumbersArabic
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{Dummy citations}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+Dummy citations.
+01pi.com~\cite{pi10ObjectsComplex}
+CLRS~\cite{cormen2022introduction}
+
+
+\bibliographystyle{IEEEtran}
+
+\tiny\bibliography{../../cis000_latex/lib/hblibDataStructures} 
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\appendix
+\input{../../cis000_latex/input/index-ExamInfo.tex}
+%\section{Exam}
+%\input{../../cis000_latex/in-ExamInfo-Intro}
+%\input{../../cis000_latex/in-Period1-BeforeExamStarts.tex}
+%\input{../../cis000_latex/in-Period2-DuringExam.tex}
+%\input{../../cis000_latex/in-Period3-AtTheEndOfTheExam.tex}
+%\input{../../cis000_latex/in-WarningAboutTheAutoGrader}
+%\input{../../cis000_latex/in-ExamTiming}	
+%\input{../../cis000_latex/in-Objection}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+\end{document}  

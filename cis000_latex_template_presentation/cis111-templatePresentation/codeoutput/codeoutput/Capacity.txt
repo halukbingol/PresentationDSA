@@ -1,0 +1,7 @@
+length   0  capacity 16
+length  17  capacity 34
+length  35  capacity 70
+length  71  capacity 142
+length 143  capacity 286
+length 287  capacity 574
+length 575  capacity 1150

@@ -1,0 +1,265 @@
+% !TEX spellcheck = en_US
+
+% v20261109T0615   the default lstlisting style is set by hblibCommon now; "mystyle" kept here as an old name
+% v20261108T0900   new: the article part of hblibCommon v20261107T1230 (page, lists, titles, contents,
+%                  section numbering, footer, hyperlinks); the shared part stays in hblibCommon,
+%                  which this file loads from its own folder
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works
+% and remixes based on it only for non-commercial purposes.
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+\NeedsTeXFormat{LaTeX2e}[2020/10/01]   % \CurrentFilePath
+\ifdefined\hbA@loaded \endinput \fi    % loaded already (perhaps by another path)
+\def\hbA@loaded{}
+\ProvidesPackage{hblibArticle}[2026/11/09 hb documents: exams, labs, handouts (article, amsart)]
+
+% =====================================================================
+%  hblibArticle -- documents that are not slides: exams, lab descriptions, handouts
+%  ---------------------------------------------------------------------
+%  \documentclass[11pt]{amsart}                         or article; twocolumn works too
+%  \usepackage{../../cis000_latex/lib/hblibArticle}     titles and section headings as typed
+%  \usepackage[amsheadings]{.../hblibArticle}           amsart: keep its CAPITAL titles, small-caps sections
+%  optional, after it:
+%  \usepackage{../../cis000_latex/lib/hblibDatastructures}   arrays, stacks, queues, trees, commit graphs
+%  \usepackage{../../cis000_latex/lib/hblibCodeoutput}       code and output read from files, in boxes
+%
+%  It loads hblibCommon (fonts, packages, colors, code styles, \hCode, \reffig, ...) from its own
+%  folder; everything listed there can be used too.
+%  Old documents with \usepackage{.../hblibCommon} need no change: hblibCommon loads this file.
+%
+%  Contents of this file (in this order)
+%    1  Options               amsheadings
+%    2  The core              hblibCommon
+%    3  Page                  A4 with 2 cm margins
+%    4  Lists                 enumitem
+%    5  Old style name        mystyle = codestyle (old lab documents)
+%    6  Titles as typed       (amsart)
+%    7  Table of contents     \small; bold sections, indented subsections and subsubsections
+%    8  Section numbering     1, 1.1 / G, G1, G1.1: \hNumbersArabic, \hNumbersLetter, \hSectionGoal, ...
+%    9  Page footer           file name, date, page i / N
+%   10  Hyperlinks            hyperref, loaded last; links in colored boxes
+% =====================================================================
+
+
+
+%: ===================================================================== 1 Options
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V options
+% amsheadings: with amsart, do NOT change the title, authors and section headings
+% (also given as \usepackage[amsheadings]{hblibCommon} in old documents)
+\newif\ifhb@amsheadings
+\ifdefined\hb@amsheadingsopt \hb@amsheadingstrue \fi
+\DeclareOption{amsheadings}{\hb@amsheadingstrue}
+\DeclareOption*{\PackageWarning{hblibArticle}{Unknown option `\CurrentOption' ignored}}
+\ProcessOptions\relax
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A options
+
+
+
+%: ===================================================================== 2 The core
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V core
+% hblibCommon from the folder of this file (\CurrentFilePath: "../../cis000_latex/lib", or empty)
+\def\hb@loadedbylib{}                  % tells hblibCommon not to load hblibArticle itself
+\edef\hbA@dir{\CurrentFilePath}\edef\hbA@dir{\ifx\hbA@dir\@empty\else\hbA@dir/\fi}
+\ifdefined\hbC@loaded\else \RequirePackage{\hbA@dir hblibCommon}\fi
+\@ifclassloaded{beamer}{\PackageWarningNoLine{hblibArticle}{made for article and amsart;
+	for slides use hblibPresentation}}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A core
+
+
+
+%: ===================================================================== 3 Page
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V page
+\RequirePackage{geometry}         % page size and margins
+	\geometry{a4paper, margin=2cm}
+	% a document can change it after \usepackage{hblibArticle}, e.g.
+	% \geometry{left=2cm, right=2cm, top=2cm, bottom=2.5cm}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A page
+
+
+
+%: ===================================================================== 4 Lists
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V lists
+\RequirePackage{enumitem}         % lists: [itemsep=0pt], [nosep], [label=(\roman*)], \setlist
+                                  % (not in hblibCommon: enumitem breaks beamer's lists)
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A lists
+
+
+
+%: ===================================================================== 5 Old style name
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V old style name
+% A plain \begin{lstlisting} uses codestyle (set by hblibCommon).
+% "mystyle" (the name of the old style of hblibSimple) means the same, so old lab documents compile.
+% Slides (hblibPresentation) have no mystyle any more.
+\lstdefinestyle{mystyle}{style=codestyle}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A old style name
+
+
+
+%: ===================================================================== 6 Titles as typed (amsart)
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V titles as typed
+% amsart prints the title and the authors in CAPITALS and section headings in small caps.
+% Here they are printed as typed, and section headings are bold, as in article.
+% Other classes are not changed. Option amsheadings switches this off.
+% Title: no size commands inside \title (amsart copies it into the page header):
+%   \title[Short title]{Long title}
+\ifhb@amsheadings\else
+	\@ifclassloaded{amsart}{%
+		\renewcommand{\uppercasenonmath}[1]{}%                                  title, short title
+		\RequirePackage{etoolbox}%
+		\patchcmd{\@setauthors}{\MakeUppercase{\authors}}{\authors}{}{}%         authors under the title
+		\patchcmd{\maketitle}{\@nx\MakeUppercase{\the\toks@}}{\the\toks@}{}{}% authors in the page header
+		\renewcommand{\section}{\@startsection{section}{1}{\z@}%
+			{-3.5ex \@plus -1ex \@minus -.2ex}{2.3ex \@plus .2ex}{\normalfont\Large\bfseries}}%
+		\renewcommand{\subsection}{\@startsection{subsection}{2}{\z@}%
+			{-3.25ex\@plus -1ex \@minus -.2ex}{1.5ex \@plus .2ex}{\normalfont\large\bfseries}}%
+		\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{\z@}%
+			{-3.25ex\@plus -1ex \@minus -.2ex}{1.5ex \@plus .2ex}{\normalfont\normalsize\bfseries}}%
+	}{}
+\fi
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A titles as typed
+
+
+
+%: ===================================================================== 7 Table of contents
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V table of contents
+% one size smaller than the text (\small); sections, subsections and subsubsections:
+%   1    Introduction           sections: bold (number, title and page), at the left margin
+%      1.1   Goal               subsections: indented 1.5em
+%           1.1.1   Details     subsubsections: indented 3.8em
+% dotted leaders also for sections; less space between sections.
+% amsart has its own contents layout, so tocloft is used only with other classes.
+% \setcounter{tocdepth}{2} in a document hides the subsubsections again.
+\setcounter{tocdepth}{3}
+\@ifclassloaded{amsart}{%
+	% amsart: \@tocline{level}{space above}{indent}{number width}{font}; empty width = widest number
+	\def\l@section{\@tocline{1}{0pt}{0pt}{}{\small\bfseries}}%
+	\def\l@subsection{\@tocline{2}{0pt}{1.5em}{}{\small}}%
+	\def\l@subsubsection{\@tocline{3}{0pt}{3.8em}{}{\small}}%
+}{%
+	\RequirePackage{tocloft}
+	\renewcommand{\cftsecfont}{\small\bfseries}%            section number and title
+	\renewcommand{\cftsecpagefont}{\small\bfseries}%        its page number
+	\renewcommand{\cftsubsecfont}{\small}%                  subsections
+	\renewcommand{\cftsubsecpagefont}{\small}%
+	\renewcommand{\cftsubsubsecfont}{\small}%               subsubsections
+	\renewcommand{\cftsubsubsecpagefont}{\small}%
+	\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+	\setlength{\cftbeforesecskip}{2pt}
+	\setlength{\cftsecindent}{0pt}%                         sections at the margin
+	\setlength{\cftsubsecindent}{1.5em}%                    subsections indented
+	\setlength{\cftsubsubsecindent}{3.8em}%                 subsubsections indented more
+}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A table of contents
+
+
+
+%: ===================================================================== 8 Section numbering
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V section numbering
+% The numbering style can switch before any \section:
+%   \section{Introduction}      1      subsections 1.1    subsubsections 1.1.1   (the default)
+%   \hNumbersLetter{G}
+%   \section{Group work}        G      subsections G1     subsubsections G1.1
+%   \hNumbersLetter{C}
+%   \section{Code}              C      subsections C1     subsubsections C1.1
+%   \hNumbersArabic
+%   \section{Conclusion}        2      numbers continue where they stopped
+% \hNumbersArabic[1]   restarts the numbers at 1 (any number: the number of the next section)
+% \hNumbersLetter{G}   the next section gets the letter G (A ... Z); \ref prints G1 etc.
+% The default numbering is not changed until one of the two commands is used.
+\newcounter{hb@arabicsection}   % the last arabic section number, to continue after the letters
+\newcounter{hb@numblock}        % a new block at every switch, so hyperref's link targets stay unique
+\newif\ifhb@arabic \hb@arabictrue
+
+\newcommand{\hNumbersArabic}[1][]{%
+	\ifhb@arabic\else
+		\setcounter{section}{\value{hb@arabicsection}}%                       continue: 1, 2, (G, C), 3
+	\fi
+	\if\relax\detokenize{#1}\relax\else
+		\setcounter{section}{\numexpr#1-1\relax}%                           [next] given
+	\fi
+	\hb@arabictrue
+	\stepcounter{hb@numblock}%
+	\renewcommand{\thesection}{\arabic{section}}%                              1
+	\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}%            1.1
+	\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}%   1.1.1
+}
+
+\newcommand{\hNumbersLetter}[1]{%
+	\ifhb@arabic \setcounter{hb@arabicsection}{\value{section}}\fi%        remember 1, 2, ...
+	\hb@arabicfalse
+	\stepcounter{hb@numblock}%
+	\setcounter{section}{\numexpr`#1-`A\relax}%                             G is letter 7: counter 6
+	\renewcommand{\thesection}{\Alph{section}}%                               G
+	\renewcommand{\thesubsection}{\thesection\arabic{subsection}}%            G1
+	\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}%  G1.1
+}
+
+% the sections of a lab description: W WarmUp, G Goal, C Challenge, H Home
+\newcommand{\hSectionChallenge}{\hNumbersLetter{C}\section{Challenge}}
+\newcommand{\hSectionGoal}{\hNumbersLetter{G}\section{Goal}}
+\newcommand{\hSectionHome}{\hNumbersLetter{H}\section{Home}}
+\newcommand{\hSectionWarmUp}{\hNumbersLetter{W}\section{WarmUp}}
+
+% (link targets: see section 10 Hyperlinks)
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A section numbering
+
+
+
+%: ===================================================================== 9 Page footer
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V page footer
+% every page: a rule, then left the file name and the date, right "page / pages".
+% Compile twice: the number of pages is known only after the first run.
+\RequirePackage{lastpage}         % \pageref{LastPage} = number of pages
+\RequirePackage{fancyhdr}
+\fancypagestyle{plain}{%
+	\fancyhf{}%                                   clear header and footer
+	\renewcommand{\headrulewidth}{0pt}%           no rule under the header
+	\renewcommand{\footrulewidth}{1pt}%           a rule above the footer
+	\fancyfoot[L]{\small\texttt{\jobname\,\,(\hbTimeStamp)}}%
+	\fancyfoot[R]{\small\texttt{\thepage\,/\,\pageref*{LastPage}}}%
+}
+\pagestyle{plain}
+\@ifclassloaded{amsart}{%                         amsart's title page and headings use other styles
+	\AtBeginDocument{\pagestyle{plain}}%
+	\fancypagestyle{firstpage}{\pagestyle{plain}}%
+	\fancypagestyle{headings}{\pagestyle{plain}}%
+	\geometry{footskip=24pt}}{}%                    amsart leaves too little room for the footer
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A page footer
+
+
+
+%: ===================================================================== 10 Hyperlinks
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hyperlinks
+% clickable contents, references and URLs; loaded last, as hyperref asks
+% (hblibDatastructures and hblibCodeoutput may still come after this file).
+% Links are framed: red around internal links (contents, \ref, \reffig ...), blue around URLs.
+% The boxes are drawn by the PDF viewer only: they are not printed.
+% A document can change this after \usepackage{hblibArticle}:
+%   \hypersetup{hidelinks}                       no marks at all (the old look)
+%   colored text instead of boxes:
+%\hypersetup{
+%	colorlinks = true,
+%	linkcolor  = blue!70!black,    % \ref, \reffig, \refsec ... and the table of contents
+%	urlcolor   = blue,             % \url{...}, \href{...}{...}
+%	citecolor  = green!50!black,   % \cite{...}
+%	filecolor  = magenta           % links to local files
+%}
+\RequirePackage{hyperref}
+\hypersetup{
+	colorlinks=false,          % boxes, not colored text
+	pdfborder={0 0 1},         % box line 1 pt wide
+	linkbordercolor=red,       % internal links
+	urlbordercolor=blue        % \url, \href
+}
+
+% hyperref names a section's link target after its counter value. With section numbering
+% switching, G (counter 7) and a later section 7 would share one; the block number keeps them apart.
+\renewcommand{\theHsection}{\arabic{hb@numblock}.\arabic{section}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hyperlinks
+
+\endinput

@@ -1,0 +1,266 @@
+% !TEX spellcheck = en_US
+
+% v20261108T0900   split: the colors, listings styles (codestyle, outputstyle, ...), \hbLira, \hbRupee and
+%                  the inline \hCodeJ, \hCodeB, \code moved to hblibCommon, which this file loads from its
+%                  own folder; only the boxes are left. Works in articles too: there the output is shown
+%                  at once (no overlays) and side by side in minipages.
+% v20261104T2350   tcolorbox loaded before \tcbuselibrary; xparse removed; numbered, documented sections
+% v20261016T1749
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works
+% and remixes based on it only for non-commercial purposes.
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+\NeedsTeXFormat{LaTeX2e}[2020/10/01]   % \CurrentFilePath
+\ifdefined\hbO@loaded \endinput \fi    % loaded already (perhaps by another path)
+\def\hbO@loaded{}
+\ProvidesPackage{hblibCodeoutput}[2026/11/08 code and output read from files, in boxes (beamer, article)]
+
+% =====================================================================
+%  hblibCodeoutput  --  program code and its output, read from files, in boxes
+%  ---------------------------------------------------------------------
+%  Optional: load it only if a document shows code or output FROM FILES in boxes
+%  (it loads tcolorbox and textpos). Typed code needs only hblibCommon:
+%  javacode, bashcode, \javafile, \bashfile, style=codesnippet, \hCodeJ, \hCodeB.
+%
+%  \usepackage{../../hblib/hblibPresentation}   or hblibArticle; first
+%  \usepackage{../../hblib/hblibCodeoutput}     then this (it loads hblibCommon if needed)
+%
+%  Every macro takes RELATIVE PATHS (relative to the .tex file) to the
+%  code file and to the output file. Nothing is copied into the .tex.
+%  In beamer, frames that use these macros must be [fragile].
+%
+%  One slide
+%    \lstcode            [code opts]{code path}{Language}       code only
+%    \lstoutput          [output opts]{output path}             output only
+%    \lstcodedown        [code opts][output opts]
+%                        {code path}{Language}{output path}     code, output below
+%    \lstcoderight       [code width][code opts][output opts]
+%                        {code path}{Language}{output path}     code left, output right
+%
+%  Two slides: code on the first slide, output added on the second (article: both at once)
+%    \lstcodedownstep    [code opts][output opts]
+%                        {code path}{Language}{output path}     output below
+%    \lstcoderightstep   [code width][code opts][output opts]
+%                        {code path}{Language}{output path}     output on the right
+%    \lstcodeoverlaystep [code opts][output opts][output width]{x,y}
+%                        {code path}{Language}{output path}     output floats on top,
+%                        upper-left corner at (x,y) from the slide's upper-left corner
+%
+%  Terminal sessions
+%    \lstterminal  [opts]{transcript path}   "$ command" lines highlighted
+%
+%  Helper
+%    \slidegrid     1 cm grid over the slide, to find x,y (remove when done)
+%
+%  "opts" are ordinary listings options, e.g.
+%    firstline=4, lastline=9, firstnumber=4, basicstyle=\ttfamily\scriptsize
+%  "code width" is a fraction of \textwidth (default 0.56).
+%  Colors (hblibCommon), changeable with \definecolor:
+%    codebg codeframe codekw codestr codecmt termbg termfg termframe termcmd
+%
+%  Contents of this file (in this order)
+%    1  Packages              hblibCommon, tcolorbox, textpos
+%    2  Beamer or not         overlays and columns, with article fallbacks
+%    3  Boxes                 tcolorbox styles codebox, outbox, overlaybox, missingbox
+%    4  Building blocks       \lstcode, \lstoutput, \lstterminal
+%    5  One slide             \lstcodedown, \lstcoderight
+%    6  Two slides            \lstcodedownstep, \lstcoderightstep, \lstcodeoverlaystep
+%    7  Helper                \slidegrid
+% =====================================================================
+
+
+
+% ===================================================================== 1 Packages
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V packages
+\def\hb@loadedbylib{}                      % tells hblibCommon not to load hblibArticle
+\edef\hbO@dir{\CurrentFilePath}\edef\hbO@dir{\ifx\hbO@dir\@empty\else\hbO@dir/\fi}
+\ifdefined\hbC@loaded\else \RequirePackage{\hbO@dir hblibCommon}\fi % colors, listings styles, tikz
+\RequirePackage{tcolorbox}                 % the boxes around code and output
+\tcbuselibrary{listings,skins}             % listings: \tcbinputlisting; skins: enhanced, shadows
+                                           % (a library can be used only after tcolorbox is loaded)
+\RequirePackage[absolute,overlay]{textpos} % \lstcodeoverlaystep, \slidegrid: place at (x,y) on the page
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A packages
+
+
+
+% ===================================================================== 2 Beamer or not
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V beamer or not
+% \codeout@uncover{overlay}{text}   beamer: \uncover<overlay>{text}; otherwise: text
+% \codeout@only{overlay}{text}      beamer: \only<overlay>{text};    otherwise: text
+% \codeout@columns{w}{left}{right}  beamer: columns; otherwise: two minipages, left w\linewidth wide
+\@ifclassloaded{beamer}{%
+  \newcommand{\codeout@uncover}[2]{\uncover<#1>{#2}}
+  \newcommand{\codeout@only}[2]{\only<#1>{#2}}
+  \newcommand{\codeout@columns}[3]{%
+    \begin{columns}[T]
+      \begin{column}{#1\textwidth}
+        #2
+      \end{column}
+      \begin{column}{\dimexpr0.98\textwidth-#1\textwidth\relax}
+        #3
+      \end{column}
+    \end{columns}}
+}{%
+  \newcommand{\codeout@uncover}[2]{#2}
+  \newcommand{\codeout@only}[2]{#2}
+  \newcommand{\codeout@columns}[3]{%
+    \par\noindent
+    \begin{minipage}[t]{#1\linewidth}\vspace{0pt}#2\end{minipage}\hfill% \vspace{0pt}: tops aligned
+    \begin{minipage}[t]{\dimexpr0.98\linewidth-#1\linewidth\relax}\vspace{0pt}#3\end{minipage}\par}
+}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A beamer or not
+
+
+
+% ===================================================================== 3 Boxes
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V boxes
+% codebox     light box, blue title bar with the file name and the language
+% outbox      dark box, "Output" (or "Terminal") and the file name in the title bar
+% overlaybox  an output box floating on the slide, with a shadow
+% missingbox  a red box shown instead of an error when a file does not exist (yet)
+\tcbset{
+  codeoutboxbase/.style={enhanced, listing only, before skip=2pt,
+    boxrule=0.6pt, arc=2pt, right=1mm, top=0.3mm, bottom=0.3mm,
+    toptitle=0.2mm, bottomtitle=0.2mm},
+  codebox/.style={codeoutboxbase, colback=codebg, colframe=codeframe,
+    after skip=2pt, left=5mm,
+    colbacktitle=codeframe, coltitle=white, fonttitle=\ttfamily\scriptsize\bfseries},
+  outbox/.style={codeoutboxbase, colback=termbg, colupper=termfg, colframe=termframe,
+    after skip=4pt, left=2mm,
+    colbacktitle=termframe, coltitle=termfg, fonttitle=\sffamily\scriptsize\bfseries},
+  overlaybox/.style={before skip=0pt, after skip=0pt, drop fuzzy shadow=black!60},
+  missingbox/.style={colback=red!8, colframe=red!70!black, boxrule=0.6pt, arc=2pt,
+    fontupper=\ttfamily\scriptsize, top=0.5mm, bottom=0.5mm}
+}
+
+% print a path as typed, after expanding macros in it (e.g. \lecdir/sort.c)
+\newcommand{\codeout@path}[1]{%
+  \edef\codeout@tmp{#1}\expandafter\detokenize\expandafter{\codeout@tmp}}
+
+% a red box instead of an error when a file does not exist (yet)
+\newcommand{\codeout@missing}[1]{%
+  \begin{tcolorbox}[missingbox]
+    missing file: \codeout@path{#1}
+  \end{tcolorbox}}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A boxes
+
+
+
+% ===================================================================== 4 Building blocks
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V building blocks
+% \lstcode[listings options]{code path}{Language}
+\NewDocumentCommand{\lstcode}{O{} m m}{%
+  \IfFileExists{#2}{%
+    \tcbinputlisting{codebox, listing file={#2},
+      title={\codeout@path{#2}}, after title={\hfill\sffamily #3},
+      listing options={style=codestyle, language=#3, #1}}%
+  }{\codeout@missing{#2}}}
+
+% internal: \codeout@output{extra tcolorbox options}{listings options}{output path}
+\newcommand{\codeout@output}[3]{%
+  \IfFileExists{#3}{%
+    \tcbinputlisting{outbox, #1, listing file={#3},
+      title={Output}, after title={\hfill\ttfamily\mdseries\codeout@path{#3}},
+      listing options={style=outputstyle, #2}}%
+  }{\codeout@missing{#3}}}
+
+% \lstoutput[listings options]{output path}
+\NewDocumentCommand{\lstoutput}{O{} m}{\codeout@output{}{#1}{#2}}
+
+% \lstterminal[listings options]{transcript path}: a terminal session
+\NewDocumentCommand{\lstterminal}{O{} m}{%
+  \IfFileExists{#2}{%
+    \tcbinputlisting{outbox, listing file={#2},
+      title={Terminal}, after title={\hfill\ttfamily\mdseries\codeout@path{#2}},
+      listing options={style=terminalstyle, #1}}%
+  }{\codeout@missing{#2}}}
+
+% internal: code, output below; #1 = overlay spec for the output
+% \codeout@down{overlay}{code opts}{output opts}{code}{Language}{output}
+\newcommand{\codeout@down}[6]{%
+  \lstcode[#2]{#4}{#5}%
+  \vspace{1pt}%
+  \codeout@uncover{#1}{\lstoutput[#3]{#6}}}
+
+% internal: code and output side by side; #1 = overlay spec for the output
+% \codeout@side{overlay}{code width}{code opts}{output opts}{code}{Language}{output}
+\newcommand{\codeout@side}[7]{%
+  \codeout@columns{#2}%
+    {\lstcode[#3]{#5}{#6}}%
+    {\codeout@uncover{#1}{\lstoutput[#4]{#7}}}}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A building blocks
+
+
+
+% ===================================================================== 5 One slide
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V one slide
+% \lstcodedown[code opts][output opts]{code path}{Language}{output path}
+\NewDocumentCommand{\lstcodedown}{O{} O{} m m m}{%
+  \codeout@down{1-}{#1}{#2}{#3}{#4}{#5}}
+
+% \lstcoderight[code width][code opts][output opts]{code path}{Language}{output path}
+\NewDocumentCommand{\lstcoderight}{O{0.56} O{} O{} m m m}{%
+  \codeout@side{1-}{#1}{#2}{#3}{#4}{#5}{#6}}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A one slide
+
+
+
+% ===================================================================== 6 Two slides
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V two slides
+% Code on slide 1, output added on slide 2 (in an article: both at once).
+% (\uncover keeps the output's space reserved, so nothing jumps, and
+%  the rest of the frame is not delayed)
+% \lstcodedownstep[code opts][output opts]{code path}{Language}{output path}
+\NewDocumentCommand{\lstcodedownstep}{O{} O{} m m m}{%
+  \codeout@down{2-}{#1}{#2}{#3}{#4}{#5}}
+
+% \lstcoderightstep[code width][code opts][output opts]{code path}{Language}{output path}
+\NewDocumentCommand{\lstcoderightstep}{O{0.56} O{} O{} m m m}{%
+  \codeout@side{2-}{#1}{#2}{#3}{#4}{#5}{#6}}
+
+% \lstcodeoverlaystep[code opts][output opts][output width]{x,y}{code path}{Language}{output path}
+%   slide 1: the code.
+%   slide 2: the output, floating on top, upper-left corner at (x,y)
+%            measured from the upper-left corner of the slide (x right, y down).
+\def\codeout@splitxy#1,#2\@nil{\def\codeout@x{#1}\def\codeout@y{#2}}
+\NewDocumentCommand{\lstcodeoverlaystep}{O{} O{} O{0.45\textwidth} m m m m}{%
+  \codeout@splitxy#4\@nil
+  \lstcode[#1]{#5}{#6}%
+  \codeout@only{2-}{%
+    \begin{textblock*}{#3}(\codeout@x,\codeout@y)
+      \codeout@output{overlaybox}{#2}{#7}%
+    \end{textblock*}}}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A two slides
+
+
+
+% ===================================================================== 7 Helper
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V helper
+% \slidegrid draws a labeled 1 cm grid over the whole slide, to find x,y for
+% \lstcodeoverlaystep (works for any slide size, e.g. 16 x 9 cm or 12.8 x 9.6 cm)
+\newcommand{\slidegrid}{%
+  \pgfmathsetmacro{\codeout@W}{\paperwidth/1cm}%
+  \pgfmathsetmacro{\codeout@H}{\paperheight/1cm}%
+  \pgfmathtruncatemacro{\codeout@nx}{\codeout@W-0.5}%
+  \pgfmathtruncatemacro{\codeout@ny}{\codeout@H-0.5}%
+  \begin{textblock*}{\paperwidth}(0cm,0cm)
+    \begin{tikzpicture}[x=1cm, y=-1cm, gridlabel/.style={font=\scriptsize\bfseries,
+        text=red!80!black, fill=white, fill opacity=0.8, text opacity=1, inner sep=1pt}]
+      \useasboundingbox (0,0) rectangle (\codeout@W,\codeout@H);
+      \draw[red!55, thin] (0,0) grid (\codeout@W,\codeout@H);
+      \foreach \i in {1,...,\codeout@nx} \node[gridlabel] at (\i,0.55) {\i};
+      \foreach \j in {1,...,\codeout@ny} \node[gridlabel] at (0.3,\j) {\j};
+    \end{tikzpicture}
+  \end{textblock*}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A helper
+
+\endinput

@@ -1,0 +1,1083 @@
+% !TEX spellcheck = en_US
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works
+% and remixes based on it only for non-commercial purposes.
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% v20261109T0625   hblibArticle and hblibCommon v20261109T0615: the default lstlisting style is set by hblibCommon;
+%                  hblibPresentation has no mystyle any more
+% v20261108T2120   renamed hblibCommon-UserManual.tex to hblibArticle-UserManual.tex; title "hblibArticle User Manual";
+%                  new section "Data structures and code from files" (hblibDatastructures, hblibCodeoutput in an article)
+% v20261108T0905   the libraries are split: articles load hblibArticle (which loads hblibCommon);
+%                  \usepackage{hblibCommon} still works; "Getting started" lists the five libraries
+% v20261107T1235   hyperlinks: boxes (hblibCommon v20261107T1230)
+% v20261106T1210   \title[short]{...}: TeX Live 2026 looped ("TeX capacity exceeded") on \normalsize in the
+%                  page-header copy of the title; troubleshooting row added
+% v20261106T1030   user manual: quick reference (all options, commands, styles, colors),
+%                  customizing, troubleshooting; title "hblibCommon User Manual"
+% v20261106T1010   renamed hblibCommon-test.tex to hblibCommon-UserManual.tex
+% v20261106T0945   lstlisting blocks wrapped in V / A markers too (with their \hCodeTag line)
+% v20261106T0905   code blocks (texcode, javacode, bashcode) wrapped in V / A markers
+% v20261106T0830   examples and notes for hblibCommon.sty v20261107T1230
+%
+% hblibArticle-UserManual.tex -- the user manual of hblibArticle.sty and hblibCommon.sty: a quick reference, then every feature
+% with the LaTeX source next to the result, customizing and troubleshooting.
+% Put it next to hblibArticle.sty, hblibCommon.sty, hblibDatastructures.sty and hblibCodeoutput.sty
+% (or change the \usepackage lines) and compile twice:
+%   pdflatex hblibArticle-UserManual.tex
+%   pdflatex hblibArticle-UserManual.tex
+% It writes small example files, D.java, run.sh, ArrayStack.java and ArrayStack.txt, next to itself (see "Example files" below).
+
+\documentclass[11pt]{amsart}         % article works too
+
+
+
+\usepackage{hblibArticle}            % from another folder: \usepackage{../../cis000_latex/lib/hblibArticle}
+\usepackage{hblibDatastructures}     % optional: \hStack, \hArray, tree styles (section "Data structures")
+\usepackage{hblibCodeoutput}         % optional: code and output from files, in boxes
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific to this test
+% texcode: shows LaTeX source in a box tagged "latex" (it can contain \end{lstlisting}, \end{javacode}, ...)
+\lstnewenvironment{texcode}{\hCodeTag{latex}\lstset{style=texsnippet, numbers=none}}{}
+% \hNote{text}: a note in a light box
+\newcommand{\hNote}[1]{\par\smallskip\noindent\colorbox{codebg}{\parbox{\dimexpr\linewidth-2\fboxsep}{\small\raggedright\textbf{Note.} #1}}\par\smallskip}
+% \cs{name}: a command name \name;  \marg{x}: {x};  \oarg{x}: [x]   (in the reference tables)
+\newcommand{\cs}[1]{\hCode{\textbackslash #1}}
+\newcommand{\marg}[1]{\hCode{\{#1\}}}
+\newcommand{\oarg}[1]{\hCode{[#1]}}
+% +++++++++++++++++++++++++++++++++++++++ A specific to this test
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V example files
+% filecontents* writes the files used by \javafile and \bashfile below ([overwrite]: every run)
+\begin{filecontents*}[overwrite]{D.java}
+package demo;
+
+/** D shows how line numbers work with firstline. */
+public class D {
+    public static void main(String[] args) {
+        int n = args.length;          // line 6
+        System.out.println("n = " + n);
+    }
+}
+\end{filecontents*}
+
+\begin{filecontents*}[overwrite]{run.sh}
+#!/bin/bash
+# compile and run D
+javac -d out D.java
+java -cp out demo.D aaa bbb
+\end{filecontents*}
+% a real program and what it printed (compiled and run with JDK 21), for hblibCodeoutput
+\begin{filecontents*}[overwrite]{ArrayStack.java}
+/** A stack of int values in an array. */
+public class ArrayStack {
+    private int[] a = new int[4];
+    private int top = 0;              // number of elements
+
+    public void push(int x) {
+        if (top == a.length) {        // full: double the array
+            a = java.util.Arrays.copyOf(a, 2 * a.length);
+        }
+        a[top++] = x;
+    }
+
+    public int pop() {
+        if (top == 0) throw new IllegalStateException("empty stack");
+        return a[--top];
+    }
+
+    public boolean isEmpty() { return top == 0; }
+
+    public static void main(String[] args) {
+        ArrayStack s = new ArrayStack();
+        for (int x : new int[] {15, 6, 2, 9}) s.push(x);
+        System.out.println("pop: " + s.pop());
+        System.out.println("pop: " + s.pop());
+        s.push(17);
+        while (!s.isEmpty()) System.out.print(s.pop() + " ");
+        System.out.println();
+    }
+}
+\end{filecontents*}
+
+\begin{filecontents*}[overwrite]{ArrayStack.txt}
+pop: 9
+pop: 2
+17 6 15 
+\end{filecontents*}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A example files
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V title
+\title[hblibArticle User Manual]{%   [short title]: the page-header copy must not contain size commands
+	hblibArticle User Manual\\[2pt]
+	{\normalsize for hblibArticle.sty and hblibCommon.sty v20261109T0615}
+}
+\author{Haluk Bingol}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A title
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\section{Getting started}\label{sec:loading}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\documentclass[11pt]{amsart}           % or article; [twocolumn] works too
+\usepackage{hblibArticle}              % titles and headings as typed
+\usepackage[amsheadings]{hblibArticle} % amsart: keep CAPITAL titles, small-caps headings
+\usepackage{../../cis000_latex/lib/hblibArticle}   % from another folder
+\usepackage{../../cis000_latex/lib/hblibDatastructures} % optional: arrays, stacks, trees
+\usepackage{../../cis000_latex/lib/hblibCodeoutput}     % optional: code and output from files
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+\begin{center}\small
+\begin{tabular}{@{}L{0.27\linewidth}L{0.67\linewidth}@{}}
+	\toprule
+	\textbf{Library} & \textbf{Contents} \\
+	\midrule
+	hblibCommon & shared by articles and slides: fonts, packages, algorithms, colors and emphasis,
+		code styles and environments, \cs{hCode}, time stamps, \cs{reffig} \dots, \cs{hAbs}, column type \hCode{L};
+		not loaded by the document, but by the two below \\
+	hblibArticle & articles: page, lists, titles as typed, contents, section numbering, footer, hyperlinks \\
+	hblibPresentation & slides (beamer): theme, \cs{hSection}, \cs{hSubsection}, \cs{hSeparator}, \cs{hSectionSkip} \\
+	hblibDatastructures & optional: arrays, stacks, queues, strings, grids, trees, commit graphs \\
+	hblibCodeoutput & optional: code and output read from files, in boxes (tcolorbox) \\
+	\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{itemize}\raggedright
+	\item Keep the five files in one folder: each library loads the others it needs from its own folder.
+	\item Old documents with \hCode{\textbackslash usepackage\{hblibCommon\}} need no change:
+	hblibCommon then loads hblibArticle (the log says so).
+	\item Load it with \hCode{\textbackslash usepackage}, without \hCode{.sty}.
+	\hCode{\textbackslash input\{hblibCommon.sty\}} does \emph{not} work:
+	names with \hCode{@} inside the library break, and LaTeX reports ``Missing \textbackslash begin\{document\}''.
+	\item With a relative path LaTeX warns
+	``You have requested package `../../cis000\_latex/hblibCommon', but the package provides `hblibCommon'''.
+	The warning is harmless.
+	\item Compile \emph{twice}: the contents, the references and the ``page / pages'' in the footer
+	are known only after the first run.
+	\item Already loaded, so do not load again:
+	fontenc (T1), lmodern, geometry, amsmath, amssymb, graphicx, xcolor, tikz, calc, array, booktabs, enumitem,
+	forest, datetime2, menukeys, algorithm2e, listings, fancyhdr, lastpage, tocloft (not with amsart), hyperref.
+	\item Page: A4 with 2\,cm margins. Change it after \hCode{\textbackslash usepackage\{hblibArticle\}}, e.g.\
+	\hCode{\textbackslash geometry\{bottom=2.5cm\}}.
+\end{itemize}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\section{Quick reference}\label{sec:quickref}
+
+Every option, command and environment of hblibArticle and hblibCommon, with the section that shows an example.
+Optional arguments are in \oarg{brackets}.
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Option}
+
+\begin{center}\small
+\begin{tabular}{@{}L{0.36\linewidth}L{0.58\linewidth}@{}}
+	\toprule
+	\textbf{Write} & \textbf{Result} \\
+	\midrule
+	\cs{usepackage}\marg{hblibArticle} & titles, authors and headings as typed (also with amsart) \\
+	\cs{usepackage}\oarg{amsheadings}\marg{hblibArticle} & amsart: keep its CAPITAL title and small-caps headings \\
+	\bottomrule
+\end{tabular}
+\end{center}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Code}
+
+\begin{center}\small
+\begin{tabular}{@{}L{0.36\linewidth}L{0.58\linewidth}@{}}
+	\toprule
+	\textbf{Write} & \textbf{Result} \\
+	\midrule
+	\hCode{\textbackslash begin\{javacode\}}\oarg{options} & typed Java: framed box, tag ``java'' \\
+	\hCode{\textbackslash begin\{bashcode\}}\oarg{options} & typed bash: framed box, tag ``bash'' \\
+	\cs{javafile}\oarg{options}\marg{file} & Java from a file, line numbers, tag ``java'' \\
+	\cs{bashfile}\oarg{options}\marg{file} & bash from a file, tag ``bash'' \\
+	\cs{hCode}\marg{text} & inline code: typewriter, colored, 2\,pt smaller; escape \hCode{\_ \{ \} \textbackslash} \\
+	\cs{hCodeJ}\marg{code} & inline Java, syntax colored, typed as is \\
+	\cs{hCodeB}\marg{code} & inline bash, typed as is \\
+	\cs{code}\marg{code} & old name of \cs{hCodeJ} \\
+	\cs{hCodeTag}\marg{text} & the next listing shows \emph{text} in its upper right corner \\
+	\cs{hCodeTagsfalse}, \cs{hCodeTagstrue} & no tags from here on; tags again \\
+	\hCode{style=}\emph{name} & listing styles: \reftbl{tbl:styles} \\
+	\bottomrule
+\end{tabular}
+\end{center}
+
+{\raggedright
+Options are ordinary listings options, e.g.\ \hCode{numbers=left}, \hCode{firstline=5}, \hCode{lastline=7},
+\hCode{firstnumber=5}, \hCode{basicstyle=\textbackslash ttfamily \textbackslash scriptsize}.
+Examples: \refsec{sec:code}.\par}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Section numbering}
+
+\begin{center}\small
+\begin{tabular}{@{}L{0.36\linewidth}L{0.58\linewidth}@{}}
+	\toprule
+	\textbf{Write} & \textbf{Result} \\
+	\midrule
+	\cs{hNumbersLetter}\marg{G} & next section G; subsections G1, G2; subsubsections G1.1 \\
+	\cs{hNumbersArabic} & back to 1, 1.1; the numbers continue where they stopped \\
+	\cs{hNumbersArabic}\oarg{1} & back to numbers; the next section is 1 \\
+	\cs{hSectionWarmUp} & section ``W WarmUp'' \\
+	\cs{hSectionGoal} & section ``G Goal'' \\
+	\cs{hSectionChallenge} & section ``C Challenge'' \\
+	\cs{hSectionHome} & section ``H Home'' \\
+	\bottomrule
+\end{tabular}
+\end{center}
+
+Example: \refsec{sec:numbering}.
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{References}
+
+\begin{center}\small
+\begin{tabular}{@{}L{0.30\linewidth}L{0.20\linewidth}L{0.30\linewidth}L{0.14\linewidth}@{}}
+	\toprule
+	\textbf{Write} & \textbf{Result} & \textbf{Write} & \textbf{Result} \\
+	\midrule
+	\cs{reffig}\marg{label} & Fig.~3        & \cs{refthm}\marg{label} & Theorem~1 \\
+	\cs{refeq}\marg{label}  & Eq.~2         & \cs{refthmA}\marg{thm}\marg{item} & Theorem~1(b) \\
+	\cs{reftbl}\marg{label} & Table~1       & \cs{reflem}\marg{label} & Lemma~2 \\
+	\cs{refsec}\marg{label} & Sec.~4        & \cs{refdef}\marg{label} & Definition~3 \\
+	\cs{refalg}\marg{label} & Alg.~1        & \cs{refexmp}\marg{label} & Example~4 \\
+	\cs{reflst}\marg{label} & List~2        & \cs{refcite}\marg{key} & Ref.~[7] \\
+	\bottomrule
+\end{tabular}
+\end{center}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Text and time stamps}
+
+\begin{center}\small
+\begin{tabular}{@{}L{0.36\linewidth}L{0.58\linewidth}@{}}
+	\toprule
+	\textbf{Write} & \textbf{Result} \\
+	\midrule
+	\cs{hQuote}\marg{text} & a short quotation: small, sans serif, in quotes \\
+	\cs{hIdea}\marg{text} & a note to self: tiny, olive, in brackets \\
+	\cs{hFootnote}\marg{who}\marg{text} & a footnote starting with a red ``@who :'' \\
+	\cs{hAbs}\marg{x} & $\lvert x \rvert$ with bars that fit \\
+	\cs{hFontLarger}\marg{N}\marg{text} & text $N$\,pt larger ($N<0$: smaller); old name \cs{hbFontShift} \\
+	\cs{YULearn} & \YULearn, the course web site \\
+	\cs{hbTimeStamp} & v\today, used in the footer \\
+	\cs{hbTimeStampDraft} & red ``--Draft--'' with date and time \\
+	\bottomrule
+\end{tabular}
+\end{center}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Algorithms}
+
+algorithm2e is loaded with \hCode{ruled, vlined, linesnumbered} and captions in \hCode{\textbackslash small}.
+hblibCommon adds \cs{Fn}\marg{name}\marg{body} (``function \dots\ end'') and the aligned
+\cs{Input}\marg{text} and \cs{Output}\marg{text} lines.
+Example: \refalg{alg:balanced}.
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Colors}\label{sec:colors}
+
+All can be changed with \cs{definecolor}, see \refsec{sec:customizing}.
+
+\begin{center}\small
+\begin{tabular}{@{}L{0.20\linewidth}L{0.20\linewidth}L{0.52\linewidth}@{}}
+	\toprule
+	\textbf{Name} & \textbf{RGB} & \textbf{Used for} \\
+	\midrule
+	colorHCode & 240, 80, 50   & \cs{hCode} \\
+	codebg     & 248, 248, 248 & background of code boxes \\
+	codekw     & 0, 70, 160    & keywords \\
+	codestr    & 30, 130, 60   & strings \\
+	codecmt    & 120, 120, 120 & comments, line numbers, tags \\
+	codeframe  & 40, 90, 160   & code box frame (as in the slide decks) \\
+	termbg, termfg, termframe & 35, 38, 45 \dots & terminal: background, text, frame \\
+	termcmd    & 255, 214, 102 & terminal: lines starting with \$ \\
+	\bottomrule
+\end{tabular}
+\end{center}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\section{Code}\label{sec:code}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Typed code: javacode, bashcode}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\begin{javacode}
+public class Hello {   // Turkish letters work: ğüşıöç
+    public static void main(String[] args) {
+        System.out.println("Hello");
+    }
+}
+\end{javacode}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{javacode}
+public class Hello {   // Turkish letters work: ğüşıöç
+    public static void main(String[] args) {
+        System.out.println("Hello");
+    }
+}
+\end{javacode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\begin{bashcode}
+javac Hello.java   # compile
+java Hello         # run
+\end{bashcode}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{bashcode}
+javac Hello.java   # compile
+java Hello         # run
+\end{bashcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+Any listings option can be given in brackets, e.g.\ line numbers:
+\hCode{\textbackslash begin\{javacode\}[numbers=left]}.
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{javacode}[numbers=left]
+int a = 1;
+int b = a + 1;
+\end{javacode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Code from a file: \textbackslash javafile, \textbackslash bashfile}
+
+The whole file, with line numbers (\hCode{\textbackslash javafile} numbers the lines by default):
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\javafile{D.java}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+\javafile{D.java}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\bashfile{run.sh}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+\bashfile{run.sh}
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Part of a file and its line numbers}\label{sec:firstnumber}
+
+\hNote{\hCode{\textbackslash javafile[firstline=5, lastline=7]\{D.java\}}
+numbers the lines 1, 2, 3, not 5, 6, 7.
+Add \hCode{firstnumber=5} to the options when you want the file's own line numbers.}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\javafile[firstline=5, lastline=7]{D.java}                 % numbered 1, 2, 3
+\javafile[firstline=5, lastline=7, firstnumber=5]{D.java}  % numbered 5, 6, 7
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+\javafile[firstline=5, lastline=7]{D.java}
+
+\javafile[firstline=5, lastline=7, firstnumber=5]{D.java}
+
+Now the text can say ``line 6'' and mean the same line as the file.
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Language tags}\label{sec:tags}
+
+As in markdown, a code box shows its language small and gray in its upper right corner.
+\begin{itemize}\raggedright
+	\item \hCode{bashcode} and \hCode{\textbackslash bashfile} show \textbf{bash}.
+	\item \hCode{javacode} and \hCode{\textbackslash javafile} show \textbf{java},
+	also when you print part of a file with \hCode{firstline=\dots}.
+	\item Other listings: put \hCode{\textbackslash hCodeTag\{\dots\}} right before the listing.
+	For example, \hCode{\textbackslash hCodeTag\{txt\}} before a \hCode{MANIFEST.MF} box
+	matches a markdown ``txt'' block.
+	\item Turning them off: \hCode{\textbackslash hCodeTagsfalse} in a document turns tags off from that point on;
+	\hCode{\textbackslash hCodeTagstrue} turns them on again.
+\end{itemize}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\hCodeTag{txt}
+\begin{lstlisting}[style=outputstyle, frame=single, rulecolor=\color{gray!40}]
+Main-Class: MyClass
+\end{lstlisting}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\hCodeTag{txt}
+\begin{lstlisting}[style=outputstyle, frame=single, rulecolor=\color{gray!40}]
+Main-Class: MyClass
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\hCodeTagsfalse
+\begin{bashcode}
+ls -l    # no tag
+\end{bashcode}
+\hCodeTagstrue
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+\hCodeTagsfalse
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{bashcode}
+ls -l    # no tag
+\end{bashcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+\hCodeTagstrue
+
+\hNote{The tag takes no space of its own: it is drawn at the right end of the first line.
+A first line that runs the full width of the box goes under the tag.}
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Other listing styles}
+
+All of them are used as \hCode{\textbackslash begin\{lstlisting\}[style=\dots]}.
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. styles
+\begin{table}[htbp]
+\caption{Listing styles of hblibCommon.}
+\label{tbl:styles}
+\small
+\begin{tabular}{@{}>{\ttfamily}l >{\raggedright\arraybackslash}p{0.62\linewidth}@{}}
+	\toprule
+	\textrm{\textbf{Style}} & \textbf{Use} \\
+	\midrule
+	codesnippet   & short code typed in the .tex: framed, light background (javacode and bashcode use it) \\
+	codestyle     & colored code with line numbers, no frame (the default of a plain lstlisting) \\
+	outputstyle   & program output: no colors, no numbers \\
+	terminalstyle & a terminal session: lines starting with \$ are highlighted \\
+	texsnippet    & LaTeX source \\
+	javastyle, bashstyle & codesnippet plus the language \\
+	mystyle       & old name (hblibSimple, articles only); the same as codestyle \\
+	\bottomrule
+\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+\reftbl{tbl:styles} lists them. A terminal session:
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\hCodeTag{terminal}
+\begin{lstlisting}[style=terminalstyle, frame=single, rulecolor=\color{termframe}, backgroundcolor=\color{termbg}, basicstyle=\ttfamily\footnotesize\color{termfg}]
+$ java -jar MyApp.jar aaa
+~~MyClass
+i=0:aaa
+\end{lstlisting}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\hCodeTag{terminal}
+\begin{lstlisting}[style=terminalstyle, frame=single, rulecolor=\color{termframe}, backgroundcolor=\color{termbg}, basicstyle=\ttfamily\footnotesize\color{termfg}]
+$ java -jar MyApp.jar aaa
+~~MyClass
+i=0:aaa
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Inline code}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\hCode{MyClass.java}             % plain, colored, 2 pt smaller: escape _ { } \ as in text
+\hCode{project\_dir}             % gives project_dir
+\hCodeJ{int n = s.length();}     % Java, syntax colored, typed as is
+\hCodeB{echo 'aa bbb' >file}     % bash, typed as is (quotes stay straight)
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+Results:
+\hCode{MyClass.java},
+\hCode{project\_dir},
+\hCodeJ{int n = s.length();},
+\hCodeB{echo 'aa bbb' >file}.
+
+\hNote{\hCode{\textbackslash hCodeJ} and \hCode{\textbackslash hCodeB} cannot be used in section titles,
+captions or footnotes, and their text must not contain \hCode{\%} or \hCode{\#}.
+Use \hCode{\textbackslash hCode} there, with the special characters escaped.}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\section{Lists, tables, trees, figures}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Lists (enumitem)}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\begin{enumerate}[label=\roman*., itemsep=0pt]   % i., ii.; no extra space between items
+	\item first
+	\item second
+\end{enumerate}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+\begin{enumerate}[label=\roman*., itemsep=0pt]
+	\item first
+	\item second
+\end{enumerate}
+
+Other options: \hCode{[nosep]} (no space at all), \hCode{[label=(\textbackslash alph*)]} for (a), (b),
+\hCode{[topsep=1pt]}.
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Menus and keys (menukeys)}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\menu{File > Save As}    \keys{Ctrl + C}    \keys{\shift + \cmd + B}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+\menu{File > Save As} \quad \keys{Ctrl + C} \quad \keys{\shift + \cmd + B}
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Folder trees (forest)}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\begin{forest}
+for tree={font=\ttfamily\small, grow'=0, folder, draw=none,
+          s sep=0pt, inner ysep=1pt}            % less space between lines
+	[project/
+		[src/
+			[packageA/ [modifyMe.java] [doNotModifyMe.java]]
+		]
+	]
+\end{forest}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+\begin{center}
+\begin{forest}
+for tree={font=\ttfamily\small, grow'=0, folder, draw=none, s sep=0pt, inner ysep=1pt}
+	[project/
+		[src/
+			[packageA/ [modifyMe.java] [doNotModifyMe.java]]
+		]
+	]
+\end{forest}
+\end{center}
+
+\hNote{\hCode{s sep} is the space between lines, \hCode{inner ysep} the padding around each name.
+Do not change \hCode{l sep}: with \hCode{folder} it breaks the connecting lines.
+\hCode{folder indent=.5em} makes the indent smaller.}
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Algorithms (algorithm2e)}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\begin{algorithm}[H]
+	\caption{isBalanced($s$)}\label{alg:balanced}
+	\KwIn{a string $s$}
+	\KwOut{true or false}
+	$S \gets$ an empty stack\;
+	\ForEach{character $c$ of $s$}{
+		\lIf{$c$ is an opening bracket}{push $c$ on $S$}
+		\ElseIf{$c$ is a closing bracket}{
+			\lIf{$S$ is empty \textbf{or} pop($S$) does not match $c$}{\Return{false}}
+		}
+	}
+	\Return{$S$ is empty}\;
+\end{algorithm}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+\begin{algorithm}[H]
+	\caption{isBalanced($s$)}\label{alg:balanced}
+	\KwIn{a string $s$}
+	\KwOut{true or false}
+	$S \gets$ an empty stack\;
+	\ForEach{character $c$ of $s$}{
+		\lIf{$c$ is an opening bracket}{push $c$ on $S$}
+		\ElseIf{$c$ is a closing bracket}{
+			\lIf{$S$ is empty \textbf{or} pop($S$) does not match $c$}{\Return{false}}
+		}
+	}
+	\Return{$S$ is empty}\;
+\end{algorithm}
+
+\refalg{alg:balanced} is placed here because of \hCode{[H]}.
+Without it, it floats like a figure.
+
+\hNote{\hCode{\textbackslash clearpage} prints all waiting figures, tables and algorithms, then starts a new page.
+To print them without a new page, use \hCode{\textbackslash FloatBarrier} of the \hCode{placeins} package.}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\section{Data structures and code from files}\label{sec:optional}
+
+Two optional libraries work in articles too; load them after hblibArticle:
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\usepackage{../../cis000_latex/lib/hblibArticle}
+\usepackage{../../cis000_latex/lib/hblibDatastructures}   % \hStack, \hQueue, \hArray, \hGrid, trees, commits
+\usepackage{../../cis000_latex/lib/hblibCodeoutput}       % \lstcode, \lstcoderight, \lstterminal, ...
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+Their full manuals are hblibDatastructures-UserManual and hblibCodeoutput-UserManual (slide decks).
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Data structures (hblibDatastructures)}\label{sec:ds}
+Every macro is used inside a \hCode{tikzpicture}; put it in a figure to give it a caption and a label.
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}
+    \hStack{1}{6}{4}{15,6,2,9}[0.9][0.6]
+    \hArray[id=a, name=a, at={(8,0)}, cur={2}, done={0,1}]{3,1,4,1,5}
+  \end{tikzpicture}
+  \caption{A stack and an array.}\label{fig:ds}
+\end{figure}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Figure.
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}
+		\hStack{1}{6}{4}{15,6,2,9}[0.9][0.6]
+		\hArray[id=a, name=a, at={(8,0)}, cur={2}, done={0,1}]{3,1,4,1,5}
+	\end{tikzpicture}
+	\caption{A stack and an array.}\label{fig:ds}
+\end{figure}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+\noindent \reffig{fig:ds}: the stack has top 4 (green); in the array, cell 2 is the current one and cells 0, 1 are done.
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\begin{tikzpicture}[htree]
+  \node[hnode, hsquare] {$*$}
+    child {node[hnode, hsquare, hhot] {$+$}
+      child {node[hnode, hleaf, horder=1] {3}}
+      child {node[hnode, hleaf, horder=2] {4}}}
+    child {node[hnode, hleaf, horder=3] {2}};
+\end{tikzpicture}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Tree.
+\begin{center}
+\begin{tikzpicture}[htree]
+	\node[hnode, hsquare] {$*$}
+		child {node[hnode, hsquare, hhot] {$+$}
+			child {node[hnode, hleaf, horder=1] {3}}
+			child {node[hnode, hleaf, horder=2] {4}}}
+		child {node[hnode, hleaf, horder=3] {2}};
+\end{tikzpicture}
+\end{center}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Code and output from files (hblibCodeoutput)}\label{sec:codeoutput}
+The code and its output stay in files (paths relative to the .tex); the output is what the program really printed.
+In an article the \hCode{*step} macros show the output at once, and side by side means two top-aligned columns.
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\lstcoderight[0.66][firstline=21, firstnumber=21, basicstyle=\ttfamily\scriptsize]
+             {ArrayStack.java}{Java}{ArrayStack.txt}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code and output.
+\lstcoderight[0.66][firstline=21, firstnumber=21, basicstyle=\ttfamily\scriptsize]{ArrayStack.java}{Java}{ArrayStack.txt}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+\begin{center}\small
+\begin{tabular}{@{}L{0.5\linewidth}L{0.44\linewidth}@{}}
+	\toprule
+	\textbf{Write} & \textbf{Shows} \\
+	\midrule
+	\cs{lstcode}\oarg{opts}\marg{code}\marg{Language} & code in a box with its file name \\
+	\cs{lstoutput}\oarg{opts}\marg{output} & output in a dark box \\
+	\cs{lstterminal}\oarg{opts}\marg{transcript} & a terminal session, \hCode{\$} lines highlighted \\
+	\cs{lstcodedown}, \cs{lstcodedownstep} & code, output below \\
+	\cs{lstcoderight}, \cs{lstcoderightstep}\oarg{width} & code left, output right \\
+	\bottomrule
+\end{tabular}
+\end{center}
+
+\hNote{A missing file gives a red box, not an error, so a document compiles before its outputs exist.}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\section{Section numbering}\label{sec:numbering}
+
+Sections are numbered 1, 2, \dots\ with subsections 1.1 and subsubsections 1.1.1.
+The style can switch before any \hCode{\textbackslash section}:
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\hNumbersLetter{G}        % next section: G, subsections G1, G2, subsubsections G1.1
+\section{Group work}
+\hNumbersArabic           % back to numbers; they continue where they stopped
+\hNumbersArabic[1]        % back to numbers, restarting at 1
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+Lab handouts use four ready-made sections:
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\hSectionWarmUp      % W  WarmUp
+\hSectionGoal        % G  Goal
+\hSectionChallenge   % C  Challenge
+\hSectionHome        % H  Home
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+The next four sections are made with them, and the section after them with \hCode{\textbackslash hNumbersArabic}.
+Look at their numbers here and in the contents.
+
+\hNote{\hCode{\textbackslash ref} prints the number in the current style, e.g.\ \refsec{sec:goalA} and \refsec{sec:numbering}.
+Links in the PDF stay correct, even though G and a later section 7 have the same counter value.}
+
+
+
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V WarmUp
+\hSectionWarmUp
+\subsection{A warm-up task}
+Complete \hCode{lowerFirstChar}.
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A WarmUp
+
+
+
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V Goal
+\hSectionGoal
+\subsection{First goal}\label{sec:goalA}
+\subsubsection{A detail}
+\subsection{Second goal}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A Goal
+
+
+
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V Challenge
+\hSectionChallenge
+\subsection{A challenge}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A Challenge
+
+
+
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V Home
+\hSectionHome
+\subsection{At home}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A Home
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\hNumbersArabic
+\section{Macros}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{References}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\reffig{fig:x}  \refeq{eq:x}  \reftbl{tbl:x}  \refsec{sec:x}  \refalg{alg:x}  \reflst{lst:x}
+\refthm{thm:x}  \refthmA{thm:x}{item:b}  \reflem{lem:x}  \refdef{def:x}  \refexmp{ex:x}
+\refcite{key}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+They print ``Fig.~3'', ``Eq.~2'', ``Table~1'', ``Sec.~4'', ``Alg.~1'', ``List~2'',
+``Theorem~1'', ``Theorem~1(b)'', ``Lemma~2'', ``Definition~3'', ``Example~4'', ``Ref.~[7]'',
+with a non-breaking space. In this document:
+\reftbl{tbl:styles}, \refalg{alg:balanced}, \refsec{sec:tags}.
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Text}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\hQuote{Talk is cheap. Show me the code.}
+\hIdea{add an example here}
+text\hFootnote{HB}{check this}
+\hAbs{x - y}
+\YULearn
+\hFontLarger{2}{two points larger}  \hFontLarger{-2}{two points smaller}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+\hQuote{Talk is cheap. Show me the code.}
+\quad \hIdea{add an example here}
+\quad text\hFootnote{HB}{check this}
+\quad \hAbs{x - y}
+\quad \YULearn
+\quad \hFontLarger{2}{two points larger}, \hFontLarger{-2}{two points smaller}
+
+\hNote{A document may define its own \hCode{\textbackslash YULearn} with \hCode{\textbackslash newcommand};
+the library then uses the document's.}
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Time stamps}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\hbTimeStamp        % in the footer
+\hbTimeStampDraft   % red, with the time: for drafts
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+\hbTimeStamp \quad \hbTimeStampDraft
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\section{Layout}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Titles and headings}
+
+With \hCode{amsart}, the title, the authors and the section headings are printed as typed,
+not in capitals or small caps.
+\hCode{\textbackslash usepackage[amsheadings]\{hblibArticle\}} keeps the \hCode{amsart} look.
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Table of contents}
+
+One size smaller than the text; sections in bold; subsections indented, subsubsections more.
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\setcounter{tocdepth}{2}   % after \usepackage{hblibArticle}: no subsubsections in the contents
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Footer}
+
+Every page, also the first one with \hCode{amsart}:
+a rule, then on the left the file name and the date, on the right ``page / pages''.
+The file name is \hCode{\textbackslash jobname}, the name of the .tex file.
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Pages and columns}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\newpage     % a new page (in two columns: a new column)
+\clearpage   % a new page, after printing all waiting figures, tables and algorithms
+\documentclass[11pt, twocolumn]{article}   % two columns
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsection{Hyperlinks}
+
+The contents, \hCode{\textbackslash ref} and URLs are clickable.
+A red box marks an internal link, a blue box a URL; the boxes are shown on screen, not printed.
+
+\url{https://github.com/halukbingol/LaTeX-Templates}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\hypersetup{hidelinks}                       % after \usepackage{hblibArticle}: no marks
+\hypersetup{colorlinks=true, linkcolor=blue!70!black, urlcolor=blue, citecolor=green!50!black}
+                                             % colored text instead of boxes
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+\hNote{\hCode{\textbackslash hCode} in a section title prints correctly, but hyperref warns
+``Token not allowed in a PDF string'' for the PDF bookmark. The warning is harmless.}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\section{Customizing}\label{sec:customizing}
+
+Put these after \cs{usepackage}\marg{hblibArticle}; inside a group \hCode{\{...\}} they change only that part.
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\geometry{margin=2.5cm}                    % margins
+\definecolor{colorHCode}{RGB}{0,90,200}    % \hCode in blue
+\definecolor{codekw}{RGB}{160,0,80}        % keywords in purple
+\setcounter{tocdepth}{2}                   % no subsubsections in the contents
+\hCodeTagsfalse                            % no language tags
+\renewcommand{\hbTimeStamp}{v1.2}          % the version in the footer
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+One listing only: give the option in brackets.
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\begin{javacode}[basicstyle=\ttfamily\scriptsize, numbers=left]
+int x = 1;   // smaller, numbered
+\end{javacode}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{javacode}[basicstyle=\ttfamily\scriptsize, numbers=left]
+int x = 1;   // smaller, numbered
+\end{javacode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+A color only in a group:
+{\definecolor{colorHCode}{RGB}{0,90,200}\hCode{blue here}}, \hCode{the usual color here}.
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\section{Troubleshooting}\label{sec:troubleshooting}
+
+\begin{center}\small
+\begin{tabular}{@{}L{0.34\linewidth}L{0.28\linewidth}L{0.32\linewidth}@{}}
+	\toprule
+	\textbf{Message or problem} & \textbf{Cause} & \textbf{Fix} \\
+	\midrule
+	Missing \textbackslash begin\{document\} right after loading
+		& \cs{input}\marg{hblibArticle.sty} & \cs{usepackage}\marg{hblibArticle} \\
+	File `hblibArticle.tex' not found
+		& \cs{input}\marg{hblibArticle} & \cs{usepackage}\marg{hblibArticle} \\
+	File `\dots/hblibCommon.sty' not found
+		& hblibCommon not next to hblibArticle & keep all hb libraries in one folder \\
+	Command \textbackslash hEmph (or another name) already defined, right after loading
+		& old and new hb libraries mixed & update all hb libraries together \\
+	You have requested package `../../\dots/hblibArticle', but the package provides `hblibArticle'
+		& a relative path in \cs{usepackage} & harmless \\
+	Footer shows ``1 / ??''; contents or references empty or ``??''
+		& first run & compile again \\
+	Command \textbackslash hNumbersArabic already defined
+		& the document still has its own copy of the numbering commands & delete the copy \\
+	Command \textbackslash code (or another name) already defined
+		& the document defines a name the library has & rename it, or use \cs{renewcommand} \\
+	Token not allowed in a PDF string
+		& \cs{hCode} in a section title & harmless \\
+	Package Listings Error: style codesnippet undefined
+		& an old library (hblibSimple) & use hblibArticle \\
+	\cs{hCodeJ} fails in a title, caption or footnote
+		& listings cannot work inside another command's argument & \cs{hCode} there \\
+	\cs{javafile} with \hCode{firstline=5} is numbered 1, 2, 3
+		& listings counts the printed lines & add \hCode{firstnumber=5} \\
+	the tag covers the end of the first code line
+		& a full-width first line & shorten it, or \cs{hCodeTagsfalse} before the listing \\
+	TeX capacity exceeded, sorry [input stack size=10000] at \cs{maketitle} (amsart)
+		& a size command such as \cs{normalsize} in \cs{title}; amsart copies the title to the page header & give a plain short title: \cs{title}\oarg{Short}\marg{Long \textbackslash\textbackslash\ \{\textbackslash small \dots\}} \\
+	a figure or algorithm appears pages later
+		& floats wait for room & \oarg{H}, \cs{clearpage}, or \cs{FloatBarrier} (placeins) \\
+	\bottomrule
+\end{tabular}
+\end{center}
+
+
+
+\end{document}

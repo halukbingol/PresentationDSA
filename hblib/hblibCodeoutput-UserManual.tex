@@ -1,0 +1,731 @@
+% !TEX spellcheck = en_US
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works
+% and remixes based on it only for non-commercial purposes.
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% v20261107T1200   user manual of hblibCodeoutput.sty v20261104T2350
+%
+% hblibCodeoutput-UserManual.tex -- every feature of hblibCodeoutput.sty, as a deck:
+% the LaTeX source next to the result.
+% Put it next to hblibPresentation.sty and hblibCodeoutput.sty, then compile twice:
+%   pdflatex hblibCodeoutput-UserManual
+%   pdflatex hblibCodeoutput-UserManual
+% It writes the example files Hello.java, Hello.txt, Grades.java, Grades.txt and Session.txt
+% next to itself (see "Example files" below). The outputs are real: the programs were compiled
+% and run with JDK 21.
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{hblibPresentation}     % in a deck: \usepackage{../../hblib/hblibPresentation}
+	\usepackage{hblibCodeoutput}       % in a deck: \usepackage{../../hblib/hblibCodeoutput}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+% texcode: LaTeX source in a light box (this manual only)
+\lstnewenvironment{texcode}{\lstset{style=texsnippet, style=utf8letters, numbers=none, columns=fullflexible,
+	keepspaces=true, breaklines=true, texcsstyle=*\color{blue!55!black}, commentstyle=\color{gray}\itshape,
+	aboveskip=2pt, belowskip=2pt}}{}
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V example files
+% real programs and their outputs (compiled and run with JDK 21); in a deck they live in codeoutput/
+\begin{filecontents*}[overwrite]{Hello.java}
+public class Hello {
+    public static void main(String[] args) {
+        String name = "Ayşe";
+        System.out.println("Merhaba, " + name + "!");
+        System.out.println("Price: 25 ₺");
+    }
+}
+\end{filecontents*}
+\begin{filecontents*}[overwrite]{Hello.txt}
+Merhaba, Ayşe!
+Price: 25 ₺
+\end{filecontents*}
+\begin{filecontents*}[overwrite]{Grades.java}
+public class Grades {
+    public static void main(String[] args) {
+        int[] marks = {72, 85, 90, 64, 78};
+        int sum = 0;
+        for (int m : marks) {
+            sum += m;
+        }
+        double average = (double) sum / marks.length;
+        System.out.println("count   = " + marks.length);
+        System.out.println("sum     = " + sum);
+        System.out.println("average = " + average);
+    }
+}
+\end{filecontents*}
+\begin{filecontents*}[overwrite]{Grades.txt}
+count   = 5
+sum     = 389
+average = 77.8
+\end{filecontents*}
+\begin{filecontents*}[overwrite]{Session.txt}
+$ javac Hello.java
+$ ls
+Hello.class
+Hello.java
+$ java Hello
+Merhaba, Ayşe!
+Price: 25 ₺
+\end{filecontents*}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A example files
+
+
+
+
+\title[hblibCodeoutput: User Manual]{
+	hblibCodeoutput: User Manual
+}
+\subtitle{
+	for hblibCodeoutput.sty v20261104T2350
+}
+\author[Bingol]{Haluk Bingol}
+
+\institute[FCIS]{
+	Faculty of Computer and Information Sciences\\
+	Yeditepe University
+}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={1-4}, hideallsubsections]
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={5-7}, hideallsubsections]
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Start]{Getting started}{Files, paths, real outputs}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The idea: code and output stay in files}
+	\begin{columns}[T]
+		\begin{column}{0.50\textwidth}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\usepackage{../../hblib/hblibPresentation}
+\usepackage{../../hblib/hblibCodeoutput}
+
+\begin{frame}[t,fragile] \frametitle{Sum}
+  \lstcoderightstep{codeoutput/Grades.java}{Java}
+                   {codeoutput/Grades.txt}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+		\end{column}
+		\begin{column}{0.46\textwidth}
+			\small A lecture folder:
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{lstlisting}[style=outputstyle, frame=single, rulecolor=\color{gray!40}]
+lecture/
+  cis-array1D.tex
+  run_examples.sh
+  codeoutput/
+    Grades.java    the program
+    Grades.in      keyboard input
+    Grades.txt     what it printed
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+		\end{column}
+	\end{columns}
+
+	\begin{itemize}\small
+		\item Every macro takes \hEmph{relative paths}, relative to the .tex file; nothing is copied into the .tex
+		\item Frames with these macros must be \hCode{[fragile]}
+		\item Load hblibCodeoutput after hblibPresentation; it is made for beamer
+		(outside beamer it warns, and the \hCode{*step} macros do not work)
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Real outputs: run the programs, keep what they print}
+	\small Outputs are never typed by hand. A script runs every program and writes its \hCode{.txt}:
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{lstlisting}[style=codesnippet, language=bash]
+#!/bin/bash
+# run_examples.sh: compile and run every program in codeoutput/, keep its output
+cd codeoutput
+for f in *.java; do
+    name="${f%.java}"
+    javac "$f"
+    if [ -f "$name.in" ]; then java "$name" < "$name.in" > "$name.txt"
+    else                       java "$name"              > "$name.txt"; fi
+done
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+	\begin{itemize}\small
+		\item Change a program, run \hCode{sh run\_examples.sh}, compile the deck: code and output always match
+		\item A missing file gives a red box, not an error (see ``Notes''), so a deck compiles before its outputs exist
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Blocks]{Building blocks}{\hCode{\textbackslash lstcode}, \hCode{\textbackslash lstoutput}, \hCode{\textbackslash lstterminal}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\hCode{\textbackslash lstcode[options]\{code path\}\{Language\}}}
+	\begin{columns}[T]
+		\begin{column}{0.46\textwidth}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\lstcode{Grades.java}{Java}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+			\footnotesize
+			\begin{itemize}
+				\item Title bar: the path, and the language on the right
+				\item Line numbers on the left
+				\item \hCode{Language} is a listings language: \hCode{Java}, \hCode{C}, \hCode{Python}, \hCode{bash}, \dots
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.50\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize]{Grades.java}{Java}
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Part of a file: \hCode{firstline}, \hCode{lastline}, \hCode{firstnumber}}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\lstcode[firstline=3, lastline=7]{Grades.java}{Java}                  % numbered 1 ... 5
+\lstcode[firstline=3, lastline=7, firstnumber=3]{Grades.java}{Java}   % numbered 3 ... 7, as in the file
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=7]{Grades.java}{Java}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=7, firstnumber=3]{Grades.java}{Java}
+		\end{column}
+	\end{columns}
+
+	\small With \hCode{firstnumber}, ``line 5'' in the text is line 5 of the file.
+	Other options: \hCode{basicstyle=\textbackslash ttfamily\textbackslash scriptsize},
+	\hCode{linerange=\{1-2,9-11\}}, \hCode{numbers=none}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\hCode{\textbackslash lstoutput} and \hCode{\textbackslash lstterminal}}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\lstoutput{Grades.txt}       % output only
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+			\lstoutput{Grades.txt}
+
+			\footnotesize A dark box, like a terminal: ``Output'' and the path in the title bar.
+		\end{column}
+		\begin{column}{0.48\textwidth}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\lstterminal{Session.txt}    % a terminal session
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+			\lstterminal{Session.txt}
+
+			\footnotesize Lines starting with \hCode{\$ } are the commands; they are highlighted.
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[One slide]{Code and output on one slide}{\hCode{\textbackslash lstcodedown}, \hCode{\textbackslash lstcoderight}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\hCode{\textbackslash lstcodedown}: output below}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\lstcodedown[code options][output options]{code path}{Language}{output path}
+\lstcodedown[basicstyle=\ttfamily\tiny, firstline=8, lastline=11, firstnumber=8]{Grades.java}{Java}{Grades.txt}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+	\lstcodedown[basicstyle=\ttfamily\tiny, firstline=8, lastline=11, firstnumber=8]{Grades.java}{Java}{Grades.txt}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\hCode{\textbackslash lstcoderight}: output on the right}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\lstcoderight[code width][code options][output options]{code path}{Language}{output path}
+\lstcoderight[0.66][basicstyle=\ttfamily\scriptsize]{Grades.java}{Java}{Grades.txt}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+	\lstcoderight[0.66][basicstyle=\ttfamily\scriptsize]{Grades.java}{Java}{Grades.txt}
+
+	\small \hCode{code width}: a fraction of \hCode{\textbackslash textwidth} (default 0.56); the output gets the rest.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Two slides]{Output on the second slide}{\hCode{\textbackslash lstcodedownstep}, \hCode{\textbackslash lstcoderightstep}, \hCode{\textbackslash lstcodeoverlaystep}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\hCode{\textbackslash lstcoderightstep}: ask first, then show}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{Grades.java}{Java}{Grades.txt}
+\small \hQuestion{What is the average?}  \uncover<2->{$389 / 5 = 77.8$}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\scriptsize]{Grades.java}{Java}{Grades.txt}
+
+	\small \hQuestion{What is the average?} \uncover<2->{$389 / 5 = 77.8$}
+
+	\footnotesize Slide 1: the code. Slide 2: the output too.
+	Its space is kept on slide 1, so nothing jumps; the rest of the frame is not delayed.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\hCode{\textbackslash lstcodedownstep}: output below, on slide 2}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\lstcodedownstep[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=8, firstnumber=3]{Grades.java}{Java}{Grades.txt}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=8, firstnumber=3]{Grades.java}{Java}{Grades.txt}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\hCode{\textbackslash lstcodeoverlaystep}: the output floats on top}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\lstcodeoverlaystep[code options][output options][output width]{x,y}{code path}{Language}{output path}
+\lstcodeoverlaystep[basicstyle=\ttfamily\scriptsize][][5cm]{9cm,3.6cm}{Grades.java}{Java}{Grades.txt}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+	\lstcodeoverlaystep[basicstyle=\ttfamily\scriptsize][][5cm]{9cm,3.6cm}{Grades.java}{Java}{Grades.txt}
+
+	\footnotesize \hCode{x,y}: the output's upper-left corner, from the slide's upper-left corner (x right, y down).
+	Output width default \hCode{0.45\textbackslash textwidth}. Use it when the code fills the frame.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\hCode{\textbackslash slidegrid}: finding x and y}
+	\slidegrid
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\begin{frame}[t,fragile]
+  \slidegrid         % a labeled 1 cm grid over the slide; remove it when done
+  ...
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+	\small Read the corner you want from the grid, e.g.\ \hCode{\{9cm,3.6cm\}}.
+	It works for any slide size (16\,$\times$\,9\,cm here, 12.8\,$\times$\,9.6\,cm for 4:3).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Typed]{Typed and inline code}{codesnippet, texsnippet, terminalstyle; \hCode{\textbackslash hCodeJ}, \hCode{\textbackslash hCodeB}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Short code typed in the .tex}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\begin{lstlisting}[style=codesnippet, language=Java]
+double[] t = {14.0, 16.5};   // one name
+System.out.println(t[1]);    // index 1
+\end{lstlisting}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{lstlisting}[style=codesnippet, language=Java]
+double[] t = {14.0, 16.5};   // one name
+System.out.println(t[1]);    // index 1
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+		\end{column}
+		\begin{column}{0.48\textwidth}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\begin{lstlisting}[style=terminalstyle,
+  backgroundcolor=\color{termbg},
+  basicstyle=\ttfamily\footnotesize\color{termfg}]
+$ java Hello
+Merhaba, Ayşe!
+\end{lstlisting}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{lstlisting}[style=terminalstyle, backgroundcolor=\color{termbg}, basicstyle=\ttfamily\footnotesize\color{termfg}]
+$ java Hello
+Merhaba, Ayşe!
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+		\end{column}
+	\end{columns}
+
+	\small Styles: \hCode{codesnippet} (framed, light), \hCode{codestyle} (numbered, no frame),
+	\hCode{outputstyle}, \hCode{terminalstyle}, \hCode{texsnippet} (LaTeX source, as in the boxes of this manual).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Inline code}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\hCodeJ{int n = a.length;}    \hCodeB{ls -l *.java}    \code{for (int m : marks)}    \hCode{int n = a.length;}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+	\begin{center}
+		\hCodeJ{int n = a.length;} \quad \hCodeB{ls -l *.java} \quad \code{for (int m : marks)} \quad \hCode{int n = a.length;}
+	\end{center}
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. inline
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.20\textwidth}L{0.36\textwidth}L{0.36\textwidth}@{}}
+			\toprule
+			\textbf{Command} & \textbf{Gives} & \textbf{Where} \\
+			\midrule
+			\hCode{\textbackslash hCodeJ}, \hCode{\textbackslash code} & Java, syntax colored, typed as is & text of a \hCode{[fragile]} frame \\
+			\hCode{\textbackslash hCodeB} & bash, typed as is & text of a \hCode{[fragile]} frame \\
+			\hCode{\textbackslash hCode} (hblibPresentation) & plain, colored; escape \hCode{\textbackslash \_ \textbackslash \{ \textbackslash \}} & everywhere, also frame titles \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+	\small \hCode{\textbackslash hCodeJ} and \hCode{\textbackslash hCodeB} cannot be used in frame titles,
+	and their text must not contain \hCode{\%} or \hCode{\#}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Characters]{Characters and colors}{Turkish letters, \hCode{\textbackslash hbLira}, color names}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Turkish letters and currency signs}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\lstcoderight[0.6][basicstyle=\ttfamily\scriptsize]{Hello.java}{Java}{Hello.txt}
+In text: 25\,\hbLira{} and 25\,\hbRupee{}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+	\lstcoderight[0.6][basicstyle=\ttfamily\scriptsize]{Hello.java}{Java}{Hello.txt}
+
+	\small In text: 25\,\hbLira{} and 25\,\hbRupee{}
+
+	\begin{itemize}\footnotesize
+		\item Code and output print Turkish and Latin-1 letters, \texteuro{} £ ¥ °, quotes, dashes and no-break spaces
+		\item \hbLira{} and \hbRupee{} are drawn (few TeX fonts have them): \hCode{\textbackslash hbLira}, \hCode{\textbackslash hbRupee}
+		\item Wrongly decoded text (``mojibake'', e.g.\ AÄŸaÃ§ for Ağaç) also prints, so it can be shown
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Colors}
+	\begin{columns}[T]
+		\begin{column}{0.50\textwidth}
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. colors
+\begin{table}
+		\scriptsize
+		\begin{tabular}{@{}L{0.28\textwidth}L{0.22\textwidth}L{0.36\textwidth}@{}}
+			\toprule
+			\textbf{Name} & \textbf{RGB} & \textbf{Used for} \\
+			\midrule
+			\textcolor{codeframe}{\rule{6pt}{6pt}} codeframe & 40, 90, 160    & code box frame, title bar \\
+			\fcolorbox{gray}{codebg}{\rule{0pt}{4pt}} codebg & 248, 248, 248 & code box background \\
+			\textcolor{codekw}{\rule{6pt}{6pt}} codekw       & 0, 70, 160     & keywords \\
+			\textcolor{codestr}{\rule{6pt}{6pt}} codestr     & 30, 130, 60    & strings \\
+			\textcolor{codecmt}{\rule{6pt}{6pt}} codecmt     & 120, 120, 120  & comments, line numbers \\
+			\textcolor{termbg}{\rule{6pt}{6pt}} termbg       & 35, 38, 45     & output box background \\
+			\textcolor{termframe}{\rule{6pt}{6pt}} termframe & 70, 75, 85     & output box frame \\
+			\fcolorbox{gray}{termfg}{\rule{0pt}{4pt}} termfg & 225, 230, 235  & output text \\
+			\textcolor{termcmd}{\rule{6pt}{6pt}} termcmd     & 255, 214, 102  & terminal commands \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+		\end{column}
+		\begin{column}{0.46\textwidth}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\definecolor{codeframe}{RGB}{150,40,40}
+\lstcode{Grades.java}{Java}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+			{\definecolor{codeframe}{RGB}{150,40,40}
+			\lstcode[basicstyle=\ttfamily\tiny, firstline=3, lastline=4, firstnumber=3]{Grades.java}{Java}}
+
+			\footnotesize In the preamble: the whole deck. In a frame: that frame only.
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Notes]{Notes and troubleshooting}\label{sec:notes}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A missing file}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{texcode}
+\lstcoderight{codeoutput/NotYet.java}{Java}{codeoutput/NotYet.txt}
+\end{texcode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+	\lstcoderight{codeoutput/NotYet.java}{Java}{codeoutput/NotYet.txt}
+
+	\small A red box names the missing file; the deck still compiles.
+	Create the file, or check the path (relative to the .tex file, letters in the right case).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Troubleshooting}
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. troubleshooting
+\begin{table}
+		\scriptsize
+		\begin{tabular}{@{}L{0.38\textwidth}L{0.27\textwidth}L{0.27\textwidth}@{}}
+			\toprule
+			\textbf{Message or problem} & \textbf{Cause} & \textbf{Fix} \\
+			\midrule
+			Undefined control sequence \textbackslash tcbuselibrary & a library older than v20261104T2350 & update hblibCodeoutput.sty \\
+			errors inside a frame with code & frame not \hCode{fragile} & \hCode{[t,fragile]} \\
+			red box ``missing file'' & wrong path, or no output yet & fix the path; run the programs \\
+			the output is shown on slide 1 & a one-slide macro & use a \hCode{*step} macro \\
+			line numbers start at 1 with \hCode{firstline} & listings counts printed lines & add \hCode{firstnumber=} \\
+			the output title runs into the margin & a long path in a narrow column & a wider column (smaller code width) \\
+			\hCode{\textbackslash hCodeJ} fails in a frame title & listings inside an argument & \hCode{\textbackslash hCode} \\
+			hblibCodeoutput warns ``made for beamer'' & used in an article & use hblibCommon there \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Quick reference}
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. quick reference
+\begin{table}
+		\scriptsize
+		\begin{tabular}{@{}L{0.62\textwidth}L{0.30\textwidth}@{}}
+			\toprule
+			\textbf{Command} & \textbf{Shows} \\
+			\midrule
+			\hCode{\textbackslash lstcode[code opts]\{code\}\{Language\}} & code \\
+			\hCode{\textbackslash lstoutput[output opts]\{output\}} & output \\
+			\hCode{\textbackslash lstterminal[opts]\{transcript\}} & a terminal session \\
+			\hCode{\textbackslash lstcodedown[code opts][output opts]\{code\}\{Language\}\{output\}} & output below \\
+			\hCode{\textbackslash lstcoderight[width][code opts][output opts]\{code\}\{Language\}\{output\}} & output right \\
+			\hCode{\textbackslash lstcodedownstep[code opts][output opts]\{code\}\{Language\}\{output\}} & below, on slide 2 \\
+			\hCode{\textbackslash lstcoderightstep[width][code opts][output opts]\{code\}\{Language\}\{output\}} & right, on slide 2 \\
+			\hCode{\textbackslash lstcodeoverlaystep[code opts][output opts][width]\{x,y\}\{code\}\{Language\}\{output\}} & on top, slide 2 \\
+			\hCode{\textbackslash slidegrid} & 1\,cm grid \\
+			\hCode{\textbackslash hCodeJ\{\}}, \hCode{\textbackslash code\{\}}, \hCode{\textbackslash hCodeB\{\}} & inline Java, bash \\
+			\hCode{\textbackslash hbLira}, \hCode{\textbackslash hbRupee} & \hbLira, \hbRupee \\
+			styles: codestyle, outputstyle, terminalstyle, codesnippet, texsnippet & \hCode{style=\dots} \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}
