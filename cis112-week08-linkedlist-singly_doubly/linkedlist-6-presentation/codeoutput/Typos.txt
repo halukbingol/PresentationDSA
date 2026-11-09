@@ -1,0 +1,7 @@
+$ javac LinkList.java
+LinkList.java:5: error: cannot find symbol
+        first = null;
+        ^
+  symbol:   variable first
+  location: class LinkList
+1 error

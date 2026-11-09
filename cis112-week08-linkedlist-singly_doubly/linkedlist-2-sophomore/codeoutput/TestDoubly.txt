@@ -1,0 +1,5 @@
+$ javac TestDoubly.java
+$ java TestDoubly
+size: 3
+remove 2: true
+size: 2

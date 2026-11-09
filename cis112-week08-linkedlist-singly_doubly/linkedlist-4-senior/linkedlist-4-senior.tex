@@ -1,0 +1,493 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Linked Lists -- Senior Level
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java   a program (classes without main() are only compiled)
+%     codeoutput/<Name>.txt    what it printed
+%     codeoutput/Javap*.txt    captured with javap -p on the JDK in this build
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+% long javap lines: wrap instead of running off the frame
+\lstset{columns=fixed, breaklines=true, breakatwhitespace=false}
+\lstdefinelanguage{text}{}      % plain text: javap output
+
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetKwProg{Fn}{function}{}{end}
+\SetKw{KwError}{error}
+
+% ---------------------------------------------------------------------
+\title{Linked Lists}
+\subtitle{Senior Level: JDK Internals, Sentinel Nodes, Memory}
+\author[Bingol]{Ruhan Alpaydin}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-3}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={4-5}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Internals]{JDK Internals}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{javap}: \texttt{LinkedList}}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=11, firstnumber=3]{codeoutput/JavapLinkedList.txt}{text}
+  \begin{itemize}\small
+    \item Three private fields: \hCode{size}, \hCode{first}, \hCode{last}.
+    \item \hCode{first} and \hCode{last} are references to \hCode{Node<E>},
+          not an array. Nothing else is stored.
+    \item \hCode{size} is cached: \hCode{size()} is $O(1)$.
+    \item \hRemark{The class shape tells you the whole design}:
+          a doubly linked list with a cached length.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{javap}: \texttt{ArrayList} (for comparison)}
+  \lstcode[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=11, firstnumber=3]{codeoutput/JavapArrayList.txt}{text}
+  \begin{itemize}\small
+    \item \hCode{elementData} is a plain \hCode{Object[]}: the storage is one block.
+    \item \hCode{size} is a counter, not an index.
+    \item No \hCode{first} or \hCode{last}: there is one array, and access
+          is \hCode{elementData[i]}.
+    \item \hRemark{The two classes have nothing in common except the \texttt{List} interface}.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The \texttt{Node} class}
+\begin{lstlisting}[language=Java, basicstyle=\ttfamily\small, frame=single, xleftmargin=2em]
+private static class Node<E> {
+    E item;
+    Node<E> next;
+    Node<E> prev;
+
+    Node(Node<E> prev, E element, Node<E> next) {
+        this.item = element;
+        this.next = next;
+        this.prev = prev;
+    }
+}
+\end{lstlisting}
+  \begin{itemize}\small
+    \item \hCode{private}: the outside world never sees a \hCode{Node}.
+    \item \hCode{static}: the node does not belong to one list;
+          it is a standalone container that any \hCode{LinkedList} uses.
+    \item Three fields plus one constructor. That is the whole class.
+    \item \hRemark{The constructor sets all three at once}, so no
+          half-built node ever exists.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Memory layout}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/MemoryLayout.java}{Java}
+    \end{column}
+    \begin{column}{0.40\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/MemoryLayout.txt}
+      \small
+      The measurement is rough: \hCode{Runtime} reports bytes with
+      and without the boxed array. \hRemark{Roughly 20 bytes per boxed element},
+      versus 4 bytes for \hCode{int[]}.
+    \end{column}
+  \end{columns}
+  \vspace{0.3em}
+  \small
+  A \hCode{LinkedList<Integer>} adds \emph{two} references per node on
+  top of that: each node is about $16 + 8 + 8$ bytes.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Sentinel]{Sentinel Nodes}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What a sentinel is}
+  \begin{block}{The problem}
+    \small
+    Without a sentinel, every \hCode{addFirst} and \hCode{removeFirst}
+    needs a check: \emph{is the list empty?} The first node is special
+    because there is no ``previous node'' to relink.
+  \end{block}
+  \begin{block}{The sentinel fix}
+    \small
+    Keep a dummy node that never holds data. \hCode{head} always points
+    at it. \hCode{head.next} is the first real node (or \hCode{null}).
+    Now \hCode{addFirst} and \hCode{removeFirst} treat the empty list
+    exactly like the non-empty one.
+  \end{block}
+  \vspace{0.2em}
+  \small
+  \hRemark{One extra node removes every special case}.
+  The cost is one node of memory; the benefit is code without branches.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Sentinel in code}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/SentinelDemo.java}{Java}
+    \end{column}
+    \begin{column}{0.40\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/SentinelDemo.txt}
+      \small
+      \hCode{head} is created once and never moves. \hCode{add} always
+      inserts between \hCode{head} and \hCode{head.next}. No null check
+      anywhere, no branch for the first node.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Algos]{O(1)-Space Algorithms}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Morris traversal}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/MorrisTraversal.java}{Java}
+    \end{column}
+    \begin{column}{0.40\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/MorrisTraversal.txt}
+      \small
+      In-order traversal of a binary tree in \hRemark{$O(1)$ extra space}.
+      The trick: temporarily overwrite a null \hCode{right} pointer
+      with a thread back to the predecessor, then remove it.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{When Morris pays}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Ordinary in-order}
+        \small
+        Recursion or an explicit stack: $O(h)$ extra space, where $h$
+        is the height. On a balanced tree that is $O(\log n)$; on a
+        skewed tree, $O(n)$.
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Morris}
+        \small
+        $O(1)$ extra space, but each edge is visited twice
+        (once to thread, once to remove). The time is still $O(n)$;
+        only the constant doubles.
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vspace{0.4em}
+  \begin{itemize}\small
+    \item Use Morris when memory is the constraint and you can afford
+          the extra constant factor: embedded systems, huge trees,
+          or a library that must not allocate.
+    \item Otherwise use the iterative stack version, which is faster
+          and easier to get right.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[API]{API Lessons}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{LinkedList} implements \texttt{Deque}}
+\begin{lstlisting}[language=Java, basicstyle=\ttfamily\small, frame=single, xleftmargin=2em]
+public class LinkedList<E>
+    extends AbstractSequentialList<E>
+    implements List<E>, Deque<E>,
+               Cloneable, Serializable
+\end{lstlisting}
+  \begin{itemize}\small
+    \item One class, four interfaces: \hCode{List}, \hCode{Deque},
+          \hCode{Cloneable}, \hCode{Serializable}.
+    \item That is why it can be used as a list, a stack
+          (\hCode{push}/\hCode{pop}), a queue (\hCode{offer}/\hCode{poll}),
+          or a double-ended queue (\hCode{addFirst}/\hCode{addLast}).
+    \item \hRemark{One class, four vocabularies}: the same node machinery
+          satisfies every interface.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{SequencedCollection} (Java 21)}
+\begin{lstlisting}[language=Java, basicstyle=\ttfamily\small, frame=single, xleftmargin=2em]
+interface SequencedCollection<E> extends Collection<E> {
+    E    getFirst();
+    E    getLast();
+    void addFirst(E);
+    void addLast(E);
+    E    removeFirst();
+    E    removeLast();
+    SequencedCollection<E> reversed();
+}
+\end{lstlisting}
+  \begin{itemize}\small
+    \item Implemented by \hCode{LinkedList}, \hCode{ArrayList},
+          \hCode{ArrayDeque}, \hCode{LinkedHashSet}, \hCode{TreeSet},
+          and others.
+    \item Before Java 21, \hCode{List.get(0)} and \hCode{Deque.getFirst()}
+          had no common interface. Now they do.
+    \item \hRemark{\texttt{reversed()} returns a live view}, not a copy.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{ConcurrentLinkedDeque}}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{block}{The shape}
+        \small
+        Same node structure, but \hCode{head} and \hCode{tail} are
+        \hCode{AtomicReference}s. Every update is a CAS.
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Properties}
+        \small
+        \begin{itemize}
+          \item lock-free (Michael--Scott style)
+          \item \emph{weakly consistent} iteration: no snapshot
+          \item allows \hCode{null}? No.
+          \item unbounded
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vspace{0.4em}
+  \small
+  \hRemark{Use it when many threads push and pop from both ends}.
+  For one producer and one consumer, a bounded
+  \hCode{ArrayBlockingQueue} is usually faster.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Wrap]{Wrap-up}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Big ideas}
+  \begin{itemize}
+    \item \hCode{LinkedList} is a doubly linked list with a
+          \hCode{size} field, \hCode{first}, and \hCode{last}.
+          That is the whole data structure.
+    \item \hCode{ArrayList} is one \hCode{Object[]} plus a
+          \hCode{size} counter. The two classes share only the interface.
+    \item A \textbf{sentinel node} removes the empty-list special case
+          from every add and remove.
+    \item \textbf{Morris traversal} does an in-order walk of a tree in
+          $O(1)$ extra space by threading \hCode{right} pointers
+          through the tree and removing them as it goes.
+    \item \hCode{LinkedList} implements \hCode{List} and \hCode{Deque}:
+          one class, four vocabularies.
+    \item \hCode{SequencedCollection} (Java 21) unified the first/last
+          operations that \hCode{List}, \hCode{Deque} and \hCode{Set}
+          had duplicated.
+    \item \hCode{ConcurrentLinkedDeque} applies the same node structure
+          with CAS on \hCode{head} and \hCode{tail} to make it lock-free.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Check yourself}
+  \begin{enumerate}\small
+    \item Why is \hCode{Node} declared \hCode{private static} inside
+          \hCode{LinkedList}? What would break if it were not static?
+    \item Why does \hCode{LinkedList} cache \hCode{size} instead of
+          computing it by walking?
+    \item What does a sentinel node save you, and what does it cost?
+    \item Under what conditions does Morris traversal use less memory
+          than the iterative stack version?
+    \item Why is \hCode{SequencedCollection} a better name than
+          adding the methods to \hCode{List}?
+    \item Why is \hCode{ConcurrentLinkedDeque} \emph{weakly consistent}
+          instead of fully consistent? Give an example of an iteration
+          that would differ.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Practice}
+  \begin{enumerate}\small
+    \item Run \hCode{javap -p java.util.LinkedList} on your JDK and
+          compare the field list with the one on slide~5.
+    \item Rewrite \hCode{SentinelDemo} without a sentinel. Count the
+          null checks you had to add.
+    \item Add a sentinel to \hCode{DoublyLinked<T>} from the sophomore
+          deck. How many branches disappear?
+    \item Trace \hCode{MorrisTraversal} on the tree
+          \hCode{4 -> 2 -> 6} by hand. Which node's right pointer is
+          temporarily pointed where?
+    \item Replace the plain \hCode{AtomicReference} in a small
+          lock-free queue with \hCode{AtomicStampedReference}. Does
+          ABA still happen?
+    \item Implement \hCode{reversed()} for \hCode{SinglyLinked<T>}
+          without copying. What complexity does it have?
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{References}
+  \begin{enumerate}\small
+    \item Robert Lafore, \emph{Data Structures \& Algorithms in Java},
+          2nd ed., Sams, 2002.
+    \item Joshua Bloch, \emph{Effective Java}, 3rd ed.,
+          Addison-Wesley, 2018. (Items on \hCode{equals},
+          \hCode{hashCode}, and defensive copying.)
+    \item Doug Lea, \emph{Concurrent Programming in Java},
+          2nd ed., Addison-Wesley, 1999.
+    \item Joseph H. Morris, \emph{Traversing binary trees simply and
+          cheaply}, Information Processing Letters, 9(5):197--200, 1979.
+          (The original Morris traversal paper.)
+    \item Oracle, \emph{Java SE 21 API Specification}:
+          \hCode{java.util.LinkedList},
+          \hCode{java.util.ArrayList},
+          \hCode{java.util.concurrent.ConcurrentLinkedDeque},
+          \hCode{java.util.SequencedCollection}.
+    \item JEP 431: \emph{Sequenced Collections} (Java 21).
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \begin{center}
+    \vspace{4cm}
+    \hRemark{\Huge Questions?}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+\end{document}

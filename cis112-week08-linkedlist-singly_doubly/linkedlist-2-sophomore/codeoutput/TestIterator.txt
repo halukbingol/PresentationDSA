@@ -1,0 +1,3 @@
+$ javac TestIterator.java
+$ java TestIterator
+for-each: three two one

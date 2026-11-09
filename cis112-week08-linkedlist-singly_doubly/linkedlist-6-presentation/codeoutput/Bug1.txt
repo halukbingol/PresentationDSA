@@ -1,0 +1,6 @@
+$ javac Bug1.java
+$ java Bug1
+Exception in thread "main" java.lang.NullPointerException:
+        Cannot read field "item" because "top" is null
+    at Bug1.pop(Bug1.java:8)
+    at Bug1.main(Bug1.java:13)
