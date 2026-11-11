@@ -1,0 +1,5 @@
+$ javac StackOnNodes.java
+$ java StackOnNodes
+3
+2
+1
