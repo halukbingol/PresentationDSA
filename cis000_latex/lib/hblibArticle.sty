@@ -1,5 +1,6 @@
 % !TEX spellcheck = en_US
 
+% v20261113T0930   \hSectionQuestion (Q Question) documented
 % v20261109T0615   the default lstlisting style is set by hblibCommon now; "mystyle" kept here as an old name
 % v20261108T0900   new: the article part of hblibCommon v20261107T1230 (page, lists, titles, contents,
 %                  section numbering, footer, hyperlinks); the shared part stays in hblibCommon,
@@ -16,7 +17,7 @@
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]   % \CurrentFilePath
 \ifdefined\hbA@loaded \endinput \fi    % loaded already (perhaps by another path)
 \def\hbA@loaded{}
-\ProvidesPackage{hblibArticle}[2026/11/09 hb documents: exams, labs, handouts (article, amsart)]
+\ProvidesPackage{hblibArticle}[2026/11/13 hb documents: exams, labs, handouts (article, amsart)]
 
 % =====================================================================
 %  hblibArticle -- documents that are not slides: exams, lab descriptions, handouts
@@ -40,7 +41,7 @@
 %    5  Old style name        mystyle = codestyle (old lab documents)
 %    6  Titles as typed       (amsart)
 %    7  Table of contents     \small; bold sections, indented subsections and subsubsections
-%    8  Section numbering     1, 1.1 / G, G1, G1.1: \hNumbersArabic, \hNumbersLetter, \hSectionGoal, ...
+%    8  Section numbering     1, 1.1 / G, G1, G1.1: \hNumbersArabic, \hNumbersLetter, \hSectionGoal, ..., \hSectionQuestion
 %    9  Page footer           file name, date, page i / N
 %   10  Hyperlinks            hyperref, loaded last; links in colored boxes
 % =====================================================================
@@ -199,7 +200,7 @@
 	\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}%  G1.1
 }
 
-% the sections of a lab description: W WarmUp, G Goal, C Challenge, H Home
+% the sections of a lab description: W WarmUp, G Goal, C Challenge, H Home; of an exam: Q Question
 \newcommand{\hSectionChallenge}{\hNumbersLetter{C}\section{Challenge}}
 \newcommand{\hSectionGoal}{\hNumbersLetter{G}\section{Goal}}
 \newcommand{\hSectionHome}{\hNumbersLetter{H}\section{Home}}
@@ -221,7 +222,8 @@
 	\fancyhf{}%                                   clear header and footer
 	\renewcommand{\headrulewidth}{0pt}%           no rule under the header
 	\renewcommand{\footrulewidth}{1pt}%           a rule above the footer
-	\fancyfoot[L]{\small\texttt{\jobname\,\,(\hbTimeStamp)}}%
+%	\fancyfoot[L]{\small\texttt{\jobname\,\,(\hbTimeStamp)}}%
+	\fancyfoot[L]{\small\texttt{\jobname\,\,(\hbTimeStampHhMm)}}%
 	\fancyfoot[R]{\small\texttt{\thepage\,/\,\pageref*{LastPage}}}%
 }
 \pagestyle{plain}

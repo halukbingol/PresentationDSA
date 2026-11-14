@@ -1,5 +1,8 @@
 % !TEX spellcheck = en_US
 
+% v20261112T0930   new section 10 Linked lists: \hDLList (doubly linked list) and \hSLList (singly linked
+%                  list), the settings \dlVarRaise, \dlFirstGap, \dlGap, \dlBend, \dlTip and the styles dlnode,
+%                  dlnew, dlvar, dlnext, dlprev, dlnull, dlframe, slnode, slnew; TikZ library shapes.multipart
 % v20261108T0900   for articles and slides alike (no beamer or hblibPresentation needed); TikZ library
 %                  positioning added (below=of in trees and commit graphs); only data structure material
 % v20261104T2350   xparse and calc removed; documented sections; \hStack keeps the math symbol \top;
@@ -15,7 +18,7 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]   % \NewDocumentCommand
-\ProvidesPackage{hblibDatastructures}[2026/11/08 data structure library: queue, stack, string, array, grid, tree and commit-graph styles]
+\ProvidesPackage{hblibDatastructures}[2026/11/12 data structure library: queue, stack, string, array, grid, linked lists, tree and commit-graph styles]
 
 % =====================================================================
 %  hblibDatastructures -- drawings of data structures, for TikZ pictures in slides and articles
@@ -34,6 +37,11 @@
 %    7  Grid              \hGrid[keys]{{row 0},{row 1},...}
 %    8  Tree              styles htree, hnode, hsquare, hhot, hdone, hleaf, horder
 %    9  Commit graph      styles hcommit, hbranch, hheadref, htag, hparent
+%   10  Linked lists      \hDLList{name}{x}{y}{v1,v2,...}{new}   doubly linked
+%                         \hSLList{name}{x}{y}{v1,v2,...}{new}   singly linked
+%
+%  Added (v20261112T0930)
+%    \hDLList, \hSLList and their settings and styles (section 10)
 %
 %  Removed (compared with v20261030T0050)
 %    xparse     \NewDocumentCommand is part of LaTeX since 2020
@@ -52,9 +60,10 @@
 \RequirePackage{xcolor}            % colors
 \RequirePackage{tikz}              % drawing (also loads pgffor: \foreach)
 \RequirePackage[nomessages]{fp}    % \FPeval: cell positions in \hQueue, \hStack
-\usetikzlibrary{positioning,        % below=of a, right=1cm of a: trees, commit graphs
+\usetikzlibrary{positioning,        % below=of a, right=1cm of a: trees, commit graphs, linked lists
 	arrows.meta,                     % href arrows: -{Latex[length=2mm]}
-	decorations.pathreplacing}       % braces under cells: decorate, decoration={brace}
+	decorations.pathreplacing,       % braces under cells: decorate, decoration={brace}
+	shapes.multipart}                % the nodes of linked lists: prev | data | next
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A packages
 
 
@@ -493,6 +502,122 @@
 	hparent/.style={-latex, thick, gray!70!black}
 }
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A Commit graph
+
+
+
+
+% ===================================================================== 10 Linked lists
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V Linked lists
+% \hDLList{name}{x}{y}{values}{new}   a doubly linked list   (inside a tikzpicture)
+% \hSLList{name}{x}{y}{values}{new}   a singly linked list   (inside a tikzpicture)
+%   name     the list variable, printed in its box, e.g. list; also the prefix of the node names
+%   x, y     the variable box is centred at (x, y + \dlVarRaise); the nodes are drawn at height y
+%   values   comma separated, e.g. 1,5,4; empty: the empty list (the variable points to null)
+%   new      the index (1, 2, ...) of the node highlighted in orange, e.g. a node just added; 0: none
+% What is drawn
+%   - the variable box; its link leaves to the right and meets the first node vertically,
+%     at its upper-left corner
+%   - doubly linked: a node is  prev | data | next;  singly linked:  data | next
+%     (prev and next are narrow, data fits the value; a thick outer frame)
+%   - next links (blue) curve above, to the upper-left corner of the next node;
+%     prev links (red) curve below, to the lower-right corner of the previous node
+%   - the last node's next (and, doubly linked, the first node's prev) points to "null",
+%     written where one more node would be
+% Node names (name = list): (list-var); (list-1), (list-2), ... the nodes;
+%   (list-nullnext); (list-nullprev) doubly linked only. E.g. \node[above=2mm of list-2] {here};
+% Settings, changed with \renewcommand (in a group for one picture only):
+%   \dlVarRaise  0.8      cm the variable box sits above the nodes
+%   \dlFirstGap  0.9cm    from the variable box to the first node
+%   \dlGap       0.62cm   between two nodes, and between an end node and "null"
+%   \dlBend      45       how much the links curve (0 = straight)
+%   \dlTip       3.4pt    where a link starts and ends: this far in from a node's corner
+% Styles (\tikzset): dlnode, dlnew, slnode, slnew (nodes); dlvar (variable); dlnext, dlprev (links);
+%   dlnull ("null"); dlframe (the thick outer frame of a node)
+%   \hDLList{list}{0}{0}{1,5,4}{0}      \hSLList{list}{0}{0}{6,1,5,4}{1}      \hDLList{list}{0}{0}{}{0}
+\tikzset{
+	dlnode/.style={rectangle split, rectangle split horizontal, rectangle split parts=3,
+		draw, thick, minimum height=0.6cm, inner xsep=0pt, font=\ttfamily\small},  % prev | data | next
+	dlnew/.style={dlnode, fill=orange!25},                         % the highlighted node
+	slnode/.style={dlnode, rectangle split parts=2},              % data | next
+	slnew/.style={slnode, fill=orange!25},                         % the highlighted node
+	dlvar/.style={rectangle, draw, thick, minimum width=1.1cm, minimum height=0.6cm,
+		font=\ttfamily\small},                                      % the list variable
+	dlnext/.style={-{Latex[length=2mm]}, thick, blue!70!black},    % next links, the variable's link
+	dlprev/.style={-{Latex[length=2mm]}, thick, red!70!black},     % prev links
+	dlnull/.style={font=\ttfamily\scriptsize, text=gray, inner sep=1pt},  % "null" at the end of a link
+	dlframe/.style={line width=1.6pt}                              % the thick outer frame of a node
+}
+\newcommand{\dlVarRaise}{0.8}
+\newcommand{\dlFirstGap}{0.9cm}
+\newcommand{\dlGap}{0.62cm}
+\newcommand{\dlBend}{45}
+\newcommand{\dlTip}{3.4pt}
+
+% the parts of a node: a split part ignores \hspace, so zero-height rules give the widths.
+% data: the value with 4pt on both sides; prev, next: half as wide as a one-character data part
+\newlength{\hb@dlside}
+\newcommand{\hb@dlsidepart}{%
+	\settowidth{\hb@dlside}{x}\hb@dlside=0.5\hb@dlside \advance\hb@dlside by 3.6pt%
+	\rule{\hb@dlside}{0pt}}
+\newcommand{\hb@dldatapart}[1]{\rule{4pt}{0pt}#1\rule{4pt}{0pt}}
+% \hb@dlvar{name}{x}{y}: the variable box
+\newcommand{\hb@dlvar}[3]{\node[dlvar] (#1-var) at (#2,{#3+\dlVarRaise}) {#1};}
+% \hb@dlempty{name}{x}{y}: the empty list, the variable points to null
+\newcommand{\hb@dlempty}[3]{%
+	\hb@dlvar{#1}{#2}{#3}%
+	\node[dlnull, anchor=west] (#1-nullnext) at ([xshift=\dlFirstGap]#1-var.east |- 0,#3) {null};
+	\draw[dlnext] (#1-var.east) to[out=0, in=90] (#1-nullnext.north west);}
+% \hb@dlnodes{name}{values}{new}{plain style}{new style}{node text with \hb@dv}: the nodes, their
+% frames, the variable's link and the next links; \hb@dllast = the number of nodes
+\newcommand{\hb@dlnodes}[6]{%
+	\foreach \hb@dv [count=\hb@di] in {#2} {%
+		\ifnum\hb@di=#3\relax \def\hb@dlst{#5}\else \def\hb@dlst{#4}\fi
+		\ifnum\hb@di=1
+			\node[\hb@dlst, anchor=west] (#1-\hb@di) at ([xshift=\dlFirstGap]#1-var.east |- 0,\hb@dly) {#6};
+		\else
+			\pgfmathtruncatemacro{\hb@dprev}{\hb@di-1}%
+			\node[\hb@dlst, node distance=\dlGap, right=of #1-\hb@dprev] (#1-\hb@di) {#6};
+		\fi
+		\draw[dlframe] (#1-\hb@di.south west) rectangle (#1-\hb@di.north east);
+		\xdef\hb@dllast{\hb@di}}%
+	\draw[dlnext] (#1-var.east) to[out=0, in=90] ([xshift=\dlTip]#1-1.north west);
+	\pgfmathtruncatemacro{\hb@dlprevlast}{\hb@dllast-1}%
+	\ifnum\hb@dlprevlast>0
+		\foreach \hb@di [evaluate=\hb@di as \hb@dj using int(\hb@di+1)] in {1,...,\hb@dlprevlast} {%
+			\draw[dlnext] ([xshift=-\dlTip]#1-\hb@di.north east) to[bend left=\dlBend] ([xshift=\dlTip]#1-\hb@dj.north west);}%
+	\fi
+	\node[dlnull, node distance=\dlGap, right=of #1-\hb@dllast] (#1-nullnext) {null};
+	\draw[dlnext] ([xshift=-\dlTip]#1-\hb@dllast.north east) to[bend left=\dlBend] (#1-nullnext.north west);}
+
+\newcommand{\hDLList}[5]{%
+	\if\relax\detokenize{#4}\relax
+		\hb@dlempty{#1}{#2}{#3}%
+	\else
+		\hb@dlvar{#1}{#2}{#3}%
+		\def\hb@dly{#3}%
+		\hb@dlnodes{#1}{#4}{#5}{dlnode}{dlnew}%
+			{\nodepart{one}\hb@dlsidepart\nodepart{two}\hb@dldatapart{\hb@dv}\nodepart{three}\hb@dlsidepart}%
+		% prev links below, and the first node's prev to null on the left
+		\ifnum\hb@dlprevlast>0
+			\foreach \hb@di [evaluate=\hb@di as \hb@dj using int(\hb@di+1)] in {1,...,\hb@dlprevlast} {%
+				\draw[dlprev] ([xshift=\dlTip]#1-\hb@dj.south west) to[bend left=\dlBend] ([xshift=-\dlTip]#1-\hb@di.south east);}%
+		\fi
+		\node[dlnull, node distance=\dlGap, left=of #1-1] (#1-nullprev) {null};
+		\draw[dlprev] ([xshift=\dlTip]#1-1.south west) to[bend left=\dlBend] (#1-nullprev.south east);
+	\fi
+} % \hDLList
+
+\newcommand{\hSLList}[5]{%
+	\if\relax\detokenize{#4}\relax
+		\hb@dlempty{#1}{#2}{#3}%
+	\else
+		\hb@dlvar{#1}{#2}{#3}%
+		\def\hb@dly{#3}%
+		\hb@dlnodes{#1}{#4}{#5}{slnode}{slnew}%
+			{\nodepart{one}\hb@dldatapart{\hb@dv}\nodepart{two}\hb@dlsidepart}%
+	\fi
+} % \hSLList
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A Linked lists
 
 
 \endinput

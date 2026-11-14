@@ -3,17 +3,28 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V title
 % Common title format for exam question
 
-\title[\cisxxx-\examID: \topicshort]{
-	Exam Question\\
-	\cisxxx-\semesterID-\examID-\questionID-\groupNo\\
+\title[\courseID-\examNo: \topicShort]{
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V box
+	\rule[1ex]{\textwidth}{.1pt}
+	\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} r}
+		\courseID\ \courseName
+			&\semesterName\ \semesterID\\
+		\courseInstructors
+			&\examDate\\
+		\examName
+			&\questionID\\
+	\end{tabular*}
+	\rule[1ex]{\textwidth}{.1pt}
 	~\\
+	\vspace{1cm}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A box
 	{\Large 
-		\topic
-	}\\
+		\questionNo\ . \topic
+	}
 }
 
 \author{
-	\myauthor\\
+	\questionAuthor\\
 	\hbTimeStamp
 }
 

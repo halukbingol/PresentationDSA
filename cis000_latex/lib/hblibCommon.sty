@@ -1,5 +1,9 @@
 % !TEX spellcheck = en_US
 
+% v20261114T1055   \hbTimeStamp without the "v": 2026-11-14 (also in the footer of hblibArticle)
+% v20261114T1045   \hbTimeStampHhMm: date and time in ISO form, e.g. 2026-11-14T10:41
+% v20261113T0930   boxes around text: environments hBoxGeneric and hBoxWarning (tcolorbox, breakable);
+%                  \refapp (Appendix 4) documented
 % v20261109T0615   a plain lstlisting uses codestyle in articles and slides alike (\lstset moved here
 %                  from hblibArticle; hblibPresentation no longer has the old mystyle)
 % v20261108T0900   split: hblibCommon is now the core shared by articles (hblibArticle) and slide decks
@@ -26,7 +30,7 @@
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]   % \CurrentFilePath, \NewDocumentCommand
 \ifdefined\hbC@loaded \endinput \fi    % loaded already (perhaps by another path, e.g. hblibCommon and ../lib/hblibCommon)
 \def\hbC@loaded{}
-\ProvidesPackage{hblibCommon}[2026/11/09 hb libraries: the core shared by articles and slide decks]
+\ProvidesPackage{hblibCommon}[2026/11/14 hb libraries: the core shared by articles and slide decks]
 
 % =====================================================================
 %  hblibCommon -- the core of the hb libraries
@@ -50,11 +54,12 @@
 %    4  Colors and emphasis   \hDefined, \hEmph, \hRemark, \hQuestion, ...; \cisOOO, \win, \mac
 %    5  Code                  styles; javacode, bashcode, \javafile, \bashfile, \hCodeJ, \hCodeB, \hCodeTag
 %    6  Inline code, sizes    \hCode, \hFontLarger
-%    7  Time stamps           \hbTimeStamp, \hbTimeStampDraft
+%    7  Time stamps           \hbTimeStamp, \hbTimeStampHhMm, \hbTimeStampDraft
 %    8  References            \reffig, \refsec, \reftbl, ...
 %    9  Text                  \hQuote, \hIdea, \hFootnote, \hAbs, \YULearn
 %   10  Tables                column type L{width}
-%   11  Old documents         \usepackage{hblibCommon} in an article loads hblibArticle
+%   11  Boxes                 hBoxGeneric, hBoxWarning: a paragraph in a framed box (tcolorbox)
+%   12  Old documents         \usepackage{hblibCommon} in an article loads hblibArticle
 %
 %  Not here: page, lists, titles, contents, footer, hyperlinks (hblibArticle);
 %  theme, \hSection (hblibPresentation); the old name "mystyle" (hblibArticle).
@@ -96,6 +101,8 @@
 \RequirePackage{menukeys}         % \menu{File > Save As}, \keys{Ctrl + C}, \keys{\shift + \cmd + B}
                                   % (it defines \cmd, the Mac command key: use \hCode for commands)
 \RequirePackage{listings}         % program code (section 5)
+\RequirePackage{tcolorbox}        % framed boxes (section 11; hblibCodeoutput uses it too)
+\tcbuselibrary{breakable}         % a long box continues on the next page
 \@ifpackageloaded{algorithm2e}{}{% pseudo code (section 3); a document may load it first with its own options
 	\RequirePackage[ruled,vlined,linesnumbered]{algorithm2e}}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A packages
@@ -326,7 +333,10 @@
 
 %: ===================================================================== 7 Time stamps
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V time stamps
-\newcommand{\hbTimeStamp}{v\today}                                              % v2026-11-08
+% the date and time of the computer at compile time, in its own time zone (no zone shown)
+\newcommand{\hbTimeStamp}{\today}                                               % 2026-11-14
+\newcommand{\hbTimeStampHhMm}{{\DTMsetup{showseconds=false}\DTMnow}}           % 2026-11-14T10:41 (ISO)
+                                       % (the group keeps showseconds=false local: \DTMnow elsewhere has seconds)
 \newcommand{\hbTimeStampDraft}{{\color{red}--Draft-- v\today/\DTMcurrenttime}}  % with the time, red
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A time stamps
 
@@ -338,6 +348,7 @@
 \newcommand{\refeq}[1]{Eq.~\ref{#1}}            % Eq. 2
 \newcommand{\reftbl}[1]{Table~\ref{#1}}         % Table 1
 \newcommand{\refsec}[1]{Sec.~\ref{#1}}          % Sec. 4
+\newcommand{\refapp}[1]{Appendix~\ref{#1}}     % Appendix 4
 \newcommand{\refcite}[1]{Ref.~\cite{#1}}        % Ref. [7]
 \newcommand{\refalg}[1]{Alg.~\ref{#1}}          % Alg. 1
 \newcommand{\reflst}[1]{List~\ref{#1}}          % List 2 (a code listing)
@@ -370,7 +381,33 @@
 
 
 
-%: ===================================================================== 11 Old documents
+%: ===================================================================== 11 Boxes
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V boxes
+% A paragraph (or anything: lists, code, tables) in a framed box with a light background.
+% Long boxes continue on the next page (breakable). Any tcolorbox option can be given in [ ].
+%   \begin{hBoxGeneric}                                  a gray frame
+%     text
+%   \end{hBoxGeneric}
+%   \begin{hBoxGeneric}[title={Note}, colframe=blue!60]  with a title bar, a blue frame
+%     text
+%   \end{hBoxGeneric}
+%   \begin{hBoxWarning}                                  a red frame, title "Warning"
+%     text
+%   \end{hBoxWarning}
+%   \begin{hBoxWarning}[title={Attention}]               another title
+% Options: title={...}, colframe=..., colback=..., sharp corners, left=2mm, top=1mm, width=0.8\linewidth,
+%   breakable=false (keep the box on one page). Not inside a float (figure, table) when broken.
+\newtcolorbox{hBoxGeneric}[1][]{%
+	colback=codebg, colframe=gray!60, arc=2pt, boxrule=0.6pt, breakable,
+	fonttitle=\bfseries\small, #1}
+\newtcolorbox{hBoxWarning}[1][]{%
+	colback=codebg, colframe=red!60, arc=2pt, boxrule=0.6pt, breakable,
+	fonttitle=\bfseries\small, title={Warning}, #1}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A boxes
+
+
+
+%: ===================================================================== 12 Old documents
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V old documents
 % Before v20261108T0900 hblibCommon was the article library. If it is loaded by the document
 % itself (not by hblibArticle or hblibPresentation) and the class is not beamer, load hblibArticle.
