@@ -1,0 +1,6 @@
+$ javac LinkedQueue.java
+$ java LinkedQueue
+10
+20
+30
+true

@@ -1,0 +1,4 @@
+$ javac Palindrome.java
+$ java Palindrome
+true
+false
