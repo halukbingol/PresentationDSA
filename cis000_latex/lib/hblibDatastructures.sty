@@ -85,6 +85,7 @@
 %   first = 0: indices 0..capacity-1
 %   \hQueue{1}{6}{2}{5}{,15,6,9}
 \NewDocumentCommand{\hQueue}{m m m m m O{0.8} O{0.6}}{ 
+
 	\edef\first{#1}  % first index: 0 or 1
 	\edef\capacity{#2}  % capacity
 	\edef\head{#3}  % index of head
