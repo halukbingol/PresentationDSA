@@ -217,11 +217,11 @@
 \end{frame}
 
 \begin{frame}[t,fragile]\frametitle{\texttt{LinkedStack}: pop}
-  \begin{columns}[T]
-    \begin{column}{0.52\textwidth}
+%  \begin{columns}[T]
+ %   \begin{column}{0.52\textwidth}
       \lstcode[basicstyle=\ttfamily\scriptsize, firstline=10, lastline=15, firstnumber=10]{codeoutput/LinkedStack.java}{Java}
-    \end{column}
-    \begin{column}{0.44\textwidth}
+ %   \end{column}
+ %   \begin{column}{0.44\textwidth}
       \begin{block}{Three steps}
         \small
         1. save data from \hCode{top}.\\
@@ -232,8 +232,8 @@
         \small
         \hCode{top == null}: throw exception.
       \end{block}
-    \end{column}
-  \end{columns}
+ %   \end{column}
+  %\end{columns}
 \end{frame}
 
 \begin{frame}[t,fragile]\frametitle{\texttt{LinkedStack}: run}
@@ -250,11 +250,11 @@
 \end{frame}
 
 \begin{frame}[t,fragile]\frametitle{\texttt{LinkedQueue}: enqueue}
-  \begin{columns}[T]
-    \begin{column}{0.52\textwidth}
-      \lstcode[basicstyle=\ttfamily\scriptsize, firstline=5, lastline=11, firstnumber=5]{codeoutput/LinkedQueue.java}{Java}
-    \end{column}
-    \begin{column}{0.44\textwidth}
+%  \begin{columns}[T]
+%    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize, firstline=5, lastline=10, firstnumber=5]{codeoutput/LinkedQueue.java}{Java}
+%    \end{column}
+%    \begin{column}{0.44\textwidth}
       \begin{block}{Append at tail}
         \small
         If empty, \hCode{head = tail = n}.\\
@@ -264,16 +264,16 @@
         \small
         $O(1)$ because we keep a \hCode{tail} reference.
       \end{block}
-    \end{column}
-  \end{columns}
+%    \end{column}
+%  \end{columns}
 \end{frame}
 
 \begin{frame}[t,fragile]\frametitle{\texttt{LinkedQueue}: dequeue}
-  \begin{columns}[T]
-    \begin{column}{0.52\textwidth}
-      \lstcode[basicstyle=\ttfamily\scriptsize, firstline=13, lastline=20, firstnumber=13]{codeoutput/LinkedQueue.java}{Java}
-    \end{column}
-    \begin{column}{0.44\textwidth}
+ % \begin{columns}[T]
+ %   \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize, firstline=11, lastline=17, firstnumber=11]{codeoutput/LinkedQueue.java}{Java}
+%    \end{column}
+ %   \begin{column}{0.44\textwidth}
       \begin{block}{Remove at head}
         \small
         Save \hCode{head.data}.\\
@@ -284,8 +284,8 @@
         \small
         Forgetting \hCode{tail = null} leaves a dangling tail!
       \end{block}
-    \end{column}
-  \end{columns}
+ %   \end{column}
+%  \end{columns}
 \end{frame}
 
 \begin{frame}[t,fragile]\frametitle{\texttt{LinkedQueue}: run}
@@ -320,10 +320,10 @@
 
 \begin{frame}[t,fragile]\frametitle{\texttt{LinkedDeque}: run}
   \begin{columns}[T]
-    \begin{column}{0.52\textwidth}
+    \begin{column}{0.56\textwidth}
       \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/LinkedDeque.java}{Java}
     \end{column}
-    \begin{column}{0.44\textwidth}
+    \begin{column}{0.42\textwidth}
       \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/LinkedDeque.txt}
       \small
       We added 20, then 10 at front, then 30 at back.\\

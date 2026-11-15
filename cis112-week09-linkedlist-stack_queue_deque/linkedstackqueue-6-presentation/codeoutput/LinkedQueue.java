@@ -8,7 +8,6 @@ public class LinkedQueue {
         tail.next = n;
         tail = n;
     }
-
     public int dequeue() {
         if (head == null) throw new RuntimeException("Queue underflow");
         int val = head.data;
@@ -16,7 +15,6 @@ public class LinkedQueue {
         if (head == null) tail = null;
         return val;
     }
-
     public boolean isEmpty() { return head == null; }
 
     public static void main(String[] args) {
