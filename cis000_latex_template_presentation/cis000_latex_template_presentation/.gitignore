@@ -3,6 +3,7 @@
 # folders
 /_old/
 /test*/
+/_codeoutput/
 
 
 # files
@@ -10,6 +11,7 @@ cis*.pdf
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V generated
 cis111-TemplatePresentation.pdf
+hblibPresentation-UserManual-copy.tex
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A generated
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V specific

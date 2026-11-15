@@ -1,5 +1,7 @@
 % !TEX spellcheck = en_US
 
+% v20261113T0930   tcolorbox is loaded by hblibCommon now (also for hBoxGeneric, hBoxWarning); kept here
+%                  as a no-op for clarity
 % v20261108T0900   split: the colors, listings styles (codestyle, outputstyle, ...), \hbLira, \hbRupee and
 %                  the inline \hCodeJ, \hCodeB, \code moved to hblibCommon, which this file loads from its
 %                  own folder; only the boxes are left. Works in articles too: there the output is shown
@@ -18,7 +20,7 @@
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]   % \CurrentFilePath
 \ifdefined\hbO@loaded \endinput \fi    % loaded already (perhaps by another path)
 \def\hbO@loaded{}
-\ProvidesPackage{hblibCodeoutput}[2026/11/08 code and output read from files, in boxes (beamer, article)]
+\ProvidesPackage{hblibCodeoutput}[2026/11/13 code and output read from files, in boxes (beamer, article)]
 
 % =====================================================================
 %  hblibCodeoutput  --  program code and its output, read from files, in boxes
@@ -80,7 +82,7 @@
 \def\hb@loadedbylib{}                      % tells hblibCommon not to load hblibArticle
 \edef\hbO@dir{\CurrentFilePath}\edef\hbO@dir{\ifx\hbO@dir\@empty\else\hbO@dir/\fi}
 \ifdefined\hbC@loaded\else \RequirePackage{\hbO@dir hblibCommon}\fi % colors, listings styles, tikz
-\RequirePackage{tcolorbox}                 % the boxes around code and output
+\RequirePackage{tcolorbox}                 % the boxes around code and output (hblibCommon has loaded it)
 \tcbuselibrary{listings,skins}             % listings: \tcbinputlisting; skins: enhanced, shadows
                                            % (a library can be used only after tcolorbox is loaded)
 \RequirePackage[absolute,overlay]{textpos} % \lstcodeoverlaystep, \slidegrid: place at (x,y) on the page

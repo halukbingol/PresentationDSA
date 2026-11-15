@@ -25,13 +25,6 @@
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V specific
-\raggedbottom                        % no stretched space between paragraphs
-\sloppy                              % long names (\hCode) do not stick out into the margin
-\newcommand{\hBold}[1]{\textbf{#1}}  % the bold words of the question
-% hKeep: keeps a small heading and its table on one page
-\newenvironment{hKeep}{\par\noindent\begin{minipage}{\linewidth}}{\end{minipage}\par\medskip}
-% \hHead{Rules}: a small heading that stays on the page of what follows it
-\newcommand{\hHead}[1]{\par\medskip\noindent\textbf{#1}\par\nopagebreak\smallskip\nopagebreak}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A specific
 
 
@@ -71,6 +64,12 @@
 
 
 
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\textbf{Warning.} Please read \refapp{sec:appExaminfo} Exam Info.
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
 \section{Introduction}
 \label{sec:intro}
@@ -88,7 +87,11 @@ Some intro
 \subsection{\hCode{sumOfNeighbors} method}
 \label{sec:sumOfNeighbors}
 
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \subsubsection{Signature}
+
 % +++++++++++++++++++++++++++++++++++++++ V
 %: -Code.
 \begin{javacode}
@@ -96,22 +99,32 @@ public static int[] sumOfNeighbors(int[] arr)
 \end{javacode}
 % +++++++++++++++++++++++++++++++++++++++ A
 
-%\noindent
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \subsubsection{Function} 
+
 Description of the function.
 
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \subsubsection{Rules}
+
 Some rules.
 
 
 
-
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \subsubsection{Example}
+
 Some examples.
 
 
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \subsubsection{Constraints}
+
 Some constraints.
 
 \textbf{Hint.} 

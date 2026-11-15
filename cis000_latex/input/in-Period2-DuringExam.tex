@@ -26,16 +26,19 @@ The exam starts after the internet is disconnected.
 	          s sep=0pt,        % no extra gap between lines
 	          inner ysep=1pt}   % less padding around each name
 		[project/
-			[src/
-				[packageA/ 
+			[src/                     <------------------- zip at this level
+				[mypackage/ 
 					[question.pdf] 
-					[modifyMe.java] 
-					[doNotModifyMe.java] 
+					[ModifyMe.java] 
+					[DoNotModifyMe.java] 
 					[TS\_question\_jUnit.java]
 				]
-				[packageB/ 
-					[aaa.java] 
-					[ccc.java]
+				[ppp/ 
+					[Aaa.java] 
+					[Bbb.java]
+					[kkk/
+						[Ccc.java]
+					] 
 				]
 			]
 		]
@@ -43,12 +46,23 @@ The exam starts after the internet is disconnected.
 
 	\caption{\small
 		\textbf{Directory structure.}
-		The codes are under package \hCode{packageA}.
-		It may be the case that there are multiple packages such as  \hCode{packageB}.
+		The codes are under package \hCode{mypackage}.
+		It may be the case that there are multiple packages 
+		such as  \hCode{mypackage}, \hCode{ppp} and \hCode{ppp/kkk}.
+		Note that class \hCode{ModifyMe.java} has 
+%\begin{javacode}
+%package ppp.kkk;}
+%\end{javacode}		
+		``\hCodeJ{package mypackage;}''
+		as the first line;
+		while class \hCode{Ccc} has 
+		``\hCodeJ{package ppp.kkk;}''.
+		%
 		\hCode{question.pdf} is the description of the question.
-		\hCode{modifyMe.java} is the file you are expected to modify.
+		\hCode{ModifyMe.java} is the file you are expected to modify.
 		There may be multiple such files.
-		\hCode{doNotModifyMe.java} is the file that is used but you are not allow to modify.
+		\hCode{DoNotModifyMe.java} is the file that is used but 
+		you are not allow to modify.
 		There may be multiple such files.
 		\hCode{TS\_question\_jUnit.java} is the jUnit file shared with you 
 		so that you can test your development.
@@ -79,7 +93,36 @@ The exam starts after the internet is disconnected.
 		\item \menu{Open With > Default Editor} (or \menu{System Editor})
 		
 	\end{enumerate}
-	
+
 \end{enumerate}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
 
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsubsection{Student info}
+\label{sec:app:studentInfo} 
+
+Make sure that you populate \hCode{Student info} in \hCode{modifyMe.java} files.
+Be careful not to change ``below'' and ``above'' marks.
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\input{../../cis000_latex/input/in-CodeYourInfo.tex}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsubsection{Where to change: ``below-above'' marks} 
+\label{sec:app:belowAboveMarker}
+
+You are only allowed to change between ``below'' and ``above'' marks in \hCode{modifyMe.java} files.
+\emph{Be careful not to change} ``below'' and ``above'' marks.
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\input{../../cis000_latex/input/in-CodeBelowAboveMarker}
+% +++++++++++++++++++++++++++++++++++++++ A

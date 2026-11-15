@@ -186,14 +186,11 @@ char   c = s.charAt(1);   // 'e'
 	\lstcoderightstep[0.75]
 		[basicstyle=\ttfamily\scriptsize]
 		[basicstyle=\ttfamily\scriptsize]
-			{codeoutput/Greeting.java}{Java}
-			{codeoutput/Greeting.txt}
+			{codeoutput/DemoCode.java}{Java}
+			{codeoutput/DemoCode.txt}
 
 	\vspace{0.3em}
-	\small \hRemark{Look at the last line:} 
-	\hCode{"Class of " + year} is a string, 
-	then \hCode{+ 4} appends ``4''.
-	Use parentheses to add numbers first.
+	Some text
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -212,11 +209,11 @@ char   c = s.charAt(1);   // 'e'
 	\lstcodeoverlaystep
 		[basicstyle=\ttfamily\scriptsize]
 		[basicstyle=\ttfamily\scriptsize][0.28\textwidth]{12.0cm,2.25cm}
-			{codeoutput/ModernApi.java}{Java}
-			{codeoutput/ModernApi.txt}
+			{codeoutput/DemoCode.java}{Java}
+			{codeoutput/DemoCode.txt}
 
 	\vspace{0.2em}
-	\small The comment on each line is the Java version that added the method.
+	Some text
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
@@ -232,12 +229,12 @@ char   c = s.charAt(1);   // 'e'
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{Output at the bottom}
-  \lstcodedownstep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize, linerange={1-2,13-13}]{codeoutput/OutOfBounds.java}{Java}{codeoutput/OutOfBounds.txt}
-
-  \small \hRemark{Read the message:} the exception name, \texttt{Index 4 out of bounds for length 4}, and the
-  line of \emph{your} file (\texttt{OutOfBounds.java:5}). 
-  Valid indices are \texttt{0..length()-1}.
-  (The 10 lines from inside Java, \texttt{at java.base/...}, are skipped here.)
+	\lstcodedownstep
+		[basicstyle=\ttfamily\scriptsize]
+		[basicstyle=\ttfamily\scriptsize, linerange={1-2,13-13}]
+			{codeoutput/DemoCode.java}{Java}
+			{codeoutput/DemoCode.txt}
+	Some text
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
 
