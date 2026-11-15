@@ -9,15 +9,23 @@
 
 \lstset{columns=fixed, breaklines=true, breakatwhitespace=false}
 
-\title{Linked Stacks, Queues, and Deques}
+% ---------------------------------------------------------------------
+% TITLE PAGE METADATA
+% ---------------------------------------------------------------------
+\title{Linkedlist: Stack, Queue, Deque}
 \subtitle{Concepts, Implementation, and Applications}
-\author[Bingol]{Ruhan Alpaydin}
+\author[Alpaydin]{Ruhan Alpaydin}
 \institute[FCIS]{Faculty of Computer and Information Sciences\\Yeditepe University}
 \date{{\tiny \hbTimeStamp}}
 
 \begin{document}
 
-\begin{frame}[t,fragile]\titlepage\end{frame}
+% ---------------------------------------------------------------------
+% TITLE PAGE
+% ---------------------------------------------------------------------
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
 
 \begin{frame}[t,fragile]\frametitle{Outline}
   \begin{columns}[T]
@@ -31,7 +39,7 @@
 \end{frame}
 
 % =====================================================================
-% PART 1: CONCEPTS (from concepts.tex)
+% PART 1: CONCEPTS
 % =====================================================================
 \hSection[Nodes]{Concepts: Nodes vs Arrays}
 
@@ -178,7 +186,7 @@
 \end{frame}
 
 % =====================================================================
-% PART 2: FRESHMAN (from freshman.tex)
+% PART 2: FRESHMAN (Implementation)
 % =====================================================================
 \hSection[Impl]{Implementation}
 
@@ -198,11 +206,11 @@
 \end{frame}
 
 \begin{frame}[t,fragile]\frametitle{\texttt{LinkedStack}: push}
-  \begin{columns}[T]
-    \begin{column}{0.52\textwidth}
+ % \begin{columns}[T]
+ %   \begin{column}{0.52\textwidth}
       \lstcode[basicstyle=\ttfamily\scriptsize, firstline=4, lastline=8, firstnumber=4]{codeoutput/LinkedStack.java}{Java}
-    \end{column}
-    \begin{column}{0.44\textwidth}
+ %   \end{column}
+ %   \begin{column}{0.44\textwidth}
       \begin{block}{Two steps}
         \small
         1. new node's \hCode{next} $\gets$ current \hCode{top}.\\
@@ -212,16 +220,16 @@
         \small
         $O(1)$ time. No resize.
       \end{block}
-    \end{column}
-  \end{columns}
+ %   \end{column}
+ % \end{columns}
 \end{frame}
 
 \begin{frame}[t,fragile]\frametitle{\texttt{LinkedStack}: pop}
-%  \begin{columns}[T]
+ % \begin{columns}[T]
  %   \begin{column}{0.52\textwidth}
       \lstcode[basicstyle=\ttfamily\scriptsize, firstline=10, lastline=15, firstnumber=10]{codeoutput/LinkedStack.java}{Java}
- %   \end{column}
- %   \begin{column}{0.44\textwidth}
+%    \end{column}
+%    \begin{column}{0.44\textwidth}
       \begin{block}{Three steps}
         \small
         1. save data from \hCode{top}.\\
@@ -233,7 +241,7 @@
         \hCode{top == null}: throw exception.
       \end{block}
  %   \end{column}
-  %\end{columns}
+ % \end{columns}
 \end{frame}
 
 \begin{frame}[t,fragile]\frametitle{\texttt{LinkedStack}: run}
@@ -250,7 +258,7 @@
 \end{frame}
 
 \begin{frame}[t,fragile]\frametitle{\texttt{LinkedQueue}: enqueue}
-%  \begin{columns}[T]
+ % \begin{columns}[T]
 %    \begin{column}{0.52\textwidth}
       \lstcode[basicstyle=\ttfamily\scriptsize, firstline=5, lastline=10, firstnumber=5]{codeoutput/LinkedQueue.java}{Java}
 %    \end{column}
@@ -269,10 +277,10 @@
 \end{frame}
 
 \begin{frame}[t,fragile]\frametitle{\texttt{LinkedQueue}: dequeue}
- % \begin{columns}[T]
- %   \begin{column}{0.52\textwidth}
+%  \begin{columns}[T]
+%    \begin{column}{0.52\textwidth}
       \lstcode[basicstyle=\ttfamily\scriptsize, firstline=11, lastline=17, firstnumber=11]{codeoutput/LinkedQueue.java}{Java}
-%    \end{column}
+ %   \end{column}
  %   \begin{column}{0.44\textwidth}
       \begin{block}{Remove at head}
         \small
@@ -285,7 +293,7 @@
         Forgetting \hCode{tail = null} leaves a dangling tail!
       \end{block}
  %   \end{column}
-%  \end{columns}
+ % \end{columns}
 \end{frame}
 
 \begin{frame}[t,fragile]\frametitle{\texttt{LinkedQueue}: run}
@@ -302,11 +310,11 @@
 \end{frame}
 
 \begin{frame}[t,fragile]\frametitle{\texttt{LinkedDeque}: \texttt{addFirst} and \texttt{addLast}}
-  \begin{columns}[T]
-    \begin{column}{0.52\textwidth}
-      \lstcode[basicstyle=\ttfamily\scriptsize, firstline=5, lastline=18, firstnumber=5]{codeoutput/LinkedDeque.java}{Java}
-    \end{column}
-    \begin{column}{0.44\textwidth}
+  %\begin{columns}[T]
+  %  \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize, firstline=5, lastline=16, firstnumber=5]{codeoutput/LinkedDeque.java}{Java}
+ %   \end{column}
+ %   \begin{column}{0.44\textwidth}
       \begin{itemize}\small
         \item \hCode{addFirst}: insert before \hCode{head}.
         \item \hCode{addLast}: append after \hCode{tail}.
@@ -314,8 +322,8 @@
         \item To do \hCode{removeLast} in $O(1)$ we would need
               a doubly linked node.
       \end{itemize}
-    \end{column}
-  \end{columns}
+ %   \end{column}
+%  \end{columns}
 \end{frame}
 
 \begin{frame}[t,fragile]\frametitle{\texttt{LinkedDeque}: run}
@@ -333,7 +341,7 @@
 \end{frame}
 
 % =====================================================================
-% PART 3: EXAMPLES (from examples.tex)
+% PART 3: EXAMPLES
 % =====================================================================
 \hSection[Apps]{Applications}
 
@@ -365,8 +373,24 @@
   \end{columns}
 \end{frame}
 
+\begin{frame}[t,fragile]\frametitle{Josephus Problem}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Josephus.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Josephus.txt}
+      \small
+      Rotate the queue $k-1$ times, then dequeue. Repeat until one remains.
+    \end{column}
+  \end{columns}
+\end{frame}
+
 \begin{frame}[t,fragile]
-  \begin{center}\vspace{4cm}\hRemark{\Huge Questions?}\end{center}
+  \begin{center}
+    \vspace{4cm}
+    \hRemark{\Huge Questions?}
+  \end{center}
 \end{frame}
 
 \end{document}
