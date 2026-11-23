@@ -1,0 +1,4 @@
+type:    java.lang.IllegalArgumentException
+message: bad score 8S
+where:   Anatomy.readScore(Anatomy.java:17)
+cause:   java.lang.NumberFormatException: For input string: "8S"

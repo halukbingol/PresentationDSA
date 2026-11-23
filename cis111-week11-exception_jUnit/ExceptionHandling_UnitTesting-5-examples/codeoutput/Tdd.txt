@@ -1,0 +1,33 @@
+$ javac -d out red/Clock.java ClockTest.java RunTests.java
+$ java RunTests ClockTest
+  FAIL   allParts()
+         expected: <01:01:01> but was: <>
+  FAIL   lastSecondOfTheDay()
+         expected: <23:59:59> but was: <>
+  FAIL   negative()
+         Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown.
+  FAIL   oneMinute()
+         expected: <00:01:00> but was: <>
+  FAIL   secondsOnly()
+         expected: <00:00:59> but was: <>
+  FAIL   zero()
+         expected: <00:00:00> but was: <>
+Runs: 6   Errors: 0   Failures: 6
+$ javac -d out green/Clock.java ClockTest.java RunTests.java
+$ java RunTests ClockTest
+  ok     allParts()
+  ok     lastSecondOfTheDay()
+  ok     negative()
+  ok     oneMinute()
+  ok     secondsOnly()
+  ok     zero()
+Runs: 6   Errors: 0   Failures: 0
+$ javac -d out refactor/Clock.java ClockTest.java RunTests.java
+$ java RunTests ClockTest
+  ok     allParts()
+  ok     lastSecondOfTheDay()
+  ok     negative()
+  ok     oneMinute()
+  ok     secondsOnly()
+  ok     zero()
+Runs: 6   Errors: 0   Failures: 0

@@ -1,0 +1,13 @@
+# .github/workflows/tests.yml -- run every test on every push
+name: tests
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: mvn --batch-mode test        # a failing test fails the build

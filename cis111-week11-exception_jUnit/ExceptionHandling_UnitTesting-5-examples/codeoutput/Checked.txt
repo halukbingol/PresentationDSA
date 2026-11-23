@@ -1,0 +1,4 @@
+Checked.java:5: error: unreported exception FileNotFoundException; must be caught or declared to be thrown
+		FileReader in = new FileReader("scores.txt");   // checked: does not compile
+		                ^
+1 error

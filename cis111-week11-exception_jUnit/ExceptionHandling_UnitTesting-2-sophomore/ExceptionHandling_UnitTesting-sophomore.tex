@@ -1,0 +1,643 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% v20261123T2200
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue, \hArray, \hGrid
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+
+
+\title[Exceptions, Tests: Sophomore]{
+	Exception Handling and Unit Testing\\
+	Sophomore
+}
+\subtitle{
+	\cisOOO\ -- Level 2: design, libraries, tools, good habits
+}
+\author[Erkovan]{Sait Erkovan}
+
+\institute[FCIS]{
+	Faculty of Computer and Information Sciences\\
+	Yeditepe University
+}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={1-3}, hideallsubsections]
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={4-7}, hideallsubsections]
+		\end{column}
+	\end{columns}
+
+	\vspace{1em}
+	\small It builds on \hCode{-1-freshman}: the messages, \hCode{try}/\hCode{catch}/\hCode{finally} and first tests are assumed.
+	Classes with fields and constructors (CIS112) are used from here on.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Contract]{A class with a contract}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Unchecked: the caller's mistakes}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=9, lastline=25, firstnumber=9]{codeoutput/Bank/Account.java}{Java}
+
+	\footnotesize Fields \hCode{owner}, \hCode{balance}, \hCode{closed} (lines 5--7). A negative amount, a \hCode{null} owner, a closed
+	account: bugs of the calling code. Unchecked, documented with \hCode{@throws}; \hCode{checkOpen} is at line 51.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Checked: a normal problem the caller must handle}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=27, lastline=41, firstnumber=27]{codeoutput/Bank/Account.java}{Java}
+
+	\begin{itemize}\footnotesize
+		\item Not enough money is not a bug: a correct program meets it every day. The caller must plan for it, so it is checked
+		\item \hCode{throws InsufficientFundsException} is part of the method's signature, like its parameters
+		\item The check comes \emph{before} the change (line 40): a failed call leaves the balance as it was
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Standard exceptions to reuse}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. standard exceptions
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.34\textwidth}L{0.30\textwidth}L{0.30\textwidth}@{}}
+			\toprule
+			\textbf{Exception} & \textbf{When} & \textbf{Shortcut} \\
+			\midrule
+			\hCode{IllegalArgumentException}       & a parameter has a wrong value       & \\
+			\hCode{NullPointerException}           & a parameter is \hCode{null}          & \hCode{Objects.requireNonNull(x, "x")} \\
+			\hCode{IndexOutOfBoundsException}      & an index is out of range             & \hCode{Objects.checkIndex(i, n)} \\
+			\hCode{IllegalStateException}          & the object is in the wrong state     & \\
+			\hCode{NoSuchElementException}         & nothing left to return               & \\
+			\hCode{UnsupportedOperationException}  & this object cannot do that at all    & \\
+			\hCode{ArithmeticException}            & e.g. an \hCode{int} division by zero & \hCode{Math.addExact} (overflow) \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\small Reuse these before writing your own: every Java programmer knows what they mean. All are unchecked.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Using the account}
+	\lstcode[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=2, lastline=24, firstnumber=2]{codeoutput/Bank/AccountDemo.java}{Java}
+	\only<2->{\begin{textblock*}{0.66\textwidth}(5.4cm,4.6cm)
+		\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=3, lastline=10]{codeoutput/Bank.txt}
+	\end{textblock*}}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Own]{Your own exception types}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A checked exception of your own}
+	\lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Bank/InsufficientFundsException.java}{Java}
+
+	\begin{itemize}\footnotesize
+		\item \hCode{extends Exception}: checked; \hCode{extends RuntimeException}: unchecked
+		\item \hCode{super(message)} keeps the message; a field adds details the caller can use (\hCode{getMissing})
+		\item The name ends in \hCode{Exception} and says what went wrong, not where
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Checked or unchecked? Own type or standard?}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. choosing the kind
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.40\textwidth}L{0.24\textwidth}L{0.28\textwidth}@{}}
+			\toprule
+			\textbf{The problem} & \textbf{Kind} & \textbf{Example} \\
+			\midrule
+			the caller broke the contract              & unchecked, standard & \hCode{IllegalArgumentException} \\
+			a correct program meets it; callers can recover & checked          & \hCode{InsufficientFundsException} \\
+			the outside world failed (file, network)    & checked, standard   & \hCode{IOException} \\
+			callers need details or a special reaction  & your own type       & with fields such as \hCode{getMissing} \\
+			nobody can recover                          & unchecked           & let it go up to a top-level handler \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\small When in doubt, unchecked: a checked exception forces every caller, and every caller of those, to change.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Chain]{Translating and chaining}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Translate the exception, keep the cause}
+	\lstcode[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=3, lastline=25, firstnumber=3]{codeoutput/Records.java}{Java}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Caused by}
+	\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/Records.txt}
+
+	\begin{itemize}\small
+		\item First part: the new exception, in the words of this program: which record, which line
+		\item \hCode{Caused by:} the original exception, with its own trace
+		\item \hCode{... 1 more}: the rest of the trace is the same as above, so it is not repeated
+		\item Without \hCode{e} in line 23, the cause would be lost: never translate without passing the cause
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Tools]{More language tools}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Multi-catch: one handler, several types}
+	\lstcodedownstep[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=2, lastline=15, firstnumber=2][basicstyle=\ttfamily\scriptsize]{codeoutput/MultiCatch.java}{Java}{codeoutput/MultiCatch.txt}
+
+	\footnotesize \hCode{catch (A | B e)}: the same handling for both. The types may not be in one family (no parent with its child).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Two resources in one try}
+	\begin{columns}[T]
+		\begin{column}{0.62\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=6, lastline=17, firstnumber=6]{codeoutput/CopyUpper/CopyUpper.java}{Java}
+		\end{column}
+		\begin{column}{0.36\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, numbers=none]{codeoutput/CopyUpper/names.txt}{}
+			\uncover<2->{\lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/CopyUpper.txt}}
+		\end{column}
+	\end{columns}
+
+	\footnotesize Separated by \hCode{;} in the parentheses. Closed in reverse order: \hCode{out} first, so everything written is flushed,
+	then \hCode{in}. No \hCode{finally}, no \hCode{close()} by hand.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Log instead of print}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=11, lastline=17, firstnumber=11]{codeoutput/LogDemo.java}{Java}
+	\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, lastline=8]{codeoutput/LogDemo.txt}}
+
+	\footnotesize \uncover<2->{Levels (\hCode{SEVERE}, \hCode{WARNING}, \hCode{INFO}) can be switched on and off without changing the code;
+	with \hCode{e} (line 16) the whole trace is written. Lines 9--10 (not shown) only set the format for this slide.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[JUnit]{JUnit in depth}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A fixture: @BeforeEach}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=9, lastline=23, firstnumber=9]{codeoutput/Bank/AccountTest.java}{Java}
+
+	\footnotesize Every test starts from the same \hDefined{fixture}: an account of Ada with 100. JUnit makes a new \hCode{AccountTest}
+	object for every test, then calls \hCode{setUp}: no test sees what another one changed.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exceptions: the type, the message, the details}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=32, lastline=49, firstnumber=32]{codeoutput/Bank/AccountTest.java}{Java}
+	\only<2->{\begin{textblock*}{0.56\textwidth}(7.4cm,5.6cm)
+		\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=11]{codeoutput/Bank.txt}
+	\end{textblock*}}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What the last frame used}
+	\begin{itemize}\small
+		\item \hCode{assertThrows} returns the exception: check its message and its fields (lines 35, 46)
+		\item \hCode{assertAll} (line 37): runs all its checks and reports every failure, not only the first
+		\item \hCode{@DisplayName}: a sentence in the report instead of the method name
+		\item A test may declare \hCode{throws} (line 27): a checked exception that is not expected simply makes the test an error
+		\item \hCode{closed} (lines 51--56) checks the \hCode{IllegalStateException} of a closed account
+		\item The state after a failed call is tested too (line 40): the balance did not change
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The lifecycle of a test class}
+	\begin{columns}[T]
+		\begin{column}{0.56\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=7, lastline=22, firstnumber=7]{codeoutput/JUnitMore/LifecycleTest.java}{Java}
+		\end{column}
+		\begin{column}{0.42\textwidth}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=3]{codeoutput/Lifecycle.txt}}
+		\end{column}
+	\end{columns}
+
+	\footnotesize \hCode{@AfterEach} and \hCode{@AfterAll} (lines 28--36) print the closing lines. \hCode{@BeforeAll} and
+	\hCode{@AfterAll} are \hCode{static}: once per class, for expensive set-up such as a database.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{assertAll reports every failure}
+	\lstcode[basicstyle=\ttfamily\scriptsize, firstline=6, lastline=19, firstnumber=6]{codeoutput/JUnitMore/AllTest.java}{Java}
+
+	\small \hQuestion{Both tests expect A for 89 and for 80 (wrong on purpose). How many failures does each one report?}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{assertAll: the report}
+	\lstoutput[basicstyle=\ttfamily\scriptsize, firstline=3]{codeoutput/All.txt}
+
+	\begin{itemize}\small
+		\item \hCode{separate} stops at the first false assert: the problem at 80 stays hidden until 89 is fixed
+		\item \hCode{together} runs every check and lists all failures under its heading
+		\item Use it for several properties of one result; for many inputs, a parameterized test is better
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Parameterized tests: one method, a table of cases}
+	\begin{columns}[T]
+		\begin{column}{0.64\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=8, lastline=21, firstnumber=8]{codeoutput/JUnitMore/GradesParamTest.java}{Java}
+		\end{column}
+		\begin{column}{0.34\textwidth}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=3]{codeoutput/Param.txt}}
+		\end{column}
+	\end{columns}
+
+	\footnotesize Each row of \hCode{@CsvSource} is one test; JUnit converts \hCode{"60"} and \hCode{"D"} to \hCode{int} and \hCode{char}.
+	Needs \hCode{junit-jupiter-params} (in Eclipse's JUnit 5 library).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{@Timeout and @Disabled}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=12, lastline=20, firstnumber=12]{codeoutput/JUnitMore/TimeTest.java}{Java}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=27, lastline=36, firstnumber=27]{codeoutput/JUnitMore/TimeTest.java}{Java}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What the timeout did}
+	\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=3]{codeoutput/Time.txt}
+
+	\begin{itemize}\small
+		\item \hCode{halvings(0)}: $0 / 2$ is 0 forever, so the loop never ends; without a limit, the whole test run would hang
+		\item \hCode{@Timeout} stops waiting after 500 ms; the test is an \hDefined{error} (a \hCode{TimeoutException}), the others go on
+		\item \hCode{SEPARATE\_THREAD} runs the test in its own thread, so a loop that never checks for interruption can be left behind
+		\item \hCode{@Disabled("reason")}: skipped, but listed with the reason; better than deleting or commenting out a test
+		\item The course grader also limits the time of every test: an endless loop costs that test, not the others
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Habits]{Good habits and tools}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Shaping a test}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. test habits
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.26\textwidth}L{0.66\textwidth}@{}}
+			\toprule
+			\textbf{Habit} & \textbf{Because} \\
+			\midrule
+			arrange, act, assert         & every reader finds the input, the call and the check at once \\
+			one behavior per test        & a red test then names exactly one broken behavior \\
+			a name that is a sentence    & the report reads as a list of what works and what does not \\
+			no \hCode{if} or loops in a test & a test with logic needs its own tests; use a parameterized test \\
+			expected values by hand      & a value copied from the program's output tests nothing \\
+			test the exceptions too      & the \hCode{@throws} lines of the contract are behavior as well \\
+			independent and repeatable   & any order, any machine, any day: no shared state, no clock, no random \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Where the tests live}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\small \textbf{Eclipse project}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. eclipse layout
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\scriptsize]
+Bank/
+  src/                  source folder
+    bank/Account.java
+  test/                 a second source folder
+    bank/AccountTest.java
+  JUnit 5               library on the build path
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\small \textbf{Maven or Gradle project}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. maven layout
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\scriptsize]
+bank/
+  pom.xml  (or build.gradle)
+  src/main/java/bank/Account.java
+  src/test/java/bank/AccountTest.java
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+		\end{column}
+	\end{columns}
+
+	\vspace{0.5em}
+	\begin{itemize}\small
+		\item Tests apart from the code: the program can be shipped without them
+		\item The same package (\hCode{bank}) in both: a test may use what is not \hCode{private}
+		\item In Eclipse: \menu{New > Source Folder}, name \hCode{test}; the JUnit wizard asks which source folder to use
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Running tests outside Eclipse}
+	\small JUnit's Console Launcher, one jar from Maven Central (\hCode{junit-platform-console-standalone}): \hRemark{Not run here}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. console launcher
+\begin{lstlisting}[style=codesnippet, language=bash, basicstyle=\ttfamily\scriptsize]
+# Windows (Command Prompt):  ; between class path entries
+javac -d out -cp junit-platform-console-standalone-6.1.3.jar src\*.java test\*.java
+java -jar junit-platform-console-standalone-6.1.3.jar execute -cp out --scan-class-path
+# macOS (Terminal):  : between class path entries, / in paths
+javac -d out -cp junit-platform-console-standalone-6.1.3.jar src/*.java test/*.java
+java -jar junit-platform-console-standalone-6.1.3.jar execute -cp out --scan-class-path
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+	\small With a build tool, one command compiles and runs every test: \hRemark{Not run here}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. maven and gradle
+\begin{lstlisting}[style=codesnippet, language={}, basicstyle=\ttfamily\scriptsize]
+mvn test          pom.xml: org.junit.jupiter:junit-jupiter:6.1.3, scope test
+gradle test       build.gradle: testImplementation 'org.junit.jupiter:junit-jupiter:6.1.3'
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+	\footnotesize JUnit 6.1.3 is the current stable version (November 2026; it needs Java 17); the labs use JUnit 5 from Eclipse. The test
+	code is the same. This deck's own sessions use a small launcher, \hCode{RunTests.java}, with the jars of Eclipse.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[End]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. cheat sheet
+\begin{lstlisting}[style=codesnippet, language=Java, basicstyle=\ttfamily\scriptsize]
+class MyException extends Exception { MyException(String m, Throwable c) { super(m, c); } }
+this.owner = Objects.requireNonNull(owner, "owner");          // null check in one line
+catch (NumberFormatException e) { throw new BadRecordException("record 3", e); }  // keep the cause
+catch (NumberFormatException | ArrayIndexOutOfBoundsException e) { ... }        // multi-catch
+try (Scanner in = new Scanner(f); PrintWriter out = new PrintWriter(g)) { ... }   // two resources
+log.log(Level.WARNING, "no scores file", e);                  // log, with the trace
+
+@BeforeEach void setUp() { ... }                              // a fresh fixture for every test
+X e = assertThrows(X.class, () -> call());  assertEquals("msg", e.getMessage());
+assertAll(() -> assertEquals(a, b), () -> assertEquals(c, d));
+@ParameterizedTest @CsvSource({"60, D", "59, F"}) void t(int s, char g) { ... }
+@Timeout(1) @Disabled("why") @DisplayName("a sentence")
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Projects}
+	\begin{enumerate}\small
+		\item \hCode{Account}: add \hCode{transfer(Account to, int amount)}. What if it fails halfway? Write the tests first, including the
+			  balances after a failed transfer
+		\item \hCode{Records}: read a real file; collect all bad records with their causes instead of stopping at the first
+		\item A \hCode{Grades} library: parameterized tests for every boundary, a \hCode{@BeforeEach} fixture of a class list,
+			  a checked \hCode{GradeFileException} for unreadable files
+		\item Turn a lab of this term into a Maven or Gradle project and run its tests with one command
+		\item Code review: find three \hCode{catch} blocks in your old labs that swallow or print-and-go-on. Fix them
+	\end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{References}
+	\small The Java Tutorials, lesson Exceptions \cite{TheJavaTutorials}; JUnit User Guide \cite{homeJunit}; Big Java \cite{horstmann2016big}.
+
+	\vspace{1em}
+	\setbeamertemplate{bibliography item}[text]
+	\bibliographystyle{IEEEtran}
+	\tiny\bibliography{../../hblib/hblibDataStructures}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

@@ -1,0 +1,17 @@
+$ javac -d out Account.java InsufficientFundsException.java AccountDemo.java AccountTest.java RunTests.java
+$ java -cp out AccountDemo
+Ada has 70, wants 90; missing 20
+amount must be > 0: -5
+account of Ada is closed
+balance 70
+Exception in thread "main" java.lang.NullPointerException: owner
+	at java.base/java.util.Objects.requireNonNull(Objects.java:259)
+	at Account.<init>(Account.java:11)
+	at AccountDemo.main(AccountDemo.java:23)
+$ java RunTests AccountTest
+  ok     a closed account takes nothing
+  ok     a deposit adds up
+  ok     a negative deposit is rejected
+  ok     too much: checked exception, balance unchanged
+  ok     withdraw all, then nothing is left
+Runs: 5   Errors: 0   Failures: 0

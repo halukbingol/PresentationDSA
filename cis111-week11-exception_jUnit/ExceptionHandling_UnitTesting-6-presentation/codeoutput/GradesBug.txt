@@ -1,0 +1,12 @@
+$ javac -d out Grades.java GradesTest.java RunTests.java
+$ java RunTests GradesTest
+  ok     average()
+  FAIL   boundaries()
+         expected: <A> but was: <B>
+  ok     eightyFiveIsB()
+  ERROR  ends()
+         java.lang.IllegalArgumentException: score not in 0..100: 100
+  ok     letterGradesOfAnArray()
+  ok     outsideIsAnError()
+  ok     passing()
+Runs: 7   Errors: 1   Failures: 1

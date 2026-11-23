@@ -1,0 +1,4 @@
+MissingReturn.java:12: error: missing return statement
+	}
+	^
+1 error

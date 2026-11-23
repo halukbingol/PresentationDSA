@@ -1,0 +1,4 @@
+85
+Exception in thread "main" java.util.NoSuchElementException: no name Linus
+	at FindThrow.find(FindThrow.java:17)
+	at FindThrow.main(FindThrow.java:8)

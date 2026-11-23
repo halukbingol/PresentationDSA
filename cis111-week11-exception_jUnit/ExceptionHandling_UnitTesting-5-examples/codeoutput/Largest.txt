@@ -1,0 +1,9 @@
+$ javac -d out Largest.java LargestTest.java RunTests.java
+$ java RunTests LargestTest
+  FAIL   allNegative()
+         expected: <-2> but was: <0>
+  FAIL   empty()
+         Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown.
+  ok     largestFirstOrLast()
+  ok     mixed()
+Runs: 4   Errors: 0   Failures: 2

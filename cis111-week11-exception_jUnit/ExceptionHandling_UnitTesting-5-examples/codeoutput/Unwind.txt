@@ -1,0 +1,4 @@
+readScore throws
+average: finally
+main handles it: empty file
+main goes on

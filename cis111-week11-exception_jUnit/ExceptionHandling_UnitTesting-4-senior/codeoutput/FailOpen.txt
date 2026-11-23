@@ -1,0 +1,2 @@
+fail open:   may edit? true
+fail closed: may edit? false

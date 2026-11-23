@@ -1,0 +1,2 @@
+try/catch:  322 ms  (500000 numbers)
+check:        6 ms  (500000 numbers)

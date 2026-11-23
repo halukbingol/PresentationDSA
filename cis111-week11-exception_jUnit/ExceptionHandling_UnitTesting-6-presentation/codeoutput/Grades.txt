@@ -1,0 +1,10 @@
+$ javac -d out Grades.java GradesTest.java RunTests.java
+$ java RunTests GradesTest
+  ok     average()
+  ok     boundaries()
+  ok     eightyFiveIsB()
+  ok     ends()
+  ok     letterGradesOfAnArray()
+  ok     outsideIsAnError()
+  ok     passing()
+Runs: 7   Errors: 0   Failures: 0

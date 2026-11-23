@@ -1,0 +1,2 @@
+caught:     java.lang.IllegalArgumentException: work failed
+suppressed: java.lang.IllegalStateException: close failed

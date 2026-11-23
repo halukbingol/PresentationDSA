@@ -1,0 +1,4 @@
+Unreachable.java:9: error: unreachable statement
+			System.out.println("checked");
+			^
+1 error

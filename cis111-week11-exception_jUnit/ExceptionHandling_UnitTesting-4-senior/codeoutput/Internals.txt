@@ -1,0 +1,15 @@
+$ javac -d out InstanceTest.java AssertionInside.java RunTests.java
+$ java RunTests InstanceTest
+    first:  count 1, objects 1
+  ok     first()
+    second: count 1, objects 2
+  ok     second()
+Runs: 2   Errors: 0   Failures: 0
+$ java AssertionInside
+message:  expected: <B> but was: <C>
+expected: B
+actual:   C
+  is a AssertionFailedError
+  is a AssertionError
+  is a Error
+  is a Throwable

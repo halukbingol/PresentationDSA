@@ -1,0 +1,614 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% v20261123T2200
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue, \hArray, \hGrid
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+
+
+\title[Exceptions, Tests: Senior]{
+	Exception Handling and Unit Testing\\
+	Senior
+}
+\subtitle{
+	\cisOOO\ -- Level 4: internals, security, testing at scale
+}
+\author[Erkovan]{Sait Erkovan}
+
+\institute[FCIS]{
+	Faculty of Computer and Information Sciences\\
+	Yeditepe University
+}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={1-3}, hideallsubsections]
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={4-7}, hideallsubsections]
+		\end{column}
+	\end{columns}
+
+	\vspace{1em}
+	\small It builds on \hCode{-3-junior}: the cost of exceptions, test doubles and mutation testing are assumed.
+	Threads, reflection and annotations appear only as far as each example needs them.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Inside]{Inside the JVM}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{try, catch, finally in bytecode}
+	\begin{columns}[T]
+		\begin{column}{0.41\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{5.8}{6.95}\selectfont]{codeoutput/Javap/TryCatch.java}{Java}
+
+			\footnotesize \hCode{javap -c} prints the instructions \hCode{javac} made from \hCode{parse}.
+		\end{column}
+		\begin{column}{0.57\textwidth}
+			\uncover<2->{\lstterminal[basicstyle=\ttfamily\fontsize{5.4}{6.45}\selectfont, lastline=25]{codeoutput/Javap.txt}}
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reading the bytecode}
+	\begin{itemize}\small
+		\item \hCode{\#7} is \hCode{Integer.parseInt}, \hCode{\#13} is \hCode{done} (the comments of \hCode{javap} were cut off)
+		\item No instruction ``enters'' the try: a try block costs nothing until something is thrown
+		\item The \hDefined{exception table} says where to jump: thrown between 0 and 5, a \hCode{NumberFormatException} goes to 10,
+			  anything else (\hCode{any}) to 18
+		\item The \hCode{finally} is copied into every path: at 5 (normal), 13 (after the catch), 19 (any other exception);
+			  at 23 \hCode{athrow} throws the stored exception again
+		\item This is why a \hCode{return} in \hCode{finally} (junior) wins: its copy runs last on every path
+		\item \hCode{sed} needs a bash: Terminal on macOS, Git Bash on Windows; \hCode{javap -c} alone works everywhere
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Helpful NullPointerException messages}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/Npe/Npe.java}{Java}
+	\uncover<2->{\lstterminal[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont]{codeoutput/Npe.txt}}
+
+	\begin{itemize}\footnotesize
+		\item<2-> Since Java 15 the JVM says which value was \hCode{null} (JEP 358); the names come from the debug data (\hCode{-g}, as Eclipse compiles)
+		\item<2-> Without debug data only the slot number is left; the switch removes the details, e.g. so that logs show less
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{When the stack trace disappears}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=2, lastline=16, firstnumber=2]{codeoutput/FastThrow/FastThrow.java}{Java}
+	\only<2->{\begin{textblock*}{0.52\textwidth}(7.6cm,5.0cm)
+		\lstterminal[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont]{codeoutput/FastThrow.txt}
+		\footnotesize After many identical exceptions in hot, compiled code, HotSpot throws a ready-made one: no message,
+		no frames. Look for the first ones in the log, or use the switch. The count varies.
+	\end{textblock*}}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Threads]{Beyond the main thread}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{An exception in another thread}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/Exit/Crash.java}{Java}
+
+	\footnotesize A \hCode{Thread} runs its lambda next to \hCode{main}; \hCode{join} waits for it to finish. What happens to the
+	exception of line~4, and to the program?
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Only one thread dies}
+	\lstterminal[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/Exit.txt}
+
+	\begin{itemize}\footnotesize
+		\item<2-> An uncaught exception ends only its own thread; \hCode{main} goes on, and the \hDefined{exit status} is 0: ``all fine''
+		\item<2-> Scripts, build tools and servers judge a program by its exit status: 0 success, anything else failure
+		\item<2-> Only when \hCode{main} (the last non-daemon thread) dies by an exception is the status 1;
+			  \hCode{System.exit(n)} sets it on purpose
+		\item<2-> Windows: Git Bash as here; in Command Prompt the status is \hCode{echo \%ERRORLEVEL\%}
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A last line of defence}
+	\lstcodedownstep[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont][basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont]{codeoutput/Handler.java}{Java}{codeoutput/Handler.txt}
+
+	\begin{itemize}\footnotesize
+		\item<2-> Any thread that dies by an exception: a sentence for the user, the details for the log
+		\item<2-> A safety net, not a plan: the specific problems are still handled where they occur
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Security]{Exceptions and security}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A message that says too much}
+	\lstcodedownstep[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, lastline=14][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/Leaky.java}{Java}{codeoutput/Leaky.txt}
+
+	\begin{itemize}\footnotesize
+		\item<2-> Server, user, password, student number: on the screen of whoever caused the error
+		\item<2-> Instead: a short sentence and an incident number; the details to a log, without passwords
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Fail closed}
+	\begin{columns}[T]
+		\begin{column}{0.64\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=8, lastline=29, firstnumber=8]{codeoutput/FailOpen.java}{Java}
+		\end{column}
+		\begin{column}{0.34\textwidth}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont]{codeoutput/FailOpen.txt}}
+
+			\footnotesize \uncover<2->{A corrupted token makes the check itself fail. ``Fail open'' turns every bug in
+			\hCode{checkToken} into an open door.
+
+			\vspace{0.5em}
+			When a check cannot decide, the answer is \textbf{no}: \hDefined{fail closed}.}
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Half-done work: failure atomicity}
+	\lstcodedownstep[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=21, lastline=35, firstnumber=21][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/Atomic.java}{Java}{codeoutput/Atomic.txt}
+
+	\footnotesize \uncover<2->{200 left account 0 and never arrived. After an exception an object should be as it was: check first, then change.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Mishandled exceptional conditions}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. security checklist
+\begin{table}
+		\scriptsize
+		\begin{tabular}{@{}L{0.42\textwidth}L{0.16\textwidth}L{0.34\textwidth}@{}}
+			\toprule
+			\textbf{Weakness} & \textbf{CWE} & \textbf{Instead} \\
+			\midrule
+			error message with sensitive information & 209 & sentence and incident number \\
+			sensitive information in the log & 532 & no passwords, tokens, personal data \\
+			uncaught exception & 248 & a handler at the top \\
+			error detected, nothing done & 390 & handle, rethrow or let it pass \\
+			\hCode{catch (Exception e)} for everything & 396 & the specific types \\
+			no cleanup after an exception & 460 & try-with-resources, failure atomicity \\
+			failing open & 636 & fail closed \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+	\footnotesize ``Mishandling of Exceptional Conditions'' entered the OWASP Top~10 in 2025 (A10), with 24 such CWEs.
+	OWASP also advises a global handler and rolling back a half-done transaction.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Resilience]{Failures that go away}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Retry, with backoff}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=15, lastline=29, firstnumber=15]{codeoutput/Retry.java}{Java}
+	\only<2->{\begin{textblock*}{0.30\textwidth}(10.4cm,2.8cm)
+		\lstoutput[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont]{codeoutput/Retry.txt}
+	\end{textblock*}}
+
+	\begin{itemize}\footnotesize
+		\item<2-> \hCode{fetch} (lines 6--13) fails twice, then works: a \hDefined{transient} failure, like a timeout or a busy server
+		\item<2-> Wait longer each time (exponential backoff), add a little randomness, stop after a few attempts
+		\item<2-> Never retry a bad input, and only repeat what is safe to repeat (\hDefined{idempotent}): ``set the grade to 85'' yes,
+			  ``add 5 points'' no
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Patterns for unreliable services}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. resilience patterns
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.22\textwidth}L{0.70\textwidth}@{}}
+			\toprule
+			\textbf{Pattern} & \textbf{Idea} \\
+			\midrule
+			timeout & never wait forever; a missing answer becomes an exception \\
+			retry & try again after a pause, a few times, for transient failures only \\
+			circuit breaker & after many failures stop calling for a while; fail fast instead of piling up waits \\
+			fallback & a weaker answer: a cached value, a default, ``try again later'' \\
+			bulkhead & separate limits per service, so one slow service cannot use up all threads \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+	\footnotesize Every pattern turns an exception into a decision made in advance. \hRemark{Not run here:} libraries such as
+	Resilience4j implement them; they are not part of this deck's sessions.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[JUnit]{How JUnit works}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A test runner of our own: the tests}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=9, lastline=24, firstnumber=9]{codeoutput/MiniJUnit.java}{Java}
+
+	\begin{itemize}\footnotesize
+		\item \hCode{@interface} declares an annotation; \hCode{RUNTIME} keeps it in the class file for reflection
+		\item A test is any method marked \hCode{@Check}; \hCode{helper} is not one
+		\item \hCode{expect} is our \hCode{assertEquals}: it throws an \hCode{AssertionError}
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A test runner of our own: the runner}
+	\lstcodedownstep[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=26, lastline=42, firstnumber=26][basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont]{codeoutput/MiniJUnit.java}{Java}{codeoutput/MiniJUnit.txt}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What the runner shows}
+	\begin{itemize}\small
+		\item Reflection: the class is asked for its methods at run time; the annotation picks the tests
+		\item \hCode{invoke} wraps what the test threw in an \hCode{InvocationTargetException}; \hCode{getCause()} unwraps it
+		\item \hCode{AssertionError} means \hDefined{failure} (the test checked and disagreed), any other exception an
+			  \hDefined{error} (the test could not finish): the same split as in JUnit's view
+		\item A new object for every test, sorted by name: JUnit does the same, with a configurable order
+		\item JUnit adds discovery in packages, lifecycle methods, parameters, timeouts, extensions and reports
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A new object for every test}
+	\lstcode[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=3, lastline=22, firstnumber=3]{codeoutput/Internals/InstanceTest.java}{Java}
+	\only<2->{\begin{textblock*}{0.31\textwidth}(11.0cm,1.9cm)
+		\lstterminal[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=2, lastline=7]{codeoutput/Internals.txt}
+		\footnotesize Both tests see \hCode{count} 0 at the start: JUnit made two objects. A field cannot carry state from
+		one test to the next; a \hCode{static} one can (next section). \hCode{@TestInstance(PER\_CLASS)} changes this.
+	\end{textblock*}}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What an assertion throws}
+	\lstcode[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=5, lastline=19, firstnumber=5]{codeoutput/Internals/AssertionInside.java}{Java}
+	\only<2->{\begin{textblock*}{0.34\textwidth}(10.8cm,2.0cm)
+		\lstterminal[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=8]{codeoutput/Internals.txt}
+	\end{textblock*}}
+
+	\footnotesize \uncover<2->{\hCode{AssertionFailedError} (opentest4j, shared by several test frameworks) keeps expected and actual, so the IDE can
+	show a comparison. It is an \hCode{Error}: a \hCode{catch (Exception e)} in the tested code cannot hide a failing assert.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Scale]{Tests in a team}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Tests that depend on their order}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=7, lastline=23, firstnumber=7]{codeoutput/Flaky/OrderTest.java}{Java}
+
+	\footnotesize \hCode{MethodOrderer.Random} runs the tests in a random order. Both tests use the same \hCode{static} array.
+	Do they pass?
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Same tests, two orders}
+	\lstterminal[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/Flaky.txt}
+
+	\begin{itemize}\footnotesize
+		\item<2-> A test that passes or fails without any change in the code is \hDefined{flaky}; here the cause is shared state
+		\item<2-> The seed makes the random order repeatable, so the failure can be reproduced and fixed
+		\item<2-> Fix: every test builds its own data (a local array, \hCode{@BeforeEach}); never let one test depend on another
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Where flaky tests come from}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. flaky causes
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.30\textwidth}L{0.62\textwidth}@{}}
+			\toprule
+			\textbf{Cause} & \textbf{Cure} \\
+			\midrule
+			shared state, test order & fresh data in every test \\
+			the clock (\hCode{now()}, dates) & inject a clock and fix it in the test \\
+			randomness & a fixed seed \\
+			network, database, files & test doubles (junior), \hCode{@TempDir} \\
+			threads, \hCode{sleep} & wait for an event, not for a time; a generous \hCode{@Timeout} \\
+			floating point & a tolerance, never \hCode{==} \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+	\footnotesize A flaky test is worse than none: people learn to ignore red. Quarantine it, find the cause, fix it.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The test pyramid}
+	\begin{center}
+		\begin{tikzpicture}[lv/.style={font=\small, align=center}, nt/.style={font=\scriptsize, anchor=west, align=left}]
+			\fill[colorGo!15] (-4.5,0) -- (4.5,0) -- (3.0,1.2) -- (-3.0,1.2) -- cycle;
+			\fill[colorGo!30] (-3.0,1.2) -- (3.0,1.2) -- (1.5,2.4) -- (-1.5,2.4) -- cycle;
+			\fill[colorGo!50] (-1.5,2.4) -- (1.5,2.4) -- (0,3.6) -- cycle;
+			\draw (-4.5,0) -- (4.5,0) -- (0,3.6) -- cycle;
+			\draw (-3.0,1.2) -- (3.0,1.2); \draw (-1.5,2.4) -- (1.5,2.4);
+			\node[lv] at (0,0.6) {unit tests: one method or class};
+			\node[lv] at (0,1.8) {integration};
+			\node[lv] at (0,2.85) {end-to-end};
+			\node[nt] at (4.6,0.6) {thousands, milliseconds each, every save};
+			\node[nt] at (3.3,1.8) {hundreds: real files, a real database};
+			\node[nt] at (1.9,2.9) {a few: the whole program, as a user};
+		\end{tikzpicture}
+	\end{center}
+
+	\begin{itemize}\footnotesize
+		\item Lower tests are fast, precise and stable; higher ones are slow, but test what the user really sees
+		\item Most of the testing at the bottom; a failing test at the top should be followed by a new test at the bottom
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Continuous integration}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/ci.yml}{}
+
+	\begin{itemize}\footnotesize
+		\item Every push runs every test on a clean machine: no ``works on my computer''
+		\item A red build stops the merge; the exit status of the test run decides (previous section)
+		\item Reports, coverage and mutation scores (junior) can be published from the same pipeline
+	\end{itemize}
+	\footnotesize \hRemark{Not run here:} a GitHub Actions workflow for a Maven project; it needs a repository and the service.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[End]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. cheat sheet
+\begin{table}
+		\scriptsize
+		\begin{tabular}{@{}L{0.30\textwidth}L{0.62\textwidth}@{}}
+			\toprule
+			\textbf{Topic} & \textbf{Remember} \\
+			\midrule
+			bytecode & an exception table, no cost until a throw; \hCode{finally} copied into every path \\
+			messages & helpful NPE messages need debug data; repeated hot exceptions may lose their trace \\
+			threads & an uncaught exception ends one thread; the exit status tells the caller \\
+			default handler & a safety net at the top: sentence for the user, details to the log \\
+			security & no secrets in messages or logs; fail closed; failure atomicity \\
+			resilience & timeout, retry with backoff, circuit breaker, fallback \\
+			JUnit inside & reflection, a new object per test, \hCode{AssertionFailedError} \\
+			flaky tests & shared state, clock, randomness, network, threads \\
+			at scale & the test pyramid; every test on every push \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Projects}
+	\begin{enumerate}\small
+		\item Extend \hCode{MiniJUnit} with \hCode{@BeforeEach}-like methods and a count of runs, failures and errors
+		\item Give \hCode{Retry} random jitter and a maximum total waiting time; test it with a fake clock
+		\item Find a stack trace or error page that leaks information in one of your own programs, and fix it
+		\item Write a small circuit breaker: closed, open after three failures, half-open after a pause
+		\item Run a test suite of your own in random order with ten seeds; fix every order dependence you find
+	\end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{References}
+	\small The Java Tutorials, lesson Exceptions \cite{TheJavaTutorials}; JUnit User Guide \cite{homeJunit}; Big Java \cite{horstmann2016big}.
+	Also: OWASP Top~10 (2025), A10 Mishandling of Exceptional Conditions; MITRE CWE list; JEP 358.
+
+	\vspace{1em}
+	\setbeamertemplate{bibliography item}[text]
+	\bibliographystyle{IEEEtran}
+	\tiny\bibliography{../../hblib/hblibDataStructures}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

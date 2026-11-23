@@ -1,0 +1,7 @@
+$ javac -d out ScoreSource.java Report.java ReportTest.java RunTests.java
+$ java RunTests ReportTest
+  ok     average()
+  ok     empty()
+  ok     readsOnlyOnce()
+  ok     sourceFails()
+Runs: 4   Errors: 0   Failures: 0

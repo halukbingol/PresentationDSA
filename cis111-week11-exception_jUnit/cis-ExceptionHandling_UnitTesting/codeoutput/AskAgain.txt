@@ -1,0 +1,6 @@
+Type a score:
+  not a number: eighty
+Type a score:
+  not a number: 8O
+Type a score:
+score 80 accepted

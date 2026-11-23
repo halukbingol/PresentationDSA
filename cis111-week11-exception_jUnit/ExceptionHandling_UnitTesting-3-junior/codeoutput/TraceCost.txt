@@ -1,0 +1,3 @@
+depth    1:    312 ns with a trace,   11 ns without
+depth  100:   2534 ns with a trace,   76 ns without
+depth 1000:  20465 ns with a trace,  881 ns without

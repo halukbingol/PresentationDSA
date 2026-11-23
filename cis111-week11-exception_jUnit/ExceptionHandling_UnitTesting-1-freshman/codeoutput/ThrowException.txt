@@ -1,0 +1,4 @@
+ThrowException.java:8: error: unreported exception Exception; must be caught or declared to be thrown
+			throw new Exception("negative side");
+			^
+1 error

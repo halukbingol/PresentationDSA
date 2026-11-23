@@ -1,0 +1,18 @@
+$ javac -d out Temperature.java MistakesTest.java PrivateTest.java RunTests.java
+$ java RunTests MistakesTest
+  FAIL   a_rightOrder()
+         expected: <212.0> but was: <212.5>
+  FAIL   b_swapped()
+         expected: <212.5> but was: <212.0>
+  ok     d_noAssert()
+  ok     e_sameCallTwice()
+  ok     f_exceptionByHand()
+Runs: 5   Errors: 0   Failures: 2
+$ java RunTests PrivateTest
+Nov 23, 2026 8:54:05 PM org.junit.platform.launcher.core.DiscoveryIssueNotifier logIssues
+WARNING: TestEngine with ID 'junit-jupiter' encountered a non-critical issue during test discovery:
+
+(1) [WARNING] @Test method 'private void PrivateTest.boilingPoint()' must not be private. It will not be executed.
+    Source: MethodSource [className = 'PrivateTest', methodName = 'boilingPoint', methodParameterTypes = '']
+            at PrivateTest.boilingPoint(SourceFile:0)
+Runs: 0   Errors: 0   Failures: 0

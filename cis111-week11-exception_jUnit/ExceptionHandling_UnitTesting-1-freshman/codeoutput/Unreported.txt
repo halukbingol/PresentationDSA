@@ -1,0 +1,4 @@
+Unreported.java:6: error: unreported exception FileNotFoundException; must be caught or declared to be thrown
+		Scanner in = new Scanner(new File("scores.txt"));
+		             ^
+1 error

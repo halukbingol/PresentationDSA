@@ -1,0 +1,16 @@
+$ javac -d out Grades.java TS_Grades_jUnit.java TH_Grades_jUnit.java RunTests.java
+$ java RunTests TS_Grades_jUnit
+  ok     ts1_eightyFive()
+  ok     ts2_ninetyFive()
+  ok     ts3_forty()
+Runs: 3   Errors: 0   Failures: 0
+$ java RunTests TH_Grades_jUnit
+  FAIL   th1_seventyFive()
+         expected: <C> but was: <F>
+  FAIL   th2_ninety()
+         expected: <A> but was: <B>
+  FAIL   th3_sixty()
+         expected: <D> but was: <F>
+  ok     th4_zero()
+  ok     th5_hundred()
+Runs: 5   Errors: 0   Failures: 3

@@ -1,0 +1,11 @@
+$ javac -d out Grades.java PitfallsTest.java RunTests.java
+$ java RunTests PitfallsTest
+  ok     arraysWithAssertArrayEquals()
+  FAIL   arraysWithAssertEquals()
+         expected: [C@5c909414<[B, A]> but was: [C@4b14c583<[B, A]>
+  ok     doubleWithTolerance()
+  FAIL   doubleWithoutTolerance()
+         expected: <0.3> but was: <0.30000000000000004>
+  FAIL   hundredThrows()
+         Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown.
+Runs: 5   Errors: 0   Failures: 3

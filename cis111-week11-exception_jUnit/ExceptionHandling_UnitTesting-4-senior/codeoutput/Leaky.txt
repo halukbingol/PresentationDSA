@@ -1,0 +1,1 @@
+Error: cannot connect to jdbc:mysql://10.0.0.7/grades?user=admin&password=S3cret! for id 20261234

@@ -1,0 +1,3 @@
+ERROR  crashes: java.lang.NumberFormatException: For input string: "x"
+FAIL   fails: java.lang.AssertionError: expected 5 but was 4
+ok     passes

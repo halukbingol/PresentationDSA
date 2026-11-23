@@ -1,0 +1,689 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% v20261123T2200
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue, \hArray, \hGrid
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+
+
+\title[Exceptions, Tests: Examples]{
+	Exception Handling and Unit Testing\\
+	Examples
+}
+\subtitle{
+	\cisOOO\ -- Level 5: every idea as a small program
+}
+\author[Erkovan]{Sait Erkovan}
+
+\institute[FCIS]{
+	Faculty of Computer and Information Sciences\\
+	Yeditepe University
+}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={1-5}, hideallsubsections]
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={6-9}, hideallsubsections]
+		\end{column}
+	\end{columns}
+
+	\vspace{1em}
+	\small One program per idea of \hCode{ExceptionHandling\_UnitTesting-0-concepts}, in the same order.
+	Every output is real: \hCode{run\_examples.sh} makes it.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Errors]{What can go wrong}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A compile-time error}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\scriptsize]{codeoutput/CompileError.java}{Java}{codeoutput/CompileError.txt}
+
+	\small \uncover<2->{The program never runs: the compiler names the file, the line (3) and the column (\hCode{\textasciicircum}).}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A run-time error}
+	\lstcode[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=6, firstnumber=3]{codeoutput/RuntimeError.java}{Java}
+	\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont]{codeoutput/RuntimeError.txt}}
+
+	\footnotesize \uncover<2->{The report lists frames inside Java too (\hCode{java.base/...}). Read from the top down to the first line of your
+	own code: \hCode{RuntimeError.java:5}.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A logic error}
+	\lstcoderightstep[0.68][basicstyle=\ttfamily\scriptsize]{codeoutput/LogicError.java}{Java}{codeoutput/LogicError.txt}
+
+	\small \uncover<2->{No message, no stop: just a wrong number. $(3 + 4) / 2$ is computed with \hCode{int}s before it becomes a
+	\hCode{double}. Only a check of the result (a test) finds this.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Where problems come from}
+	\begin{columns}[T]
+		\begin{column}{0.58\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=6, lastline=23, firstnumber=6]{codeoutput/Sources.java}{Java}
+		\end{column}
+		\begin{column}{0.40\textwidth}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/Sources.txt}}
+			\footnotesize \uncover<2->{A bug, the input, the world: three sources, one mechanism. Only the first one is fixed in the code.}
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Two paths through a program}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=3, lastline=16, firstnumber=3]{codeoutput/TwoPaths.java}{Java}{codeoutput/TwoPaths.txt}
+
+	\footnotesize \uncover<2->{Lines 6--8 are the normal path, with no checks in between. A problem in line 6 or 7 jumps to its handler;
+	line 14 runs in every case.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Signal]{Signaling a problem}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A special value: $-1$}
+	\lstcode[basicstyle=\ttfamily\scriptsize, firstline=2, lastline=12, firstnumber=2]{codeoutput/FindReturn.java}{Java}
+	\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/FindReturn.txt}}
+
+	\footnotesize \hCode{find} (lines 14--21) returns the index, or $-1$. \uncover<2->{The second caller forgot the check:
+	$-1$ became an index, and the report points to \hCode{main}, not to the real cause.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{An exception, at the place of the problem}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=7, lastline=18, firstnumber=7]{codeoutput/FindThrow.java}{Java}
+	\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/FindThrow.txt}}
+
+	\footnotesize \uncover<2->{The caller cannot forget: the report says what (\hCode{no name Linus}) and where (\hCode{find}, line 17).}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Throw early, catch late}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=19, lastline=25, firstnumber=19]{codeoutput/Layers.java}{Java}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=2, lastline=9, firstnumber=2]{codeoutput/Layers.java}{Java}
+	\only<2->{\begin{textblock*}{0.50\textwidth}(8.0cm,5.0cm)
+		\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Layers.txt}
+	\end{textblock*}}
+
+	\footnotesize The reader knows the line; the screen knows the user. \hCode{average} (lines 11--17), in between, only adds:
+	it has no error code at all.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Stack]{The call stack}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Unwinding, step by step (1/2)}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=2, lastline=22, firstnumber=2]{codeoutput/Unwind.java}{Java}
+
+	\small \hQuestion{\hCode{readScore} throws. What is printed, in which order?}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Unwinding, step by step (2/2)}
+	\begin{columns}[T]
+		\begin{column}{0.44\textwidth}
+			\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Unwind.txt}
+		\end{column}
+		\begin{column}{0.54\textwidth}
+			\begin{itemize}\small
+				\item \hCode{readScore} has no \hCode{catch}: it ends at once, its frame is removed
+				\item \hCode{average} has no \hCode{catch} either: line 14 is skipped, its \hCode{finally} runs, then it ends too
+				\item \hCode{main} has a matching \hCode{catch}: it handles it, then goes on after its \hCode{try}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Objects]{Exception objects}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Inside an exception object}
+	\lstcode[basicstyle=\ttfamily\scriptsize, firstline=2, lastline=19, firstnumber=2]{codeoutput/Anatomy.java}{Java}
+	\only<2->{\begin{textblock*}{0.60\textwidth}(6.2cm,5.3cm)
+		\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/Anatomy.txt}
+	\end{textblock*}}
+
+	\footnotesize Type, message, where (the newest frame), cause: line 17 keeps the original exception as the \hDefined{cause}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A handler for a family}
+	\lstcode[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=14, firstnumber=3]{codeoutput/Families.java}{Java}
+	\uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Families.txt}}
+
+	\footnotesize \hCode{run(c)} (lines 17--27) parses \hCode{"x"}, writes \hCode{a[-1]}, or calls a method on \hCode{null}.
+	\uncover<2->{A \hCode{NumberFormatException} is an \hCode{IllegalArgumentException}; the other two land in \hCode{RuntimeException}.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Checked: the compiler insists}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/Checked.java}{Java}{codeoutput/Checked.txt}
+
+	\footnotesize \uncover<2->{One error only: line 6 may throw a \hCode{NumberFormatException}, but that one is unchecked, so the compiler is silent.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Handle or declare}
+	\lstcoderightstep[0.62][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=6, lastline=20, firstnumber=6][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/Declare.java}{Java}{codeoutput/Declare.txt}
+
+	\footnotesize \uncover<2->{\hCode{firstLine} cannot do anything useful about a missing file: it declares it (line 16).
+	\hCode{main} can: it handles it. \hCode{scores.txt} exists, \hCode{missing.txt} does not.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Cleanup]{Cleaning up}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{finally on three paths (1/2)}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=2, lastline=20, firstnumber=2]{codeoutput/FinallyPaths.java}{Java}
+
+	\small \hQuestion{Three calls: what does each one print? Does line 6 run?}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{finally on three paths (2/2)}
+	\begin{columns}[T]
+		\begin{column}{0.62\textwidth}
+			\lstoutput[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont]{codeoutput/FinallyPaths.txt}
+		\end{column}
+		\begin{column}{0.36\textwidth}
+			\begin{itemize}\small
+				\item \hCode{run(4)}: the \hCode{try} runs to its end, then \hCode{finally}
+				\item \hCode{run(0)}: \hCode{/ by zero} is caught, then \hCode{finally}
+				\item \hCode{run(-1)}: not caught; \hCode{finally} still runs, then the exception leaves \hCode{run} and stops the program
+				\item Line 6 never runs
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Resources close in reverse order}
+	\lstcode[basicstyle=\ttfamily\scriptsize, firstline=2, lastline=10, firstnumber=2]{codeoutput/CloseOrder.java}{Java}
+	\only<2->{\begin{textblock*}{0.38\textwidth}(9.7cm,1.7cm)
+		\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/CloseOrder.txt}
+	\end{textblock*}}
+
+	\footnotesize \hCode{Resource} (lines 12--24) is a made-up resource: its constructor prints \hCode{open}, its \hCode{close}
+	prints \hCode{close}. \uncover<2->{Both are closed before the \hCode{catch} runs, the last opened first;
+	a \hCode{Scanner} or a \hCode{PrintWriter} behaves the same.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Design]{Designing with exceptions}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{No check: it fails late, far away}
+	\lstcode[basicstyle=\ttfamily\scriptsize, firstline=2, lastline=18, firstnumber=2]{codeoutput/FailFast.java}{Java}
+
+	\small \hQuestion{Line 5 stores $-4$. Where will the program notice?}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{No check: the report points elsewhere}
+	\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/FailFast.txt}
+
+	\begin{itemize}\small
+		\item The wrong value went in at line 5; nothing complained
+		\item Bar 0 is printed, then \hCode{String.repeat} refuses $-4$ inside \hCode{printBars}, line 16
+		\item The report shows where the damage was found, not where it was done. In a big program, these are far apart
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Fail fast: check the contract first}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize, firstline=2, lastline=15, firstnumber=2][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/FailFastChecked.java}{Java}{codeoutput/FailFastChecked.txt}
+
+	\footnotesize \uncover<2->{Before: the report pointed to \hCode{String.repeat} in \hCode{printBars}. Now it points to the guilty call,
+	\hCode{setStock(1, -4)} in line 5.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A catch-all hides a bug}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize, firstline=4, lastline=14, firstnumber=4][basicstyle=\ttfamily\scriptsize]{codeoutput/CatchAll.java}{Java}{codeoutput/CatchAll.txt}
+
+	\footnotesize \uncover<2->{The file is not the problem: \hCode{new File(null)} throws a \hCode{NullPointerException}, a bug. The catch-all
+	turns it into a wrong message. \hCode{catch (FileNotFoundException e)} would have let the bug show.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Tests]{Unit tests}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A tester by hand}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=5, lastline=11, firstnumber=5]{codeoutput/TinyTester.java}{Java}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=22, lastline=29, firstnumber=22]{codeoutput/TinyTester.java}{Java}
+	\only<2->{\begin{textblock*}{0.42\textwidth}(8.6cm,4.6cm)
+		\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/TinyTester.txt}
+	\end{textblock*}}
+
+	\footnotesize \hCode{check} (lines 13--20) compares and counts: an assertion. \hCode{main} is the runner.
+	\uncover<2->{The equal case was forgotten. JUnit does the same, without this code.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Arrange, act, assert}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=9, lastline=19, firstnumber=9]{codeoutput/Ticket/Ticket.java}{Java}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=8, lastline=13, firstnumber=8]{codeoutput/Ticket/TicketTest.java}{Java}
+	\only<2->{\begin{textblock*}{0.40\textwidth}(9.2cm,4.4cm)
+		\lstoutput[basicstyle=\ttfamily\scriptsize, firstline=3]{codeoutput/Ticket.txt}
+	\end{textblock*}}
+
+	\footnotesize Arrange the input, act once, assert the result. The other tests check one age per class,
+	the boundaries and a negative age.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Pass, failure, error}
+	\begin{columns}[T]
+		\begin{column}{0.46\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=8, lastline=21, firstnumber=8]{codeoutput/Ticket/OutcomesTest.java}{Java}
+		\end{column}
+		\begin{column}{0.52\textwidth}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=3]{codeoutput/Outcomes.txt}}
+			\footnotesize \uncover<2->{Line 15 expects 60, a bug in the test: a failure. Line 20 calls \hCode{price(-3)}, which throws:
+			an error. One bad test does not stop the others.}
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Choose]{Choosing test cases}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Classes miss it, boundaries find it}
+	\begin{columns}[T]
+		\begin{column}{0.50\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=13, lastline=18, firstnumber=13]{codeoutput/TicketBug/Ticket.java}{Java}
+			\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=22, lastline=29, firstnumber=22]{codeoutput/TicketBug/TicketTest.java}{Java}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=3]{codeoutput/TicketBug.txt}}
+			\footnotesize \uncover<2->{Line 13 says \hCode{< 6}; the contract says 0 to 6 are free. \hCode{oneFromEveryClass} (ages 3, 12, 40) does not notice.
+			Age 6, a boundary, does.}
+
+			\vspace{0.4em}
+			\uncover<2->{Fixed (\hCode{<= 6}), all four pass: \hCode{codeoutput/Ticket.txt}. The boundary test stays, against regressions.}
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Special values}
+	\begin{columns}[T]
+		\begin{column}{0.50\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=3, lastline=12, firstnumber=3]{codeoutput/Largest/Largest.java}{Java}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\footnotesize \hCode{LargestTest}: \hCode{\{4, 9, 2\}} gives 9; 9 first or last; \hCode{\{-7, -2, -5\}} gives $-2$;
+			an empty array must throw.
+
+			\vspace{0.4em}
+			\uncover<2->{All negative: the start value 0 wins. Empty: 0 instead of an exception.
+			Fix: check the length, start with \hCode{a[0]}.}
+		\end{column}
+	\end{columns}
+	\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=3]{codeoutput/Largest.txt}}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Coverage: the branch no test runs}
+	\begin{columns}[T]
+		\begin{column}{0.58\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/Shipping/Shipping.java}{Java}
+		\end{column}
+		\begin{column}{0.40\textwidth}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=2]{codeoutput/Shipping.txt}}
+		\end{column}
+	\end{columns}
+
+	\footnotesize \uncover<2->{\hCode{ExpressTest} passes, but never runs line 9. \hCode{NormalTest} runs it, and the bug shows.
+	A coverage tool would have marked line 9 as never run.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Time]{Tests over time}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Test first: red}
+	\begin{columns}[T]
+		\begin{column}{0.50\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=6, lastline=16, firstnumber=6]{codeoutput/Tdd/ClockTest.java}{Java}
+			\footnotesize and four more: 60 gives \hCode{00:01:00}, 3661 gives \hCode{01:01:01}, 86399 gives \hCode{23:59:59}, $-1$ throws.
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=3, lastline=6, firstnumber=3]{codeoutput/Tdd/red/Clock.java}{Java}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, linerange={3-6,15-15}]{codeoutput/Tdd.txt}}
+			\footnotesize \uncover<2->{All six fail: red. Now the tests say exactly what to build.}
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Green: the simplest code that passes}
+	\lstcode[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=4, lastline=23, firstnumber=4]{codeoutput/Tdd/green/Clock.java}{Java}
+	\only<2->{\begin{textblock*}{0.42\textwidth}(8.6cm,3.0cm)
+		\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=17, lastline=24]{codeoutput/Tdd.txt}
+		\footnotesize Long and repetitive, but green.
+	\end{textblock*}}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Refactor: still green}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=3, lastline=9, firstnumber=3]{codeoutput/Tdd/refactor/Clock.java}{Java}
+	\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=25]{codeoutput/Tdd.txt}}
+
+	\footnotesize \uncover<2->{The same six tests, unchanged, still green: the clean version does what the long one did.
+	Without the tests, this change would be a guess.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Green visible tests, red hidden tests}
+	\lstcoderightstep[0.52][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=3, lastline=12, firstnumber=3][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=2]{codeoutput/Prime/Prime.java}{Java}{codeoutput/Prime.txt}
+
+	\footnotesize \uncover<2->{The visible tests try 2, 3, 7, 4 and 10: all pass. The hidden ones try 9 and 15: odd, but not prime.
+	Green tests show that these cases work, nothing more.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[End]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The programs of this deck}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. programs
+\begin{table}
+		\scriptsize
+		\begin{tabular}{@{}L{0.16\textwidth}L{0.29\textwidth}L{0.16\textwidth}L{0.29\textwidth}@{}}
+			\toprule
+			\textbf{Idea} & \textbf{Program} & \textbf{Idea} & \textbf{Program} \\
+			\midrule
+			kinds of errors   & \hCode{CompileError}, \hCode{RuntimeError}, \hCode{LogicError} & resources         & \hCode{CloseOrder} \\
+			sources           & \hCode{Sources}                                    & fail fast            & \hCode{FailFast}, \hCode{FailFastChecked} \\
+			two paths         & \hCode{TwoPaths}                                   & anti-pattern         & \hCode{CatchAll} \\
+			special value     & \hCode{FindReturn}, \hCode{FindThrow}             & a tester by hand     & \hCode{TinyTester} \\
+			throw early       & \hCode{Layers}                                     & AAA, outcomes        & \hCode{Ticket/}, \hCode{Ticket.sh}, \hCode{Outcomes.sh} \\
+			unwinding         & \hCode{Unwind}                                     & boundaries           & \hCode{TicketBug/}, \hCode{TicketBug.sh} \\
+			exception object  & \hCode{Anatomy}                                    & special values       & \hCode{Largest/}, \hCode{Largest.sh} \\
+			families          & \hCode{Families}                                   & coverage             & \hCode{Shipping/}, \hCode{Shipping.sh} \\
+			checked           & \hCode{Checked}, \hCode{Declare}                  & test first           & \hCode{Tdd/}, \hCode{Tdd.sh} \\
+			finally           & \hCode{FinallyPaths}                               & visible, hidden      & \hCode{Prime/}, \hCode{Prime.sh} \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\footnotesize Run them all with \hCode{bash run\_examples.sh}; the \hCode{.sh} sessions need the JUnit jars (see \hCode{README.txt}).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+	\begin{enumerate}\small
+		\item \hCode{FindReturn}: change \hCode{find} to throw, as in \hCode{FindThrow}; which caller code becomes simpler?
+		\item \hCode{Unwind}: add a \hCode{catch} to \hCode{average}. Predict the output first, then run it
+		\item \hCode{CloseOrder}: open three resources; let the second constructor throw. Which ones are closed?
+		\item \hCode{TicketTest}: add a senior price (65 and older pay 60). Write the tests first; which boundaries are new?
+		\item \hCode{Largest}: fix \hCode{max} so that all four tests pass
+		\item \hCode{Prime}: write the hidden tests you would add, then a correct \hCode{isPrime}
+	\end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{References}
+	\small The Java Tutorials, lesson Exceptions \cite{TheJavaTutorials}; JUnit \cite{homeJunit}; Big Java \cite{horstmann2016big}.
+
+	\vspace{1em}
+	\setbeamertemplate{bibliography item}[text]
+	\bibliographystyle{IEEEtran}
+	\tiny\bibliography{../../hblib/hblibDataStructures}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

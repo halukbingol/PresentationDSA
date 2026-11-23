@@ -1,0 +1,6 @@
+NoNew.java:5: error: cannot find symbol
+			throw IllegalArgumentException("negative: " + score);
+			      ^
+  symbol:   method IllegalArgumentException(String)
+  location: class NoNew
+1 error

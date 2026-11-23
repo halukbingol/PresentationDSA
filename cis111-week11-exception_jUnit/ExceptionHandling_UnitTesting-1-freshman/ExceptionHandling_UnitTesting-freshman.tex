@@ -1,0 +1,700 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% v20261123T2200
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue, \hArray, \hGrid
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+
+
+\title[Exceptions, Tests: Freshman]{
+	Exception Handling and Unit Testing\\
+	Freshman
+}
+\subtitle{
+	\cisOOO\ -- Level 1: first steps and common errors
+}
+\author[Erkovan]{Sait Erkovan}
+
+\institute[FCIS]{
+	Faculty of Computer and Information Sciences\\
+	Yeditepe University
+}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={1-3}, hideallsubsections]
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={4-7}, hideallsubsections]
+		\end{column}
+	\end{columns}
+
+	\vspace{1em}
+	\small \hCode{throw}, \hCode{try}/\hCode{catch} and a first test class are assumed (the week 11 lecture).
+	This deck is about the messages: what they say, and what to do about them.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Report]{Reading the report}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A program that stops}
+	\lstcode[basicstyle=\ttfamily\scriptsize, firstline=2, lastline=17, firstnumber=2]{codeoutput/DeepTrace.java}{Java}
+
+	\small \hQuestion{The third line is ``eighty''. Which line of this program will the report point to?}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reading it: from the top down to your code}
+	\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/DeepTrace.txt}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. reading a report
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.34\textwidth}L{0.60\textwidth}@{}}
+			\toprule
+			\textbf{Line} & \textbf{Read it as} \\
+			\midrule
+			1: type and message             & a \hCode{NumberFormatException}: the text \hCode{"eighty"} is not a number \\
+			2--4: \hCode{at java.base/...}  & inside Java's own code: \hCode{parseInt} found the problem. Skip these \\
+			5: \hCode{DeepTrace.average(...:14)} & the first line of \emph{your} code: look here first \\
+			6--7                             & who called it: \hCode{printReport} (line 8), called by \hCode{main} (line 4) \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\small In Eclipse the report appears in the \menu{Console}; click a blue \hCode{(DeepTrace.java:14)} to jump to that line.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Ten messages you will meet}
+	\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/Gallery.txt}
+
+	\footnotesize Each line is \hCode{e} printed by a \hCode{catch}: the type, a colon, the message. \hCode{Gallery.java} causes them one by one
+	(next frame). Number 6 has no message at all: then the type and the line number must do.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What they mean}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. the ten messages
+\begin{table}
+		\scriptsize
+		\begin{tabular}{@{}L{0.03\textwidth}L{0.28\textwidth}L{0.27\textwidth}L{0.33\textwidth}@{}}
+			\toprule
+			& \textbf{Type} & \textbf{Caused by} & \textbf{Fix} \\
+			\midrule
+			1  & \hCode{ArithmeticException}             & \hCode{10 / zero}, \hCode{int}s       & check the divisor first \\
+			2  & \hCode{ArrayIndexOutOfBoundsException}  & \hCode{a[3]}, length 3                & indices are 0 to \hCode{length - 1} \\
+			3  & \hCode{StringIndexOutOfBoundsException} & \hCode{"Ada".charAt(5)}               & positions are 0 to \hCode{length() - 1} \\
+			4  & \hCode{NullPointerException}            & \hCode{name.length()}, \hCode{name} is \hCode{null} & give it a value; or check \hCode{!= null} \\
+			5  & \hCode{NumberFormatException}           & \hCode{Integer.parseInt("12a")}        & check the text, or catch it and ask again \\
+			6  & \hCode{InputMismatchException}          & \hCode{nextInt()} on ``abc''          & \hCode{hasNextInt()} first (section 3) \\
+			7  & \hCode{NoSuchElementException}          & \hCode{nextLine()} with no more input & \hCode{hasNextLine()} first \\
+			8  & \hCode{NegativeArraySizeException}      & \hCode{new int[-1]}                    & check the size \\
+			9  & \hCode{StringIndexOutOfBoundsException} & \hCode{substring(2, 1)}                & begin $\le$ end $\le$ \hCode{length()} \\
+			10 & \hCode{IllegalArgumentException}        & \hCode{"-".repeat(-1)}                 & read the method's comment: what values does it accept? \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\footnotesize All ten are unchecked: most of them are bugs, and the fix is in the code, not in a \hCode{catch}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Compile]{Compile errors about exceptions}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{1. Unreported exception}
+	\lstcode[basicstyle=\ttfamily\scriptsize, firstline=4, lastline=9, firstnumber=4]{codeoutput/Unreported.java}{Java}
+	\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/Unreported.txt}
+
+	\begin{itemize}\footnotesize
+		\item A \hCode{FileNotFoundException} is checked: the compiler wants a decision
+		\item Fix: \hCode{try}/\hCode{catch} around it, or \hCode{throws FileNotFoundException} after \hCode{main(...)}
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{2. Throwing a checked Exception by mistake}
+	\lstcode[basicstyle=\ttfamily\scriptsize, firstline=6, lastline=11, firstnumber=6]{codeoutput/ThrowException.java}{Java}
+	\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/ThrowException.txt}
+
+	\begin{itemize}\footnotesize
+		\item \hCode{Exception} itself is checked, so every caller would have to catch or declare it
+		\item Fix: throw the specific, unchecked type: \hCode{throw new IllegalArgumentException("negative side");}
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{3. Already caught}
+	\lstcode[basicstyle=\ttfamily\scriptsize, firstline=7, lastline=16, firstnumber=7]{codeoutput/AlreadyCaught.java}{Java}
+	\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/AlreadyCaught.txt}
+
+	\footnotesize A \hCode{FileNotFoundException} is an \hCode{IOException}: the first \hCode{catch} takes it, the second can never run.
+	Fix: the specific \hCode{catch} first.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{4. Never thrown}
+	\lstcode[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=11, firstnumber=3]{codeoutput/NeverThrown.java}{Java}
+	\lstoutput[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont]{codeoutput/NeverThrown.txt}
+
+	\footnotesize Nothing in the \hCode{try} can throw a checked \hCode{FileNotFoundException}, so this \hCode{catch} is dead code.
+	The compiler checks this for checked exceptions only. Fix: catch what can really happen (here a \hCode{NumberFormatException}).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{5. A variable from inside the try}
+	\lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/TryScope.java}{Java}
+	\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/TryScope.txt}
+
+	\footnotesize \hCode{n} lives only inside the braces of the \hCode{try} (week 6: scope). Fix: declare it before the \hCode{try},
+	\hCode{int n = 0;}, then assign it inside.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{6. Missing return}
+	\lstcode[basicstyle=\ttfamily\scriptsize, firstline=6, lastline=13, firstnumber=6]{codeoutput/MissingReturn.java}{Java}
+	\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/MissingReturn.txt}
+
+	\footnotesize If \hCode{parseInt} throws, the \hCode{catch} runs and the method reaches its end with nothing to return.
+	Fix: return a value in the \hCode{catch} too, or throw from it.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{7. Unreachable statement}
+	\lstcode[basicstyle=\ttfamily\scriptsize, firstline=6, lastline=13, firstnumber=6]{codeoutput/Unreachable.java}{Java}
+	\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/Unreachable.txt}
+
+	\footnotesize \hCode{throw} always leaves the block, like \hCode{return}. Fix: move the line before the \hCode{throw}, or delete it.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{8. Forgot new}
+	\lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/NoNew.java}{Java}
+	\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/NoNew.txt}
+
+	\footnotesize Without \hCode{new}, Java looks for a \emph{method} named \hCode{IllegalArgumentException}.
+	Fix: \hCode{throw new IllegalArgumentException(...)}: an exception is an object, made with \hCode{new}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The same errors in Eclipse}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. javac and Eclipse
+\begin{table}
+		\scriptsize
+		\begin{tabular}{@{}L{0.03\textwidth}L{0.40\textwidth}L{0.51\textwidth}@{}}
+			\toprule
+			& \textbf{javac (the slides)} & \textbf{Eclipse (the Problems view, red underline)} \\
+			\midrule
+			1, 2 & unreported exception X; must be caught or declared to be thrown & Unhandled exception type X \\
+			3 & exception X has already been caught & Unreachable catch block for X. It is already handled by the catch block for Y \\
+			4 & exception X is never thrown in body of corresponding try statement & Unreachable catch block for X. This exception is never thrown from the try statement body \\
+			5 & cannot find symbol \dots\ variable n & n cannot be resolved to a variable \\
+			6 & missing return statement & This method must return a result of type int \\
+			7 & unreachable statement & Unreachable code \\
+			8 & cannot find symbol \dots\ method X(String) & The method X(String) is undefined for the type NoNew \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\small \hRemark{Not run here}: the Eclipse column is typed, not produced by \hCode{run\_examples.sh}. Same problem, other words.
+	In Eclipse, \keys{Ctrl + 1} (macOS \keys{\cmd + 1}) on the red line offers quick fixes such as
+	\menu{Surround with try/catch} and \menu{Add throws declaration}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Input]{Reading input safely}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Check first: hasNextInt}
+	\begin{columns}[T]
+		\begin{column}{0.66\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=4, lastline=14, firstnumber=4]{codeoutput/ReadIntCheck.java}{Java}
+		\end{column}
+		\begin{column}{0.32\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, numbers=none]{codeoutput/ReadIntCheck.in}{}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/ReadIntCheck.txt}}
+		\end{column}
+	\end{columns}
+
+	\footnotesize No exception at all: \hCode{hasNextInt()} looks at the next word without taking it. A word that is not a number
+	is taken with \hCode{next()} (line 8), otherwise the loop would look at it forever.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The catch that never ends}
+	\begin{columns}[T]
+		\begin{column}{0.64\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=5, lastline=20, firstnumber=5]{codeoutput/InputTrap.java}{Java}
+		\end{column}
+		\begin{column}{0.34\textwidth}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/InputTrap.txt}}
+			\footnotesize \uncover<2->{The same input as before. \hCode{nextInt()} throws, but leaves ``twenty'' in the input:
+			the next try meets the same word.}
+		\end{column}
+	\end{columns}
+
+	\footnotesize \uncover<2->{Without the counter of line 8 this loop never ends: a classic. Fix: take the bad word in the \hCode{catch}.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Take the bad word away}
+	\begin{columns}[T]
+		\begin{column}{0.66\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=5, lastline=16, firstnumber=5]{codeoutput/InputFixed.java}{Java}
+		\end{column}
+		\begin{column}{0.32\textwidth}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/InputFixed.txt}}
+		\end{column}
+	\end{columns}
+
+	\footnotesize Line 13 calls \hCode{in.next()}: the bad word is read and shown, so the next \hCode{nextInt()} sees a new word.
+	Both ways work; \hCode{hasNextInt()} (no exception) is simpler to read.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Throw]{Throwing in your own methods}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Check the arguments first}
+	\lstcoderightstep[0.62][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=2, lastline=18, firstnumber=2][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/Rectangle.java}{Java}{codeoutput/Rectangle.txt}
+
+	\footnotesize The comment (line 11) says what the method accepts; lines 13--16 enforce it. The message names both values,
+	so the caller sees at once which one was wrong.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Which exception to throw}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. which type
+\begin{table}
+		\small
+		\begin{tabular}{@{}L{0.42\textwidth}L{0.50\textwidth}@{}}
+			\toprule
+			\textbf{Situation} & \textbf{Throw} \\
+			\midrule
+			an argument has a wrong value                    & \hCode{IllegalArgumentException} \\
+			an index is outside the range                     & \hCode{IndexOutOfBoundsException} \\
+			something asked for is not there                  & \hCode{NoSuchElementException} (\hCode{java.util}) \\
+			the object is not ready for this call              & \hCode{IllegalStateException} \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.5em}
+	\begin{itemize}\small
+		\item All four are unchecked: the callers are not forced to write \hCode{try}
+		\item Always with a message, and the wrong value in it
+		\item Not \hCode{Exception}, not \hCode{RuntimeException}: too general to say anything
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[JUnit]{First JUnit steps}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Setting up a test class in Eclipse}
+	\begin{enumerate}\small
+		\item Right-click the class to test, e.g. \hCode{Temperature.java}: \menu{New > JUnit Test Case}
+		\item Select \menu{New JUnit Jupiter test}; the name \hCode{TemperatureTest} is proposed; \menu{Next} lets you tick the
+			  methods to test; \menu{Finish}
+		\item First time in a project: Eclipse asks to add the JUnit library to the build path: accept
+		\item Run: right-click the test class, \menu{Run As > JUnit Test}
+			  (Windows \keys{Alt + Shift + X}, \keys{T}; macOS \keys{\Alt + \cmd + X}, \keys{T})
+	\end{enumerate}
+
+	\vspace{0.5em}
+	\begin{itemize}\small
+		\item Library missing: \hCode{The import org.junit cannot be resolved}. Fix: \menu{Project > Properties > Java Build Path >
+			  Libraries > Add Library > JUnit}, or \keys{Ctrl + 1} (macOS \keys{\cmd + 1}) on \hCode{@Test}
+		\item Choose JUnit 5 (Jupiter), as in the labs; JUnit 6 uses the same \hCode{@Test} and asserts
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The class under test}
+	\begin{columns}[T]
+		\begin{column}{0.46\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=4, lastline=12, firstnumber=4]{codeoutput/Temperature/Temperature.java}{Java}
+		\end{column}
+		\begin{column}{0.52\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=14, lastline=26, firstnumber=14]{codeoutput/Temperature/Temperature.java}{Java}
+		\end{column}
+	\end{columns}
+
+	\small Three small methods of the class \hCode{Temperature}, all \hCode{static}: what can we test?
+	A normal value, a special value (\hCode{-40}), a boundary (0 for \hCode{isFreezing}), and the empty array.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A first test class}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=9, lastline=25, firstnumber=9]{codeoutput/Temperature/TemperatureTest.java}{Java}
+	\only<2->{\begin{textblock*}{0.42\textwidth}(9.0cm,4.4cm)
+		\lstoutput[basicstyle=\ttfamily\scriptsize, firstline=3]{codeoutput/Temperature.txt}
+	\end{textblock*}}
+
+	\footnotesize Doubles with a tolerance (\hCode{1e-9}); \hCode{-40} is the one temperature with the same number in both scales.
+	Lines 27--36 test \hCode{coldest}, also with \hCode{assertThrows}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Expected first}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=8, lastline=16, firstnumber=8]{codeoutput/Mistakes/MistakesTest.java}{Java}
+	\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=3, lastline=6]{codeoutput/Mistakes.txt}}
+
+	\footnotesize Here \hCode{toFahrenheit} has a bug: it adds 32.5. \uncover<2->{Both tests find it, but \hCode{b\_swapped} tells the
+	story backwards: it ``expects'' the wrong 212.5. JUnit cannot know which argument is which; it trusts the order.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Tests that cannot fail}
+	\begin{columns}[T]
+		\begin{column}{0.62\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6}{7}\selectfont, firstline=18, lastline=40, firstnumber=18]{codeoutput/Mistakes/MistakesTest.java}{Java}
+		\end{column}
+		\begin{column}{0.36\textwidth}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=7, lastline=10]{codeoutput/Mistakes.txt}}
+			\begin{itemize}\scriptsize
+				\item<2-> \hCode{c\_}: no \hCode{@Test}: not run, not counted (5 runs)
+				\item<2-> \hCode{d\_}: no assert: nothing to fail
+				\item<2-> \hCode{e\_}: the code checks itself: the bug is in both sides
+				\item<2-> \hCode{f\_}: no exception, so the \hCode{catch} is skipped: green. Use \hCode{assertThrows}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A private test is not run}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=5, lastline=11, firstnumber=5]{codeoutput/Mistakes/PrivateTest.java}{Java}
+	\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=13, lastline=18]{codeoutput/Mistakes.txt}}
+
+	\footnotesize \uncover<2->{JUnit warns and skips it: \hCode{Runs: 0}. Test methods are not \hCode{private} and not \hCode{static};
+	Eclipse's wizard writes them without \hCode{public}, which is fine. (A first line with the date and time is left out.)}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Forgot the import}
+	\lstterminal[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/NoImport.txt}
+
+	\begin{itemize}\small
+		\item The asserts are static methods of the class \hCode{Assertions}; without the import, Java does not know the name
+		\item Fix: \hCode{import static org.junit.jupiter.api.Assertions.assertEquals;} (one line per method),
+			  or \keys{Ctrl + Shift + M} (macOS \keys{\cmd + \shift + M}) on the name in Eclipse
+		\item Not \hCode{org.junit.Assert}: that is JUnit 4, which the labs do not use
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Debug]{Finding the cause}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{An exception breakpoint}
+	\begin{enumerate}\small
+		\item \menu{Run > Add Java Exception Breakpoint\dots}; type \hCode{NumberFormatException}; \menu{OK}
+		\item Start with \menu{Debug As > Java Application} (Windows \keys{F11}, macOS \keys{\cmd + F11})
+		\item The debugger stops where the exception is \emph{thrown}, even inside \hCode{parseInt}, before any \hCode{catch}
+		\item In the \menu{Debug} view, click the first frame of your code (\hCode{DeepTrace.average}); the \menu{Variables}
+			  view shows \hCode{line} = \hCode{"eighty"}
+		\item Remove the breakpoint in the \menu{Breakpoints} view when done
+	\end{enumerate}
+
+	\vspace{0.5em}
+	\small Useful when a \hCode{catch} hides where an exception came from: the breakpoint stops before the \hCode{catch} runs.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Debugging a red test}
+	\begin{enumerate}\small
+		\item In the \menu{JUnit} view, select the red test; the \menu{Failure Trace} shows the message and the stack
+		\item Double-click the first line of the trace: the editor opens at the failing assert
+		\item Put a breakpoint in the method under test; right-click the test: \menu{Debug As > JUnit Test}
+		\item Step: \keys{F5} into, \keys{F6} over, \keys{F7} return, \keys{F8} resume (on a Mac laptop with \keys{fn})
+		\item Expected right and actual wrong? The bug is in the code. Expected wrong? The bug is in the test
+	\end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[End]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet: message, meaning, fix}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. cheat sheet
+\begin{table}
+		\scriptsize
+		\begin{tabular}{@{}L{0.34\textwidth}L{0.28\textwidth}L{0.32\textwidth}@{}}
+			\toprule
+			\textbf{You see} & \textbf{It means} & \textbf{Do} \\
+			\midrule
+			\hCode{Exception in thread "main" X: msg}       & nobody caught X                      & read type, message, first line of your code \\
+			\hCode{unreported exception X}                   & X is checked                         & catch it or add \hCode{throws X} \\
+			\hCode{has already been caught}                  & a general catch before a specific one & specific first \\
+			\hCode{is never thrown in body}                  & a catch for nothing                  & catch what can really happen \\
+			\hCode{cannot find symbol} after a \hCode{try}   & the variable lives inside the try    & declare it before the \hCode{try} \\
+			\hCode{missing return statement}                 & the catch path returns nothing       & return or throw there too \\
+			endless ``not a number''                         & the bad word is still in the input   & \hCode{in.next()} in the catch \\
+			\hCode{expected: <A> but was: <B>}              & an assert failed                     & check the order: expected first \\
+			a test that never fails                          & no assert, or the code checks itself & assert against values worked out by hand \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+	\begin{enumerate}\small
+		\item For each of the ten messages of \hCode{Gallery}, write a one-line program that causes it; then fix it without a \hCode{catch}
+		\item Make each of the eight compile errors on purpose in Eclipse; write down Eclipse's words and its quick fixes
+		\item \hCode{DeepTrace}: catch the exception in \hCode{average}, skip the bad line and count it. Print the average and the count
+		\item Read ages with \hCode{hasNextInt} until a number from 0 to 120 is typed
+		\item Write \hCode{TemperatureTest} tests for \hCode{toCelsius(double f)}; first make one fail on purpose, then fix the test
+		\item Find the bug in \hCode{Mistakes/Temperature.java} with a test that cannot pass by accident
+	\end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{References}
+	\small The Java Tutorials, lesson Exceptions \cite{TheJavaTutorials}; JUnit User Guide \cite{homeJunit}; Big Java \cite{horstmann2016big}.
+
+	\vspace{1em}
+	\setbeamertemplate{bibliography item}[text]
+	\bibliographystyle{IEEEtran}
+	\tiny\bibliography{../../hblib/hblibDataStructures}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

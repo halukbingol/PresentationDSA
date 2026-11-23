@@ -1,0 +1,573 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% v20261123T2200
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue, \hArray, \hGrid
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+\DontPrintSemicolon % in algorithms
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+
+
+\title[Exceptions, Tests: Junior]{
+	Exception Handling and Unit Testing\\
+	Junior
+}
+\subtitle{
+	\cisOOO\ -- Level 3: advanced features, performance, larger systems
+}
+\author[Erkovan]{Sait Erkovan}
+
+\institute[FCIS]{
+	Faculty of Computer and Information Sciences\\
+	Yeditepe University
+}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={1-3}, hideallsubsections]
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={4-7}, hideallsubsections]
+		\end{column}
+	\end{columns}
+
+	\vspace{1em}
+	\small It builds on \hCode{-2-sophomore}: own exception types, chaining, fixtures and parameterized tests are assumed.
+	Interfaces and lambdas are used.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Cost]{What exceptions cost}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Catch or check? Measured}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=22, lastline=44, firstnumber=22]{codeoutput/ExceptionCost.java}{Java}
+	\only<2->{\begin{textblock*}{0.50\textwidth}(7.6cm,3.2cm)
+		\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/ExceptionCost.txt}
+		\footnotesize One million words, half of them not numbers; the second of two rounds (the first warms up the JIT).
+		The times differ from machine to machine.
+	\end{textblock*}}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Where the time goes: the stack trace}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=24, lastline=30, firstnumber=24]{codeoutput/TraceCost.java}{Java}
+	\uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/TraceCost.txt}}
+
+	\begin{itemize}\footnotesize
+		\item<2-> Creating an exception records every frame of the stack: the deeper the call, the slower
+		\item<2-> The protected constructor \hCode{(message, cause, enableSuppression, writableStackTrace)} can skip the trace; then the
+			  report has no lines to read. Only for very special, measured cases
+		\item<2-> ``Without'' still contains the cost of the calls themselves (about 1 ns each)
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Rules of thumb}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. cost rules
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.40\textwidth}L{0.52\textwidth}@{}}
+			\toprule
+			\textbf{Situation} & \textbf{Prefer} \\
+			\midrule
+			bad input is common (a file of user data)    & check first (\hCode{hasNextInt}, a pattern), no exception \\
+			bad input is rare                            & just parse and catch: simple and fast enough \\
+			``not found'' is a normal answer             & a return value (\hCode{-1}, \hCode{Optional}), not an exception \\
+			a loop that ends by an exception             & never: end loops with their condition \\
+			an exception in a hot loop, measured slow    & check before, or move the check out of the loop \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\small Throwing is cheap compared with reading a file or a network; it only matters in tight loops.
+	Measure before you optimize.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Pitfalls]{Pitfalls of finally and resources}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{return in finally}
+	\lstcoderightstep[0.68][basicstyle=\ttfamily\scriptsize, firstline=7, lastline=21, firstnumber=7][basicstyle=\ttfamily\scriptsize]{codeoutput/FinallyReturn.java}{Java}{codeoutput/FinallyReturn.txt}
+
+	\footnotesize \uncover<2->{A \hCode{return} in \hCode{finally} wins over everything: over the \hCode{return 1}, and over the exception, which
+	vanishes without a trace. javac compiles it silently (\hCode{-Xlint:finally} warns); Eclipse warns
+	``finally block does not complete normally''. Never return or throw from \hCode{finally}.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Two problems at once: suppressed exceptions}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=2, lastline=17, firstnumber=2]{codeoutput/Suppressed.java}{Java}
+	\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/Suppressed.txt}}
+
+	\footnotesize \uncover<2->{The first problem is kept, the second attached to it; a \hCode{finally} with \hCode{close()} would lose the first.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Checked exceptions and lambdas}
+	\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/LambdaChecked.txt}
+	\footnotesize A lambda for \hCode{forEach} may not throw a checked exception: \hCode{Consumer.accept} declares none. One way out:
+
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=10, lastline=23, firstnumber=10]{codeoutput/LambdaWrapped.java}{Java}
+	\only<2->{\begin{textblock*}{0.48\textwidth}(9.0cm,6.3cm)
+		\lstoutput[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont]{codeoutput/LambdaWrapped.txt}
+	\end{textblock*}}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Errors]{When the JVM is in trouble}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{StackOverflowError and OutOfMemoryError}
+	\begin{columns}[T]
+		\begin{column}{0.54\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=4, lastline=15, firstnumber=4]{codeoutput/Errors/Deep.java}{Java}
+		\end{column}
+		\begin{column}{0.44\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=4, lastline=11, firstnumber=4]{codeoutput/Errors/Hog.java}{Java}
+		\end{column}
+	\end{columns}
+	\uncover<2->{\lstterminal[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont]{codeoutput/Errors.txt}}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Errors are not for catching}
+	\begin{itemize}\small
+		\item \hCode{-Xss} sets the stack size, \hCode{-Xmx} the heap; small values make the errors come fast. The number of calls
+			  depends on the machine; week 12: a recursion without a base case ends like \hCode{Deep}
+		\item An \hCode{Error} means the JVM itself cannot go on as planned: no stack, no memory, a broken class file
+		\item \hCode{Deep} catches one only to show it; after a \hCode{StackOverflowError} the program's state may be half-changed
+		\item After an \hCode{OutOfMemoryError} even the handler may need memory it does not get
+		\item \hCode{catch (Throwable t)} or \hCode{catch (Error e)} belongs, if anywhere, at the very top: log and stop
+		\item The fix is in the code or the configuration: a base case, a smaller data structure, a larger \hCode{-Xmx}
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Design]{Exceptions in larger programs}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Layers translate at their borders}
+	\begin{center}
+		\begin{tikzpicture}[ly/.style={draw, rounded corners=2pt, minimum width=3.3cm, minimum height=0.8cm, align=center,
+				font=\small, fill=white}, ex/.style={-{Latex[length=2mm]}, thick, dashed, colorStop},
+				nt/.style={font=\scriptsize, anchor=west, align=left}]
+			\node[ly] (ui)  at (0,3.0) {user interface};
+			\node[ly] (svc) at (0,2.0) {grade service};
+			\node[ly] (dao) at (0,1.0) {score store};
+			\node[ly, fill=gray!15] (os) at (0,0.0) {files, database};
+			\draw[ex] (2.0,0.0) -- (2.0,1.0);
+			\draw[ex] (2.0,1.0) -- (2.0,2.0);
+			\draw[ex] (2.0,2.0) -- (2.0,3.0);
+			\draw[colorStop, thick] (1.65,0.0) -- (2.0,0.0); \draw[colorStop, thick] (1.65,1.0) -- (2.0,1.0);
+			\draw[colorStop, thick] (1.65,2.0) -- (2.0,2.0); \draw[colorStop, thick] (1.65,3.0) -- (2.0,3.0);
+			\node[nt] at (2.2,0.5) {\hCode{NoSuchFileException}, \hCode{SQLException}};
+			\node[nt] at (2.2,1.5) {\hCode{ScoreStoreException} (own type, cause kept)};
+			\node[nt] at (2.2,2.5) {the same, or a \hCode{GradeException} with the student's name};
+			\node[nt] at (2.2,3.4) {a sentence for the user; the whole chain to the log};
+		\end{tikzpicture}
+	\end{center}
+
+	\begin{itemize}\footnotesize
+		\item Each layer speaks its own language: the interface does not need to know about SQL or file names
+		\item Translate at the border of a layer, with the cause (sophomore); handle in one place, at the top
+		\item Changing the database then changes only the lowest layer, not its callers
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{An alternative: Optional}
+	\lstcoderightstep[0.66][basicstyle=\ttfamily\fontsize{6.2}{7.3}\selectfont, firstline=5, lastline=23, firstnumber=5][basicstyle=\ttfamily\scriptsize]{codeoutput/OptionalParse.java}{Java}{codeoutput/OptionalParse.txt}
+
+	\footnotesize \uncover<2->{A box that holds a value or nothing; the caller must open it on purpose (\hCode{isPresent}, \hCode{orElse}).
+	Good when absence is normal; for real problems, an exception.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Checked exceptions: the debate}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. checked exceptions debate
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.46\textwidth}L{0.46\textwidth}@{}}
+			\toprule
+			\textbf{For} & \textbf{Against} \\
+			\midrule
+			the signature documents what can go wrong       & a new exception deep down changes every method above it \\
+			the compiler does not let you forget a case      & lambdas and streams cannot throw them (previous section) \\
+			good for problems that callers can recover from & often caught only to be wrapped or ignored \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.4em}
+	\begin{itemize}\small
+		\item Java is nearly alone: C\#, Kotlin, Scala and Python have no checked exceptions
+		\item Java's own newer libraries lean to unchecked (\hCode{UncheckedIOException}, \hCode{java.time} exceptions)
+		\item A common team rule: checked for recoverable problems at a module's border, unchecked inside
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Doubles]{Testing code with dependencies}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A class that depends on the outside world}
+	\begin{columns}[T]
+		\begin{column}{0.42\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/Doubles/ScoreSource.java}{Java}
+			\footnotesize \hCode{Report} does not create its source: it gets one (line 7). This is \hDefined{dependency injection}:
+			a test can pass in a source it controls.
+		\end{column}
+		\begin{column}{0.56\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=7, lastline=27, firstnumber=7]{codeoutput/Doubles/Report.java}{Java}
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Stubs, written by hand}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=9, lastline=26, firstnumber=9]{codeoutput/Doubles/ReportTest.java}{Java}
+
+	\footnotesize Each lambda is a whole \hCode{ScoreSource}: one method, fixed answers. The last one fails on purpose.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A spy, and the results}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=28, lastline=37, firstnumber=28]{codeoutput/Doubles/ReportTest.java}{Java}
+	\uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize, firstline=3]{codeoutput/Doubles.txt}}
+
+	\footnotesize A spy also records how it was used: \hCode{Report} must read its source once, not once per number.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Test doubles}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. test doubles
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.12\textwidth}L{0.42\textwidth}L{0.38\textwidth}@{}}
+			\toprule
+			\textbf{Kind} & \textbf{Does} & \textbf{In ReportTest} \\
+			\midrule
+			stub  & returns fixed answers                           & \hCode{fake}, \hCode{broken} \\
+			spy   & a stub that also records how it was used        & \hCode{spy} counts the calls \\
+			fake  & a simple working version (a list in memory instead of a database) & -- \\
+			mock  & checks the calls it expects, usually with a library (Mockito) & -- \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\begin{itemize}\small
+		\item The failing source tests the \hCode{catch} of \hCode{Report}: the hardest path to reach with a real server
+		\item Fast and repeatable: no network, no files, no waiting
+		\item With an interface of one method, a lambda is enough; no library needed
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Files in tests: @TempDir}
+	\lstcode[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=13, lastline=34, firstnumber=13]{codeoutput/Files/ScoreFileTest.java}{Java}
+	\only<2->{\begin{textblock*}{0.36\textwidth}(9.8cm,2.4cm)
+		\lstoutput[basicstyle=\ttfamily\scriptsize, firstline=3]{codeoutput/Files.txt}
+		\footnotesize JUnit makes a new folder for every test and deletes it afterwards. \hCode{badLine} (lines 36--40) writes ``8S''.
+	\end{textblock*}}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Quality]{How good are the tests?}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Coverage}
+	\begin{itemize}\small
+		\item A coverage tool records which lines and branches the tests ran; Java's usual one is JaCoCo
+		\item In Eclipse (EclEmma, built on JaCoCo, if installed): \menu{Coverage As > JUnit Test}; green lines ran, red did not,
+			  yellow: a branch only partly taken
+		\item With Maven or Gradle, the JaCoCo plugin writes an HTML report after \hCode{mvn test} or \hCode{gradle test}
+		\item Useful to find code that \emph{no} test runs (the \hCode{else} of \hCode{Shipping} in the examples deck)
+		\item Not a measure of quality: \hCode{WeakTest} on the next frames runs every \hCode{return} of \hCode{letterGrade},
+			  and still misses seven of eight small bugs
+	\end{itemize}
+
+	\vspace{0.5em}
+	\small \hRemark{Not run here}: coverage tools are not part of this deck's sessions.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Mutation testing, by hand}
+	\lstcode[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=4, lastline=26, firstnumber=4]{codeoutput/Mutants/mutate.sh}{bash}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What the mutants say}
+	\lstterminal[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/Mutants.txt}
+
+	\begin{itemize}\footnotesize
+		\item A \hDefined{mutant} is a copy of the code with one small change, the kind a programmer makes by mistake
+		\item \hCode{WeakTest} (one middle score per letter) notices only one of eight: green tests, weak tests
+		\item \hCode{StrongTest} (every boundary and just outside, as in week 11) kills all eight
+		\item The tool \hCode{PIT} (pitest.org) does this automatically for Java, with hundreds of mutants
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Property-based testing}
+	\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=5, lastline=23, firstnumber=5]{codeoutput/PropertySort.java}{Java}
+	\only<2->{\begin{textblock*}{0.46\textwidth}(8.4cm,6.2cm)
+		\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/PropertySort.txt}
+	\end{textblock*}}
+
+	\footnotesize Instead of a few chosen cases: many random inputs and a \hDefined{property} that must always hold, here ``the same as
+	\hCode{Arrays.sort}''. The bug of \hCode{sort} (line 30, \hCode{j > 0}) never moves an element to index 0. Libraries: jqwik.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[End]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. cheat sheet
+\begin{table}
+		\scriptsize
+		\begin{tabular}{@{}L{0.30\textwidth}L{0.62\textwidth}@{}}
+			\toprule
+			\textbf{Topic} & \textbf{Remember} \\
+			\midrule
+			cost             & the stack trace makes exceptions slow; check first when bad input is common \\
+			\hCode{finally}   & never \hCode{return} or \hCode{throw} from it \\
+			resources        & try-with-resources keeps the first problem, \hCode{getSuppressed()} the others \\
+			lambdas          & wrap checked exceptions, e.g. in \hCode{UncheckedIOException}, keeping the cause \\
+			\hCode{Error}     & do not catch; fix the code or the configuration (\hCode{-Xss}, \hCode{-Xmx}) \\
+			layers           & translate at the border, with the cause; handle once at the top \\
+			\hCode{Optional}  & when ``no value'' is a normal answer \\
+			test doubles     & inject the dependency; a stub or a spy is often one lambda \\
+			\hCode{@TempDir}  & real files in a fresh folder for every test \\
+			coverage         & finds code no test runs; not a quality measure \\
+			mutation testing & how many small bugs do the tests notice? \\
+			property-based   & many random inputs, one property, a fixed seed \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Projects}
+	\begin{enumerate}\small
+		\item Measure \hCode{ExceptionCost} with 1\%, 10\% and 90\% bad words. Where does catch-and-parse become slower than check-first?
+		\item Give \hCode{Report} a second dependency, a \hCode{Clock}, and print the date of the report. Test it with a fixed clock
+		\item Add four mutants to \hCode{mutate.sh} that \hCode{StrongTest} does not kill, if you can; then add the tests that kill them
+		\item Write a property-based test for your own \hCode{reverse(int[])}: reversing twice gives the original
+		\item Design the exceptions of a three-layer grade program: which types, where translated, what the user sees
+	\end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{References}
+	\small The Java Tutorials, lesson Exceptions \cite{TheJavaTutorials}; JUnit User Guide \cite{homeJunit}; Big Java \cite{horstmann2016big}.
+
+	\vspace{1em}
+	\setbeamertemplate{bibliography item}[text]
+	\bibliographystyle{IEEEtran}
+	\tiny\bibliography{../../hblib/hblibDataStructures}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

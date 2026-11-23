@@ -1,0 +1,9 @@
+$ javac -d out Shipping.java ExpressTest.java NormalTest.java RunTests.java
+$ java RunTests ExpressTest
+  ok     express1kg()
+  ok     express3kg()
+Runs: 2   Errors: 0   Failures: 0
+$ java RunTests NormalTest
+  FAIL   normal1kg()
+         expected: <15> but was: <10>
+Runs: 1   Errors: 0   Failures: 1

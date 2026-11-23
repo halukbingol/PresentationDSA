@@ -1,0 +1,8 @@
+$ javac -g -d out Npe.java
+$ java -cp out Npe 2>&1 | grep Exception
+Exception in thread "main" java.lang.NullPointerException: Cannot invoke "String.length()" because "second" is null
+$ javac -g:none -d g0 Npe.java
+$ java -cp g0 Npe 2>&1 | grep Exception
+Exception in thread "main" java.lang.NullPointerException: Cannot invoke "String.length()" because "<local2>" is null
+$ java -XX:-ShowCodeDetailsInExceptionMessages -cp out Npe 2>&1 | grep Exception
+Exception in thread "main" java.lang.NullPointerException

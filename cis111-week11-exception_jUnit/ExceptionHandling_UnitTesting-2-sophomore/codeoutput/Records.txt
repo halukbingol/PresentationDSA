@@ -1,0 +1,9 @@
+Exception in thread "main" Records$BadRecordException: record 3: Grace,9O
+	at Records.score(Records.java:23)
+	at Records.main(Records.java:13)
+Caused by: java.lang.NumberFormatException: For input string: "9O"
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:662)
+	at java.base/java.lang.Integer.parseInt(Integer.java:778)
+	at Records.score(Records.java:21)
+	... 1 more

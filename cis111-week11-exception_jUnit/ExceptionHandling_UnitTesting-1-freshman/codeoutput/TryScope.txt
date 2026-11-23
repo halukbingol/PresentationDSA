@@ -1,0 +1,6 @@
+TryScope.java:8: error: cannot find symbol
+		System.out.println(n + 1);
+		                   ^
+  symbol:   variable n
+  location: class TryScope
+1 error

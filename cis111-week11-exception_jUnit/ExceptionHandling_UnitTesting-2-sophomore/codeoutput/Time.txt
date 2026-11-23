@@ -1,0 +1,7 @@
+$ javac -d out TimeTest.java RunTests.java
+$ java RunTests TimeTest
+  ok     eight()
+  SKIP   one()  (the specification for 1 is not decided yet)
+  ERROR  zeroIsRejected()
+         java.util.concurrent.TimeoutException: zeroIsRejected() timed out after 500 milliseconds
+Runs: 2   Errors: 1   Failures: 0

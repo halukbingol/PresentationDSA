@@ -1,0 +1,16 @@
+$ javac -d out Grades.java GradesParamTest.java RunTests.java
+$ java RunTests GradesParamTest
+  ok     0 gives F
+  ok     59 gives F
+  ok     60 gives D
+  ok     69 gives D
+  ok     70 gives C
+  ok     79 gives C
+  ok     80 gives B
+  ok     89 gives B
+  ok     90 gives A
+  ok     100 gives A
+  ok     -1 throws
+  ok     101 throws
+  ok     -2147483648 throws
+Runs: 13   Errors: 0   Failures: 0

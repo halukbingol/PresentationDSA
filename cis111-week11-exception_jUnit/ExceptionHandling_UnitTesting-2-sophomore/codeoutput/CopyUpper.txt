@@ -1,0 +1,7 @@
+$ javac -d out CopyUpper.java
+$ java -cp out CopyUpper
+done
+$ cat NAMES.txt
+ADA LOVELACE
+ALAN TURING
+GRACE HOPPER

@@ -1,0 +1,6 @@
+open input
+open output
+use both
+close output
+close input
+catch: a problem

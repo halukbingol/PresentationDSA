@@ -1,0 +1,26 @@
+$ javac -d out TryCatch.java
+$ javap -c out/TryCatch.class | sed -n '/parse/,/^$/{s| *//.*||;p}'
+  static int parse(java.lang.String);
+    Code:
+       0: aload_0
+       1: invokestatic  #7
+       4: istore_1
+       5: invokestatic  #13
+       8: iload_1
+       9: ireturn
+      10: astore_1
+      11: iconst_m1
+      12: istore_2
+      13: invokestatic  #13
+      16: iload_2
+      17: ireturn
+      18: astore_3
+      19: invokestatic  #13
+      22: aload_3
+      23: athrow
+    Exception table:
+       from    to  target type
+           0     5    10   Class java/lang/NumberFormatException
+           0     5    18   any
+          10    13    18   any
+

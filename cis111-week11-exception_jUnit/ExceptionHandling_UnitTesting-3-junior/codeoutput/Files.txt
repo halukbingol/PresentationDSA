@@ -1,0 +1,7 @@
+$ javac -d out ScoreFile.java ScoreFileTest.java RunTests.java
+$ java RunTests ScoreFileTest
+  ok     badLine()
+  ok     emptyFile()
+  ok     missingFile()
+  ok     total()
+Runs: 4   Errors: 0   Failures: 0

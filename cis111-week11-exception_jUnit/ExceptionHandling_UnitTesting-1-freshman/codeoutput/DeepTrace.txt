@@ -1,0 +1,7 @@
+Exception in thread "main" java.lang.NumberFormatException: For input string: "eighty"
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:662)
+	at java.base/java.lang.Integer.parseInt(Integer.java:778)
+	at DeepTrace.average(DeepTrace.java:14)
+	at DeepTrace.printReport(DeepTrace.java:8)
+	at DeepTrace.main(DeepTrace.java:4)

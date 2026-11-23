@@ -1,0 +1,11 @@
+#@ J="${JUNIT_LIB:-$HOME/.p2/pool/plugins}"; S=":"; case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*) S=";";; esac; CP="out"; for j in junit-jupiter-api junit-jupiter-engine junit-jupiter-params junit-platform-commons junit-platform-engine junit-platform-launcher org.opentest4j org.apiguardian.api; do f=$(ls "$J"/${j}_*.jar | tail -n 1); command -v cygpath > /dev/null && f=$(cygpath -w "$f"); CP="$CP$S$f"; done; export CLASSPATH="$CP"
+#@ rm -rf out
+javac -d out red/Clock.java ClockTest.java RunTests.java
+java RunTests ClockTest
+#@ rm -rf out
+javac -d out green/Clock.java ClockTest.java RunTests.java
+java RunTests ClockTest
+#@ rm -rf out
+javac -d out refactor/Clock.java ClockTest.java RunTests.java
+java RunTests ClockTest
+#@ rm -rf out

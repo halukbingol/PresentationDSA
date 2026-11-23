@@ -1,0 +1,6 @@
+share 10
+  next task
+handler: / by zero
+  next task
+handler: not a number: abc
+  next task

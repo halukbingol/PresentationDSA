@@ -1,0 +1,13 @@
+$ javac -d out LifecycleTest.java RunTests.java
+$ java RunTests LifecycleTest
+beforeAll: once
+  beforeEach
+    first
+  afterEach
+  ok     first()
+  beforeEach
+    second
+  afterEach
+  ok     second()
+afterAll: once
+Runs: 2   Errors: 0   Failures: 0

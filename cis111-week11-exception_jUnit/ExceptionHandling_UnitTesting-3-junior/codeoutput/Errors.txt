@@ -1,0 +1,6 @@
+$ javac -d out Deep.java Hog.java
+$ java -Xss512k -cp out Deep
+calls: 10198
+$ java -Xmx32m -cp out Hog
+Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
+	at Hog.main(Hog.java:8)

@@ -1,0 +1,13 @@
+$ javac -d out Prime.java TS_Prime_jUnit.java TH_Prime_jUnit.java RunTests.java
+$ java RunTests TS_Prime_jUnit
+  ok     ts1_smallPrimes()
+  ok     ts2_evenNumbers()
+Runs: 2   Errors: 0   Failures: 0
+$ java RunTests TH_Prime_jUnit
+  ok     th1_one()
+  FAIL   th2_nine()
+         expected: <false> but was: <true>
+  ok     th3_thirteen()
+  FAIL   th4_fifteen()
+         expected: <false> but was: <true>
+Runs: 4   Errors: 0   Failures: 2

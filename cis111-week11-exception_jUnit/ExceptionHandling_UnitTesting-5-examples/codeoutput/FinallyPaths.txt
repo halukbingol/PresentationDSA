@@ -1,0 +1,8 @@
+12 / 4 = 3
+  finally
+catch: / by zero
+  finally
+  finally
+Exception in thread "main" java.lang.IllegalStateException: negative
+	at FinallyPaths.run(FinallyPaths.java:12)
+	at FinallyPaths.main(FinallyPaths.java:5)

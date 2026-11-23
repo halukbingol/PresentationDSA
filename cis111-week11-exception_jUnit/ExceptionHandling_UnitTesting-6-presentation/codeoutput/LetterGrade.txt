@@ -1,0 +1,4 @@
+B
+Exception in thread "main" java.lang.IllegalArgumentException: score not in 0..100: 105
+	at LetterGrade.letterGrade(LetterGrade.java:10)
+	at LetterGrade.main(LetterGrade.java:4)

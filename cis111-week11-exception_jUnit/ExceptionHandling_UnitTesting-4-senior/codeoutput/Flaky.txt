@@ -1,0 +1,10 @@
+$ javac -d out OrderTest.java RunTests.java
+$ java -Djunit.jupiter.execution.order.random.seed=31415926535 RunTests OrderTest
+  ok     average()
+  ok     curve()
+Runs: 2   Errors: 0   Failures: 0
+$ java -Djunit.jupiter.execution.order.random.seed=271828 RunTests OrderTest
+  ok     curve()
+  FAIL   average()
+         expected: <80> but was: <85>
+Runs: 2   Errors: 0   Failures: 1

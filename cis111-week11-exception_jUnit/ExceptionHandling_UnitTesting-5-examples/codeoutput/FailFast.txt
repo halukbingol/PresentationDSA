@@ -1,0 +1,6 @@
+stored
+0 
+Exception in thread "main" java.lang.IllegalArgumentException: count is negative: -4
+	at java.base/java.lang.String.repeat(String.java:4651)
+	at FailFast.printBars(FailFast.java:16)
+	at FailFast.main(FailFast.java:7)

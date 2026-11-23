@@ -1,0 +1,4 @@
+AlreadyCaught.java:13: error: exception FileNotFoundException has already been caught
+		} catch (FileNotFoundException e) {
+		  ^
+1 error

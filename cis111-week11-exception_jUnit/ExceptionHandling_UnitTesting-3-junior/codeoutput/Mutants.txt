@@ -1,0 +1,11 @@
+$ bash mutate.sh
+mutant (sed command)                           WeakTest   StrongTest
+s/score >= 90/score > 90/                      survived   killed
+s/score >= 80/score >= 81/                     survived   killed
+s/score >= 70/score >= 75/                     survived   killed
+s/score >= 60/score > 60/                      survived   killed
+s/score > 100/score >= 100/                    survived   killed
+s/score < 0 ||/score < -1 ||/                  survived   killed
+s/score > 100/score > 1000/                    survived   killed
+s/return 'D';/return 'F';/                     killed     killed
+killed: WeakTest 1 of 8, StrongTest 8 of 8

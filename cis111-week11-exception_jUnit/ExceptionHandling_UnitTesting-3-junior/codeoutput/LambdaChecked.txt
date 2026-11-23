@@ -1,0 +1,4 @@
+LambdaChecked.java:9: error: unreported exception IOException; must be caught or declared to be thrown
+		names.forEach(n -> System.out.println(Files.size(Path.of(n))));
+		                                                ^
+1 error

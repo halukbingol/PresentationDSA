@@ -1,0 +1,7 @@
+$ javac -d out Ticket.java TicketTest.java RunTests.java
+$ java RunTests TicketTest
+  ok     boundaries()
+  ok     childPaysHalf()
+  ok     negativeAge()
+  ok     oneFromEveryClass()
+Runs: 4   Errors: 0   Failures: 0

@@ -1,0 +1,10 @@
+$ javac -d out Crash.java
+$ java -cp out Crash; echo "exit status $?"
+Exception in thread "Thread-0" java.lang.IllegalStateException: worker failed
+	at Crash.lambda$main$0(Crash.java:4)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+main goes on
+exit status 0
+$ java -cp out Crash x 2>/dev/null; echo "exit status $?"
+main goes on
+exit status 1

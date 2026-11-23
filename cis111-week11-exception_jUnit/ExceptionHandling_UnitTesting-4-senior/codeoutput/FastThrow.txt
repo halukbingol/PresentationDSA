@@ -1,0 +1,5 @@
+$ javac -d out FastThrow.java
+$ java -cp out FastThrow
+call 41985: message null, 0 frames
+$ java -XX:-OmitStackTraceInFastThrow -cp out FastThrow
+every exception kept its trace

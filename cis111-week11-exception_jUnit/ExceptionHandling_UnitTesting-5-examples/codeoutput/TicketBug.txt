@@ -1,0 +1,8 @@
+$ javac -d out Ticket.java TicketTest.java RunTests.java
+$ java RunTests TicketTest
+  FAIL   boundaries()
+         expected: <0> but was: <50>
+  ok     childPaysHalf()
+  ok     negativeAge()
+  ok     oneFromEveryClass()
+Runs: 4   Errors: 0   Failures: 1

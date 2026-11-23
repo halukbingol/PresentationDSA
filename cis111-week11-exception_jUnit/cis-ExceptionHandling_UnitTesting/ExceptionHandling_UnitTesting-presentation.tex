@@ -1,0 +1,1123 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% v20261123T2200
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue, \hArray, \hGrid
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V specific
+% \junitview{runs}{errors}{failures}{name/status,...}{first trace line}
+% A sketch of the JUnit view of Eclipse; status is ok, fail (an assert was false) or err (an exception).
+\definecolor{jvok}{RGB}{40,150,60}
+\definecolor{jvfail}{RGB}{40,90,200}
+\definecolor{jverr}{RGB}{210,40,40}
+\newcommand{\junitview}[5]{%
+	\begin{tikzpicture}[x=1cm, y=1cm, font=\sffamily\tiny]
+		\draw[rounded corners=1pt, fill=gray!6, draw=gray!60] (0,0) rectangle (5.3,-4.2);
+		\fill[gray!25] (0.02,-0.02) rectangle (5.28,-0.32);
+		\node[anchor=west] at (0.08,-0.17) {\textbf{JUnit}};
+		\node[anchor=west] at (0.08,-0.52) {Runs: #1/#1\qquad Errors: #2\qquad Failures: #3};
+		\pgfmathtruncatemacro{\jvbad}{#2+#3}
+		\ifnum\jvbad=0 \fill[jvok] (0.1,-0.74) rectangle (5.2,-0.9);
+		\else \fill[jverr] (0.1,-0.74) rectangle (5.2,-0.9); \fi
+		\foreach \n/\s [count=\i] in {#4} {
+			\fill[jv\s] (0.3,-0.86-0.28*\i) circle (0.07);
+			\node[anchor=west, font=\ttfamily\tiny] at (0.42,-0.86-0.28*\i) {\n};
+		}
+		\draw[gray!60] (0.02,-3.25) -- (5.28,-3.25);
+		\node[anchor=west] at (0.08,-3.42) {\textbf{Failure Trace}};
+		\node[anchor=west, font=\ttfamily\tiny, text width=5.0cm, align=left] at (0.08,-3.8) {#5};
+	\end{tikzpicture}%
+}
+% +++++++++++++++++++++++++++++++++++++++ A specific
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V switches
+% Optional parts of this lecture. Set a switch to ...false to hide its frames,
+% or delete the frames between its "EXTRA ... V" and "EXTRA ... A" lines.
+\newif\ifActivities  \Activitiestrue   % quick checks and a choose-the-tests exercise (4 frames)
+\newif\ifEclipseLab  \EclipseLabtrue   % from a red bar to the bug, in Eclipse (1 frame)
+\newif\ifAdvanced    \Advancedtrue     % advanced topics: the assert statement (a section, 2 frames)
+% +++++++++++++++++++++++++++++++++++++++ A switches
+
+
+
+\title[Exceptions, Tests: Lecture]{
+	Exception Handling and Unit Testing
+}
+\subtitle{
+	\cisOOO\ -- Week 11 lecture
+}
+\author[Erkovan]{Sait Erkovan}
+
+\institute[FCIS]{
+	Faculty of Computer and Information Sciences\\
+	Yeditepe University
+}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={1-3}, hideallsubsections]
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\tableofcontents[sections={4-5}, hideallsubsections]
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Why]{When things go wrong}[\small Week 11: exceptions and unit tests]
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Where we are}
+	\begin{center}
+		\begin{tikzpicture}[week/.style={draw, rounded corners=2pt, minimum width=1.25cm, minimum height=0.9cm,
+				align=center, font=\scriptsize, fill=white}]
+			\foreach \w/\t [count=\k from 0] in {4/decisions, 5/loops, 6/methods, 7/{arrays\\ 1D}, 8/{arrays\\ 2D},
+					9/String, 10/{input,\\ output}, 11/{exceptions,\\ tests}, 12/recursion} {
+				\node[week] (w\k) at (\k*1.45, 0) {\t};
+				\node[font=\tiny, colorIndex, above=1pt of w\k] {week \w};
+			}
+			\node[week, fill=colorHead] at (7*1.45, 0) {\textbf{exceptions,}\\ \textbf{tests}};
+			\draw[href] (w0.south) to[bend right=12] node[below, font=\scriptsize] {a JUnit test in every lab since week 4} (w7.south);
+		\end{tikzpicture}
+	\end{center}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. known and new
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.50\textwidth}L{0.44\textwidth}@{}}
+			\toprule
+			\textbf{You have seen (week)} & \textbf{Today} \\
+			\midrule
+			a crash: \hCode{Index 3 out of bounds for length 3} (7, 8) & read the report: an \hDefined{exception} \\
+			\hCode{NullPointerException}, \hCode{StringIndexOutOfBoundsException} (9)   & throw your own with \hCode{throw} \\
+			\hCode{Integer.parseInt("x")} gives a \hCode{NumberFormatException} (9)    & catch it with \hCode{try}/\hCode{catch} and go on \\
+			\hCode{throws FileNotFoundException}, \hCode{in.close()} (10)                & checked or unchecked; \hCode{finally}; \hCode{try (...)} \\
+			the lab's JUnit tests: green or red (4--10)                                 & write your own \hDefined{unit tests} \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Today's problem: the average of no scores}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=15, firstnumber=3][basicstyle=\ttfamily\scriptsize]{codeoutput/AverageCrash.java}{Java}{codeoutput/AverageCrash.txt}
+
+	\footnotesize \hQuestion{What does it print?} \uncover<2->{82, then the program stops: \hCode{done} is never printed.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Reading the report}
+	\lstoutput[basicstyle=\ttfamily\small]{codeoutput/AverageCrash.txt}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. the parts of the report
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.42\textwidth}L{0.52\textwidth}@{}}
+			\toprule
+			\textbf{Part} & \textbf{Says} \\
+			\midrule
+			\hCode{Exception in thread "main"}        & the program stopped: nobody handled the problem \\
+			\hCode{java.lang.ArithmeticException}      & the \hDefined{type}: what kind of problem \\
+			\hCode{/ by zero}                          & the \hDefined{message}: the details \\
+			\hCode{at AverageCrash.average(...:15)}     & where: method \hCode{average}, line 15; the newest call is on top \\
+			\hCode{at AverageCrash.main(...:6)}         & who called it: line 6 of \hCode{main} \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\small Today: a method that cannot do its job \hDefined{throws} an exception; a caller that can help \hDefined{catches} it;
+	and \hDefined{unit tests} find such problems before the users do.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Exceptions]{Exceptions}[\small throw, try, catch, finally]
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Throwing an exception: the parts}
+	\begin{center}
+		\begin{tikzpicture}
+			\node[font=\ttfamily\footnotesize] (k) at (0,0) {throw};
+			\node[font=\ttfamily\footnotesize, right=0.3cm of k] (n) {new IllegalArgumentException(};
+			\node[font=\ttfamily\footnotesize, right=0.05cm of n] (m) {"score not in 0..100: " + score};
+			\node[font=\ttfamily\footnotesize, right=0cm of m] {);};
+			\node[font=\scriptsize, below=0.35cm of k, align=center] {stop here\\ and report};
+			\node[font=\scriptsize, below=0.35cm of n, align=center] {a new exception object;\\ its type names the problem};
+			\node[font=\scriptsize, below=0.35cm of m, align=center] {the message:\\ what, with the value};
+		\end{tikzpicture}
+	\end{center}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. a method that throws
+\begin{lstlisting}[style=codesnippet, language=Java]
+static char letterGrade(int score) {
+    if (score < 0 || score > 100) {             // the method cannot do its job
+        throw new IllegalArgumentException("score not in 0..100: " + score);
+    }
+    if (score >= 90) { return 'A'; }             // ... B, C, D, F as in week 4
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+	\begin{itemize}\small
+		\item Returning a special value (\hCode{'?'}, $-1$, 0) is easy to miss; an exception cannot be ignored
+		\item \hCode{IllegalArgumentException}: ``the caller gave me a bad value''. Java has many types; pick the one that fits
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{throw ends the method}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize, firstline=2, lastline=12, firstnumber=2][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/LetterGrade.java}{Java}{codeoutput/LetterGrade.txt}
+
+	\footnotesize \hQuestion{What does it print? Is \hCode{done} printed?}
+	\uncover<2->{Line 10 throws: \hCode{letterGrade} ends at once and returns nothing; nobody catches it, so \hCode{main} stops too.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\ifActivities % EXTRA activities V
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Quick check: throw}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. throw quiz
+\begin{lstlisting}[style=codesnippet, language=Java]
+int seats = 3;
+int wanted = 5;
+if (wanted > seats) {
+    throw new IllegalArgumentException("only " + seats + " seats left");
+}
+seats = seats - wanted;
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+	\begin{enumerate}\small
+		\item Nobody catches the exception. What is \hCode{seats} at the end?
+			  \uncover<2->{\hEmph{Still 3}: the last line never runs; the program stops.}
+		\item Write a line that throws when the array \hCode{scores} is empty.
+			  \uncover<2->{\hCode{if (scores.length == 0) \{ throw new IllegalArgumentException("no scores"); \}}}
+		\item Why not print ``error'' and return 0 instead?
+			  \uncover<2->{The caller cannot tell the average 0 from the error 0, and goes on with a wrong value.}
+	\end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\fi % EXTRA activities A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{try and catch: the parts}
+	\begin{columns}[T]
+		\begin{column}{0.58\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. try and catch
+\begin{lstlisting}[style=codesnippet, language=Java, basicstyle=\ttfamily\scriptsize]
+try {
+    char g = letterGrade(s);         // may throw
+    System.out.println(g);           // skipped if it threw
+} catch (IllegalArgumentException e) {
+    System.out.println(e.getMessage());
+}
+System.out.println("next");          // goes on here
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+		\end{column}
+		\begin{column}{0.40\textwidth}
+			\begin{itemize}\footnotesize
+				\item \hCode{try \{ \dots \}}: the code that may throw
+				\item \hCode{catch (Type e)}: runs only if an exception of this type was thrown in the \hCode{try}
+				\item \hCode{e}: the exception object; \hCode{e.getMessage()} is its message
+				\item After the \hCode{catch}, the program goes on below it
+			\end{itemize}
+		\end{column}
+	\end{columns}
+
+	\vspace{0.4em}
+	\begin{itemize}\small
+		\item No exception: the whole \hCode{try} runs, the \hCode{catch} is skipped
+		\item An exception: the rest of the \hCode{try} is skipped, the \hCode{catch} runs
+		\item Another type of exception: not caught here; it goes on to the caller
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Catching: the program goes on}
+	\lstcodedownstep[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=12, firstnumber=3][basicstyle=\ttfamily\scriptsize]{codeoutput/LetterGradeCatch.java}{Java}{codeoutput/LetterGradeCatch.txt}
+
+	\footnotesize \hCode{letterGrade}: as before. \uncover<2->{For 105 the \hCode{catch} runs instead of line 7; the loop goes on with 59.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\ifActivities % EXTRA activities V
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Quick check: which lines run?}
+	\lstcoderightstep[0.62][basicstyle=\ttfamily\scriptsize]{codeoutput/TryFlow.java}{Java}{codeoutput/TryFlow.txt}
+
+	\small \hQuestion{What does \hCode{run("42")} print? And \hCode{run("4x2")}?}
+	\uncover<2->{For \hCode{"4x2"}, line 10 throws: line 11 is skipped, the \hCode{catch} prints C, and line 15 runs in both cases.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\fi % EXTRA activities A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Bad input: ask again}
+	\begin{columns}[T]
+		\begin{column}{0.64\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, firstline=5, lastline=18, firstnumber=5]{codeoutput/AskAgain.java}{Java}
+		\end{column}
+		\begin{column}{0.34\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, numbers=none]{codeoutput/AskAgain.in}{}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/AskAgain.txt}}
+		\end{column}
+	\end{columns}
+
+	\footnotesize \uncover<2->{\hCode{done} becomes \hCode{true} only if line 12 did not throw. The user gets another chance instead of a crash.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{More than one catch}
+	\begin{columns}[T]
+		\begin{column}{0.58\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=3, lastline=14, firstnumber=3]{codeoutput/SeveralCatches.java}{Java}
+		\end{column}
+		\begin{column}{0.40\textwidth}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/SeveralCatches.txt}}
+			\footnotesize \uncover<2->{The first \hCode{catch} whose type matches runs; the others are skipped.}
+		\end{column}
+	\end{columns}
+
+	\footnotesize \uncover<3->{Specific types first. A general \hCode{catch (Exception e)} first catches everything, so the compiler refuses:}
+	\uncover<3->{\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/CatchOrder.txt}}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{An exception goes up the calls}
+	\begin{columns}[T]
+		\begin{column}{0.57\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=2, lastline=21, firstnumber=2]{codeoutput/Propagate.java}{Java}
+		\end{column}
+		\begin{column}{0.41\textwidth}
+			\begin{center}
+				\begin{tikzpicture}[fr/.style={draw, thick, minimum width=3.3cm, minimum height=0.55cm,
+						font=\ttfamily\scriptsize, fill=white}, note/.style={font=\scriptsize, anchor=west, align=left}]
+					\node[fr] at (0,0) {main};
+					\only<1-3>{\node[fr] at (0,0.6) {total("72,85,x,90")};}
+					\only<1-2>{\node[fr] at (0,1.2) {toScore("x")};}
+					\only<1>{\node[fr, fill=colorUsed!60] at (0,1.8) {Integer.parseInt("x")};
+						\node[note] at (1.75,1.8) {throws};}
+					\only<2>{\node[fr, fill=colorUsed!60] at (0,1.2) {toScore("x")};
+						\node[note] at (1.75,1.2) {no catch:\\ ends too};}
+					\only<3>{\node[fr, fill=colorUsed!60] at (0,0.6) {total("72,85,x,90")};
+						\node[note] at (1.75,0.6) {no catch: ends,\\ \hCode{sum} is lost};}
+					\only<4>{\node[fr, fill=colorTop!60] at (0,0) {main};
+						\node[note] at (1.75,0) {catch: handled};}
+					\node[font=\scriptsize] at (0,-0.55) {the calls; the newest on top};
+					\path (0,2.15);
+				\end{tikzpicture}
+			\end{center}
+			\uncover<4->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/Propagate.txt}}
+			\footnotesize Not caught: the method ends; the exception goes to the caller.
+			Not caught in \hCode{main}: the report.
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Families of exceptions}
+	\begin{center}
+		\begin{tikzpicture}[x=1cm, y=0.78cm,
+				ex/.style={draw, rounded corners=1pt, font=\ttfamily\tiny, anchor=west, inner sep=2pt, fill=white},
+				ck/.style={ex, fill=colorHead!70},
+				er/.style={ex, fill=gray!25},
+				ed/.style={gray!70!black, thick}]
+			\node[er] (thr) at (0,0) {Throwable};
+			\node[er] (err) at (2.0,1.9) {Error};
+			\node[ck] (exc) at (2.0,-0.4) {Exception};
+			\node[er] (so)  at (4.0,2.25) {StackOverflowError};
+			\node[er] (oom) at (4.0,1.6) {OutOfMemoryError};
+			\node[ex] (rt)  at (4.0,0.35) {RuntimeException};
+			\node[ck] (io)  at (4.0,-2.1) {IOException};
+			\node[ex] (ar)  at (7.0,1.0) {ArithmeticException};
+			\node[ex] (iob) at (7.0,0.45) {IndexOutOfBoundsException};
+			\node[ex] (np)  at (7.0,-0.1) {NullPointerException};
+			\node[ex] (ia)  at (7.0,-0.65) {IllegalArgumentException};
+			\node[ex] (ns)  at (7.0,-1.2) {NoSuchElementException};
+			\node[ck] (fnf) at (7.0,-2.1) {FileNotFoundException};
+			\node[ex] (aio) at (10.6,0.7) {ArrayIndexOutOfBoundsException};
+			\node[ex] (sio) at (10.6,0.2) {StringIndexOutOfBoundsException};
+			\node[ex] (nf)  at (10.6,-0.65) {NumberFormatException};
+			\node[ex] (im)  at (10.6,-1.2) {InputMismatchException};
+			\foreach \p/\c in {thr/err, thr/exc, err/so, err/oom, exc/rt, exc/io, rt/ar, rt/iob, rt/np, rt/ia, rt/ns,
+					io/fnf, iob/aio, iob/sio, ia/nf, ns/im}
+				\draw[ed] (\p.east) -- ++(0.15,0) |- (\c.west);
+		\end{tikzpicture}
+	\end{center}
+
+	\begin{itemize}\footnotesize
+		\item A \hCode{catch} catches its type and everything below it: \hCode{catch (IllegalArgumentException e)} also catches a \hCode{NumberFormatException}
+		\item \colorbox{colorHead!70}{checked}: the outside world (files, network). The compiler makes you catch or declare them
+		\item \colorbox{white}{unchecked} (\hCode{RuntimeException} and below): usually a bug, or a bad value. \colorbox{gray!25}{\hCode{Error}}: serious; do not catch
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Checked exceptions: catch or declare}
+	\footnotesize \hCode{CheckedFile.java} opens a \hCode{Scanner} on a file as in week 10, but without \hCode{throws}:
+	\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/CheckedFile.txt}
+	\footnotesize Eclipse says it as \hCode{Unhandled exception type FileNotFoundException}. Two ways out:
+
+	\begin{columns}[T]
+		\begin{column}{0.49\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. declare it
+\begin{lstlisting}[style=codesnippet, language=Java, basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]
+// 1. declare it (week 10): my caller deals with it
+public static void main(String[] args)
+        throws FileNotFoundException {
+    Scanner in = new Scanner(new File("scores.txt"));
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+		\end{column}
+		\begin{column}{0.49\textwidth}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. catch it
+\begin{lstlisting}[style=codesnippet, language=Java, basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]
+// 2. catch it: I deal with it here
+try {
+    Scanner in = new Scanner(new File("scores.txt"));
+    ...
+} catch (FileNotFoundException e) {
+    System.out.println("cannot open scores.txt");
+}
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{finally: runs in every case}
+	\lstcoderightstep[0.62][basicstyle=\ttfamily\scriptsize]{codeoutput/FinallyDemo.java}{Java}{codeoutput/FinallyDemo.txt}
+
+	\footnotesize \hCode{finally} runs after the \hCode{try} (no exception) and after the \hCode{catch} (an exception);
+	even when the exception is not caught, or the \hCode{try} returns. Use it for work that must always be done.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{try-with-resources: files close themselves}
+	\begin{columns}[T]
+		\begin{column}{0.66\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, firstline=6, lastline=21, firstnumber=6]{codeoutput/ReadScores.java}{Java}
+		\end{column}
+		\begin{column}{0.32\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, numbers=none]{codeoutput/scores.txt}{}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize]{codeoutput/ReadScores.txt}}
+		\end{column}
+	\end{columns}
+
+	\footnotesize \hCode{try (Scanner in = \dots) \{ \dots \}}: \hCode{in} is closed at the end of the block,
+	with or without an exception. In week 10 you wrote \hCode{in.close()}; an exception before it skips it.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Good habits}
+	\lstcoderightstep[0.64][basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=3, lastline=12, firstnumber=3]{codeoutput/Swallowed.java}{Java}{codeoutput/Swallowed.txt}
+
+	\footnotesize \uncover<2->{$72 + 85 + 90 = 247$: an empty \hCode{catch} \hDefined{swallows} the error, and nobody learns that 8S was lost.}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. habits
+\begin{table}
+		\scriptsize
+		\begin{tabular}{@{}L{0.47\textwidth}L{0.47\textwidth}@{}}
+			\toprule
+			\textbf{Do} & \textbf{Do not} \\
+			\midrule
+			throw early; catch late, where you can help: ask again & catch and do nothing: \hCode{catch (Exception e) \{ \}} \\
+			catch and throw specific types                      & catch \hCode{Exception} when a specific type fits \\
+			put the value in the message: \hCode{score not in 0..100: 105} & messages like ``error'' \\
+			check with \hCode{if} what you can check: an index, \hCode{hasNextInt()} & use exceptions instead of a simple \hCode{if} \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\ifActivities % EXTRA activities V
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Quick check: exceptions}
+	\begin{enumerate}\small
+		\item \hCode{int[] a = new int[3]; a[3] = 1;} Which exception? Checked or unchecked?
+			  \uncover<2->{\hCode{ArrayIndexOutOfBoundsException}, unchecked: fix the index}
+		\item Which one must be caught or declared: \hCode{NumberFormatException} or \hCode{FileNotFoundException}?
+			  \uncover<2->{\hCode{FileNotFoundException}: it is checked}
+		\item \hCode{try \{ A; B; C; \} catch (\dots) \{ D; \} E;} B throws and is caught. Which run?
+			  \uncover<2->{A, D, E}
+		\item The same, but B throws a type that the \hCode{catch} does not match?
+			  \uncover<2->{A; then the method ends and the exception goes to the caller; E does not run}
+		\item What is wrong with \hCode{catch (Exception e) \{ \}}?
+			  \uncover<2->{It hides every problem, even bugs: the program goes on with wrong data}
+	\end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\fi % EXTRA activities A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Testing]{Unit tests with JUnit}[\small Let the computer check the answers]
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Testing by hand: print and look}
+	\lstcoderightstep[0.70][basicstyle=\ttfamily\scriptsize, firstline=2, lastline=7, firstnumber=2]{codeoutput/ByHand.java}{Java}{codeoutput/ByHand.txt}
+
+	\small Every time the code changes, you print and compare again, by eye. Easy to skip, easy to miss.
+
+	\uncover<2->{\hEmph{The new way}: write the expected value once; the computer compares, every time.}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. one assert
+\begin{lstlisting}[style=codesnippet, language=Java]
+assertEquals('B', Grades.letterGrade(85));     // expected, then actual
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+	\footnotesize A \hDefined{unit test} checks one unit: one method. \hDefined{JUnit} runs all tests with one click.
+	You have run JUnit tests in every lab since week 4; today you write them.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A test class: the parts}
+	\begin{columns}[T]
+		\begin{column}{0.56\textwidth}
+			\lstcode[basicstyle=\ttfamily\scriptsize, firstline=7, lastline=22, firstnumber=7]{codeoutput/Grades/GradesTest.java}{Java}
+		\end{column}
+		\begin{column}{0.42\textwidth}
+			\begin{itemize}\footnotesize
+				\item Lines 1--5 (not shown): one \hCode{import static} per assert method; line 7 imports \hCode{Test}
+				\item Line 9: the test class, next to the class \hCode{Grades} it tests
+				\item Line 11: \hCode{@Test} marks a test; JUnit runs every such method. No \hCode{main}
+				\item Line 12: the name says what is checked
+				\item Line 13: \hCode{assertEquals(expected, actual)}: expected first
+				\item Lines 17--21: a test may check several values; it stops at the first wrong one
+			\end{itemize}
+		\end{column}
+	\end{columns}
+
+	\vspace{0.3em}
+	\footnotesize \hCode{Grades} is the class under test: \hCode{letterGrade}, \hCode{isPassing}, \hCode{average}, \hCode{letterGrades}
+	(\hCode{codeoutput/Grades/Grades.java}).
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{In Eclipse: create and run a test}
+	\begin{columns}[T]
+		\begin{column}{0.56\textwidth}
+			\begin{enumerate}\footnotesize
+				\item Right-click \hCode{Grades.java}: \menu{New > JUnit Test Case}
+				\item Choose \menu{New JUnit Jupiter test}, name \hCode{GradesTest}, \menu{Finish};
+					  if Eclipse asks, add the JUnit library to the build path
+				\item Write the \hCode{@Test} methods
+				\item Right-click the test class: \menu{Run As > JUnit Test}\\
+					  Windows: \keys{Alt + Shift + X}, \keys{T}\\
+					  macOS: \keys{\Alt + \cmd + X}, \keys{T}
+				\item Read the \menu{JUnit} view: a green bar means every test passed
+			\end{enumerate}
+
+			\vspace{0.3em}
+			\scriptsize The same tests run outside Eclipse in \hCode{codeoutput/Grades.txt}: 7 runs, 0 errors, 0 failures.
+		\end{column}
+		\begin{column}{0.42\textwidth}
+			\begin{center}
+				\junitview{7}{0}{0}{average()/ok, boundaries()/ok, eightyFiveIsB()/ok, ends()/ok,
+					letterGradesOfAnArray()/ok, outsideIsAnError()/ok, passing()/ok}{}
+
+				\scriptsize a sketch of the JUnit view
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{A red bar: failures and errors}
+	\begin{columns}[T]
+		\begin{column}{0.60\textwidth}
+			\footnotesize Someone changed two lines of \hCode{Grades}:
+			\lstcode[basicstyle=\ttfamily\scriptsize, firstline=6, lastline=10, firstnumber=6]{codeoutput/GradesBug/Grades.java}{Java}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6}{7.2}\selectfont, firstline=3]{codeoutput/GradesBug.txt}}
+		\end{column}
+		\begin{column}{0.38\textwidth}
+			\only<2>{\begin{center}
+				\junitview{7}{1}{1}{average()/ok, boundaries()/fail, eightyFiveIsB()/ok, ends()/err,
+					letterGradesOfAnArray()/ok, outsideIsAnError()/ok, passing()/ok}{expected: <A> but was: <B>\\ at GradesTest.boundaries(GradesTest.java:18)}
+
+				\scriptsize blue: a failure; red: an error
+			\end{center}}
+			\only<3>{\begin{itemize}\footnotesize
+				\item \hDefined{Failure}: an assert was false. For 90 it gave B, not A: line 10 should be \hCode{>= 90}
+				\item \hDefined{Error}: an exception nobody expected. For 100 it threw: line 6 should be \hCode{> 100}
+				\item Both bugs sit on a boundary
+				\item Fix, run again: green. The tests stay, so the bugs cannot come back unseen
+			\end{itemize}}
+		\end{column}
+	\end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{More asserts: booleans, doubles, arrays}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. more asserts
+\begin{lstlisting}[style=codesnippet, language=Java, basicstyle=\ttfamily\scriptsize]
+assertTrue(Grades.isPassing(60));                      // a boolean that must be true
+assertFalse(Grades.isPassing(59));                     // ... or false
+assertEquals(81.667, Grades.average(scores), 0.001);   // doubles: a tolerance, here 0.001
+assertArrayEquals(expected, actual);                   // arrays: cell by cell
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+	\footnotesize From \hCode{GradesTest}, lines 36--52. \uncover<2->{Why the tolerance and \hCode{assertArrayEquals}?
+	\hCode{PitfallsTest} leaves them out:}
+	\uncover<2->{\lstoutput[basicstyle=\ttfamily\scriptsize, firstline=3, lastline=8]{codeoutput/Pitfalls.txt}}
+
+	\begin{itemize}\footnotesize
+		\item<3-> \hCode{0.1 + 0.2} is not exactly 0.3 (week 3): compare \hCode{double} values with a tolerance
+		\item<3-> \hCode{assertEquals} on arrays compares the arrows (week 7): two arrays with the same cells, so it fails
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Testing an exception: assertThrows}
+	\lstcode[basicstyle=\ttfamily\scriptsize, firstline=30, lastline=34, firstnumber=30]{codeoutput/Grades/GradesTest.java}{Java}
+
+	\begin{center}
+		\begin{tikzpicture}
+			\node[font=\ttfamily\footnotesize] (a) at (0,0) {assertThrows(};
+			\node[font=\ttfamily\footnotesize, right=0cm of a] (t) {IllegalArgumentException.class,};
+			\node[font=\ttfamily\footnotesize, right=0.15cm of t] (c) {() -> Grades.letterGrade(101)};
+			\node[font=\ttfamily\footnotesize, right=0cm of c] {);};
+			\node[font=\scriptsize, below=0.3cm of t, align=center] {the type you expect;\\ \hCode{.class} names the type};
+			\node[font=\scriptsize, below=0.3cm of c, align=center] {the call, packed with \hCode{() ->}\\ so that JUnit can run it and watch};
+		\end{tikzpicture}
+	\end{center}
+
+	\begin{itemize}\footnotesize
+		\item Passes if the call throws that type (or one below it). Fails if nothing is thrown:
+	\end{itemize}
+	\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=9, lastline=10]{codeoutput/Pitfalls.txt}
+	\footnotesize The two halves of today meet: the method throws, the test checks that it does.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Choosing test cases}
+	\begin{center}
+		\begin{tikzpicture}[x=0.11cm, y=1cm]
+			\fill[gray!25]    (-12,0) rectangle (0,0.5);
+			\fill[red!20]     (0,0)   rectangle (60,0.5);
+			\fill[orange!25]  (60,0)  rectangle (70,0.5);
+			\fill[yellow!40]  (70,0)  rectangle (80,0.5);
+			\fill[green!20]   (80,0)  rectangle (90,0.5);
+			\fill[cyan!25]    (90,0)  rectangle (101,0.5);
+			\fill[gray!25]    (101,0) rectangle (113,0.5);
+			\foreach \x/\g in {-6/illegal, 30/F, 65/D, 75/C, 85/B, 95.5/A, 107/illegal}
+				\node[font=\scriptsize] at (\x,0.25) {\g};
+			\foreach \x in {0, 60, 70, 80, 90, 101}
+				\draw[thick] (\x,-0.05) -- (\x,0.55);
+			\foreach \x/\l in {0/{-1 | 0}, 60/{59 | 60}, 70/{69 | 70}, 80/{79 | 80}, 90/{89 | 90}, 101/{100 | 101}}
+				\node[font=\ttfamily\tiny, colorStop, below] at (\x,-0.05) {\l};
+		\end{tikzpicture}
+	\end{center}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. kinds of test cases
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.12\textwidth}L{0.46\textwidth}L{0.34\textwidth}@{}}
+			\toprule
+			\textbf{Kind} & \textbf{For letterGrade} & \textbf{Why} \\
+			\midrule
+			normal     & one inside every group: 40, 65, 75, 85, 95 & does it work at all? \\
+			boundary   & both sides of every border: 59 and 60, \dots, 89 and 90; the ends 0 and 100 & most bugs: \hCode{>} instead of \hCode{>=} \\
+			illegal    & just outside: $-1$ and 101                & must throw: \hCode{assertThrows} \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\begin{itemize}\footnotesize
+		\item Work out the expected value by hand, never by running the method
+		\item You can even write the tests before the method: then write the method until all are green
+		\item One test, one idea; the name says which
+	\end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Visible tests and hidden tests}
+	\begin{columns}[T]
+		\begin{column}{0.50\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=5, lastline=12, firstnumber=5]{codeoutput/Hidden/Grades.java}{Java}
+			\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=2, lastline=6]{codeoutput/Hidden.txt}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\uncover<2->{\lstoutput[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=7, lastline=16]{codeoutput/Hidden.txt}}
+		\end{column}
+	\end{columns}
+
+	\footnotesize In this course \hCode{TS\_} tests are visible, \hCode{TH\_} tests are hidden, and the score counts the hidden ones.
+	\uncover<2->{Here: 3 of 3 visible, 2 of 5 hidden. Passing tests show that some cases work, never that all do: test the boundaries yourself.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\ifActivities % EXTRA activities V
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Your turn: choose the tests}
+	\hCode{static int daysInMonth(int month)}: the days of month 1 to 12 in a year that is not a leap year;
+	any other month throws an \hCode{IllegalArgumentException}. Which tests would you write?
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. tests for daysInMonth
+\begin{table}
+		\footnotesize
+		\begin{tabular}{@{}L{0.16\textwidth}L{0.34\textwidth}L{0.42\textwidth}@{}}
+			\toprule
+			\textbf{Kind} & \textbf{Calls} & \textbf{Expected} \\
+			\midrule
+			normal   & \leavevmode\uncover<2->{\hCode{daysInMonth(3)}, \hCode{(4)}, \hCode{(2)}} & \leavevmode\uncover<2->{31, 30, 28: one from every group} \\
+			boundary & \leavevmode\uncover<2->{\hCode{(1)}, \hCode{(12)}}                       & \leavevmode\uncover<2->{31, 31: the ends} \\
+			tricky   & \leavevmode\uncover<2->{\hCode{(7)}, \hCode{(8)}}                         & \leavevmode\uncover<2->{31, 31: two long months in a row} \\
+			illegal  & \leavevmode\uncover<2->{\hCode{(0)}, \hCode{(13)}}                        & \leavevmode\uncover<2->{\hCode{assertThrows(IllegalArgumentException.class, \dots)}} \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\small \uncover<2->{Then write one \hCode{@Test} per row, and the method until all are green.}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\fi % EXTRA activities A
+
+
+
+\ifEclipseLab % EXTRA Eclipse and lab V
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{In Eclipse: from a red bar to the bug}
+	\begin{enumerate}\small
+		\item In the \menu{JUnit} view, double-click a failed test: the editor opens at its assert
+		\item The first line of the \menu{Failure Trace} is the message; its compare button shows expected and actual side by side
+		\item Put a breakpoint in \hCode{letterGrade}; right-click the test: \menu{Debug As > JUnit Test}
+		\item Step with \keys{F6} (over) and \keys{F5} (into), as in week 3; on a Mac laptop with \keys{fn}
+		\item Fix the code; \menu{Rerun Test} runs everything again, \menu{Rerun Test - Failures First} starts with the red ones
+	\end{enumerate}
+
+	\vspace{0.5em}
+	\small \hRemark{Try}: break the boundary of \hCode{letterGrade} on purpose and see which tests turn red.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\fi % EXTRA Eclipse and lab A
+
+
+
+\ifAdvanced % EXTRA advanced V
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Advanced]{Advanced topics}[\small Optional]
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The assert statement}
+	\begin{columns}[T]
+		\begin{column}{0.56\textwidth}
+			\lstcode[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont, firstline=2, lastline=12, firstnumber=2]{codeoutput/AssertDemo/AssertDemo.java}{Java}
+		\end{column}
+		\begin{column}{0.42\textwidth}
+			\begin{itemize}\footnotesize
+				\item \hCode{assert condition : message;} checks what must be true at that point of your own code
+				\item Off by default: the line is skipped. \hCode{java -ea} turns it on; in Eclipse:
+					  \menu{Run Configurations > Arguments}, VM arguments \hCode{-ea}
+				\item For mistakes in the program; for bad input use \hCode{if} and \hCode{throw}
+				\item Not JUnit's \hCode{assertEquals}, which lives in tests
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\uncover<2->{\lstterminal[basicstyle=\ttfamily\fontsize{6.4}{7.6}\selectfont]{codeoutput/AssertDemo.txt}}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\fi % EXTRA advanced A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[End]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet: exceptions}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. cheat sheet exceptions
+\begin{lstlisting}[style=codesnippet, language=Java, basicstyle=\ttfamily\scriptsize]
+throw new IllegalArgumentException("score not in 0..100: " + score);   // report a problem
+
+try {
+    int n = Integer.parseInt(text);                // code that may throw
+} catch (NumberFormatException e) {                // specific types first
+    System.out.println(e.getMessage());            // handle it; e is the exception object
+} finally {
+    System.out.println("always");                  // runs in every case
+}
+
+try (Scanner in = new Scanner(new File(name))) {   // in is closed for you
+    ...
+} catch (FileNotFoundException e) { ... }          // checked: catch it ...
+
+static void read(String name) throws FileNotFoundException { ... }      // ... or declare it
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+	\footnotesize Unchecked (\hCode{RuntimeException} and below): usually a bug, fix the code. Checked: the outside world, catch or declare.
+	The report: type, message, then the calls, newest on top.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Cheat sheet: unit tests}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V lst
+%: -Lst. cheat sheet tests
+\begin{lstlisting}[style=codesnippet, language=Java, basicstyle=\ttfamily\scriptsize]
+import static org.junit.jupiter.api.Assertions.assertEquals;   // one line per assert method
+import org.junit.jupiter.api.Test;
+
+class GradesTest {                                   // tests the class Grades
+    @Test
+    void eightyFiveIsB() {                           // the name says what is checked
+        assertEquals('B', Grades.letterGrade(85));   // expected first, then actual
+    }
+}
+
+assertTrue(Grades.isPassing(60));          assertFalse(Grades.isPassing(59));
+assertEquals(81.667, Grades.average(s), 0.001);           // doubles: with a tolerance
+assertArrayEquals(expected, actual);                      // arrays: cell by cell
+assertThrows(IllegalArgumentException.class, () -> Grades.letterGrade(101));
+\end{lstlisting}
+% +++++++++++++++++++++++++++++++++++++++ A lst
+
+
+	\footnotesize \menu{Run As > JUnit Test}. Green: all passed. Failure: an assert was false. Error: an exception.
+	Choose normal, boundary and illegal cases; expected values by hand.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercises}
+	\begin{enumerate}\small
+		\item Write \hCode{static int parseScore(String text)}: the number in \hCode{text}; throw an
+			  \hCode{IllegalArgumentException} if it is not in 0..100. Test it: normal, boundary and illegal cases
+		\item Change \hCode{AskAgain}: also ask again for numbers outside 0..100 (catch the exception of \hCode{letterGrade})
+		\item Read \hCode{scores.txt} with \hCode{try (\dots)}; skip the words that are not numbers and count them
+		\item Write tests for \hCode{Grades.average}: one score, many scores, the empty array (\hCode{assertThrows})
+		\item \hCode{static int max(int[] a)} starts with \hCode{int best = 0;}. Which test finds the bug? Write it first
+		\item \hCode{daysInMonth(int month)}: 31, 30 or 28 days; any other month throws. Write the tests first, then the method
+	\end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Where exceptions and tests come back}
+
+
+% +++++++++++++++++++++++++++++++++++++++ V tbl
+%: -Tbl. next weeks
+\begin{table}
+		\small
+		\begin{tabular}{@{}L{0.12\textwidth}L{0.22\textwidth}L{0.58\textwidth}@{}}
+			\toprule
+			\textbf{When} & \textbf{Topic} & \textbf{There} \\
+			\midrule
+			week 12 & Recursion         & a method that never stops calling itself ends with a \hCode{StackOverflowError} \\
+			week 13 & Command line      & \hCode{Integer.parseInt(args[0])}: a \hCode{NumberFormatException}; no argument: an index error \\
+			week 14 & git               & run all tests before every commit \\
+			labs    & from now on       & run the \hCode{TS\_} tests, then add your own for the boundaries \\
+			CIS112  & Data structures   & taking from an empty stack throws; every structure comes with JUnit tests \\
+			\bottomrule
+		\end{tabular}
+\end{table}%
+% +++++++++++++++++++++++++++++++++++++++ A tbl
+
+
+	\vspace{0.3em}
+	\small Reading: bjlo2, Chapter 7, exception handling. Decks of this topic:
+	\hCode{ExceptionHandling\_UnitTesting-0-concepts} \dots\ \hCode{-5-examples}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{References}
+	\small The Java Tutorials, lesson Exceptions \cite{TheJavaTutorials}; JUnit User Guide \cite{homeJunit}; Big Java \cite{horstmann2016big}.
+
+	\vspace{1em}
+	\setbeamertemplate{bibliography item}[text]
+	\bibliographystyle{IEEEtran}
+	\tiny\bibliography{../../hblib/hblibDataStructures}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+\end{document}

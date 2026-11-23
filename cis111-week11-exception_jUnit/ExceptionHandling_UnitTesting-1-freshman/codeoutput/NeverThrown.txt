@@ -1,0 +1,4 @@
+NeverThrown.java:7: error: exception FileNotFoundException is never thrown in body of corresponding try statement
+		} catch (FileNotFoundException e) {
+		  ^
+1 error

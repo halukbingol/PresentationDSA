@@ -1,0 +1,10 @@
+1. java.lang.ArithmeticException: / by zero
+2. java.lang.ArrayIndexOutOfBoundsException: Index 3 out of bounds for length 3
+3. java.lang.StringIndexOutOfBoundsException: Index 5 out of bounds for length 3
+4. java.lang.NullPointerException: Cannot invoke "String.length()" because "name" is null
+5. java.lang.NumberFormatException: For input string: "12a"
+6. java.util.InputMismatchException
+7. java.util.NoSuchElementException: No line found
+8. java.lang.NegativeArraySizeException: -1
+9. java.lang.StringIndexOutOfBoundsException: Range [2, 1) out of bounds for length 3
+10. java.lang.IllegalArgumentException: count is negative: -1

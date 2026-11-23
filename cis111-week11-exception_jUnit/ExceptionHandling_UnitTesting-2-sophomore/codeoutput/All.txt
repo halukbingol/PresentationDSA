@@ -1,0 +1,9 @@
+$ javac -d out Grades.java AllTest.java RunTests.java
+$ java RunTests AllTest
+  FAIL   separate()
+         expected: <A> but was: <B>
+  FAIL   together()
+         letter grades (2 failures)
+	org.opentest4j.AssertionFailedError: expected: <A> but was: <B>
+	org.opentest4j.AssertionFailedError: expected: <A> but was: <B>
+Runs: 2   Errors: 0   Failures: 2

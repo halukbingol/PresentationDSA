@@ -1,0 +1,6 @@
+$ javac -d out AssertDemo.java
+$ java -cp out AssertDemo
+average -112.66666666666667
+$ java -ea -cp out AssertDemo
+Exception in thread "main" java.lang.AssertionError: average out of range: -112.66666666666667
+	at AssertDemo.main(AssertDemo.java:9)

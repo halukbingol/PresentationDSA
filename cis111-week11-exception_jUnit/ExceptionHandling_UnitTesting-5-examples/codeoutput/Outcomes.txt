@@ -1,0 +1,8 @@
+$ javac -d out Ticket.java OutcomesTest.java RunTests.java
+$ java RunTests OutcomesTest
+  ERROR  error()
+         java.lang.IllegalArgumentException: age < 0: -3
+  FAIL   failure()
+         expected: <60> but was: <100>
+  ok     pass()
+Runs: 3   Errors: 1   Failures: 1

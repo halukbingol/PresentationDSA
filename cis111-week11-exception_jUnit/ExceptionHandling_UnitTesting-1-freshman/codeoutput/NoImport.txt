@@ -1,0 +1,7 @@
+$ javac -d out Temperature.java NoImportTest.java
+NoImportTest.java:7: error: cannot find symbol
+		assertEquals(212.0, Temperature.toFahrenheit(100), 1e-9);
+		^
+  symbol:   method assertEquals(double,double,double)
+  location: class NoImportTest
+1 error

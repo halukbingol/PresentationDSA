@@ -1,0 +1,2 @@
+scores.txt: 15 bytes
+failed: java.nio.file.NoSuchFileException: missing.txt

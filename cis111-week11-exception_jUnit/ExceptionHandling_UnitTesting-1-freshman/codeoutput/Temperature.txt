@@ -1,0 +1,8 @@
+$ javac -d out Temperature.java TemperatureTest.java RunTests.java
+$ java RunTests TemperatureTest
+  ok     boilingPoint()
+  ok     coldest()
+  ok     coldestOfNothing()
+  ok     freezing()
+  ok     minusFortyIsTheSame()
+Runs: 5   Errors: 0   Failures: 0

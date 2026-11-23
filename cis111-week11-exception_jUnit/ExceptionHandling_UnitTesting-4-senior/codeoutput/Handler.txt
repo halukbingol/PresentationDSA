@@ -1,0 +1,3 @@
+starting
+Sorry, something went wrong (incident e28).
+incident e28 in main: java.lang.NullPointerException: Cannot invoke "Object.toString()" because "report[1]" is null
