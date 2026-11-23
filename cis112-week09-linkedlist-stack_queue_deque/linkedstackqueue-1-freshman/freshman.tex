@@ -1,0 +1,187 @@
+% !TEX spellcheck = en_US
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+\usepackage{../../cis000_latex/lib/hblibPresentation}
+\usepackage{../../cis000_latex/lib/hblibCodeoutput}
+\usepackage{../../cis000_latex/lib/hblibDatastructures}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\lstset{columns=fixed, breaklines=true, breakatwhitespace=false}
+
+\title{Linked Stacks, Queues, and Deques}
+\subtitle{Freshman Level: Your First Linked Containers}
+\author[Bingol]{Ruhan Alpaydin}
+\institute[FCIS]{Faculty of Computer and Information Sciences\\Yeditepe University}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+\begin{frame}[t,fragile]\titlepage\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}\tableofcontents[sections={1-3},hideallsubsections]\end{column}
+    \begin{column}{0.48\textwidth}\tableofcontents[sections={4-5},hideallsubsections]\end{column}
+  \end{columns}
+\end{frame}
+
+\hSection[Node]{The Node Class}
+\begin{frame}[t,fragile]\frametitle{The \texttt{Node}}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Node.java}{Java}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item One data field: \hCode{int data}.
+        \item One reference: \hCode{Node next}.
+        \item The constructor leaves \hCode{next} as \hCode{null}.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\hSection[Stack]{LinkedStack}
+\begin{frame}[t,fragile]\frametitle{\texttt{LinkedStack}: push}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize, firstline=4, lastline=8, firstnumber=4]{codeoutput/LinkedStack.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{block}{Two steps}
+        \small
+        1. new node's \hCode{next} $\gets$ current \hCode{top}.\\
+        2. \hCode{top} $\gets$ new node.
+      \end{block}
+      \begin{block}{Cost}
+        \small
+        $O(1)$ time. No resize.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{\texttt{LinkedStack}: pop}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize, firstline=10, lastline=15, firstnumber=10]{codeoutput/LinkedStack.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{block}{Three steps}
+        \small
+        1. save data from \hCode{top}.\\
+        2. move \hCode{top} to \hCode{top.next}.\\
+        3. return data.
+      \end{block}
+      \begin{block}{Underflow}
+        \small
+        \hCode{top == null}: throw exception.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{\texttt{LinkedStack}: run}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/LinkedStack.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/LinkedStack.txt}
+      \small
+      LIFO order: 30, 20, 10.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\hSection[Queue]{LinkedQueue}
+\begin{frame}[t,fragile]\frametitle{\texttt{LinkedQueue}: enqueue}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize, firstline=5, lastline=11, firstnumber=5]{codeoutput/LinkedQueue.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{block}{Append at tail}
+        \small
+        If empty, \hCode{head = tail = n}.\\
+        Else \hCode{tail.next = n}, then \hCode{tail = n}.
+      \end{block}
+      \begin{block}{Cost}
+        \small
+        $O(1)$ because we keep a \hCode{tail} reference.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{\texttt{LinkedQueue}: dequeue}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize, firstline=13, lastline=20, firstnumber=13]{codeoutput/LinkedQueue.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{block}{Remove at head}
+        \small
+        Save \hCode{head.data}.\\
+        Advance \hCode{head = head.next}.\\
+        If \hCode{head == null}, set \hCode{tail = null}.
+      \end{block}
+      \begin{block}{Critical}
+        \small
+        Forgetting \hCode{tail = null} leaves a dangling tail!
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{\texttt{LinkedQueue}: run}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/LinkedQueue.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/LinkedQueue.txt}
+      \small
+      FIFO order: 10, 20, 30.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\hSection[Deque]{LinkedDeque}
+\begin{frame}[t,fragile]\frametitle{\texttt{LinkedDeque}: \texttt{addFirst} and \texttt{addLast}}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize, firstline=5, lastline=18, firstnumber=5]{codeoutput/LinkedDeque.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{itemize}\small
+        \item \hCode{addFirst}: insert before \hCode{head}.
+        \item \hCode{addLast}: append after \hCode{tail}.
+        \item Both $O(1)$.
+        \item To do \hCode{removeLast} in $O(1)$ we would need
+              a doubly linked node (we will do that in sophomore).
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{\texttt{LinkedDeque}: run}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/LinkedDeque.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/LinkedDeque.txt}
+      \small
+      We added 20, then 10 at front, then 30 at back.\\
+      Removing from front yields 10, then 20.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]
+  \begin{center}\vspace{4cm}\hRemark{\Huge Questions?}\end{center}
+\end{frame}
+
+\end{document}

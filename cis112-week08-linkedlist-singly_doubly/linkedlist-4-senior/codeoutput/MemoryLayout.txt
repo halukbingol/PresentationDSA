@@ -1,0 +1,5 @@
+$ javac MemoryLayout.java
+$ java MemoryLayout
+n = 1000000
+Integer[]: ~0 bytes / element
+free memory: ~8 MB

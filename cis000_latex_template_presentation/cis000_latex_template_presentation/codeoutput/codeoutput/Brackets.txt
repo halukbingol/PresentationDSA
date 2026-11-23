@@ -1,0 +1,5 @@
+{[()]} -> true
+a(b[c]d)e -> true
+([)] -> false
+(( -> false
+)) -> false

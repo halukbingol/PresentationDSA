@@ -1,0 +1,4 @@
+$ javac Palindrome.java
+$ java Palindrome
+[r, a, c, e, c, a, r]: true
+[a, b, c]: false

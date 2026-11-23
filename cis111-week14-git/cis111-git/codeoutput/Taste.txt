@@ -1,0 +1,22 @@
+$ git --version
+git version 2.43.0
+$ git init -q notes
+$ cd notes
+$ echo "Ödev 1" > todo.txt
+$ git add todo.txt
+$ git commit -q -m "Add todo list"
+$ echo "Ödev 2" >> todo.txt
+$ git commit -q -a -m "Add second homework"
+$ git switch -q -c idea
+$ echo "Kitap oku" > idea.txt
+$ git add idea.txt
+$ git commit -q -m "Add an idea"
+$ git switch -q main
+$ git merge -q --no-ff -m "Merge idea" idea
+$ git log --oneline --graph --all
+*   6b16146 (HEAD -> main) Merge idea
+|\  
+| * 4ce4f0b (idea) Add an idea
+|/  
+* e5b51e6 Add second homework
+* f17f294 Add todo list

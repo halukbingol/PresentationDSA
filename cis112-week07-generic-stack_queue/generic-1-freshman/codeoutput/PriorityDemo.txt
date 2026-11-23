@@ -1,0 +1,5 @@
+$ javac PriorityDemo.java
+$ java PriorityDemo
+10
+20
+30

@@ -1,0 +1,396 @@
+% !TEX spellcheck = en_US
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+\usepackage{../../cis000_latex/lib/hblibPresentation}
+\usepackage{../../cis000_latex/lib/hblibCodeoutput}
+\usepackage{../../cis000_latex/lib/hblibDatastructures}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\lstset{columns=fixed, breaklines=true, breakatwhitespace=false}
+
+% ---------------------------------------------------------------------
+% TITLE PAGE METADATA
+% ---------------------------------------------------------------------
+\title{Linkedlist: Stack, Queue, Deque}
+\subtitle{Concepts, Implementation, and Applications}
+\author[Alpaydin]{Ruhan Alpaydin}
+\institute[FCIS]{Faculty of Computer and Information Sciences\\Yeditepe University}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+% ---------------------------------------------------------------------
+% TITLE PAGE
+% ---------------------------------------------------------------------
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-2},hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={3},hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% =====================================================================
+% PART 1: CONCEPTS
+% =====================================================================
+\hSection[Nodes]{Concepts: Nodes vs Arrays}
+
+\begin{frame}[t,fragile]\frametitle{Two ways to build a container}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Array-backed}
+        \small
+        Elements in one contiguous block.\\
+        Fast random access: $O(1)$.\\
+        Insert/delete at ends can require shifting or resizing.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Node-backed (Linked)}
+        \small
+        Each element in its own node with a reference.\\
+        Random access is $O(n)$ (walk).\\
+        Insert/delete at known ends is always $O(1)$.
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vspace{0.4em}
+  \small
+  \hRemark{We trade random access for guaranteed $O(1)$ end-operations.}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{The three ADTs}
+  \begin{center}\small
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    \textbf{ADT} & \textbf{Rule} & \textbf{Core Operations} \\
+    \midrule
+    Stack & LIFO (Last In, First Out) & \hCode{push}, \hCode{pop} \\
+    Queue & FIFO (First In, First Out) & \hCode{enqueue}, \hCode{dequeue} \\
+    Deque & Double-Ended Queue & \hCode{addFirst}, \hCode{addLast}, \hCode{removeFirst}, \hCode{removeLast} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{Stack: LIFO}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}\small
+        \item \hCode{push(x)}: add a new node at the \textbf{top}.
+        \item \hCode{pop()}: remove the top node.
+        \item Always $O(1)$, no resizing.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[arr/.style={-{Latex[length=2mm]}, thick}]
+        \node at (-1,0) {\hCode{top}};
+        \node[draw, minimum width=1.5cm, minimum height=0.6cm] (a) at (0.5,0) {10};
+        \node[draw, minimum width=1.5cm, minimum height=0.6cm] (b) at (2.5,0) {20};
+        \node at (4.0,0) {\hCode{null}};
+        \draw[arr] (-0.3,0) -- (a.west);
+        \draw[arr] (a.east) -- (b.west);
+        \draw[arr] (b.east) -- (3.8,0);
+      \end{tikzpicture}
+      \end{center}
+      \small \hCode{pop} returns \textbf{10}.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{Queue: FIFO}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}\small
+        \item \hCode{enqueue(x)}: add a new node at the \textbf{tail}.
+        \item \hCode{dequeue()}: remove the \textbf{head} node.
+        \item Always $O(1)$, provided we keep a \hCode{tail} reference.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[arr/.style={-{Latex[length=2mm]}, thick}]
+        \node at (-1,0) {\hCode{head}};
+        \node[draw, minimum width=1.5cm, minimum height=0.6cm] (a) at (0.5,0) {10};
+        \node[draw, minimum width=1.5cm, minimum height=0.6cm] (b) at (2.5,0) {20};
+        \node at (4.0,0) {\hCode{null}};
+        \node at (2.5,-1) {\hCode{tail}};
+        \draw[arr] (-0.3,0) -- (a.west);
+        \draw[arr] (a.east) -- (b.west);
+        \draw[arr] (b.east) -- (3.8,0);
+        \draw[arr] (2.5,-0.8) -- (b.south);
+      \end{tikzpicture}
+      \end{center}
+      \small \hCode{dequeue} returns \textbf{10}.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{Deque: double-ended}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}\small
+        \item \hCode{addFirst(x)}, \hCode{addLast(x)}.
+        \item \hCode{removeFirst()}, \hCode{removeLast()}.
+        \item To do \hCode{removeLast()} in $O(1)$, the nodes must be
+              \textbf{doubly linked} (each node needs a \hCode{prev}).
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[arr/.style={-{Latex[length=2mm]}, thick}]
+        \node at (-1,0) {\hCode{head}};
+        \node[draw, minimum width=1.5cm, minimum height=0.6cm] (a) at (0.5,0) {10};
+        \node[draw, minimum width=1.5cm, minimum height=0.6cm] (b) at (2.5,0) {20};
+        \node at (4.0,0) {\hCode{null}};
+        \node at (2.5,-1) {\hCode{tail}};
+        \draw[arr] (-0.3,0) -- (a.west);
+        \draw[arr] (a.east) -- (b.west);
+        \draw[arr] (b.east) -- (3.8,0);
+        \draw[arr] (2.5,-0.8) -- (b.south);
+        \draw[arr] (b.south west) -- (a.south east);
+      \end{tikzpicture}
+      \end{center}
+      \small \hCode{removeLast} returns \textbf{20}.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{The Java API}
+  \begin{center}\small
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    \textbf{Interface} & \textbf{Implements} & \textbf{Note} \\
+    \midrule
+    \hCode{Deque<E>} & \hCode{ArrayDeque}, \hCode{LinkedList} & Covers Stack and Queue \\
+    \hCode{Queue<E>} & \hCode{LinkedList}, \hCode{ArrayDeque} & FIFO operations \\
+    \emph{(none)} & \hCode{java.util.Stack} & Legacy, avoid it \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.3em}
+  \begin{itemize}\small
+    \item \hCode{ArrayDeque} is the modern default: fast, memory-efficient.
+    \item \hCode{LinkedList} is a doubly linked list. Use it when you
+          specifically want a linked structure or also need \hCode{List}.
+  \end{itemize}
+\end{frame}
+
+% =====================================================================
+% PART 2: FRESHMAN (Implementation)
+% =====================================================================
+\hSection[Impl]{Implementation}
+
+\begin{frame}[t,fragile]\frametitle{The \texttt{Node} Class}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize]{codeoutput/Node.java}{Java}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item One data field: \hCode{int data}.
+        \item One reference: \hCode{Node next}.
+        \item The constructor leaves \hCode{next} as \hCode{null}.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{\texttt{LinkedStack}: push}
+ % \begin{columns}[T]
+ %   \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize, firstline=4, lastline=8, firstnumber=4]{codeoutput/LinkedStack.java}{Java}
+ %   \end{column}
+ %   \begin{column}{0.44\textwidth}
+      \begin{block}{Two steps}
+        \small
+        1. new node's \hCode{next} $\gets$ current \hCode{top}.\\
+        2. \hCode{top} $\gets$ new node.
+      \end{block}
+      \begin{block}{Cost}
+        \small
+        $O(1)$ time. No resize.
+      \end{block}
+ %   \end{column}
+ % \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{\texttt{LinkedStack}: pop}
+ % \begin{columns}[T]
+ %   \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize, firstline=10, lastline=15, firstnumber=10]{codeoutput/LinkedStack.java}{Java}
+%    \end{column}
+%    \begin{column}{0.44\textwidth}
+      \begin{block}{Three steps}
+        \small
+        1. save data from \hCode{top}.\\
+        2. move \hCode{top} to \hCode{top.next}.\\
+        3. return data.
+      \end{block}
+      \begin{block}{Underflow}
+        \small
+        \hCode{top == null}: throw exception.
+      \end{block}
+ %   \end{column}
+ % \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{\texttt{LinkedStack}: run}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/LinkedStack.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/LinkedStack.txt}
+      \small
+      LIFO order: 30, 20, 10.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{\texttt{LinkedQueue}: enqueue}
+ % \begin{columns}[T]
+%    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize, firstline=5, lastline=10, firstnumber=5]{codeoutput/LinkedQueue.java}{Java}
+%    \end{column}
+%    \begin{column}{0.44\textwidth}
+      \begin{block}{Append at tail}
+        \small
+        If empty, \hCode{head = tail = n}.\\
+        Else \hCode{tail.next = n}, then \hCode{tail = n}.
+      \end{block}
+      \begin{block}{Cost}
+        \small
+        $O(1)$ because we keep a \hCode{tail} reference.
+      \end{block}
+%    \end{column}
+%  \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{\texttt{LinkedQueue}: dequeue}
+%  \begin{columns}[T]
+%    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize, firstline=11, lastline=17, firstnumber=11]{codeoutput/LinkedQueue.java}{Java}
+ %   \end{column}
+ %   \begin{column}{0.44\textwidth}
+      \begin{block}{Remove at head}
+        \small
+        Save \hCode{head.data}.\\
+        Advance \hCode{head = head.next}.\\
+        If \hCode{head == null}, set \hCode{tail = null}.
+      \end{block}
+      \begin{block}{Critical}
+        \small
+        Forgetting \hCode{tail = null} leaves a dangling tail!
+      \end{block}
+ %   \end{column}
+ % \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{\texttt{LinkedQueue}: run}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/LinkedQueue.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/LinkedQueue.txt}
+      \small
+      FIFO order: 10, 20, 30.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{\texttt{LinkedDeque}: \texttt{addFirst} and \texttt{addLast}}
+  %\begin{columns}[T]
+  %  \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\scriptsize, firstline=5, lastline=16, firstnumber=5]{codeoutput/LinkedDeque.java}{Java}
+ %   \end{column}
+ %   \begin{column}{0.44\textwidth}
+      \begin{itemize}\small
+        \item \hCode{addFirst}: insert before \hCode{head}.
+        \item \hCode{addLast}: append after \hCode{tail}.
+        \item Both $O(1)$.
+        \item To do \hCode{removeLast} in $O(1)$ we would need
+              a doubly linked node.
+      \end{itemize}
+ %   \end{column}
+%  \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{\texttt{LinkedDeque}: run}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/LinkedDeque.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/LinkedDeque.txt}
+      \small
+      We added 20, then 10 at front, then 30 at back.\\
+      Removing from front yields 10, then 20.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% =====================================================================
+% PART 3: EXAMPLES
+% =====================================================================
+\hSection[Apps]{Applications}
+
+\begin{frame}[t,fragile]\frametitle{Valid Brackets}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Brackets.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Brackets.txt}
+      \small
+      Push opening brackets. Pop and match on closing.
+      If the stack is empty at the end, it is valid.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{Palindrome}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Palindrome.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Palindrome.txt}
+      \small
+      Load characters into a Deque. Compare and remove from both ends.
+      If it finishes without a mismatch, it is a palindrome.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{Josephus Problem}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Josephus.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Josephus.txt}
+      \small
+      Rotate the queue $k-1$ times, then dequeue. Repeat until one remains.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]
+  \begin{center}
+    \vspace{4cm}
+    \hRemark{\Huge Questions?}
+  \end{center}
+\end{frame}
+
+\end{document}

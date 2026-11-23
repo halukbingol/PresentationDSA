@@ -1,0 +1,12 @@
+push 1 -> [1]
+push 2 -> [2, 1]
+push 3 -> [3, 2, 1]
+push 4 -> [4, 3, 2, 1]
+push 5 -> [5, 4, 3, 2, 1]
+peek = 5
+size = 5
+pop  = 5
+pop  = 4
+pop  = 3
+pop  = 2
+pop  = 1

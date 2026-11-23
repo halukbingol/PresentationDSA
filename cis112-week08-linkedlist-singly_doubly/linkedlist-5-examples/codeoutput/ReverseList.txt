@@ -1,0 +1,3 @@
+$ javac ReverseList.java
+$ java ReverseList
+4 3 2 1 

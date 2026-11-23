@@ -1,0 +1,4 @@
+$ javac Bug2.java
+$ java Bug2
+head null? true
+tail.item = 2

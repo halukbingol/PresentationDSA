@@ -1,0 +1,4 @@
+$ javac Bfs.java
+$ java Bfs
+visited = 25
+distance to (4,4) = 8

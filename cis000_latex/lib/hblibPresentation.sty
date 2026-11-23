@@ -1,0 +1,146 @@
+% !TEX spellcheck = en_US
+
+% v20261109T0615   \hSkipSection renamed \hSectionSkip (the old name still works); removed: the old code
+%                  listings (style mystyle, its colors codegreen, codegray, codepurple, colorback, coloroutput,
+%                  \hCodeOutput, \hCodeOutputOnly, \hCodeOutputWidth); a plain lstlisting now uses codestyle
+%                  of hblibCommon, as in articles
+% v20261108T0900   split: only the slide material is here (theme, \hSection, old listings); the shared
+%                  part (packages, colors, emphasis, \hCode, code styles, \cisOOO, time stamps, \hAbs,
+%                  column type L) moved to hblibCommon, which this file loads from its own folder
+% v20261107T1215   \hCodeOutputOnly: the output listing in a \parbox inside the TikZ node; listings 1.11
+%                  (TeX Live 2026) gave "Giving up on this path"; width \hCodeOutputWidth
+% v20261105T1015   \hSection: old [line 1][line 2] arguments removed; use {line}
+% v20261105T1010   \hSection[short]{Long}{line under the title}
+% v20261104T2350   reordered into numbered, documented sections; inputenc, xparse, epstopdf removed
+% v20261029T1800
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2024 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works
+% and remixes based on it only for non-commercial purposes.
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+\NeedsTeXFormat{LaTeX2e}[2020/10/01]   % \CurrentFilePath
+\ifdefined\hbP@loaded \endinput \fi    % loaded already (perhaps by another path)
+\def\hbP@loaded{}
+\ProvidesPackage{hblibPresentation}[2026/11/09 hb presentations (beamer) and their handouts]
+
+% =====================================================================
+%  hblibPresentation -- the base library of the slide decks
+%  ---------------------------------------------------------------------
+%  \documentclass[aspectratio=169,10pt,compress]{beamer}
+%  \usepackage{../../hblib/hblibPresentation}      first
+%  \usepackage{../../hblib/hblibCodeoutput}        code and output read from files (optional)
+%  \usepackage{../../hblib/hblibDatastructures}    arrays, stacks, queues, trees (optional)
+%
+%  It loads hblibCommon (fonts, packages, colors and emphasis, \hCode, code styles, javacode,
+%  \cisOOO, time stamps, \hAbs, column type L, ...) from its own folder.
+%  It also loads with article (a handout made from a deck): no theme, enumitem for lists;
+%  \hSection, \hSubsection and \hSeparator need beamer (frames).
+%  Code: javacode, bashcode, \javafile, style=codesnippet, \hCodeJ (hblibCommon), or the boxes of
+%  hblibCodeoutput (\lstcode, \lstcoderightstep, ...). A plain lstlisting uses codestyle (hblibCommon).
+%  For a real article use hblibArticle instead.
+%
+%  Contents of this file (in this order)
+%    1  The core                 hblibCommon
+%    2  Packages                 fp; enumitem for handouts (not with beamer)
+%    3  Algorithms               the same algorithm number on every overlay
+%    4  Beamer theme             theme, "i / N" on every frame
+%    5  Separators               \hSection, \hSubsection, \hSeparator, \hSectionSkip
+%
+%  Removed (v20261109T0615)
+%    mystyle, \hCodeOutput, \hCodeOutputOnly, \hCodeOutputWidth and the colors codegreen, codegray,
+%    codepurple, colorback, coloroutput: use javacode, \javafile, style=codesnippet or hblibCodeoutput;
+%    \lstcoderightstep{X.java}{Java}{X.txt} replaces \hCodeOutput{X} (X.src, X.zzz)
+% =====================================================================
+
+
+
+% ===================================================================== 1 The core
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V core
+\def\hb@loadedbylib{}                  % tells hblibCommon not to load hblibArticle
+\edef\hbP@dir{\CurrentFilePath}\edef\hbP@dir{\ifx\hbP@dir\@empty\else\hbP@dir/\fi}
+\ifdefined\hbC@loaded\else \RequirePackage{\hbP@dir hblibCommon}\fi
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A core
+
+
+
+% ===================================================================== 2 Packages
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V packages
+\RequirePackage[nomessages]{fp}   % \FPeval: decimal calculations (also used by hblibDatastructures)
+\@ifclassloaded{beamer}{}{\RequirePackage{enumitem}}      % lists of handouts; enumitem breaks beamer's lists
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A packages
+
+
+
+% ===================================================================== 3 Algorithms
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V algorithms
+% (algorithm2e is loaded and set up by hblibCommon)
+\@ifclassloaded{beamer}{\resetcounteronoverlays{algocf}}{} % the same algorithm number on every overlay of a frame
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A algorithms
+
+
+
+% ===================================================================== 4 Beamer theme
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V beamer theme
+% Theme and "i / N" on every frame. A deck can change it after \usepackage{hblibPresentation},
+% e.g. \usecolortheme{beaver}
+\@ifclassloaded{beamer}{%
+	\useoutertheme{split}
+	\useinnertheme{rounded}       % also makes blocks rounded
+	\usecolortheme{whale}
+	\usecolortheme{orchid}
+	\setbeamertemplate{navigation symbols}{}
+	\setbeamertemplate{page number in head/foot}[totalframenumber] % i / N
+}{}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A beamer theme
+
+
+
+% ===================================================================== 5 Separators
+%: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V separators
+% \hSectionSkip: "(skip this section, read at home)", as the line under a \hSection title:
+%   \hSection[Extra]{Extra material}{\hSectionSkip}
+\newcommand{\hSectionSkip}{\small ~\\(skip this section, read at home)}
+\newcommand{\hSkipSection}{\hSectionSkip}   % old name (before v20261109T0615)
+% \hSection[short]{Long}{line}: \section plus a title frame
+%   short   in the navigation bar and the outline (optional; default: Long)
+%   Long    the title on the frame, \Huge
+%   line    under the title, \Large (optional)
+%   \hSection[Basics]{Creating and using an array}{Create it, visit it with a loop}
+%   \hSection[End]{Summary}
+\NewDocumentCommand{\hSection}{O{#2} m g}{%
+	\section[#1]{#2}%
+	\begin{frame}
+		\begin{center}
+			\hRemark{\Huge #2}\par\vspace{0.5cm}
+			\IfValueT{#3}{\vspace{0.6em}{\hRemark{\Large #3}}\\}%
+		\end{center}
+	\end{frame}%
+}
+% \hSubsection{small line}{Title}: \subsection plus a title frame
+\newcommand{\hSubsection}[2]{%
+	\subsection{#2}%
+	\begin{frame}
+		\hRemark{\LARGE #1}\par\vspace{0.5cm}
+		\begin{center}
+			\hRemark{\Huge #2}
+		\end{center}
+	\end{frame}%
+}
+% \hSeparator{Title}{line}: a title frame, without a section
+\newcommand{\hSeparator}[2]{%
+	\begin{frame}
+		\begin{center}
+			\hRemark{\Huge #1}\\
+			#2
+		\end{center}
+	\end{frame}%
+}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A separators
+
+
+
+\endinput

@@ -1,0 +1,3 @@
+$ javac Josephus.java
+$ java Josephus
+survivor: 4

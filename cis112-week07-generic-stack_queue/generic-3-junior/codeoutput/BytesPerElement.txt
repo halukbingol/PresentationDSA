@@ -1,0 +1,6 @@
+$ javac BytesPerElement.java
+$ java BytesPerElement
+n = 1000000
+Integer[]: ~20 bytes / element
+int[]    :     4 bytes / element (plus header)
+(kept alive: 1000000)

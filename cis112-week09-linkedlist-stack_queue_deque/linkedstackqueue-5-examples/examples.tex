@@ -1,0 +1,77 @@
+% !TEX spellcheck = en_US
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+\usepackage{../../cis000_latex/lib/hblibPresentation}
+\usepackage{../../cis000_latex/lib/hblibCodeoutput}
+\usepackage{../../cis000_latex/lib/hblibDatastructures}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\lstset{columns=fixed, breaklines=true, breakatwhitespace=false}
+
+\title{Linked Stacks, Queues, and Deques}
+\subtitle{Real Programs}
+\author[Bingol]{Ruhan Alpaydin}
+\institute[FCIS]{Faculty of Computer and Information Sciences\\Yeditepe University}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+\begin{frame}[t,fragile]\titlepage\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}\tableofcontents[sections={1-3},hideallsubsections]\end{column}
+    \begin{column}{0.48\textwidth}\tableofcontents[sections={4-5},hideallsubsections]\end{column}
+  \end{columns}
+\end{frame}
+
+\hSection[Stack]{Stack Problems}
+\begin{frame}[t,fragile]\frametitle{Valid Brackets}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Brackets.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Brackets.txt}
+      \small
+      Push opening brackets. Pop and match on closing.
+      If the stack is empty at the end, it is valid.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\hSection[Deque]{Deque Problems}
+\begin{frame}[t,fragile]\frametitle{Palindrome}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Palindrome.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Palindrome.txt}
+      \small
+      Load characters into a Deque. Compare and remove from both ends.
+      If it finishes without a mismatch, it is a palindrome.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\hSection[Queue]{Queue Problems}
+\begin{frame}[t,fragile]\frametitle{Josephus Problem}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Josephus.java}{Java}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Josephus.txt}
+      \small
+      Rotate the queue $k-1$ times, then dequeue. Repeat until one remains.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]
+  \begin{center}\vspace{4cm}\hRemark{\Huge Questions?}\end{center}
+\end{frame}
+
+\end{document}

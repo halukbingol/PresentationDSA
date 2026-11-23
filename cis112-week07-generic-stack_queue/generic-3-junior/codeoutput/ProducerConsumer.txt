@@ -1,0 +1,13 @@
+$ javac ProducerConsumer.java
+$ java ProducerConsumer
+put 1
+put 2
+put 3
+put 4
+take 1
+put 5
+put -1
+take 2
+take 3
+take 4
+take 5

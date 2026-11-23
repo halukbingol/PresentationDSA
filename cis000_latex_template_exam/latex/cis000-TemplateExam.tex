@@ -1,0 +1,232 @@
+% !TEX spellcheck = en_US
+
+\documentclass[11pt]{amsart}
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V lib
+% Note that hblibCommon is loaded by hblibArticle
+\usepackage{../../cis000_latex/lib/hblibArticle}
+\usepackage{../../cis000_latex/lib/hblibDatastructures}
+\usepackage{../../cis000_latex/lib/hblibCodeoutput}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A lib
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V specific
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A specific
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A titleParam
+\newcommand{\cisno}{111}	% 111		
+\newcommand{\courseName}{Fundamentals of Software Development}	% 111		
+\newcommand{\semesterID}{2026-3}	% 2026-3	
+\newcommand{\semesterName}{Fall}	% Fall	
+\newcommand{\courseInstructors}{Bingol$^{*}$, Alpaydin, Demirer, Erkovan}		
+
+\newcommand{\examDate}{2026-11-22}	% 2026-11-22	
+\newcommand{\examNo}{1m1}	% 1m1	
+\newcommand{\examName}{Midterm-1}	% 1m1	
+\newcommand{\questionNo}{Q2}	% Q1	
+\newcommand{\groupNo}{g1}	% g1	
+
+\newcommand{\topic}{Doubly Linked List}	% Array Library
+\newcommand{\topicShort}{DLL}		% ArrayLib
+\newcommand{\questionAuthor}{Haluk Bingol}		% Haluk Bingol
+\newcommand{\questionAuthorShort}{Bingol}		% Bingol
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A titleParam
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frontExam
+% defines: \courseID, \questionID, \hStudentInfo, \refStudentInfo,
+% \textUpload
+% Common title format for exam
+% Common warning
+\input{../../cis000_latex/input/in-FrontExam.tex}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frontExam
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{Introduction}
+\label{sec:intro}
+
+Some intro here such as the following.
+
+You may use \YULearn, 
+student info \refStudentInfo\ 
+or ``below-above'' markers \refBelowAbove.
+
+A list is given by a reference to its \textbf{first node}, called \hCode{list}.
+We write \hCode{list -> [1, 5, 4]} for the list in \reffig{fig:list}.
+The \textbf{empty list} is \hCode{null}.
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Figure. [1, 5, 4]
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+	\hDLList{list}{0}{0}{1,5,4}{0}
+\end{tikzpicture}
+\caption{\hCode{list -> [1, 5, 4]}. 
+	Each node is composed of  \hCode{prev}, \hCode{data}, and \hCode{next} fields.
+	\textcolor{blue!70!black}{blue links} represent \hCode{next},
+	\textcolor{red!70!black}{red links} represent \hCode{prev} links.}
+	\label{fig:list}
+\end{figure}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+
+Use libraries in \hCode{hblibDatastructures}.
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+Visual representation of a stack after
+\begin{javacode}
+StringStack s = new StringStack(6);
+
+s.push("a");
+s.push("b");
+s.push("c");
+\end{javacode}
+is the following:
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Figure.
+\begin{center}
+\begin{tikzpicture} 
+	\hStack{0}{6}{2}{a,b,c}[0.7][0.6] 
+\end{tikzpicture}
+\end{center}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% switch from numbers to Q
+\hSectionQuestion
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V modifyMe
+%: -Table.
+\begin{table}[h]
+\centering\small
+\begin{tabular}{l}
+	\toprule
+	ModifyMe\\
+	\midrule
+	\hCode{DoublyLinkedList.java}\\
+	\bottomrule
+\end{tabular}
+\caption{
+	List of files that you are \textbf{allowed to modify}. 
+	AutoGrader will use the files in this list only.
+	\textbf{Do not modify any other file.}
+	\label{tbl:modifyMe}
+}
+\end{table}
+% +++++++++++++++++++++++++++++++++++++++ A modifyMe
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V Q1
+\subsection{\hCode{sumOfNeighbors} method}
+\label{sec:sumOfNeighbors}
+
+There is no rule in question body.
+This is one possible way.
+Feel free to change it.
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsubsection{Signature}
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\begin{javacode}
+public static int[] sumOfNeighbors(int[] arr)
+\end{javacode}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsubsection{Function} 
+
+Description of the function.
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsubsection{Rules}
+
+Some rules.
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsubsection{Example}
+
+Some examples.
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsubsection{Constraints}
+
+Some constraints.
+
+\textbf{Hint.} 
+Some hint.
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A Q1
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% switch from Q back to numbers
+\hNumbersArabic 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V testing
+\section{Testing}
+
+Use \hCode{TS\_xxx\_jUnit} to test your code.
+You can also use \hCode{xxx\_Test} if there is any.
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A testing
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\section{ToDo}\label{sec:todo}
+
+\begin{enumerate}
+	\item Fill in your personal information at the beginning of \hCode{ArrayLib.java}.
+	\item Complete the \hCode{sumOfNeighbors} method.
+	\item Complete the \hCode{productOfOdds} method.
+	\item Complete the \hCode{selectAtMost} method.
+	\item Write your code only between the \hCode{below} and \hCode{above} marks.
+	\item Run \hCode{TS\_ArrayLib\_jUnit} to verify your implementation.
+	
+	\item \textUpload 
+\end{enumerate}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V \appendix
+% insert appendix
+\input{../../cis000_latex/input/index-ExamInfo-Exam.tex}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A \appendix
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+\end{document}

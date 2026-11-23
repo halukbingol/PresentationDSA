@@ -1,0 +1,5 @@
+$ javac SetOrder.java
+$ java SetOrder
+HashSet:       [banana, apple, cherry, pear, fig]
+LinkedHashSet: [pear, apple, fig, banana, cherry]
+TreeSet:       [apple, banana, cherry, fig, pear]

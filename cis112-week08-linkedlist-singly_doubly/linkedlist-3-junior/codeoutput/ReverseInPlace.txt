@@ -1,0 +1,3 @@
+$ javac ReverseInPlace.java
+$ java ReverseInPlace
+4 3 2 1 

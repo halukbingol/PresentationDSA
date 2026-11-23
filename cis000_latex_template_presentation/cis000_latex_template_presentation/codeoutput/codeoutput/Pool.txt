@@ -1,0 +1,6 @@
+a == b: true
+a == c: false
+a == d: true
+a == e: false
+intern: true
+a.equals(e): true

@@ -1,0 +1,5 @@
+$ javac FirstLastList.java
+$ java FirstLastList
+FirstLastList: [1, 1.0] [2, 2.0] [3, 3.0]
+deleteFirst -> 1
+FirstLastList: [2, 2.0] [3, 3.0]

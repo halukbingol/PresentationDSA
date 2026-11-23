@@ -1,0 +1,7 @@
+$ javac Hello.java
+$ ls
+Hello.class
+Hello.java
+$ java Hello
+Merhaba, Ayşe!
+Price: 25 ₺

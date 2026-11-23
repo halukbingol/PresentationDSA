@@ -1,0 +1,20 @@
+Compiled from "LinkedList.java"
+public class java.util.LinkedList<E> extends java.util.AbstractSequentialList<E> implements java.util.List<E>, java.util.Deque<E>, java.lang.Cloneable, java.io.Serializable {
+  transient int size;
+  transient java.util.LinkedList$Node<E> first;
+  transient java.util.LinkedList$Node<E> last;
+  private static final long serialVersionUID;
+  public java.util.LinkedList();
+  public java.util.LinkedList(java.util.Collection<? extends E>);
+  private void linkFirst(E);
+  void linkLast(E);
+  void linkBefore(E, java.util.LinkedList$Node<E>);
+  private E unlinkFirst(java.util.LinkedList$Node<E>);
+  private E unlinkLast(java.util.LinkedList$Node<E>);
+  E unlink(java.util.LinkedList$Node<E>);
+  public E getFirst();
+  public E getLast();
+  public E removeFirst();
+  public E removeLast();
+  public void addFirst(E);
+  public void addLast(E);

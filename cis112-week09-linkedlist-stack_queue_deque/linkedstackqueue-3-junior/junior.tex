@@ -1,0 +1,92 @@
+% !TEX spellcheck = en_US
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+\usepackage{../../cis000_latex/lib/hblibPresentation}
+\usepackage{../../cis000_latex/lib/hblibCodeoutput}
+\usepackage{../../cis000_latex/lib/hblibDatastructures}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\lstset{columns=fixed, breaklines=true, breakatwhitespace=false}
+
+\title{Linked Stacks, Queues, and Deques}
+\subtitle{Junior Level: Performance and Trade-offs}
+\author[Bingol]{Ruhan Alpaydin}
+\institute[FCIS]{Faculty of Computer and Information Sciences\\Yeditepe University}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+\begin{frame}[t,fragile]\titlepage\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}\tableofcontents[sections={1-3},hideallsubsections]\end{column}
+    \begin{column}{0.48\textwidth}\tableofcontents[sections={4-5},hideallsubsections]\end{column}
+  \end{columns}
+\end{frame}
+
+\hSection[Bench]{Benchmarking}
+\begin{frame}[t,fragile]\frametitle{The Benchmark}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/Benchmark.java}{Java}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/Benchmark.txt}
+      \small
+      Add $N$ elements, remove $N$ elements. \hRemark{One run on this machine.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{Why the linked version is slower}
+  \begin{center}\small
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    & \hCode{ArrayDeque} & \hCode{LinkedList} \\
+    \midrule
+    Memory layout & contiguous array & scattered nodes \\
+    CPU Cache & Excellent (prefetch) & Poor (pointer chasing) \\
+    Allocations & amortized $O(1)$ & one object per element \\
+    GC pressure & low & high \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.3em}
+  \begin{itemize}\small
+    \item Big-O is the same ($O(1)$ per operation), but the constants differ drastically.
+    \item \hRemark{Memory locality} is often more important than asymptotic complexity.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{When to choose \texttt{LinkedList}}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Use \texttt{ArrayDeque}}
+        \small
+        \begin{itemize}
+          \item Default for Stack and Queue.
+          \item Best for adding/removing at the ends.
+          \item Memory efficient.
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Use \texttt{LinkedList}}
+        \small
+        \begin{itemize}
+          \item You need to remove in the middle via \hCode{Iterator.remove()}.
+          \item You are implementing an LRU cache (move-to-front).
+          \item You are modifying while iterating.
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[t,fragile]
+  \begin{center}\vspace{4cm}\hRemark{\Huge Questions?}\end{center}
+\end{frame}
+
+\end{document}

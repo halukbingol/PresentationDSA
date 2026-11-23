@@ -1,0 +1,4 @@
+$ javac Brackets.java
+$ java Brackets
+true
+false

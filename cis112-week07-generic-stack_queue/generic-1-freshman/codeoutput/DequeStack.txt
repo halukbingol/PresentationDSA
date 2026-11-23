@@ -1,0 +1,5 @@
+$ javac DequeStack.java
+$ java DequeStack
+Python
+Java
+true

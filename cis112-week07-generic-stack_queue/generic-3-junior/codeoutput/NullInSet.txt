@@ -1,0 +1,4 @@
+$ javac NullInSet.java
+$ java NullInSet
+size = 2
+contains(original k) = false

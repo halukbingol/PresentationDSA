@@ -1,0 +1,2 @@
+-XX:+CompactStrings   1000000 x 32 chars: 68 MB
+-XX:-CompactStrings   1000000 x 32 chars: 99 MB

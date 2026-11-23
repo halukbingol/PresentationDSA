@@ -1,0 +1,19 @@
+$ javap -p java.util.HashMap | head -20
+Compiled from "HashMap.java"
+public class java.util.HashMap<K, V> extends java.util.AbstractMap<K, V> implements java.util.Map<K, V>, java.lang.Cloneable, java.io.Serializable {
+  static final int DEFAULT_INITIAL_CAPACITY;
+  static final int MAXIMUM_CAPACITY;
+  static final float DEFAULT_LOAD_FACTOR;
+  static final int TREEIFY_THRESHOLD;
+  static final int UNTREEIFY_THRESHOLD;
+  static final int MIN_TREEIFY_CAPACITY;
+  transient java.util.HashMap$Node<K, V>[] table;
+  transient java.util.Set<java.util.Map$Entry<K, V>> entrySet;
+  transient int size;
+  transient int modCount;
+  int threshold;
+  final float loadFactor;
+  public java.util.HashMap(int, float);
+  public java.util.HashMap(int);
+  public java.util.HashMap();
+}

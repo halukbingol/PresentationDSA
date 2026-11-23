@@ -1,0 +1,97 @@
+% !TEX spellcheck = en_US
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+\usepackage{../../cis000_latex/lib/hblibPresentation}
+\usepackage{../../cis000_latex/lib/hblibCodeoutput}
+\usepackage{../../cis000_latex/lib/hblibDatastructures}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\lstset{columns=fixed, breaklines=true, breakatwhitespace=false}
+
+\title{Linked Stacks, Queues, and Deques}
+\subtitle{Senior Level: Lock-Free and Concurrent}
+\author[Bingol]{Ruhan Alpaydin}
+\institute[FCIS]{Faculty of Computer and Information Sciences\\Yeditepe University}
+\date{{\tiny \hbTimeStamp}}
+
+\begin{document}
+
+\begin{frame}[t,fragile]\titlepage\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}\tableofcontents[sections={1-3},hideallsubsections]\end{column}
+    \begin{column}{0.48\textwidth}\tableofcontents[sections={4-5},hideallsubsections]\end{column}
+  \end{columns}
+\end{frame}
+
+\hSection[Concurrent]{Concurrency}
+\begin{frame}[t,fragile]\frametitle{The problem with \texttt{LinkedList}}
+  \begin{itemize}\small
+    \item \hCode{LinkedList} is not thread-safe.
+    \item Wrapping it in \hCode{Collections.synchronizedList} uses a single global lock.
+    \item This limits throughput when many threads access the container.
+  \end{itemize}
+  \begin{block}{The solution}
+    \small
+    \hCode{ConcurrentLinkedDeque} (and \hCode{ConcurrentLinkedQueue}): 
+    lock-free, non-blocking, thread-safe linked lists.
+  \end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{Michael-Scott Queue}
+  \begin{itemize}\small
+    \item The standard lock-free queue algorithm (1996).
+    \item Uses a dummy node. \hCode{head} and \hCode{tail} are atomic references.
+    \item Enqueue uses \hCode{compareAndSet} on \hCode{tail.next}.
+    \item Dequeue uses \hCode{compareAndSet} on \hCode{head}.
+  \end{itemize}
+  \vspace{0.3em}
+  \small
+  \hRemark{\texttt{ConcurrentLinkedDeque} uses a variant of this algorithm.}
+\end{frame}
+
+\begin{frame}[t,fragile]\frametitle{The ABA problem}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{What can go wrong}
+        \small
+        1. Thread A reads \hCode{head} (value X).\\
+        2. Thread B pops X, then pushes a new node Y.\\
+        3. The GC places Y at the exact same memory address as X.\\
+        4. Thread A's CAS succeeds (it thinks X is still head), but the queue is corrupted.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{The fix}
+        \small
+        Use \hCode{AtomicStampedReference} (a version number alongside the pointer).\\
+        Java's \hCode{ConcurrentLinkedDeque} avoids the issue by never reusing nodes.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\hSection[JDK]{The JDK Classes}
+\begin{frame}[t,fragile]\frametitle{When to use what}
+  \begin{center}\small
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    \textbf{Need} & \textbf{Class} & \textbf{Why} \\
+    \midrule
+    Single-thread Stack/Queue & \hCode{ArrayDeque} & Fastest, cache-friendly \\
+    Single-thread List + Deque & \hCode{LinkedList} & Implements \hCode{List} \\
+    Multi-thread Queue & \hCode{ConcurrentLinkedQueue} & Lock-free \\
+    Multi-thread Deque & \hCode{ConcurrentLinkedDeque} & Lock-free, double-ended \\
+    Blocking Queue & \hCode{LinkedBlockingQueue} & Producer/consumer with back-pressure \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}[t,fragile]
+  \begin{center}\vspace{4cm}\hRemark{\Huge Questions?}\end{center}
+\end{frame}
+
+\end{document}

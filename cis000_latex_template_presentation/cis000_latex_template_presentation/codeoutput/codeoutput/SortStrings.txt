@@ -1,0 +1,4 @@
+[Elma, armut, incir, zeytin, Üzüm, çay, ılık]
+[armut, Elma, ılık, incir, zeytin, çay, Üzüm]
+[armut, çay, Elma, ılık, incir, Üzüm, zeytin]
+[çay, Elma, ılık, Üzüm, armut, incir, zeytin]

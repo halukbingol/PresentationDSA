@@ -1,0 +1,5 @@
+$ javac MemoryOrdering.java
+$ java MemoryOrdering
+round 0: read = 42
+round 1: read = 42
+round 2: read = 42

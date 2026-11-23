@@ -1,0 +1,4 @@
+$ javac LinkedDeque.java
+$ java LinkedDeque
+10
+20

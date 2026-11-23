@@ -1,0 +1,7 @@
+[Ali , Ayşe,Can ,  Deniz]
+4 parts
+[   Ali ,  Ayşe, Can ,   Deniz  ]
+[Ali, Ayşe, Can, Deniz]
+Ali - Ayşe - Can - Deniz
+[one, two, three]
+true false

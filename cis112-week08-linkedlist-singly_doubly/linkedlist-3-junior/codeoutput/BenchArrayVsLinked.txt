@@ -1,0 +1,4 @@
+$ javac BenchArrayVsLinked.java
+$ java BenchArrayVsLinked
+ArrayList  get():   13 ms (sum 499999500000)
+LinkedList get(): 593642 ms (sum 499999500000)

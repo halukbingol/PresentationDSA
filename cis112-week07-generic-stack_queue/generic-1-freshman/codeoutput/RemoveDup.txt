@@ -1,0 +1,4 @@
+$ javac RemoveDup.java
+$ java RemoveDup
+before: [a, b, a, c, b, d]
+after:  [a, b, c, d]

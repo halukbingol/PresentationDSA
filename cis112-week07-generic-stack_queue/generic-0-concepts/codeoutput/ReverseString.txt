@@ -1,0 +1,3 @@
+$ javac ReverseString.java
+$ java ReverseString
+Yeditepe -> epetideY

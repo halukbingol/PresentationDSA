@@ -18,11 +18,11 @@
 
 
 
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
-	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
-	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
-	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue, \hArray
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation}
+	\usepackage{../../hblib/hblibCodeoutput}
+	\usepackage{../../hblib/hblibDatastructures}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
 
 
 
@@ -43,12 +43,15 @@
 
 
 
-\title[Arrays 1D: Lecture]{
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V title
+\title[\cisOOO-week07-Arrays 1D]{
 	One-Dimensional Arrays
 }
+
 \subtitle{
-	\cisOOO\ -- Week 7 lecture
+	\cisOOO-week07
 }
+
 \author[Erkovan]{Sait Erkovan}
 
 \institute[FCIS]{
@@ -58,6 +61,7 @@
 \date{{\tiny \hbTimeStamp}}
 
 \begin{document}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A title
 
 
 
@@ -240,7 +244,13 @@ double[] lows = new double[5];   // both steps in one line
 
 	\begin{itemize}\small
 		\item The brackets belong to the type: \hCode{double[]} is read ``double array''
-		\item \hCode{int[] a;} alone creates \emph{no} array yet; using \hCode{a[0]} does not compile
+		
+		\item \hCode{int[] a;} alone creates \emph{no} array yet; 
+		using \hCode{a[0]} does not compile~\cite{%
+			TheJavaTutorialsArray, %
+			pi10Primitive, %
+			pi10PrimitiveArray%
+		}
 	\end{itemize}
 \end{frame}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
@@ -328,7 +338,7 @@ double[] lows = new double[5];   // both steps in one line
 	\end{center}
 
 
-% +++++++++++++++++++++++++++++++++++++++ V lst
+% ++++++++++++++s+++++++++++++++++++++++++ V lst
 %: -Lst. traversal
 \begin{lstlisting}[style=codesnippet, language=Java]
 for (int i = 0; i < a.length; i++) {     // the counter loop of week 5 ...
@@ -1048,7 +1058,7 @@ static int[] reversed(int[] a) {...}  // array parameter, array result
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
 \begin{frame}[t,fragile] \frametitle{References}
-	\small The Java Tutorials, Arrays \cite{TheJavaTutorialsArray}.
+	\small The Java Tutorials, Arrays~\cite{TheJavaTutorialsArray}.
 
 	\vspace{1em}
 	\setbeamertemplate{bibliography item}[text]

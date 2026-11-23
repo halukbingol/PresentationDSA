@@ -1,0 +1,11 @@
+[A]
+[A, B]
+[A, B, C]
+dequeue = A
+after      [B, C]
+[B, C, D]
+[B, C, D, E]
+dequeue = B
+dequeue = C
+dequeue = D
+dequeue = E

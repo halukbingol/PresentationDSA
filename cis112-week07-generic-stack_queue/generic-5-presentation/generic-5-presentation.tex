@@ -1,0 +1,709 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Generic Stack and Queue -- The Concepts
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/:
+%     codeoutput/<Name>.java   a program (classes without main() are only compiled)
+%     codeoutput/<Name>.txt    what it printed
+%     codeoutput/JShell/       a jshell session
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt, compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation} % lib presentation: theme, i/N, \hSection, algorithm2e, ...
+	\usepackage{../../hblib/hblibCodeoutput} % lib code + output: \lstcode, \lstterminal, ...
+	\usepackage{../../hblib/hblibDatastructures} % lib data structures: \hString, \hStack, \hQueue
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+% xcolor, array (and the L{width} column), listings, tikz and algorithm2e come from the hblib libraries
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+% listings: fixed character cells, so the columns of a program's output stay aligned
+\lstset{columns=fixed}
+
+% algorithm2e set-up (the package is loaded by hblibPresentation)
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetKwProg{Fn}{function}{}{end}
+\SetKw{KwError}{error}
+
+% ---------------------------------------------------------------------
+\title{Generic Stack and Queue}
+\subtitle{Set, Stack and Queue in the Java API}
+\author[Alpaydin]{Ruhan Alpaydin}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-3}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={4-6}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Idea]{Three ADTs in One Picture}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Picture]{The picture}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Set, Stack, Queue}
+  \begin{columns}[T]
+    \begin{column}{0.32\textwidth}
+      \begin{block}{Set}
+        \centering\small
+        \hCode{\{apple, banana, cherry\}}\\[0.3em]
+        \emph{no duplicates}
+      \end{block}
+      \small \hRemark{Is this element in the set?}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \begin{block}{Stack (LIFO)}
+        \begin{center}
+        \begin{tikzpicture}\hStack{0}{5}{3}{A,B,C,D}[0.5][0.4]\end{tikzpicture}
+        \end{center}
+        \small \hCode{pop} $\to$ \textbf{D}
+      \end{block}
+      \small \hRemark{Undo, brackets, backtracking.}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \begin{block}{Queue (FIFO)}
+        \begin{center}
+        \begin{tikzpicture}\hQueueArray{6}{0}{4}{4}{A,B,C,D}[0.5][0.4]\end{tikzpicture}
+        \end{center}
+        \small \hCode{dequeue} $\to$ \textbf{A}
+      \end{block}
+      \small \hRemark{Printers, buffers, BFS.}
+    \end{column}
+  \end{columns}
+  \vspace{0.5em}
+  \small All three are \hRemark{generic types} in the Java API: pick the element type in angle brackets.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What ``generic'' means}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item A \hRemark{generic type} is parameterized by the type of its elements.
+        \item \hCode{Set<String>}, \hCode{Stack<Integer>}, \hCode{Queue<Person>}.
+        \item The \emph{same class} works for any reference type.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Why generics?}
+        \small
+        \begin{itemize}
+          \item Type-safe: a wrong type is caught at \textbf{compile time}.
+          \item No casting: \hCode{names.get(0)} is already a \hCode{String}.
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vspace{0.3em}
+  \begin{center}\footnotesize
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    \textbf{ADT}   & \textbf{Rule}                 & \textbf{Java type} \\
+    \midrule
+    \textbf{Set}   & no duplicates, no fixed order & \hCode{java.util.Set} \\
+    \textbf{Stack} & LIFO                          & \hCode{Stack}, \hCode{Deque} \\
+    \textbf{Queue} & FIFO                          & \hCode{java.util.Queue} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Set]{Set in the Java API}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Concept]{What is a Set}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{What is a Set?}
+  \begin{itemize}
+    \item A \hRemark{Set} is a collection of \textbf{unique} elements:
+          no duplicates, ever.
+    \item Order is \emph{not} part of the ADT unless the implementation
+          says otherwise.
+    \item Uses: keywords, visited cells, tags, membership tests,
+          deduplication.
+  \end{itemize}
+  \begin{block}{Properties}
+    \begin{itemize}
+      \item Does not allow duplicate elements.
+      \item Does not maintain insertion order (for \hCode{HashSet}).
+    \end{itemize}
+  \end{block}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Classes]{Three implementations}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Common Set implementations}
+  \begin{center}\small
+  \begin{tabular}{L{0.20\textwidth}L{0.26\textwidth}L{0.16\textwidth}L{0.26\textwidth}}
+    \toprule
+    \textbf{Class} & \textbf{Ordering}             & \textbf{Time}   & \textbf{When to use} \\
+    \midrule
+    \hCode{HashSet}       & none                          & $O(1)$ avg  & default; fast lookup \\
+    \hCode{TreeSet}       & sorted (natural/comparator)   & $O(\log n)$ & sorted iteration \\
+    \hCode{LinkedHashSet} & insertion order               & $O(1)$ avg  & predictable order \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.3em}
+  \begin{itemize}\small
+    \item All three implement \hCode{java.util.Set}.
+    \item \hCode{HashSet} uses \hCode{hashCode()} and \hCode{equals()};
+          override both in custom classes.
+    \item \hCode{TreeSet} uses \hCode{compareTo()} (or a \hCode{Comparator}).
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Methods]{Key methods}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Key methods of \texttt{Set}}
+  \begin{center}\small
+  \begin{tabular}{lL{0.6\textwidth}}
+    \toprule
+    \textbf{Method}              & \textbf{Meaning} \\
+    \midrule
+    \hCode{add(E item)}         & add; \hCode{false} if it was already present \\
+    \hCode{remove(Object o)}    & remove; \hCode{true} if found \\
+    \hCode{contains(Object o)}  & membership test \\
+    \hCode{isEmpty()}           & is there no element? \\
+    \hCode{size()}              & number of elements \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.3em}
+  \begin{itemize}\small
+    \item \hCode{add} returns \hCode{boolean}: a free ``was it new?'' test.
+    \item \hCode{contains} is the workhorse: sets exist for this call.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Example]{In Java}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Set: example}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/SetDemo.java}{Java}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/SetDemo.txt}
+      \small
+      \begin{itemize}
+        \item The second \hCode{add("Apple")} returns \hCode{false}.
+        \item \hCode{HashSet} does \emph{not} promise any order.
+        \item \hCode{LinkedHashSet} gives a predictable one.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Stack]{Stack in the Java API}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Concept]{LIFO}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Stack: last in, first out}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}
+        \item Insert and remove at the \textbf{top}.
+        \item The most recent element leaves first: \hRemark{LIFO}.
+        \item Uses: undo, brackets, expression evaluation,
+              backtracking, DFS.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{center}
+      \begin{tikzpicture}\hStack{0}{6}{3}{A,B,C,D}[0.55][0.45]\end{tikzpicture}
+      \end{center}
+      \small \hCode{pop} returns \textbf{D}.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Methods]{Class java.util.Stack}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Class: \texttt{java.util.Stack}}
+  \begin{center}\small
+  \begin{tabular}{lL{0.55\textwidth}}
+    \toprule
+    \textbf{Method} & \textbf{Meaning} \\
+    \midrule
+    \hCode{push(E item)}   & add on top \\
+    \hCode{pop()}          & remove and return the top; error if empty \\
+    \hCode{peek()}         & return the top without removing it \\
+    \hCode{isEmpty()}      & is there no element? \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.3em}
+  \begin{itemize}\small
+    \item \hCode{Stack<E>} is a legacy class (Java 1.0) that extends
+          \hCode{Vector}: every call is \hCode{synchronized}.
+    \item Modern Java prefers \hCode{Deque<E>} (\hCode{ArrayDeque})
+          with the same \hCode{push}/\hCode{pop}/\hCode{peek} names.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Modern]{Modern alternative}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Modern alternative: \texttt{Deque}}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \begin{itemize}
+        \item Same three operations: \hCode{push}, \hCode{pop}, \hCode{peek}.
+        \item \hCode{ArrayDeque} is faster than \hCode{Stack}, no legacy baggage.
+        \item \hRemark{Rule of thumb}: \hCode{ArrayDeque} for both
+              stack and queue in new code.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{block}{Two refusals}
+        \small
+        \begin{itemize}
+          \item \hCode{ArrayDeque} forbids \hCode{null}.
+          \item \hCode{pop} on empty throws
+                \hCode{NoSuchElementException}.
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Example]{In Java}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Stack: example}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/StackDemo.java}{Java}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/StackDemo.txt}
+      \small After the two \hCode{pop}s the stack is empty: a
+      further \hCode{pop} would throw
+      \hCode{EmptyStackException}.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Queue]{Queue in the Java API}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Concept]{FIFO}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Queue: first in, first out}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}
+        \item Insert at the \textbf{rear}, remove at the \textbf{front}.
+        \item The oldest element leaves first: \hRemark{FIFO}.
+        \item Uses: printers, keyboard buffers, scheduling, BFS,
+              message queues.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{center}
+      \begin{tikzpicture}\hQueueArray{6}{0}{4}{4}{A,B,C,D}[0.55][0.45]\end{tikzpicture}
+      \end{center}
+      \small \hCode{dequeue} returns \textbf{A}.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Interface]{The Queue interface}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{java.util.Queue}: two forms}
+  \begin{itemize}
+    \item \hCode{Queue} is an \textbf{interface}, not a class.
+    \item Main implementations: \hCode{ArrayDeque}, \hCode{LinkedList}.
+    \item Every operation has two forms: one \textbf{throws},
+          one returns a \textbf{special value}.
+  \end{itemize}
+  \begin{center}\small
+  \begin{tabular}{lll}
+    \toprule
+    \textbf{Operation} & \textbf{throws exception} & \textbf{returns special value} \\
+    \midrule
+    insert    & \hCode{add(e)}     & \hCode{offer(e)} \\
+    remove    & \hCode{remove()}   & \hCode{poll()} \\
+    examine   & \hCode{element()}  & \hCode{peek()} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \small \hCode{isEmpty()} and \hCode{size()} complete the interface.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Example]{In Java}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Queue: example}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/QueueDemo.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/QueueDemo.txt}
+      \small \hCode{ArrayDeque} prints from the \textbf{front};
+      \hCode{poll()} on empty returns \hCode{null}.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Classes]{Which class}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Which \texttt{Queue} class?}
+  \begin{center}\footnotesize
+  \begin{tabular}{@{}lL{0.16\textwidth}L{0.42\textwidth}@{}}
+    \toprule
+    \textbf{Class}               & \textbf{Since} & \textbf{Note} \\
+    \midrule
+    \hCode{ArrayDeque}           & Java 6         & \hRemark{recommended}: a growing circular array \\
+    \hCode{LinkedList}           & Java 1.2       & a doubly linked list \\
+    \hCode{PriorityQueue}        & Java 5         & \hRemark{not FIFO}: the smallest element leaves first \\
+    \hCode{ArrayBlockingQueue}   & Java 5         & bounded; waits when full or empty \\
+    \hCode{ConcurrentLinkedQueue}& Java 5         & unbounded, lock-free, for many threads \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.3em}
+  \begin{itemize}\small
+    \item \hCode{ArrayDeque} is faster and more compact than \hCode{LinkedList};
+          it forbids \hCode{null}.
+    \item \hCode{PriorityQueue} is a \hCode{Queue} by interface only, \emph{not} by order.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Exercises]{Exercises}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Set]{Set exercises}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercise 1: remove duplicates using a Set}
+  \begin{block}{Problem}
+    Write a Java program to remove duplicates from a list using a
+    \hCode{Set}.
+  \end{block}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/RemoveDup.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/RemoveDup.txt}
+      \small
+      \hCode{LinkedHashSet} keeps the order of first occurrence;
+      \hCode{HashSet} is faster but loses the order.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercise 2: common elements in two lists}
+  \begin{block}{Problem}
+    Write a Java program to find common elements between two lists
+    using a \hCode{Set}.
+  \end{block}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/CommonElements.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/CommonElements.txt}
+      \small
+      \hCode{retainAll} keeps only the elements also present in the
+      argument: the intersection of the two sets.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Stack]{Stack exercise}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercise 3: reverse a string using a Stack}
+  \begin{block}{Problem}
+    Write a Java program to reverse a string using a \hCode{Stack}.
+  \end{block}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/ReverseString.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/ReverseString.txt}
+      \small
+      Push every character, then pop them: the last pushed is the
+      first to come out, so the string is reversed.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection[Queue]{Queue exercise}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Exercise 4: queue from two stacks}
+  \begin{block}{Problem}
+    Write a Java program to implement a queue using two stacks.
+  \end{block}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/QueueTwoStacks.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/QueueTwoStacks.txt}
+      \small
+      Two reversals compose to the original order: \hCode{in}
+      receives, \hCode{out} serves; when \hCode{out} is empty,
+      transfer everything.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Summary]{Summary}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Big ideas}
+  \begin{itemize}
+    \item \textbf{Set}: unique elements. \hCode{HashSet} (unordered),
+          \hCode{TreeSet} (sorted), \hCode{LinkedHashSet} (insertion order).
+    \item \textbf{Stack}: LIFO. \hCode{java.util.Stack} is legacy;
+          prefer \hCode{Deque} (\hCode{ArrayDeque}) with
+          \hCode{push}/\hCode{pop}/\hCode{peek}.
+    \item \textbf{Queue}: FIFO. Interface \hCode{Queue};
+          \hCode{ArrayDeque} or \hCode{LinkedList}.
+          \hCode{add}/\hCode{remove}/\hCode{element} throw,
+          \hCode{offer}/\hCode{poll}/\hCode{peek} return special values.
+    \item \hCode{PriorityQueue} implements \hCode{Queue}, but is
+          \emph{not} FIFO.
+    \item The API classes are \hRemark{generic}: one class, any element type.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Check yourself}
+  \begin{enumerate}\small
+    \item What does \hCode{Set.add} return? Why is that useful?
+    \item \hCode{HashSet} vs \hCode{TreeSet} vs \hCode{LinkedHashSet}:
+          what is the iteration order in each?
+    \item \hCode{Stack.pop} on an empty stack: what happens?
+          What about \hCode{Queue.poll}?
+    \item Why is \hCode{ArrayDeque} preferred over \hCode{Stack} in new code?
+    \item Which \hCode{Queue} methods throw? Which return a special value?
+    \item Why is \hCode{PriorityQueue} not FIFO?
+    \item Why does a queue made of two stacks behave like a FIFO?
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{References}
+  \begin{enumerate}
+    \item Oracle Java Documentation.
+    \item GeeksforGeeks.
+    \item Joshua Bloch, \emph{Effective Java}
+          (best practices for the Java collections framework).
+    \item Herbert Schildt, \emph{Java: The Complete Reference}.
+    \item \url{https://docs.oracle.com/javase/8/docs/api/}
+    \item \url{https://docs.oracle.com/javase/tutorial/collections/}
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+\end{document}

@@ -1,5 +1,0 @@
-Ayşe      91  *********
-Zeynep    85  ********
-Mehmet    78  *******
-Çağrı     67  ******
-Öğrenci sayısı: 4, ortalama: 80.2

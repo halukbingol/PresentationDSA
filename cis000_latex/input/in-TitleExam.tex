@@ -1,0 +1,36 @@
+% !TEX spellcheck = en_US
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V title
+% Common title format for exam question
+
+\title[\courseID-\examNo: \topicShort]{
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V box
+	\rule[1ex]{\textwidth}{.1pt}
+	\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} r}
+		\courseID-\courseName
+			&\semesterName\ \semesterID\\
+		\courseInstructors
+			&\examDate\\
+		\examName
+			&\questionID\\
+	\end{tabular*}
+	\rule[1ex]{\textwidth}{.1pt}
+	~\\
+	\vspace{1cm}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A box
+	{\Large 
+		\questionNo\ . \topic
+	}
+}
+
+\author{
+	\questionAuthor\\
+	\hbTimeStamp
+}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A title

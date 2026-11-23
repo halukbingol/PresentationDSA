@@ -1,0 +1,6 @@
+$ javac PowerOfTwo.java
+$ java PowerOfTwo
+n = 1024, mask = 1023
+mod: 285 ms, sum=50999472640
+and: 190 ms, sum=50999472640
+same result: true

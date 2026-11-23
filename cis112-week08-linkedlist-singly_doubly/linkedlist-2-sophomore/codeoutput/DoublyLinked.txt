@@ -1,0 +1,5 @@
+$ javac DoublyLinked.java
+$ java DoublyLinked
+size: 3
+remove b: true
+remove z: false

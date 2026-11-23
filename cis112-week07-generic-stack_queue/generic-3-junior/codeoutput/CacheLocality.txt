@@ -1,0 +1,4 @@
+$ javac CacheLocality.java
+$ java CacheLocality
+int[]      : 2 ms, sum = 499999500000
+LinkedList : 18 ms, sum = 499999500000

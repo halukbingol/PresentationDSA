@@ -1,0 +1,4 @@
+$ javac Benchmark.java
+$ java Benchmark
+ArrayDeque : 45 ms
+LinkedList : 320 ms

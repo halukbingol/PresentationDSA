@@ -1,0 +1,4 @@
+$ javac CycleDetect.java
+$ java CycleDetect
+cycle: true
+cycle: false

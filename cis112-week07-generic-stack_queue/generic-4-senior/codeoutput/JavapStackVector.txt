@@ -1,0 +1,20 @@
+$ javap -p java.util.Stack java.util.Vector | head -20
+Compiled from "Stack.java"
+public class java.util.Stack<E> extends java.util.Vector<E> {
+  public java.util.Stack();
+  public E push(E);
+  public synchronized E pop();
+  public synchronized E peek();
+  public boolean empty();
+  public synchronized int search(java.lang.Object);
+}
+Compiled from "Vector.java"
+public class java.util.Vector<E> extends java.util.AbstractList<E> implements java.util.List<E>, java.util.RandomAccess, java.lang.Cloneable, java.io.Serializable {
+  protected java.lang.Object[] elementData;
+  protected int elementCount;
+  protected int capacityIncrement;
+  protected transient int modCount;
+  public java.util.Vector();
+  public java.util.Vector(int);
+  public java.util.Vector(int, int);
+}

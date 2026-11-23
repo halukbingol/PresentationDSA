@@ -1,0 +1,6 @@
+$ javac LinkedQueue.java
+$ java LinkedQueue
+queue    = [A, B, C]
+dequeue  = A
+queue    = [B, C]
+queue    = [B, C, D]

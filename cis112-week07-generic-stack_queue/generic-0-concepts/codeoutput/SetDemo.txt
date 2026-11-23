@@ -1,0 +1,4 @@
+$ javac SetDemo.java
+$ java SetDemo
+false
+[Apple, Banana]

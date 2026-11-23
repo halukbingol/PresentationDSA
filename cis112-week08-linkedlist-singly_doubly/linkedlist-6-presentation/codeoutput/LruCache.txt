@@ -1,0 +1,3 @@
+$ javac LruCache.java
+$ java LruCache
+{c=3, a=1, d=4}

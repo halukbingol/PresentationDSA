@@ -1,0 +1,18 @@
+$ javac RingBuffer.java
+$ java RingBuffer
+publish 1: true
+publish 2: true
+publish 3: true
+publish 4: true
+publish 5: false
+publish 6: false
+consume 1
+consume 2
+consume 3
+consume 4
+publish 7: true
+publish 8: true
+publish 9: true
+consume 7
+consume 8
+consume 9

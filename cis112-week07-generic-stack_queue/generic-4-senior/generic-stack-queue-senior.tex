@@ -1,0 +1,835 @@
+% !TEX spellcheck = en_US
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+% (NC) 2026 Haluk Bingol
+% github.com/halukbingol/LaTeX-Templates
+%
+% Licensees may copy, distribute, display, and perform the work and make derivative works 
+% and remixes based on it only for non-commercial purposes. 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% =====================================================================
+%  Generic Stack and Queue -- Senior Level
+%  ---------------------------------------------------------------------
+%  Built on hblib/Template/hblibTemplate.tex with the libraries in ../../hblib/.
+%  Programs and their real outputs are in codeoutput/.
+% =====================================================================
+
+\documentclass[aspectratio=169,10pt,compress]{beamer}
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V hblib
+	\usepackage{../../hblib/hblibPresentation}
+	\usepackage{../../hblib/hblibCodeoutput}
+	\usepackage{../../hblib/hblibDatastructures}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A hblib
+
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+
+\newcommand{\win}{\textbf{Windows}}
+\newcommand{\mac}{\textbf{macOS}}
+
+% listings: fixed cells and wrap long lines (javap lines can exceed the frame)
+\lstset{columns=fixed, breaklines=true, breakatwhitespace=false}
+\lstdefinelanguage{text}{}      % plain text: javap output
+
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetKwProg{Fn}{function}{}{end}
+\SetKw{KwError}{error}
+
+% ---------------------------------------------------------------------
+\title{Set, Stack and Queue}
+\subtitle{Senior Level: Internals, Concurrency, and the JDK's Lessons}
+\author[Bingol]{Ruhan Alpaydin}
+
+\institute[FCIS]{
+    Faculty of Computer and Information Sciences\\
+    Yeditepe University
+}
+\date{
+	{\tiny \hbTimeStamp}
+}
+
+\begin{document}
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+  \titlepage
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Outline}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={1-4}, hideallsubsections]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \tableofcontents[sections={5-8}, hideallsubsections]
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Ready]{From Choosing to Understanding}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{From choosing to understanding}
+  \begin{itemize}
+    \item Junior: \emph{which} container, and why.
+    \item Senior: \emph{how} the JDK's containers work inside, and
+          what the API they carry tells us about the platform.
+  \end{itemize}
+  \begin{block}{Three questions}
+    \small
+    \begin{itemize}
+      \item What does \hCode{ArrayDeque} actually store?
+            (\hCode{javap} answers.)
+      \item Why is the same library shipping
+            \hCode{Stack}, \hCode{Vector}, \hCode{ArrayDeque}, and
+            \hCode{SequencedCollection}?
+      \item When is a lock-free queue the right answer,
+            and what does it cost?
+    \end{itemize}
+  \end{block}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The container hierarchy in java.util}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Interfaces}
+        \small
+        \begin{itemize}
+          \item \hCode{Collection<E>}
+          \item \hCode{Set<E>}, \hCode{List<E>}, \hCode{Queue<E>}, \hCode{Deque<E>}
+          \item \hCode{BlockingQueue<E>}, \hCode{BlockingDeque<E>}
+          \item \hCode{SequencedCollection<E>} (Java 21)
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Classes you will meet}
+        \small
+        \begin{itemize}
+          \item \hCode{ArrayDeque}, \hCode{LinkedList}
+          \item \hCode{Stack} (legacy, extends \hCode{Vector})
+          \item \hCode{HashSet}, \hCode{TreeSet}, \hCode{LinkedHashSet}
+          \item \hCode{PriorityQueue}
+          \item \hCode{ArrayBlockingQueue}, \hCode{LinkedBlockingQueue}
+          \item \hCode{ConcurrentLinkedQueue} (lock-free)
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vspace{0.3em}
+  \small
+  \hRemark{There are no primary types in this picture}. Every container
+  is generic; every element is either a reference or a boxed value.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Internals]{ArrayDeque Internals}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{javap}: what an \texttt{ArrayDeque} is}
+  \lstcode[basicstyle=\ttfamily\tiny, firstline=4, lastline=7, firstnumber=4]{codeoutput/JavapArrayDeque.txt}{text}
+  \begin{itemize}\small
+    \item \hCode{elements}: the array.
+    \item \hCode{head}: index of the front element.
+    \item \hCode{tail}: index of the next free slot.
+    \item \hCode{MAX\_ARRAY\_SIZE}: \hCode{Integer.MAX\_VALUE - 8},
+          a guard against \hCode{OutOfMemoryError: Requested array size exceeds VM limit}.
+    \item No \hCode{size} field: length is computed as
+          \hCode{(tail - head) \& (elements.length - 1)}.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The circular array, actually}
+  \begin{center}\footnotesize
+  \begin{tabular}{L{0.24\textwidth}L{0.34\textwidth}L{0.30\textwidth}}
+    \toprule
+    \textbf{What you might write} & \textbf{What \texttt{ArrayDeque} writes} & \textbf{Why} \\
+    \midrule
+    \hCode{tail = (tail + 1) \% n}    & \hCode{tail = (tail + 1) \& (n - 1)} & modulo is a division; \hCode{\&} is one cycle \\
+    \hCode{head = (head + 1) \% n}    & \hCode{head = (head + 1) \& (n - 1)} & same \\
+    \hCode{size == n}                 & \hCode{head == tail}                & full when the ring has no gap \\
+    \hCode{size == 0}                 & \hCode{head == tail}                & empty when the ring has no gap \\
+    \hCode{size}                      & compute from \hCode{head/tail}      & one less field to keep in sync \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.3em}
+  \small
+  \hRemark{\& works only if the length is a power of two}. That is why
+  \hCode{ArrayDeque} always rounds its capacity up to a power of two
+  on construction and on growth.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Power-of-two arithmetic, measured}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/PowerOfTwo.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/PowerOfTwo.txt}
+      \small
+      One hundred million wrap-arounds with $n$ supplied at runtime.
+      \hRemark{One run on this machine.} The mask is faster because
+      \texttt{\%} with a non-constant divisor compiles to hardware
+      division; \hCode{\&} is a single AND.
+    \end{column}
+  \end{columns}
+  \vspace{0.3em}
+  \small
+  When $n$ is a compile-time constant, the JIT can replace
+  \hCode{\% n} with \hCode{\& (n - 1)} automatically. When it is a
+  runtime value (an array length), it cannot. That is why the JDK
+  writes the mask \emph{explicitly}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Legacy]{The Legacy: \texttt{Stack}, \texttt{Vector}}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{javap}: \texttt{Stack} extends \texttt{Vector}}
+  \lstcode[basicstyle=\ttfamily\tiny, firstline=3, lastline=9, firstnumber=3]{codeoutput/JavapStackVector.txt}{text}
+  \begin{itemize}\small
+    \item \hCode{Stack<E>} inherits from \hCode{Vector<E>}.
+          That is a legacy design: the \emph{is-a} is accidental,
+          not conceptual.
+    \item Every mutating method is \hCode{synchronized}.
+          \hCode{push}, \hCode{pop}, \hCode{peek}, \hCode{search}.
+    \item When \hCode{Stack} was designed (Java 1.0), \emph{thread safety by default}
+          was the convention. By Java 1.2 that was recognised as wrong
+          for a container.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Why \texttt{Stack} is legacy}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{block}{What the documentation says}
+        \small
+        ``A more complete and consistent set of LIFO stack operations is
+        provided by the \hCode{Deque} interface and its implementations,
+        which should be used in preference to this class.''
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Why \emph{in practice}}
+        \small
+        \begin{itemize}
+          \item \hCode{Vector}'s fields are \hCode{protected}: you can
+                subclass and see \hCode{elementData}, \hCode{elementCount}.
+          \item Every method pays the synchronization cost, even when
+                nobody contends for the lock.
+          \item The class exposes methods a stack should not:
+                \hCode{get(i)}, \hCode{set(i, x)}, \hCode{add(i, x)}
+                (because it is a \hCode{Vector}).
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vspace{0.3em}
+  \small
+  \hRemark{The lesson}: an ADT is not preserved by inheritance if the
+  superclass is a weaker ADT. \hCode{Stack} is-a \hCode{Vector}, and
+  \hCode{Vector} is-a \hCode{List} --- which is not a \hCode{Stack}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Legacy in the wild: a compiled demo}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/LegacyStack.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/LegacyStack.txt}
+      \small
+      Every line is a way \hCode{Vector}'s API leaks into a \hCode{Stack}.
+      \hCode{search} is 1-based from the top.
+      \hCode{add(0, 99)} inserts at the \emph{bottom} of the stack.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Hashing]{The Set: Backed by a Map}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{javap}: \texttt{HashSet} wraps \texttt{HashMap}}
+  \lstcode[basicstyle=\ttfamily\tiny, firstline=4, lastline=6, firstnumber=4]{codeoutput/JavapHashSet.txt}{text}
+  \begin{itemize}\small
+    \item There is no separate hash table implementation: the set
+          delegates to a \hCode{HashMap}.
+    \item \hCode{PRESENT} is the dummy value used for every key.
+    \item \hCode{add} is \hCode{map.putIfAbsent(x, PRESENT) == null}.
+    \item \hRemark{The `Set' is a view of a `Map' whose values are all the same.}
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{HashMap} internals}
+  \lstcode[basicstyle=\ttfamily\tiny, firstline=10, lastline=15, firstnumber=10]{codeoutput/JavapHashMap.txt}{text}
+  \begin{itemize}\small
+    \item \hCode{table} is an array of buckets. Length is a power of two.
+    \item \hCode{threshold = capacity * loadFactor} (default: $0.75$).
+          When \hCode{size > threshold}, the table doubles.
+    \item \hCode{TREEIFY\_THRESHOLD = 8}: a bucket with 8+ entries converts
+          to a red-black tree, because the linked list would be $O(n)$
+          worst case.
+    \item \hRemark{The set's set-like behaviour is the map's map-like behaviour.}
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{So \texttt{TreeSet} is a red-black tree}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{block}{The chain}
+        \small
+        \hCode{TreeSet<E>} $\to$ \hCode{TreeMap<E, PRESENT>} $\to$
+        red-black tree of \hCode{Entry<K, V>}.
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Consequences}
+        \small
+        \begin{itemize}
+          \item \hCode{add}, \hCode{contains}, \hCode{remove} are $O(\log n)$.
+          \item Elements must be \hCode{Comparable} (or a \hCode{Comparator} passed).
+          \item Iteration is in sorted order.
+          \item \hCode{null} is rejected unless you provide a comparator.
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vspace{0.5em}
+  \small
+  \hRemark{Same pattern in all three sets}: \hCode{HashSet} wraps \hCode{HashMap},
+  \hCode{TreeSet} wraps \hCode{TreeMap}, \hCode{LinkedHashSet} wraps
+  \hCode{LinkedHashMap}. The set is a \emph{facade}.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Modern]{SequencedCollection (Java 21)}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{SequencedCollection} (Java 21)}
+  \begin{itemize}
+    \item A new interface for collections with a \emph{well-defined}
+          encounter order at both ends.
+    \item \hCode{getFirst}, \hCode{getLast}, \hCode{addFirst}, \hCode{addLast},
+          \hCode{removeFirst}, \hCode{removeLast}.
+    \item \hCode{reversed()}: returns a live, mutable view.
+  \end{itemize}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Implemented by}
+        \small
+        \hCode{List<E>}, \hCode{Deque<E>}, \hCode{SortedSet<E>},
+        \hCode{LinkedHashSet<E>}, \hCode{LinkedHashMap<E>}.
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{The point}
+        \small
+        Before Java 21, \hCode{List.get(0)} and
+        \hCode{Deque.getFirst()} had no common interface.
+        SequencedCollection gives them one.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{SequencedCollection} on \texttt{ArrayDeque}}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/SequencedDemo.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/SequencedDemo.txt}
+      \small
+      \hCode{reversed()} is a \textbf{view}, not a copy: mutations through it
+      are visible from the original and vice versa.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{\texttt{addFirst} vs \texttt{add}: which one do you mean?}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/AddFirstDemo.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/AddFirstDemo.txt}
+      \small
+      On a \hCode{Deque}, \hCode{add} is \hCode{addLast} and
+      \hCode{push} is \hCode{addFirst}. Both live on the same object.
+      \hRemark{The same container is a stack and a queue, depending on
+      which method you call.}
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Concurrency]{Concurrency}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Ring buffer: the Disruptor pattern}
+  \begin{itemize}
+    \item A fixed-size circular array of slots, plus two counters.
+    \item \textbf{Producer} writes at \hCode{producerIdx} and increments it.
+    \item \textbf{Consumer} reads at \hCode{consumerIdx} and increments it.
+    \item Both are \hCode{long}, so no wraparound for years.
+    \item Slot index is \hCode{idx \& mask}, mask is \hCode{capacity - 1}.
+    \item \hRemark{Single-producer, single-consumer}: no locks needed.
+          Multi-producer: locks or CAS at the sequence number.
+  \end{itemize}
+  \begin{block}{Why a ring buffer wins}
+    \small
+    Cache-friendly, no allocation, predictable latency.
+    The LMAX exchange runs on a bounded ring buffer.
+  \end{block}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Ring buffer with \texttt{VarHandle}}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/RingBuffer.java}{Java}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/RingBuffer.txt}
+      \small
+      \hCode{setRelease} and \hCode{getAcquire} are the memory-ordering
+      contract. \hRemark{No \texttt{volatile} keyword, no lock}. Same
+      guarantees, more explicit, faster.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Memory ordering: acquire and release}
+  \begin{center}\small
+  \begin{tabular}{L{0.22\textwidth}L{0.5\textwidth}L{0.2\textwidth}}
+    \toprule
+    \textbf{Mode} & \textbf{What it guarantees} & \textbf{Typical use} \\
+    \midrule
+    plain      & nothing across threads                              & local variables \\
+    \hCode{opaque}    & one memory access is atomic, order not guaranteed     & a lone write \\
+    \hCode{acquire}   & later reads see everything the releasing thread wrote & consumer side \\
+    \hCode{release}   & earlier writes are visible to the acquiring thread    & producer side \\
+    \hCode{volatile}  & acquire + release on every access                     & simple flags \\
+    \hCode{compareAndSet} & acquire + release, atomic                      & lock-free core \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.3em}
+  \small
+  \hRemark{The producer publishes with \hCode{setRelease}, the consumer
+  reads with \hCode{getAcquire}}. Everything else is plain or opaque.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The API, in a runnable program}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/MemoryOrdering.java}{Java}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/MemoryOrdering.txt}
+      \small
+      \hCode{join()} guarantees the writer's writes are visible to the
+      reader, so this program always sees \hCode{42}. What it
+      \emph{demonstrates} is the \textbf{shape} of the API, not
+      memory ordering itself. A real demo needs jcstress.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Bounded vs unbounded: back-pressure revisited}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Bounded}
+        \small
+        \begin{itemize}
+          \item \hCode{ArrayBlockingQueue}, \hCode{ArrayDeque}
+          \item producer blocks or drops when full
+          \item memory has a ceiling
+          \item full is a \emph{visible} state
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Unbounded}
+        \small
+        \begin{itemize}
+          \item \hCode{LinkedBlockingQueue}, \hCode{ConcurrentLinkedQueue}
+          \item producer never blocks \dots
+          \item \dots but memory is now the failure point
+          \item a burst becomes \hCode{OutOfMemoryError}
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vspace{0.4em}
+  \small
+  \hRemark{Unbounded queues do not remove the queue}. They move the
+  ceiling from `the size you chose' to `the heap you have'. In a
+  service, prefer bounded at the boundary; in a test, unbounded is fine.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[LockFree]{Lock-Free: Michael-Scott Queue}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Michael-Scott queue: the structure}
+  \lstcode[basicstyle=\ttfamily\tiny, firstline=3, lastline=17, firstnumber=3]{codeoutput/MichaelScottQueue.java}{Java}
+  \begin{itemize}\small
+    \item A dummy node exists from the start; \hCode{head} points to it.
+    \item \hCode{head.next} is the first real element.
+    \item Every \hCode{next} is an \hCode{AtomicReference}: the queue
+          builds no locks.
+    \item \hRemark{The dummy node removes the special case `queue is empty'}. Every enqueue
+          and dequeue sees the same shape.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Michael-Scott queue: enqueue and dequeue}
+  \lstcode[basicstyle=\ttfamily\tiny, firstline=19, lastline=52, firstnumber=19]{codeoutput/MichaelScottQueue.java}{Java}
+  \begin{itemize}\small
+    \item \hCode{enqueue}: CAS \hCode{last.next} from \hCode{null} to the new node,
+          then help \hCode{tail} forward.
+    \item \hCode{dequeue}: read \hCode{first = head}, read \hCode{next = first.next};
+          if \hCode{next} is not null, CAS \hCode{head}.
+    \item Failure means another thread won. Retry the whole loop.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Single-threaded trace}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny, firstline=54, lastline=61, firstnumber=54]{codeoutput/MichaelScottQueue.java}{Java}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/MichaelScottQueue.txt}
+      \small
+      \hRemark{This trace proves the queue works}. It does not prove it
+      works under contention. That is what \hCode{jcstress} is for.
+      Java's \hCode{ConcurrentLinkedQueue} is essentially the same
+      algorithm.
+    \end{column}
+  \end{columns}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{The ABA problem}
+  \begin{block}{Scenario}
+    \small
+    \begin{enumerate}
+      \item Thread 1 reads \hCode{head} and stores it locally: \hCode{observed = A}.
+      \item Thread 2 pops \hCode{A}; queue is now shorter.
+      \item Thread 2 pushes a \emph{new} node with the same content;
+            memory gives it the same address as \hCode{A} (rare but possible).
+      \item Thread 1 tries \hCode{head.CAS(observed, next)}: succeeds,
+            but the queue has changed underneath.
+    \end{enumerate}
+  \end{block}
+  \vspace{0.2em}
+  \small
+  \hRemark{The value is the same, the history is not}. A CAS cannot see
+  history. Fixes: stamps (used below), version numbers in the word,
+  hazard pointers.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{ABA, measured}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \lstcode[basicstyle=\ttfamily\tiny]{codeoutput/AbaDemo.java}{Java}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \lstterminal[basicstyle=\ttfamily\scriptsize]{codeoutput/AbaDemo.txt}
+      \small
+      The plain \hCode{AtomicReference.compareAndSet} succeeds because
+      the reference is the same \emph{object}. The stamped reference
+      fails because the stamp moved.
+    \end{column}
+  \end{columns}
+  \vspace{0.2em}
+  \small
+  \hRemark{Rule}: if the CAS-ed variable can change and come back to
+  the same value, use \hCode{AtomicStampedReference} or an equivalent
+  scheme. \hCode{ConcurrentLinkedQueue} avoids the problem structurally,
+  by never reusing a node.
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\hSection[Wrap]{Wrap-up}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{API lessons the JDK carries}
+  \begin{itemize}
+    \item \textbf{Interface, not class}: \hCode{Queue}, \hCode{Deque},
+          \hCode{Set} --- you can swap one implementation for another.
+    \item \textbf{Legacy by inheritance}: \hCode{Stack} extends
+          \hCode{Vector} and inherits behaviours it should not have.
+          \hRemark{Prefer composition}. \hCode{ArrayDeque} does not extend anything
+          that is not a \hCode{Deque}.
+    \item \textbf{Delegation, not duplication}: \hCode{HashSet} is a
+          thin façade over \hCode{HashMap}; \hCode{TreeSet} over
+          \hCode{TreeMap}. One tree, one table, five public classes.
+    \item \textbf{Compatibility is a long shadow}: \hCode{Stack} still
+          works, but is documented as deprecated for new code. The JDK
+          did not remove it; it marked it.
+    \item \textbf{Fail fast, or block, or return null}: choose the
+          failure policy at the interface, not at the call site.
+    \item \textbf{New abstractions arrive late}: \hCode{SequencedCollection}
+          waited until Java 21 to give \hCode{getFirst}/\hCode{getLast} a
+          common home.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Big ideas}
+  \begin{itemize}
+    \item \hCode{ArrayDeque} is a \textbf{circular array with head and tail
+          and no size field}; the mask replaces modulo because the length
+          is always a power of two.
+    \item \hCode{Stack} is legacy: it inherits a whole list's API
+          from \hCode{Vector}. Do not use it.
+    \item A \hCode{Set} is a façade over a \hCode{Map} with a shared
+          dummy value. Everything you know about \hCode{HashMap} you
+          know about \hCode{HashSet}, \hCode{T}. \emph{Unchecked}.
+    \item \hCode{SequencedCollection} unifies \hCode{List}, \hCode{Deque},
+          and \hCode{Set} under one first/last API.
+    \item A ring buffer with \hCode{VarHandle} is the lock-free primitive
+          behind many fast queues.
+    \item Michael-Scott is correct by CAS alone, but ABA must be
+          prevented (\hCode{AtomicStampedReference}, hazard pointers,
+          never reuse a node).
+    \item Bounded queues and back-pressure are a \emph{design choice},
+          not a performance one.
+  \end{itemize}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Check yourself}
+  \begin{enumerate}\small
+    \item Why does \hCode{ArrayDeque} have no \hCode{size} field, but
+          \hCode{ArrayBlockingQueue} does?
+    \item Why does \hCode{ArrayDeque} round capacity up to a power of two?
+    \item What is the exact difference between \hCode{setRelease} and
+          \hCode{setVolatile}? Give a scenario where one is correct and
+          the other is wrong.
+    \item Why does \hCode{AtomicStampedReference} avoid ABA but a plain
+          \hCode{AtomicReference} does not?
+    \item Under what circumstances would a \hCode{ConcurrentLinkedQueue}
+          be the wrong choice?
+    \item Why did the JDK not simply \emph{remove} \hCode{Stack}?
+    \item Why is \hCode{HashSet} a façade over \hCode{HashMap}, but
+          \hCode{TreeSet} is a façade over \hCode{TreeMap} --- and not
+          the other way around?
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{Practice}
+  \begin{enumerate}\small
+    \item Run \hCode{javap -p java.util.ArrayDeque} on your JDK.
+          Compare with the version in this deck.
+    \item Write a stress test for \hCode{MichaelScottQueue} with
+          \hCode{ExecutorService} and N producers/M consumers.
+          Watch for the race that \hCode{jcstress} would catch.
+    \item Replace the \hCode{AtomicStampedReference} in the ABA demo
+          with a two-field \hCode{AtomicReference<long[]>} and see
+          what breaks.
+    \item Implement \hCode{SequencedCollection} on top of a linked
+          list without using \hCode{Deque}. What does \hCode{reversed()}
+          cost?
+    \item Read the source of \hCode{ArrayDeque.grow} and \hCode{ArrayDeque.addFirst}.
+          Write down what changes in \hCode{head}, \hCode{tail},
+          \hCode{elements.length}, and why the modulo form was avoided.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile] \frametitle{References}
+  \begin{enumerate}
+    \item Oracle Java SE 21 API documentation.
+    \item Doug Lea, \emph{Concurrent Programming in Java}, 2nd ed.
+    \item Maged Michael and Michael Scott, \emph{Simple, Fast, and
+          Practical Non-Blocking and Blocking Concurrent Queue Algorithms},
+          PODC 1996.
+    \item Martin Thompson et al., \emph{Disruptor: High Performance
+          Alternative to Bounded Queues}.
+    \item Joshua Bloch, \emph{Effective Java}, 3rd ed.
+    \item JEP 431: \emph{Sequenced Collections}.
+  \end{enumerate}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V frm
+\begin{frame}[t,fragile]
+	\begin{center}
+		\vspace{4cm}
+		\hRemark{\Huge Questions?}
+	\end{center}
+\end{frame}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A frm
+
+
+
+
+\end{document}

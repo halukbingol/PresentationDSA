@@ -1,0 +1,8 @@
+$ javac AddFirstDemo.java
+$ java AddFirstDemo
+[Z, A, B]
+getFirst = Z
+getLast  = B
+removeFirst = Z
+pop         = A
+after       = [B]

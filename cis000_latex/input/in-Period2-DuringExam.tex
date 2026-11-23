@@ -1,0 +1,128 @@
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ V
+\subsection{Period-2. During exam (internet oﬀ)}
+
+The exam starts after the internet is disconnected.
+
+\begin{enumerate}[label=\roman*.]  
+	
+	\item \textbf{Import question.}
+	Note that \hCode{question.zip} is password protected. 
+	After the password is shared, you can import it in eclipse. 
+	After the required packages are imported, 
+	your Package Explorer in eclipse should be like \reffig{fig:DirectoryStructure}
+	
+
+
+
+
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Fig.
+\begin{figure}[htbp]
+\begin{center}
+	\begin{forest}
+%	for tree={font=\ttfamily, grow'=0, folder, draw=none}
+	for tree={font=\ttfamily, grow'=0, folder, draw=none,
+	          s sep=0pt,        % no extra gap between lines
+	          inner ysep=1pt}   % less padding around each name
+		[project/
+			[src/                     <------------------- zip at this level
+				[mypackage/ 
+					[question.pdf] 
+					[ModifyMe.java] 
+					[DoNotModifyMe.java] 
+					[TS\_question\_jUnit.java]
+				]
+				[ppp/ 
+					[Aaa.java] 
+					[Bbb.java]
+					[kkk/
+						[Ccc.java]
+					] 
+				]
+			]
+		]
+	\end{forest}
+
+	\caption{\small
+		\textbf{Directory structure.}
+		The codes are under package \hCode{mypackage}.
+		It may be the case that there are multiple packages 
+		such as  \hCode{mypackage}, \hCode{ppp} and \hCode{ppp/kkk}.
+		Note that class \hCode{ModifyMe.java} has 
+%\begin{javacode}
+%package ppp.kkk;}
+%\end{javacode}		
+		``\hCodeJ{package mypackage;}''
+		as the first line;
+		while class \hCode{Ccc} has 
+		``\hCodeJ{package ppp.kkk;}''.
+		%
+		\hCode{question.pdf} is the description of the question.
+		\hCode{ModifyMe.java} is the file you are expected to modify.
+		There may be multiple such files.
+		\hCode{DoNotModifyMe.java} is the file that is used but 
+		you are not allow to modify.
+		There may be multiple such files.
+		\hCode{TS\_question\_jUnit.java} is the jUnit file shared with you 
+		so that you can test your development.
+	}
+	\label{fig:DirectoryStructure}
+\end{center}
+\end{figure}
+% +++++++++++++++++++++++++++++++++++++++ A
+	
+	\begin{enumerate}[itemsep=1pt, topsep=1pt] 
+		
+		\item The password of \hCode{question.zip} is given.
+		
+		\item Uncompress \hCode{question.zip} using the given password.
+		
+		\item Import \hCode{question.zip} package(s) into eclipse. 
+		Make sure that the package is under \hCode{src}.
+		\item Start reading the description pdf.
+		
+	\end{enumerate}
+
+	\item \textbf{Open pdf files.} 
+	It is not recommended to opening \hCode{.pdf} files within eclipse.
+	\begin{enumerate}
+		
+		\item Right click on the \hCode{.pdf} file.
+		
+		\item \menu{Open With > Default Editor} (or \menu{System Editor})
+		
+	\end{enumerate}
+
+\end{enumerate}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsubsection{Student info}
+\label{sec:app:studentInfo} 
+
+Make sure that you populate \hCode{Student info} in \hCode{modifyMe.java} files.
+Be careful not to change ``below'' and ``above'' marks.
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\input{../../cis000_latex/input/in-CodeYourInfo.tex}
+% +++++++++++++++++++++++++++++++++++++++ A
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\subsubsection{Where to change: ``below-above'' marks} 
+\label{sec:app:belowAboveMarker}
+
+You are only allowed to change between ``below'' and ``above'' marks in \hCode{modifyMe.java} files.
+\emph{Be careful not to change} ``below'' and ``above'' marks.
+
+% +++++++++++++++++++++++++++++++++++++++ V
+%: -Code.
+\input{../../cis000_latex/input/in-CodeBelowAboveMarker}
+% +++++++++++++++++++++++++++++++++++++++ A

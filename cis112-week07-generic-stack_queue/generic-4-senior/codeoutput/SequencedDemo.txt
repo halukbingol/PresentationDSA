@@ -1,0 +1,7 @@
+$ javac SequencedDemo.java
+$ java SequencedDemo
+forward:  [Z, A, B]
+reversed: [B, A, Z]
+first:    Z
+last:     B
+list reversed: [z, y, x]

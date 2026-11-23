@@ -1,0 +1,8 @@
+$ javac LinkList.java
+$ java LinkList
+List (first-->last): [3, 3.0] [2, 2.0] [1, 1.0]
+find 2 -> true
+find 9 -> false
+delete 2 -> true
+List (first-->last): [3, 3.0] [1, 1.0]
+List (first-->last): [1, 1.0]

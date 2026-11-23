@@ -1,0 +1,4 @@
+edit  -> EDİT
+check: false
+FILE  -> fıle
+ROOT  -> EDIT file
